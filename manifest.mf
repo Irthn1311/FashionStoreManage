@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 Manifest-Version: 1.0
 X-COMMENT: Main-Class will be added automatically by build
 
@@ -7,3 +8,8 @@ Manifest-Version: 1.0
 X-COMMENT: Main-Class will be added automatically by build
 
 >>>>>>> 12eccb6 (day len)
+=======
+Manifest-Version: 1.0
+X-COMMENT: Main-Class will be added automatically by build
+
+>>>>>>> 12eccb6983d5261a4c91f964d7a47f17b5e3e692
