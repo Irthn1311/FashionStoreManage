@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+      "lib/**/*.jar",
+      "path/to/your/lib/AbsoluteLayout.jar"
+    ]
+}

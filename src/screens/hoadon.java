@@ -996,6 +996,12 @@ public class hoadon extends javax.swing.JFrame {
 
         jLabel18.setText("Trạng thái ");
         jPanel21.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(702, 29, -1, -1));
+
+        jTextField25.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField25ActionPerformed(evt);
+            }
+        });
         jPanel21.add(jTextField25, new org.netbeans.lib.awtextra.AbsoluteConstraints(21, 68, 77, -1));
 
         jTextField26.addActionListener(new java.awt.event.ActionListener() {
@@ -1189,6 +1195,10 @@ public class hoadon extends javax.swing.JFrame {
     private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton30ActionPerformed
+
+    private void jTextField25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField25ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField25ActionPerformed
 
     /**
      * @param args the command line arguments

@@ -15,9 +15,9 @@ public class adminscreen extends javax.swing.JFrame {
      */
     public adminscreen() {
         initComponents();
-         ImageIcon checkIcon = new ImageIcon(getClass().getResource("/icon_img/box.png"));
-    Image checkImg = checkIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-    btnLogin.setIcon(new ImageIcon(checkImg));
+        ImageIcon checkIcon = new ImageIcon(getClass().getResource("/icon_img/box.png"));
+        Image checkImg = checkIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        btnLogin.setIcon(new ImageIcon(checkImg));
         
     }
 
@@ -238,7 +238,7 @@ public class adminscreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNhaCungCapActionPerformed
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-
+        // TODO add your handling code here:
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
