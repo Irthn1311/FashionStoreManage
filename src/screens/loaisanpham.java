@@ -17,6 +17,10 @@ public class loaisanpham extends javax.swing.JFrame {
      */
     public loaisanpham() {
         initComponents();
+        setupContainerPanel();
+    }
+    public javax.swing.JPanel getLoaiSanPhamPanel() {
+        return containerPanel;
     }
 
     /**
@@ -28,27 +32,9 @@ public class loaisanpham extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel14 = new javax.swing.JPanel();
-        btnLogin = new javax.swing.JButton();
-        btnSetting = new javax.swing.JButton();
-        jSeparator5 = new javax.swing.JSeparator();
-        btnNhapHang = new javax.swing.JButton();
-        btnXuatHang = new javax.swing.JButton();
-        jSeparator6 = new javax.swing.JSeparator();
-        btnSanPham = new javax.swing.JButton();
-        btnLoaiSanPham = new javax.swing.JButton();
-        btnHoaDon = new javax.swing.JButton();
-        btnPhieuNhap = new javax.swing.JButton();
-        btnKhuyenMai = new javax.swing.JButton();
-        jSeparator7 = new javax.swing.JSeparator();
-        btnNhanVien = new javax.swing.JButton();
-        btnKhachHang = new javax.swing.JButton();
-        btnNhaCungCap = new javax.swing.JButton();
-        jSeparator8 = new javax.swing.JSeparator();
-        btnTaiKhoan = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        pnlHeader = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        pnlContent = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jPanel16 = new javax.swing.JPanel();
         jTextField11 = new javax.swing.JTextField();
@@ -114,123 +100,31 @@ public class loaisanpham extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel14.setBackground(new java.awt.Color(10, 112, 117));
-        jPanel14.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        btnLogin.setText("Login");
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
-            }
-        });
-        jPanel14.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 16, 90, 37));
-
-        btnSetting.setText("Setting");
-        btnSetting.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSettingActionPerformed(evt);
-            }
-        });
-        jPanel14.add(btnSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 16, -1, 37));
-
-        jSeparator5.setForeground(new java.awt.Color(0, 0, 0));
-        jPanel14.add(jSeparator5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 71, 200, 13));
-
-        btnNhapHang.setText("Nhập hàng");
-        jPanel14.add(btnNhapHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 90, 188, 36));
-
-        btnXuatHang.setText("Xuất hàng");
-        btnXuatHang.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXuatHangActionPerformed(evt);
-            }
-        });
-        jPanel14.add(btnXuatHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 138, 188, 36));
-
-        jSeparator6.setBackground(new java.awt.Color(0, 0, 0));
-        jSeparator6.setForeground(new java.awt.Color(0, 0, 0));
-        jPanel14.add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 192, 200, 10));
-
-        btnSanPham.setText("Sản phẩm");
-        jPanel14.add(btnSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 214, 188, 36));
-
-        btnLoaiSanPham.setText("Loại sản phẩm");
-        btnLoaiSanPham.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoaiSanPhamActionPerformed(evt);
-            }
-        });
-        jPanel14.add(btnLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 262, 188, 36));
-
-        btnHoaDon.setText("Hóa đơn");
-        jPanel14.add(btnHoaDon, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 310, 188, 36));
-
-        btnPhieuNhap.setText("Phiếu nhập");
-        btnPhieuNhap.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPhieuNhapActionPerformed(evt);
-            }
-        });
-        jPanel14.add(btnPhieuNhap, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 358, 188, 36));
-
-        btnKhuyenMai.setText("Khuyến mãi");
-        jPanel14.add(btnKhuyenMai, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 406, 188, 36));
-
-        jSeparator7.setForeground(new java.awt.Color(0, 0, 0));
-        jPanel14.add(jSeparator7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 454, 200, 10));
-
-        btnNhanVien.setText("Nhân viên");
-        btnNhanVien.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNhanVienActionPerformed(evt);
-            }
-        });
-        jPanel14.add(btnNhanVien, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 470, 188, 36));
-
-        btnKhachHang.setText("Khách hàng");
-        jPanel14.add(btnKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 518, 188, 36));
-
-        btnNhaCungCap.setText("Nhà cung cấp");
-        btnNhaCungCap.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNhaCungCapActionPerformed(evt);
-            }
-        });
-        jPanel14.add(btnNhaCungCap, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 566, 188, 36));
-
-        jSeparator8.setForeground(new java.awt.Color(0, 0, 0));
-        jPanel14.add(jSeparator8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 614, 200, 10));
-
-        btnTaiKhoan.setText("Tài khoản");
-        jPanel14.add(btnTaiKhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 630, 188, 36));
-
-        getContentPane().add(jPanel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 680));
-
-        jPanel2.setBackground(new java.awt.Color(12, 150, 156));
+        pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setText("Quản lý loại sản phẩm");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
+        pnlHeader.setLayout(pnlHeaderLayout);
+        pnlHeaderLayout.setHorizontalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLayout.createSequentialGroup()
                 .addGap(335, 335, 335)
                 .addComponent(jLabel1)
                 .addContainerGap(390, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        pnlHeaderLayout.setVerticalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 960, -1));
+        getContentPane().add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 960, -1));
 
-        jPanel1.setBackground(new java.awt.Color(107, 163, 190));
+        pnlContent.setBackground(new java.awt.Color(107, 163, 190));
 
         jPanel15.setBackground(new java.awt.Color(107, 163, 190));
         jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
@@ -539,27 +433,27 @@ public class loaisanpham extends javax.swing.JFrame {
         jLabel9.setText("Xuất Xứ");
         jPanel23.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 30, -1, -1));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
+        pnlContent.setLayout(pnlContentLayout);
+        pnlContentLayout.setHorizontalGroup(
+            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 934, Short.MAX_VALUE)
                     .addComponent(jPanel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel21, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(293, 293, 293))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        pnlContentLayout.setVerticalGroup(
+            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createSequentialGroup()
                 .addGap(0, 10, Short.MAX_VALUE)
                 .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
@@ -575,38 +469,10 @@ public class loaisanpham extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 70, 960, 610));
+        getContentPane().add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 70, 960, 610));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-
-    }//GEN-LAST:event_btnLoginActionPerformed
-
-    private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSettingActionPerformed
-
-    private void btnXuatHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatHangActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnXuatHangActionPerformed
-
-    private void btnLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoaiSanPhamActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnLoaiSanPhamActionPerformed
-
-    private void btnPhieuNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhieuNhapActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnPhieuNhapActionPerformed
-
-    private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanVienActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNhanVienActionPerformed
-
-    private void btnNhaCungCapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhaCungCapActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNhaCungCapActionPerformed
 
     private void jTextField24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField24ActionPerformed
         // TODO add your handling code here:
@@ -664,6 +530,22 @@ public class loaisanpham extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField13ActionPerformed
 
+    private void setupContainerPanel() {
+        // Tạo panel container mới
+        containerPanel = new javax.swing.JPanel();
+        containerPanel.setLayout(null); // Sử dụng null layout để set vị trí thủ công
+        
+        // Thêm jPanel23 (header) và jPanel34 (content) vào container
+        pnlHeader.setBounds(0, 0, 960, 70);
+        pnlContent.setBounds(0, 70, 960, 610);
+        
+        containerPanel.add(pnlHeader);
+        containerPanel.add(pnlContent);
+        
+        // Set kích thước cho container
+        containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -700,19 +582,6 @@ public class loaisanpham extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnHoaDon;
-    private javax.swing.JButton btnKhachHang;
-    private javax.swing.JButton btnKhuyenMai;
-    private javax.swing.JButton btnLoaiSanPham;
-    private javax.swing.JButton btnLogin;
-    private javax.swing.JButton btnNhaCungCap;
-    private javax.swing.JButton btnNhanVien;
-    private javax.swing.JButton btnNhapHang;
-    private javax.swing.JButton btnPhieuNhap;
-    private javax.swing.JButton btnSanPham;
-    private javax.swing.JButton btnSetting;
-    private javax.swing.JButton btnTaiKhoan;
-    private javax.swing.JButton btnXuatHang;
     private javax.swing.JButton jButton30;
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
@@ -739,22 +608,15 @@ public class loaisanpham extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel18;
     private javax.swing.JPanel jPanel19;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel23;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JSeparator jSeparator6;
-    private javax.swing.JSeparator jSeparator7;
-    private javax.swing.JSeparator jSeparator8;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField10;
@@ -782,5 +644,8 @@ public class loaisanpham extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
+    private javax.swing.JPanel containerPanel;
+    private javax.swing.JPanel pnlContent;
+    private javax.swing.JPanel pnlHeader;
     // End of variables declaration//GEN-END:variables
 }

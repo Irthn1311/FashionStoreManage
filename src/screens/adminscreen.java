@@ -1,4 +1,3 @@
-
 package screens;
 import javax.swing.ImageIcon;
 import java.awt.Image;
@@ -9,7 +8,7 @@ import javax.swing.UIManager;
  * @author nson9
  */
 public class adminscreen extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form adminscreen
      */
@@ -19,7 +18,139 @@ public class adminscreen extends javax.swing.JFrame {
         Image checkImg = checkIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         btnLogin.setIcon(new ImageIcon(checkImg));
         
+        // Lưu lại panel chào mừng
+        welcomePanel = jPanel3;
+        mainContent = jPanel4;
+
+        /* 
+        // Them action listener cho btnSetting
+        btnSetting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSettingActionPerformed(evt);
+            }
+        });
+        */
+
+        // Them action listener cho btnNhapHang
+        btnNhapHang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNhapHangActionPerformed(evt);
+            }
+        });
+        
+        // Them action listener cho btnXuatHang
+        btnXuatHang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXuatHangActionPerformed(evt);
+            }
+        });
+
+        // Them action listner cho btnSanPham
+        btnSanPham.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSanPhamActionPerformed(evt);
+            }
+        });
+
+        // Them action listener cho btnLoaiSanPham
+        btnLoaiSanPham.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoaiSanPhamActionPerformed(evt);
+            }
+        });
+
+        // Thêm action listener cho btnHoaDon
+        btnHoaDon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHoaDonActionPerformed(evt);
+            }
+        });
+
+        // Them action listener cho btnPhieuNhap
+        btnPhieuNhap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPhieuNhapActionPerformed(evt);
+            }
+        });
+        
+        // Them action listener cho btnKhuyenMai
+        btnKhuyenMai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKhuyenMaiActionPerformed(evt);
+            }
+        });
+        // Them action listener cho btnNhanVien
+        btnNhanVien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNhanVienActionPerformed(evt);
+            }
+        });
+        // Them action listener cho btnKhachHang
+        btnKhachHang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKhachHangActionPerformed(evt);
+            }
+        });
+        // Them action listener cho btnNhaCungCap
+        btnNhaCungCap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNhaCungCapActionPerformed(evt);
+            }
+        });
+        /*
+        // Them action listener cho btnTaiKhoan
+        btnTaiKhoan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTaiKhoanActionPerformed(evt);
+            }
+        });
+        */
     }
+
+    
+
+    private void switchPanel(javax.swing.JPanel panel) {
+        // Ẩn panel chào mừng và nội dung cũ
+        welcomePanel.setVisible(false);
+        mainContent.setVisible(false);
+        
+        // Xóa các panel cũ
+        getContentPane().remove(welcomePanel);
+        getContentPane().remove(mainContent);
+        
+        // Thêm panel mới
+        mainContent = panel;
+        mainContent.setVisible(true);
+        mainContent.setBounds(200, 0, 960, 680);
+        getContentPane().add(mainContent);
+        
+        // Cập nhật giao diện
+        getContentPane().revalidate();
+        getContentPane().repaint();
+    }
+    
+    // Thêm phương thức để quay lại màn hình chính (nếu cần)
+    private void showWelcomeScreen() {
+        // Xóa panel hiện tại
+        mainContent.setVisible(false);
+        getContentPane().remove(mainContent);
+        
+        // Hiển thị lại panel chào mừng
+        welcomePanel.setVisible(true);
+        jPanel4.setVisible(true);
+        welcomePanel.setBounds(200, 0, 960, 70);
+        jPanel4.setBounds(200, 70, 960, 610);
+        getContentPane().add(welcomePanel);
+        getContentPane().add(jPanel4);
+        mainContent = jPanel4;
+        
+        // Cập nhật giao diện
+        getContentPane().revalidate();
+        getContentPane().repaint();
+    }
+    
+    // Sửa action listener của btnHoaDon
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -67,7 +198,7 @@ public class adminscreen extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 16, 90, 37));
-
+        /* 
         btnSetting.setText("Setting");
         btnSetting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -75,6 +206,7 @@ public class adminscreen extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 16, -1, 37));
+        */
 
         jSeparator1.setBackground(new java.awt.Color(10, 112, 117));
         jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
@@ -107,6 +239,11 @@ public class adminscreen extends javax.swing.JFrame {
         jPanel1.add(btnLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 262, 188, 36));
 
         btnHoaDon.setText("Hóa đơn");
+        btnHoaDon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHoaDonActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnHoaDon, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 310, 188, 36));
 
         btnPhieuNhap.setText("Phiếu nhập");
@@ -213,33 +350,59 @@ public class adminscreen extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingActionPerformed
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSettingActionPerformed
-
-    private void btnXuatHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXuatHangActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnXuatHangActionPerformed
-
-    private void btnLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoaiSanPhamActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnLoaiSanPhamActionPerformed
-
-    private void btnPhieuNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhieuNhapActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnPhieuNhapActionPerformed
-
-    private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhanVienActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNhanVienActionPerformed
-
+    }
+    /*
+    private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {
+        setting settingScreen = new setting();
+        switchPanel(settingScreen.getSettingPanel());
+    } */
+    private void btnNhapHangActionPerformed(java.awt.event.ActionEvent evt) {
+        nhaphang nhapHangScreen = new nhaphang();
+        switchPanel(nhapHangScreen.getNhapHangPanel());
+    }
+    private void btnXuatHangActionPerformed(java.awt.event.ActionEvent evt) {
+        xuathang xuatHangScreen = new xuathang();
+        switchPanel(xuatHangScreen.getXuatHangPanel());
+    }
+    private void btnSanPhamActionPerformed(java.awt.event.ActionEvent evt) {
+        sanpham sanPhamScreen = new sanpham();
+        switchPanel(sanPhamScreen.getSanPhamPanel());
+    }
+    private void btnLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {
+        loaisanpham loaiSanPhamScreen = new loaisanpham();
+        switchPanel(loaiSanPhamScreen.getLoaiSanPhamPanel());
+    }
+    private void btnHoaDonActionPerformed(java.awt.event.ActionEvent evt) {
+        hoadon hoaDonScreen = new hoadon();
+        switchPanel(hoaDonScreen.getHoaDonPanel());
+    }
+    private void btnPhieuNhapActionPerformed(java.awt.event.ActionEvent evt) {
+        phieunhap phieuNhapScreen = new phieunhap();
+        switchPanel(phieuNhapScreen.getPhieuNhapPanel());
+    }
+    private void btnKhuyenMaiActionPerformed(java.awt.event.ActionEvent evt) {
+        khuyenmai khuyenMaiScreen = new khuyenmai();
+        switchPanel(khuyenMaiScreen.getKhuyenMaiPanel());
+    }
+    private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {
+        nhanvien nhanVienScreen = new nhanvien();
+        switchPanel(nhanVienScreen.getNhanVienPanel());
+    }
+    private void btnKhachHangActionPerformed(java.awt.event.ActionEvent evt) {
+        khachhang khachHangScreen = new khachhang();
+        switchPanel(khachHangScreen.getKhachHangPanel());
+    }
     private void btnNhaCungCapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhaCungCapActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNhaCungCapActionPerformed
-
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnLoginActionPerformed
+        nhacungcap nhaCungCapScreen = new nhacungcap();
+        switchPanel(nhaCungCapScreen.getNhaCungCapPanel());
+    }
+    /* 
+    private void btnTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {
+        taikhoan taiKhoanScreen = new taikhoan();
+        switchPanel(taiKhoanScreen.getTaiKhoanPanel());
+    }*/
 
     /**
      * @param args the command line arguments
@@ -296,9 +459,12 @@ public class adminscreen extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel mainContent;
+    private javax.swing.JPanel welcomePanel;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
+    
     // End of variables declaration//GEN-END:variables
 }
