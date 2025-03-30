@@ -780,7 +780,7 @@ public class hoadon extends javax.swing.JPanel {
         jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton31.setText("Thêm ");
-        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 24, -1, 49));
+        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, -1, 49));
 
         jButton32.setText("Sửa");
         jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 20, -1, 49));
