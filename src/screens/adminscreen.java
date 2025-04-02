@@ -105,6 +105,18 @@ public class adminscreen extends javax.swing.JFrame {
             }
         });
         */
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Quản lý cửa hàng thời trang");
+        setResizable(false);
+        setLocationRelativeTo(null);
+        
+        // Thiết lập kích thước cố định cho cửa sổ
+        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        int width = 1160;
+        int height = 720;
+        int x = (screenSize.width - width) / 2;
+        int y = (screenSize.height - height) / 2;
+        setBounds(x, y, width, height);
     }
 
     
@@ -198,15 +210,14 @@ public class adminscreen extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 16, 90, 37));
-        /* 
+
         btnSetting.setText("Setting");
         btnSetting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSettingActionPerformed(evt);
+            //    btnSettingActionPerformed(evt);
             }
         });
         jPanel1.add(btnSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 16, -1, 37));
-        */
 
         jSeparator1.setBackground(new java.awt.Color(10, 112, 117));
         jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
@@ -239,11 +250,6 @@ public class adminscreen extends javax.swing.JFrame {
         jPanel1.add(btnLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 262, 188, 36));
 
         btnHoaDon.setText("Hóa đơn");
-        btnHoaDon.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHoaDonActionPerformed(evt);
-            }
-        });
         jPanel1.add(btnHoaDon, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 310, 188, 36));
 
         btnPhieuNhap.setText("Phiếu nhập");
@@ -300,7 +306,7 @@ public class adminscreen extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(287, 287, 287)
                 .addComponent(jLabel1)
-                .addContainerGap(389, Short.MAX_VALUE))
+                .addContainerGap(388, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -394,7 +400,7 @@ public class adminscreen extends javax.swing.JFrame {
         khachhang khachHangScreen = new khachhang();
         switchPanel(khachHangScreen.getKhachHangPanel());
     }
-    private void btnNhaCungCapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhaCungCapActionPerformed
+    private void btnNhaCungCapActionPerformed(java.awt.event.ActionEvent evt) {                                              
         nhacungcap nhaCungCapScreen = new nhacungcap();
         switchPanel(nhaCungCapScreen.getNhaCungCapPanel());
     }
@@ -465,6 +471,5 @@ public class adminscreen extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
-    
     // End of variables declaration//GEN-END:variables
 }

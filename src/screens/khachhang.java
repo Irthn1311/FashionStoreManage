@@ -10,7 +10,7 @@ import javax.swing.UIManager;
  *
  * @author nson9
  */
-public class khachhang extends javax.swing.JFrame {
+public class khachhang extends javax.swing.JPanel {
 
     /**
      * Creates new form khachhang
@@ -88,8 +88,6 @@ public class khachhang extends javax.swing.JFrame {
         jTextField4 = new javax.swing.JTextField();
         jButton14 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
 
@@ -113,7 +111,6 @@ public class khachhang extends javax.swing.JFrame {
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        getContentPane().add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 960, -1));
 
         pnlContent.setBackground(new java.awt.Color(107, 163, 190));
 
@@ -391,9 +388,6 @@ public class khachhang extends javax.swing.JFrame {
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        getContentPane().add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 70, 960, 610));
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField19ActionPerformed

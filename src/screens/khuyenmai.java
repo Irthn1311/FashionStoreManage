@@ -32,6 +32,7 @@ public class khuyenmai extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        containerPanel = new javax.swing.JPanel();
         pnlHeader = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
@@ -93,8 +94,10 @@ public class khuyenmai extends javax.swing.JFrame {
         jTextField8 = new javax.swing.JTextField();
         jButton34 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
+        containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
 
@@ -108,7 +111,7 @@ public class khuyenmai extends javax.swing.JFrame {
             .addGroup(pnlHeaderLayout.createSequentialGroup()
                 .addGap(311, 311, 311)
                 .addComponent(jLabel1)
-                .addContainerGap(373, Short.MAX_VALUE))
+                .addContainerGap(374, Short.MAX_VALUE))
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,7 +121,7 @@ public class khuyenmai extends javax.swing.JFrame {
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        getContentPane().add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 960, -1));
+        containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 70));
 
         pnlContent.setBackground(new java.awt.Color(107, 163, 190));
 
@@ -428,9 +431,9 @@ public class khuyenmai extends javax.swing.JFrame {
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
-        getContentPane().add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 70, 960, 610));
+        containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 960, 610));
 
-        pack();
+        getContentPane().add(containerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 680));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField26ActionPerformed
@@ -521,6 +524,7 @@ public class khuyenmai extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel containerPanel;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
@@ -579,7 +583,6 @@ public class khuyenmai extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
-    private javax.swing.JPanel containerPanel;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
     // End of variables declaration//GEN-END:variables
