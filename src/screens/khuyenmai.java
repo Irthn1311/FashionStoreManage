@@ -94,7 +94,14 @@ public class khuyenmai extends javax.swing.JFrame {
         jTextField8 = new javax.swing.JTextField();
         jButton34 = new javax.swing.JButton();
 
+<<<<<<< HEAD
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+=======
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+
+        containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
+        containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+>>>>>>> 8a1303e9a0172352f9cf21fde0b15e541996cc81
 
         containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
         containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -108,10 +115,14 @@ public class khuyenmai extends javax.swing.JFrame {
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(311, 311, 311)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHeaderLayout.createSequentialGroup()
+                .addContainerGap(373, Short.MAX_VALUE)
                 .addComponent(jLabel1)
+<<<<<<< HEAD
                 .addContainerGap(374, Short.MAX_VALUE))
+=======
+                .addGap(351, 351, 351))
+>>>>>>> 8a1303e9a0172352f9cf21fde0b15e541996cc81
         );
         pnlHeaderLayout.setVerticalGroup(
             pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,7 +132,11 @@ public class khuyenmai extends javax.swing.JFrame {
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
+<<<<<<< HEAD
         containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 70));
+=======
+        containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
+>>>>>>> 8a1303e9a0172352f9cf21fde0b15e541996cc81
 
         pnlContent.setBackground(new java.awt.Color(107, 163, 190));
 
@@ -190,10 +205,10 @@ public class khuyenmai extends javax.swing.JFrame {
                 jButton38ActionPerformed(evt);
             }
         });
-        jPanel21.add(jButton38, new org.netbeans.lib.awtextra.AbsoluteConstraints(811, 26, -1, -1));
+        jPanel21.add(jButton38, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 30, -1, -1));
 
         jButton39.setText("Thêm");
-        jPanel21.add(jButton39, new org.netbeans.lib.awtextra.AbsoluteConstraints(811, 68, -1, -1));
+        jPanel21.add(jButton39, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 70, -1, -1));
 
         jLabel20.setText("Khác");
         jPanel21.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(723, 29, 43, -1));
@@ -205,12 +220,12 @@ public class khuyenmai extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Mã SP", "Tên SP", "Time start", "Time end", "Giá cũ", "Giá mới", "Khác(nhập vào)"
+                "STT", "Mã SP", "Tên SP", "Time start", "Time end", "Giá cũ", "Giá mới", "Khác(nhập vào)", "Chi tiết"
             }
         ));
         jTable2.setShowGrid(true);
@@ -383,10 +398,10 @@ public class khuyenmai extends javax.swing.JFrame {
                 jButton40ActionPerformed(evt);
             }
         });
-        jPanel22.add(jButton40, new org.netbeans.lib.awtextra.AbsoluteConstraints(811, 26, -1, -1));
+        jPanel22.add(jButton40, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 20, -1, -1));
 
         jButton41.setText("Thêm");
-        jPanel22.add(jButton41, new org.netbeans.lib.awtextra.AbsoluteConstraints(811, 68, -1, -1));
+        jPanel22.add(jButton41, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 60, -1, -1));
 
         jLabel27.setText("Khác");
         jPanel22.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(724, 29, 43, -1));
@@ -399,41 +414,47 @@ public class khuyenmai extends javax.swing.JFrame {
         pnlContentLayout.setHorizontalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlContentLayout.createSequentialGroup()
-                .addGap(298, 298, 298)
-                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createSequentialGroup()
-                .addContainerGap(9, Short.MAX_VALUE)
                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel18, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addGroup(pnlContentLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 960, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 960, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 960, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 960, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 960, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(pnlContentLayout.createSequentialGroup()
+                        .addGap(317, 317, 317)
+                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         pnlContentLayout.setVerticalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlContentLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
-                .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addGap(32, 32, 32))
         );
 
+<<<<<<< HEAD
         containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 960, 610));
 
         getContentPane().add(containerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 680));
+=======
+        containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 610));
+
+        getContentPane().add(containerPanel);
+>>>>>>> 8a1303e9a0172352f9cf21fde0b15e541996cc81
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField26ActionPerformed

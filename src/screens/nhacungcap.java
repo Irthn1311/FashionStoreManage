@@ -32,7 +32,11 @@ public class nhacungcap extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        containerPanel = new javax.swing.JPanel();
+        pnlHeader = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
+        pnlContent1 = new javax.swing.JPanel();
         jButton34 = new javax.swing.JButton();
         jPanel17 = new javax.swing.JPanel();
         jButton31 = new javax.swing.JButton();
@@ -58,10 +62,10 @@ public class nhacungcap extends javax.swing.JFrame {
         jPanel18 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jPanel60 = new javax.swing.JPanel();
-        jPanel59 = new javax.swing.JPanel();
-        jLabel58 = new javax.swing.JLabel();
-        jTextField56 = new javax.swing.JTextField();
+        jPanel64 = new javax.swing.JPanel();
+        jPanel63 = new javax.swing.JPanel();
+        jLabel60 = new javax.swing.JLabel();
+        jTextField58 = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
@@ -89,13 +93,40 @@ public class nhacungcap extends javax.swing.JFrame {
         jButton41 = new javax.swing.JButton();
         jLabel25 = new javax.swing.JLabel();
         jTextField6 = new javax.swing.JTextField();
-        pnlHeader = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
+        containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel1.setText("Quản lý nhà cung cấp");
+
+        javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
+        pnlHeader.setLayout(pnlHeaderLayout);
+        pnlHeaderLayout.setHorizontalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLayout.createSequentialGroup()
+                .addGap(383, 383, 383)
+                .addComponent(jLabel1)
+                .addContainerGap(387, Short.MAX_VALUE))
+        );
+        pnlHeaderLayout.setVerticalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
+
         pnlContent.setBackground(new java.awt.Color(107, 163, 190));
+        pnlContent.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        pnlContent1.setBackground(new java.awt.Color(107, 163, 190));
 
         jButton34.setText("Lưu và xuất file");
 
@@ -179,12 +210,12 @@ public class nhacungcap extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Mã NCC", "Tên NCC", "Mã SP", "TÊN SP", "Năm hợp tác", "Địa chỉ", "Số điện thoại"
+                "STT", "Mã NCC", "Tên NCC", "Mã SP", "TÊN SP", "Năm hợp tác", "Địa chỉ", "Số điện thoại", "Chi tiết"
             }
         ));
         jTable2.setShowGrid(true);
@@ -192,37 +223,37 @@ public class nhacungcap extends javax.swing.JFrame {
 
         jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 24, 920, 90));
 
-        jPanel60.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel60.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm"));
-        jPanel60.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel64.setBackground(new java.awt.Color(107, 163, 190));
+        jPanel64.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm"));
+        jPanel64.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel59.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel59.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Mã NCC"));
+        jPanel63.setBackground(new java.awt.Color(107, 163, 190));
+        jPanel63.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Mã NCC"));
 
-        jLabel58.setText("Mã NCC ");
+        jLabel60.setText("Mã NCC ");
 
-        javax.swing.GroupLayout jPanel59Layout = new javax.swing.GroupLayout(jPanel59);
-        jPanel59.setLayout(jPanel59Layout);
-        jPanel59Layout.setHorizontalGroup(
-            jPanel59Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel59Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel63Layout = new javax.swing.GroupLayout(jPanel63);
+        jPanel63.setLayout(jPanel63Layout);
+        jPanel63Layout.setHorizontalGroup(
+            jPanel63Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel63Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel58)
+                .addComponent(jLabel60)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField56, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                .addComponent(jTextField58, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel59Layout.setVerticalGroup(
-            jPanel59Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel59Layout.createSequentialGroup()
+        jPanel63Layout.setVerticalGroup(
+            jPanel63Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel63Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel59Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField56)
-                    .addComponent(jLabel58))
+                .addGroup(jPanel63Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField58)
+                    .addComponent(jLabel60))
                 .addContainerGap())
         );
 
-        jPanel60.add(jPanel59, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, 70));
+        jPanel64.add(jPanel63, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, 70));
 
         jPanel5.setBackground(new java.awt.Color(107, 163, 190));
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tên NCC"));
@@ -232,7 +263,7 @@ public class nhacungcap extends javax.swing.JFrame {
         jPanel5.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 27, 52, -1));
         jPanel5.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(87, 24, 119, -1));
 
-        jPanel60.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 20, 220, 70));
+        jPanel64.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 20, 220, 70));
 
         jPanel7.setBackground(new java.awt.Color(107, 163, 190));
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Mã SP"));
@@ -257,13 +288,13 @@ public class nhacungcap extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        jPanel60.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(445, 22, -1, 70));
+        jPanel64.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(445, 22, -1, 70));
 
         jButton14.setText("Tìm kiếm");
-        jPanel60.add(jButton14, new org.netbeans.lib.awtextra.AbsoluteConstraints(836, 39, -1, 40));
+        jPanel64.add(jButton14, new org.netbeans.lib.awtextra.AbsoluteConstraints(836, 39, -1, 40));
 
         jPanel8.setBackground(new java.awt.Color(107, 163, 190));
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tên SP"));
@@ -288,10 +319,10 @@ public class nhacungcap extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        jPanel60.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(643, 22, -1, 70));
+        jPanel64.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(643, 22, -1, 70));
 
         jPanel22.setBackground(new java.awt.Color(107, 163, 190));
         jPanel22.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng sửa"));
@@ -354,74 +385,48 @@ public class nhacungcap extends javax.swing.JFrame {
         jPanel22.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(629, 29, -1, -1));
         jPanel22.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(613, 50, 71, -1));
 
-        javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
-        pnlContent.setLayout(pnlContentLayout);
-        pnlContentLayout.setHorizontalGroup(
-            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContentLayout.createSequentialGroup()
-                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlContentLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel60, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 939, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlContentLayout.createSequentialGroup()
-                        .addGap(284, 284, 284)
-                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlContentLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(pnlContentLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 939, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+        javax.swing.GroupLayout pnlContent1Layout = new javax.swing.GroupLayout(pnlContent1);
+        pnlContent1.setLayout(pnlContent1Layout);
+        pnlContent1Layout.setHorizontalGroup(
+            pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlContent1Layout.createSequentialGroup()
+                .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlContent1Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel64, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(pnlContent1Layout.createSequentialGroup()
+                        .addGap(325, 325, 325)
+                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
-        pnlContentLayout.setVerticalGroup(
-            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContentLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel60, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+        pnlContent1Layout.setVerticalGroup(
+            pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlContent1Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jPanel64, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel22, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addGap(10, 10, 10))
         );
 
-        getContentPane().add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 70, 960, 610));
+        pnlContent.add(pnlContent1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 620));
 
-        pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
+        containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 620));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setText("Quản lý nhà cung cấp");
-
-        javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
-        pnlHeader.setLayout(pnlHeaderLayout);
-        pnlHeaderLayout.setHorizontalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(335, 335, 335)
-                .addComponent(jLabel1)
-                .addContainerGap(395, Short.MAX_VALUE))
-        );
-        pnlHeaderLayout.setVerticalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
-
-        getContentPane().add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 0, 960, -1));
-
-        pack();
+        getContentPane().add(containerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 690));
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton40ActionPerformed
@@ -509,6 +514,7 @@ public class nhacungcap extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel containerPanel;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
@@ -534,7 +540,7 @@ public class nhacungcap extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel58;
+    private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel17;
@@ -542,8 +548,8 @@ public class nhacungcap extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel59;
-    private javax.swing.JPanel jPanel60;
+    private javax.swing.JPanel jPanel63;
+    private javax.swing.JPanel jPanel64;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane2;
@@ -564,10 +570,10 @@ public class nhacungcap extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField36;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField56;
+    private javax.swing.JTextField jTextField58;
     private javax.swing.JTextField jTextField6;
-    private javax.swing.JPanel containerPanel;
     private javax.swing.JPanel pnlContent;
+    private javax.swing.JPanel pnlContent1;
     private javax.swing.JPanel pnlHeader;
     // End of variables declaration//GEN-END:variables
 }
