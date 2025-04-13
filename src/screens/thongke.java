@@ -169,7 +169,7 @@ public class thongke extends javax.swing.JFrame {
         jTable1.setShowGrid(true);
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, 960, 108));
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 160, 960, 108));
 
         jPanel6.setBackground(new java.awt.Color(107, 163, 190));
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Tổng doanh thu"));
@@ -336,7 +336,7 @@ public class thongke extends javax.swing.JFrame {
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(44, 44, 44)
                         .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,12 +350,12 @@ public class thongke extends javax.swing.JFrame {
                 .addGap(19, 19, 19))
         );
 
-        jPanel3.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 970, 270));
+        jPanel3.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, 960, 270));
 
         jButton16.setText("Xuất file excel ");
-        jPanel3.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 603, 310, 50));
+        jPanel3.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 570, 310, 50));
 
-        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 610));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
 
         jPanel2.setBackground(new java.awt.Color(12, 150, 156));
 

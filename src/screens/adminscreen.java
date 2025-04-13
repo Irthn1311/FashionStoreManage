@@ -99,28 +99,14 @@ public class adminscreen extends javax.swing.JFrame {
             }
         });
         /*
-        // Them action listener cho btnTaiKhoan
-        btnTaiKhoan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTaiKhoanActionPerformed(evt);
-            }
-        });
-        */
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Quản lý cửa hàng thời trang");
-        setResizable(false);
-        setLocationRelativeTo(null);
-        
-        // Thiết lập kích thước cố định cho cửa sổ
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        int width = 1160;
-        int height = 720;
-        int x = (screenSize.width - width) / 2;
-        int y = (screenSize.height - height) / 2;
-        setBounds(x, y, width, height);
+         * // Them action listener cho btnTaiKhoan
+         * btnTaiKhoan.addActionListener(new java.awt.event.ActionListener() {
+         * public void actionPerformed(java.awt.event.ActionEvent evt) {
+         * btnTaiKhoanActionPerformed(evt);
+         * }
+         * });
+         */
     }
-
-    
 
     private void switchPanel(javax.swing.JPanel panel) {
         // Ẩn panel chào mừng và nội dung cũ
@@ -171,6 +157,7 @@ public class adminscreen extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -211,11 +198,10 @@ public class adminscreen extends javax.swing.JFrame {
         });
         jPanel1.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 16, 90, 37));
 
-
         btnSetting.setText("Setting");
         btnSetting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-            //    btnSettingActionPerformed(evt);
+                // btnSettingActionPerformed(evt);
             }
         });
         jPanel1.add(btnSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 16, -1, 37));
@@ -289,36 +275,8 @@ public class adminscreen extends javax.swing.JFrame {
         jSeparator4.setForeground(new java.awt.Color(0, 0, 0));
         jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 614, 200, 10));
 
-        btnTaiKhoan.setText("Tài khoản");
+        btnTaiKhoan.setText("Thống kê ");
         jPanel1.add(btnTaiKhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 630, 188, 36));
-
-        getContentPane().add(jPanel1);
-        jPanel1.setBounds(0, 0, 200, 680);
-
-        jPanel3.setBackground(new java.awt.Color(12, 150, 156));
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setText("CHÀO MỪNG QUÝ KHÁCH");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(287, 287, 287)
-                .addComponent(jLabel1)
-                .addContainerGap(388, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18))
-        );
-
-        getContentPane().add(jPanel3);
-        jPanel3.setBounds(200, 0, 960, 70);
 
         jPanel4.setBackground(new java.awt.Color(107, 163, 190));
 
@@ -340,7 +298,7 @@ public class adminscreen extends javax.swing.JFrame {
                         .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addGap(344, 344, 344)
                                 .addComponent(jLabel5)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+                                .addContainerGap(372, Short.MAX_VALUE)));
         jPanel6Layout.setVerticalGroup(
                 jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
@@ -354,14 +312,14 @@ public class adminscreen extends javax.swing.JFrame {
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE,
                                 javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                .addContainerGap(205, Short.MAX_VALUE)
-                                .addComponent(jLabel2)
-                                .addGap(167, 167, 167))
                         .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(359, 359, 359)
                                 .addComponent(jLabel3)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2)
+                                .addGap(171, 171, 171)));
         jPanel4Layout.setVerticalGroup(
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
@@ -369,9 +327,9 @@ public class adminscreen extends javax.swing.JFrame {
                                         javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(170, 170, 170)
                                 .addComponent(jLabel3)
-                                .addGap(65, 65, 65)
+                                .addGap(102, 102, 102)
                                 .addComponent(jLabel2)
-                                .addContainerGap(312, Short.MAX_VALUE)));
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -385,11 +343,8 @@ public class adminscreen extends javax.swing.JFrame {
                                         javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE,
                                 javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
 
         pack();
@@ -449,14 +404,15 @@ public class adminscreen extends javax.swing.JFrame {
         khachhang khachHangScreen = new khachhang();
         switchPanel(khachHangScreen.getKhachHangPanel());
     }
-    private void btnNhaCungCapActionPerformed(java.awt.event.ActionEvent evt) {                                              
+
+    private void btnNhaCungCapActionPerformed(java.awt.event.ActionEvent evt) {
         nhacungcap nhaCungCapScreen = new nhacungcap();
         switchPanel(nhaCungCapScreen.getNhaCungCapPanel());
     }
 
     private void btnTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {
         taikhoan taiKhoanScreen = new taikhoan();
-        switchPanel(taiKhoanScreen.getTaiKhoanPanel());
+        // switchPanel(taiKhoanScreen.getTaiKhoanPanel());
     }
 
     /**
@@ -516,12 +472,13 @@ public class adminscreen extends javax.swing.JFrame {
     private javax.swing.JButton btnSetting;
     private javax.swing.JButton btnTaiKhoan;
     private javax.swing.JButton btnXuatHang;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel mainContent;
+    private javax.swing.JPanel welcomePanel;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JSeparator jSeparator1;
