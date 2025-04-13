@@ -15,11 +15,21 @@ public class adminscreen extends javax.swing.JFrame {
      */
     public adminscreen() {
         initComponents();
+        
+        // Set kích thước cố định cho frame (thêm 35px cho thanh tiêu đề Windows)
+        setSize(1215, 735);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        
         ImageIcon checkIcon = new ImageIcon(getClass().getResource("/icon_img/box.png"));
         Image checkImg = checkIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         btnLogin.setIcon(new ImageIcon(checkImg));
 
-        // Lưu lại panel chào mừng
+        // Khởi tạo các panel
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        
+        // Lưu lại panel chào mừng và main content
         welcomePanel = jPanel3;
         mainContent = jPanel4;
 
@@ -109,19 +119,24 @@ public class adminscreen extends javax.swing.JFrame {
     }
 
     private void switchPanel(javax.swing.JPanel panel) {
-        // Ẩn panel chào mừng và nội dung cũ
-        welcomePanel.setVisible(false);
-        mainContent.setVisible(false);
+        if (panel == null) {
+            System.out.println("Error: Panel mới là null");
+            return;
+        }
 
-        // Xóa các panel cũ
-        getContentPane().remove(welcomePanel);
-        getContentPane().remove(mainContent);
+        // Xóa tất cả các component hiện tại
+        getContentPane().removeAll();
 
-        // Thêm panel mới
+        // Thêm lại panel menu bên trái (jPanel1)
+        jPanel1.setBackground(new java.awt.Color(10, 112, 117));
+        jPanel1.setBounds(0, 0, 200, 700);
+        getContentPane().add(jPanel1);
+
+        // Thiết lập thuộc tính cho panel mới
+        panel.setBackground(new java.awt.Color(107, 163, 190));
+        panel.setBounds(200, 0, 1000, 700);
+        getContentPane().add(panel);
         mainContent = panel;
-        mainContent.setVisible(true);
-        mainContent.setBounds(200, 0, 960, 680);
-        getContentPane().add(mainContent);
 
         // Cập nhật giao diện
         getContentPane().revalidate();
