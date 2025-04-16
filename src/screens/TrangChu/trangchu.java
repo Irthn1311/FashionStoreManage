@@ -21,12 +21,12 @@ import screens.XuatHang.xuathang;
  *
  * @author nson9
  */
-public class trangChu extends javax.swing.JFrame {
+public class trangchu extends javax.swing.JFrame {
 
     /**
      * Creates new form adminscreen
      */
-    public trangChu() {
+    public trangchu() {
         initComponents();
         
         // Set kích thước cố định cho frame (thêm 35px cho thanh tiêu đề Windows)
