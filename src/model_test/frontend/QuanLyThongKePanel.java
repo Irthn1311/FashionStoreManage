@@ -1,4 +1,4 @@
-package model.frontend;
+package model_test.frontend;
 
 import java.awt.*;
 import java.awt.event.*;

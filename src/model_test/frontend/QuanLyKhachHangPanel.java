@@ -1,4 +1,4 @@
-package model.frontend;
+package model_test.frontend;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
