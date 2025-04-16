@@ -3,7 +3,7 @@ package screens.KhachHang;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import DAO.KhachHangDAO;
-import DTO.KhachHang;
+import DTO.khachHangDTO;
 import java.util.List;
 import java.text.SimpleDateFormat;
 
@@ -38,12 +38,12 @@ public class khachHangPanel extends javax.swing.JPanel {
     }
     
     private void loadKhachHangData() {
-        List<KhachHang> khachHangList = khachHangDAO.getAllKhachHang();
+        List<khachHangDTO> khachHangList = khachHangDAO.getAllKhachHang();
         DefaultTableModel model = (DefaultTableModel) khachHangTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
         
         int stt = 1;
-        for (KhachHang kh : khachHangList) {
+        for (khachHangDTO kh : khachHangList) {
             String ngayDangKyStr = "";
             String ngaySinhStr = "";
             
@@ -78,12 +78,12 @@ public class khachHangPanel extends javax.swing.JPanel {
     private void searchKhachHang() {
         String keyword = jTextField1.getText().trim();
         if (!keyword.isEmpty()) {
-            List<KhachHang> searchResults = khachHangDAO.searchKhachHang(keyword);
+            List<khachHangDTO> searchResults = khachHangDAO.searchKhachHang(keyword);
             DefaultTableModel model = (DefaultTableModel) khachHangTable.getModel();
             model.setRowCount(0);
             
             int stt = 1;
-            for (KhachHang kh : searchResults) {
+            for (khachHangDTO kh : searchResults) {
                 String ngayDangKyStr = "";
                 String ngaySinhStr = "";
                 

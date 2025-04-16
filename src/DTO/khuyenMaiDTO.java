@@ -2,7 +2,7 @@ package DTO;
 
 import java.util.Date;
 
-public class KhuyenMai {
+public class khuyenMaiDTO {
     private String maKhuyenMai;
     private String tenChuongTrinh;
     private double giamGia;
@@ -10,7 +10,7 @@ public class KhuyenMai {
     private Date ngayKetThuc;
     private String trangThai;
 
-    public KhuyenMai(String maKhuyenMai, String tenChuongTrinh, double giamGia, 
+    public khuyenMaiDTO(String maKhuyenMai, String tenChuongTrinh, double giamGia, 
                      Date ngayBatDau, Date ngayKetThuc, String trangThai) {
         this.maKhuyenMai = maKhuyenMai;
         this.tenChuongTrinh = tenChuongTrinh;

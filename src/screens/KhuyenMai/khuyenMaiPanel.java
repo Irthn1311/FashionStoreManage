@@ -3,7 +3,7 @@ package screens.KhuyenMai;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import DAO.KhuyenMaiDAO;
-import DTO.KhuyenMai;
+import DTO.khuyenMaiDTO;
 import java.util.List;
 import java.text.SimpleDateFormat;
 
@@ -35,12 +35,12 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
     }
     
     private void loadKhuyenMaiData() {
-        List<KhuyenMai> khuyenMaiList = khuyenMaiDAO.getAllKhuyenMai();
+        List<khuyenMaiDTO> khuyenMaiList = khuyenMaiDAO.getAllKhuyenMai();
         DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
         
         int stt = 1;
-        for (KhuyenMai km : khuyenMaiList) {
+        for (khuyenMaiDTO km : khuyenMaiList) {
             model.addRow(new Object[]{
                 stt++,
                 km.getMaKhuyenMai(),
@@ -58,12 +58,12 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
     private void searchKhuyenMai() {
         String keyword = jTextField1.getText().trim();
         if (!keyword.isEmpty()) {
-            List<KhuyenMai> searchResults = khuyenMaiDAO.searchKhuyenMai(keyword);
+            List<khuyenMaiDTO> searchResults = khuyenMaiDAO.searchKhuyenMai(keyword);
             DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
             model.setRowCount(0);
             
             int stt = 1;
-            for (KhuyenMai km : searchResults) {
+            for (khuyenMaiDTO km : searchResults) {
                 model.addRow(new Object[]{
                     stt++,
                     km.getMaKhuyenMai(),

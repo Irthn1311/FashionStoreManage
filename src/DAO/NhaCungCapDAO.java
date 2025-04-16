@@ -1,6 +1,6 @@
 package DAO;
 
-import DTO.NhaCungCap;
+import DTO.nhaCungCapDTO;
 import DTB.ConnectDB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,8 +11,8 @@ import java.util.List;
 
 public class NhaCungCapDAO {
     
-    public List<NhaCungCap> getAllNhaCungCap() {
-        List<NhaCungCap> nhaCungCapList = new ArrayList<>();
+    public List<nhaCungCapDTO> getAllNhaCungCap() {
+        List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
         String sql = "SELECT MaNhaCungCap, TenNhaCungCap, SoDienThoai, Email, Address FROM NhaCungCap";
         
         try (Connection conn = ConnectDB.getConnection();
@@ -20,7 +20,7 @@ public class NhaCungCapDAO {
              ResultSet rs = ps.executeQuery()) {
             
             while (rs.next()) {
-                NhaCungCap ncc = new NhaCungCap(
+                nhaCungCapDTO ncc = new nhaCungCapDTO(
                     rs.getString("MaNhaCungCap"),
                     rs.getString("TenNhaCungCap"),
                     rs.getString("SoDienThoai"),
@@ -36,8 +36,8 @@ public class NhaCungCapDAO {
         return nhaCungCapList;
     }
     
-    public List<NhaCungCap> searchNhaCungCap(String keyword) {
-        List<NhaCungCap> nhaCungCapList = new ArrayList<>();
+    public List<nhaCungCapDTO> searchNhaCungCap(String keyword) {
+        List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
         String sql = "SELECT MaNhaCungCap, TenNhaCungCap, SoDienThoai, Email, Address " +
                     "FROM NhaCungCap WHERE TenNhaCungCap LIKE ? OR Email LIKE ? " +
                     "OR SoDienThoai LIKE ? OR MaNhaCungCap LIKE ?";
@@ -53,7 +53,7 @@ public class NhaCungCapDAO {
             
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    NhaCungCap ncc = new NhaCungCap(
+                    nhaCungCapDTO ncc = new nhaCungCapDTO(
                         rs.getString("MaNhaCungCap"),
                         rs.getString("TenNhaCungCap"),
                         rs.getString("SoDienThoai"),

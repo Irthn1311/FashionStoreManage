@@ -1,13 +1,13 @@
 package DTO;
 
-public class NhaCungCap {
+public class nhaCungCapDTO {
     private String maNhaCungCap;
     private String tenNhaCungCap;
     private String soDienThoai;
     private String email;
     private String address;
 
-    public NhaCungCap(String maNhaCungCap, String tenNhaCungCap, String soDienThoai, 
+    public nhaCungCapDTO(String maNhaCungCap, String tenNhaCungCap, String soDienThoai, 
                       String email, String address) {
         this.maNhaCungCap = maNhaCungCap;
         this.tenNhaCungCap = tenNhaCungCap;

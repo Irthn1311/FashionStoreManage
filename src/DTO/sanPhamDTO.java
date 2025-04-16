@@ -1,6 +1,6 @@
 package DTO;
 
-public class SanPham {
+public class sanPhamDTO {
     private String maSanPham;  // Dùng String thay vì int vì MaSanPham là VARCHAR(50)
     private String tenSanPham;
     private String maThuongHieu;
@@ -13,7 +13,7 @@ public class SanPham {
     private String maKhoHang;
 
     // Constructor
-    public SanPham(String maSanPham, String tenSanPham, String maThuongHieu, String maDanhMuc, double giaBan, 
+    public sanPhamDTO(String maSanPham, String tenSanPham, String maThuongHieu, String maDanhMuc, double giaBan, 
                    int soLuongTonKho, String size, String trangThai, String imgURL, String maKhoHang) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;

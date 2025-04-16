@@ -3,7 +3,7 @@ package DTO;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-public class KhachHang {
+public class khachHangDTO {
     private String maKhachHang;
     private String hoTen;
     private String email;
@@ -14,7 +14,7 @@ public class KhachHang {
     private Timestamp ngayDangKy;
     private String maTaiKhoan;
 
-    public KhachHang(String maKhachHang, String hoTen, String email, String phone, 
+    public khachHangDTO(String maKhachHang, String hoTen, String email, String phone, 
                      String diaChi, String gioiTinh, Date ngaySinh, 
                      Timestamp ngayDangKy, String maTaiKhoan) {
         this.maKhachHang = maKhachHang;

@@ -1,6 +1,6 @@
 package DAO;
 
-import DTO.NhanVien;
+import DTO.nhanVienDTO;
 import DTB.ConnectDB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 
 public class NhanVienDAO {
     
-    public List<NhanVien> getAllNhanVien() {
-        List<NhanVien> nhanVienList = new ArrayList<>();
+    public List<nhanVienDTO> getAllNhanVien() {
+        List<nhanVienDTO> nhanVienList = new ArrayList<>();
         String sql = "SELECT MaNhanVien, HoTen, Email, SoDienThoai, DiaChi, GioiTinh, " +
                     "CAST(NgaySinh AS DATE) AS NgaySinh, " +
                     "CAST(NgayVaoLam AS DATETIME) AS NgayVaoLam, " +
@@ -26,7 +26,7 @@ public class NhanVienDAO {
              ResultSet rs = ps.executeQuery()) {
             
             while (rs.next()) {
-                NhanVien nv = new NhanVien(
+                nhanVienDTO nv = new nhanVienDTO(
                     rs.getString("MaNhanVien"),
                     rs.getString("HoTen"),
                     rs.getString("Email"),
@@ -49,8 +49,8 @@ public class NhanVienDAO {
         return nhanVienList;
     }
     
-    public List<NhanVien> searchNhanVien(String keyword) {
-        List<NhanVien> nhanVienList = new ArrayList<>();
+    public List<nhanVienDTO> searchNhanVien(String keyword) {
+        List<nhanVienDTO> nhanVienList = new ArrayList<>();
         String sql = "SELECT MaNhanVien, HoTen, Email, SoDienThoai, DiaChi, GioiTinh, " +
                     "CAST(NgaySinh AS DATE) AS NgaySinh, " +
                     "CAST(NgayVaoLam AS DATETIME) AS NgayVaoLam, " +
@@ -68,7 +68,7 @@ public class NhanVienDAO {
             
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    NhanVien nv = new NhanVien(
+                    nhanVienDTO nv = new nhanVienDTO(
                         rs.getString("MaNhanVien"),
                         rs.getString("HoTen"),
                         rs.getString("Email"),

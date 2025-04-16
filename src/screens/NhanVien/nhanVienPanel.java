@@ -3,7 +3,7 @@ package screens.NhanVien;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import DAO.NhanVienDAO;
-import DTO.NhanVien;
+import DTO.nhanVienDTO;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
@@ -214,12 +214,12 @@ public class nhanVienPanel extends javax.swing.JPanel {
     }
 
     private void loadNhanVienData() {
-        List<NhanVien> nhanVienList = nhanVienDAO.getAllNhanVien();
+        List<nhanVienDTO> nhanVienList = nhanVienDAO.getAllNhanVien();
         DefaultTableModel model = (DefaultTableModel) nhanVienTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
         
         int stt = 1;
-        for (NhanVien nv : nhanVienList) {
+        for (nhanVienDTO nv : nhanVienList) {
             String ngaySinhStr = "";
             String ngayVaoLamStr = "";
             
@@ -255,12 +255,12 @@ public class nhanVienPanel extends javax.swing.JPanel {
     private void searchNhanVien() {
         String keyword = jTextField1.getText().trim();
         if (!keyword.isEmpty()) {
-            List<NhanVien> searchResults = nhanVienDAO.searchNhanVien(keyword);
+            List<nhanVienDTO> searchResults = nhanVienDAO.searchNhanVien(keyword);
             DefaultTableModel model = (DefaultTableModel) nhanVienTable.getModel();
             model.setRowCount(0);
             
             int stt = 1;
-            for (NhanVien nv : searchResults) {
+            for (nhanVienDTO nv : searchResults) {
                 String ngaySinhStr = "";
                 String ngayVaoLamStr = "";
                 

@@ -4,7 +4,7 @@ import java.awt.Image;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import DAO.SanPhamDAO;
-import DTO.SanPham;
+import DTO.sanPhamDTO;
 import java.util.List;
 
 public class sanPhamPanel extends javax.swing.JPanel {
@@ -17,12 +17,12 @@ public class sanPhamPanel extends javax.swing.JPanel {
     }
     
     private void loadSanPhamData() {
-        List<SanPham> sanPhamList = sanPhamDAO.getAllSanPham();
+        List<sanPhamDTO> sanPhamList = sanPhamDAO.getAllSanPham();
         DefaultTableModel model = (DefaultTableModel) sanPhamTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
         
         int stt = 1;
-        for (SanPham sp : sanPhamList) {
+        for (sanPhamDTO sp : sanPhamList) {
             model.addRow(new Object[]{
                 stt++,
                 sp.getMaSanPham(),

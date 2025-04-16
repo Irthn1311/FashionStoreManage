@@ -1,6 +1,6 @@
 package DAO;
 
-import DTO.KhuyenMai;
+import DTO.khuyenMaiDTO;
 import DTB.ConnectDB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,8 +11,8 @@ import java.util.List;
 
 public class KhuyenMaiDAO {
     
-    public List<KhuyenMai> getAllKhuyenMai() {
-        List<KhuyenMai> khuyenMaiList = new ArrayList<>();
+    public List<khuyenMaiDTO> getAllKhuyenMai() {
+        List<khuyenMaiDTO> khuyenMaiList = new ArrayList<>();
         String sql = "SELECT MaKhuyenMai, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, TrangThai FROM KhuyenMai";
         
         try (Connection conn = ConnectDB.getConnection();
@@ -20,7 +20,7 @@ public class KhuyenMaiDAO {
              ResultSet rs = ps.executeQuery()) {
             
             while (rs.next()) {
-                KhuyenMai km = new KhuyenMai(
+                khuyenMaiDTO km = new khuyenMaiDTO(
                     rs.getString("MaKhuyenMai"),
                     rs.getString("TenChuongTrinh"),
                     rs.getDouble("GiamGia"),
@@ -37,8 +37,8 @@ public class KhuyenMaiDAO {
         return khuyenMaiList;
     }
     
-    public List<KhuyenMai> searchKhuyenMai(String keyword) {
-        List<KhuyenMai> khuyenMaiList = new ArrayList<>();
+    public List<khuyenMaiDTO> searchKhuyenMai(String keyword) {
+        List<khuyenMaiDTO> khuyenMaiList = new ArrayList<>();
         String sql = "SELECT MaKhuyenMai, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, TrangThai " +
                     "FROM KhuyenMai WHERE MaKhuyenMai LIKE ? OR TenChuongTrinh LIKE ? " +
                     "OR TrangThai LIKE ?";
@@ -53,7 +53,7 @@ public class KhuyenMaiDAO {
             
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    KhuyenMai km = new KhuyenMai(
+                    khuyenMaiDTO km = new khuyenMaiDTO(
                         rs.getString("MaKhuyenMai"),
                         rs.getString("TenChuongTrinh"),
                         rs.getDouble("GiamGia"),

@@ -7,7 +7,7 @@ package screens.NhaCungCap;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import DAO.NhaCungCapDAO;
-import DTO.NhaCungCap;
+import DTO.nhaCungCapDTO;
 import java.util.List;
 
 /**
@@ -211,12 +211,12 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     }
 
     private void loadNhaCungCapData() {
-        List<NhaCungCap> nhaCungCapList = nhaCungCapDAO.getAllNhaCungCap();
+        List<nhaCungCapDTO> nhaCungCapList = nhaCungCapDAO.getAllNhaCungCap();
         DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
         
         int stt = 1;
-        for (NhaCungCap ncc : nhaCungCapList) {
+        for (nhaCungCapDTO ncc : nhaCungCapList) {
             model.addRow(new Object[]{
                 stt++,
                 ncc.getMaNhaCungCap(),
@@ -238,12 +238,12 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     private void searchNhaCungCap() {
         String keyword = jTextField1.getText().trim();
         if (!keyword.isEmpty()) {
-            List<NhaCungCap> searchResults = nhaCungCapDAO.searchNhaCungCap(keyword);
+            List<nhaCungCapDTO> searchResults = nhaCungCapDAO.searchNhaCungCap(keyword);
             DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
             model.setRowCount(0);
             
             int stt = 1;
-            for (NhaCungCap ncc : searchResults) {
+            for (nhaCungCapDTO ncc : searchResults) {
                 model.addRow(new Object[]{
                     stt++,
                     ncc.getMaNhaCungCap(),

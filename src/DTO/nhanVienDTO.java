@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.math.BigDecimal;
 
-public class NhanVien {
+public class nhanVienDTO {
     private String maNhanVien;
     private String hoTen;
     private String email;
@@ -18,7 +18,7 @@ public class NhanVien {
     private String maTaiKhoan;
     private Long maQuanLy;
 
-    public NhanVien(String maNhanVien, String hoTen, String email, String soDienThoai, 
+    public nhanVienDTO(String maNhanVien, String hoTen, String email, String soDienThoai, 
                     String diaChi, String gioiTinh, Date ngaySinh, Timestamp ngayVaoLam, 
                     String chucVu, BigDecimal mucLuong, String maTaiKhoan, Long maQuanLy) {
         this.maNhanVien = maNhanVien;
