@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTB.ConnectDB;
-import DTO.SanPham;
+import DTO.sanPhamDTO;
 
 public class SanPhamDAO {
 
     // Lấy danh sách tất cả sản phẩm
-    public List<SanPham> getAllSanPham() {
-        List<SanPham> sanPhamList = new ArrayList<>();
+    public List<sanPhamDTO> getAllSanPham() {
+        List<sanPhamDTO> sanPhamList = new ArrayList<>();
         String sql = "SELECT * FROM SanPham";
 
         try (Connection conn = ConnectDB.getConnection();
@@ -19,7 +19,7 @@ public class SanPhamDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                SanPham sp = new SanPham(
+                sanPhamDTO sp = new sanPhamDTO(
                         rs.getString("MaSanPham"),
                         rs.getString("TenSanPham"),
                         rs.getString("MaThuongHieu"),
@@ -42,7 +42,7 @@ public class SanPhamDAO {
     }
 
     // Thêm sản phẩm mới
-    public boolean addSanPham(SanPham sp) {
+    public boolean addSanPham(sanPhamDTO sp) {
         String sql = "INSERT INTO [FashionStore].[dbo].[SanPham] (MaSanPham, TenSanPham, MaThuongHieu, MaDanhMuc, " +
                      "GiaBan, SoLuongTonKho, Size, TrangThai, ImgURL, MaKhoHang) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -70,7 +70,7 @@ public class SanPhamDAO {
     }
 
     // Cập nhật thông tin sản phẩm
-    public boolean updateSanPham(SanPham sp) {
+    public boolean updateSanPham(sanPhamDTO sp) {
         String sql = "UPDATE [FashionStore].[dbo].[SanPham] SET TenSanPham = ?, MaThuongHieu = ?, MaDanhMuc = ?, " +
                      "GiaBan = ?, SoLuongTonKho = ?, Size = ?, TrangThai = ?, ImgURL = ?, MaKhoHang = ? WHERE MaSanPham = ?";
 

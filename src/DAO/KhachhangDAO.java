@@ -4,7 +4,7 @@
  */
 package DAO;
 
-import DTO.KhachHang;
+import DTO.khachHangDTO;
 import DTB.ConnectDB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,8 +21,8 @@ import java.sql.Timestamp;
  */
 public class KhachHangDAO {
     
-    public List<KhachHang> getAllKhachHang() {
-        List<KhachHang> khachHangList = new ArrayList<>();
+    public List<khachHangDTO> getAllKhachHang() {
+        List<khachHangDTO> khachHangList = new ArrayList<>();
         String sql = "SELECT MaKhachHang, HoTen, Email, Phone, DiaChi, GioiTinh, " +
                     "CAST(NgaySinh AS DATE) AS NgaySinh, " +
                     "CAST(NgayDangKy AS DATETIME) AS NgayDangKy, " +
@@ -37,7 +37,7 @@ public class KhachHangDAO {
                 Date ngaySinh = rs.getDate("NgaySinh");
                 Timestamp ngayDangKy = rs.getTimestamp("NgayDangKy");
                 
-                KhachHang kh = new KhachHang(
+                khachHangDTO kh = new khachHangDTO(
                     rs.getString("MaKhachHang"),
                     rs.getString("HoTen"),
                     rs.getString("Email"),
@@ -58,8 +58,8 @@ public class KhachHangDAO {
     }
     
     // Thêm phương thức tìm kiếm khách hàng theo tên
-    public List<KhachHang> searchKhachHang(String keyword) {
-        List<KhachHang> khachHangList = new ArrayList<>();
+    public List<khachHangDTO> searchKhachHang(String keyword) {
+        List<khachHangDTO> khachHangList = new ArrayList<>();
         String sql = "SELECT MaKhachHang, HoTen, Email, Phone, DiaChi, GioiTinh, " +
                     "CAST(NgaySinh AS DATE) AS NgaySinh, " +
                     "CAST(NgayDangKy AS DATETIME) AS NgayDangKy, " +
@@ -79,7 +79,7 @@ public class KhachHangDAO {
                     Date ngaySinh = rs.getDate("NgaySinh");
                     Timestamp ngayDangKy = rs.getTimestamp("NgayDangKy");
                     
-                    KhachHang kh = new KhachHang(
+                    khachHangDTO kh = new khachHangDTO(
                         rs.getString("MaKhachHang"),
                         rs.getString("HoTen"),
                         rs.getString("Email"),
