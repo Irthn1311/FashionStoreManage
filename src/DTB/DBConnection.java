@@ -1,4 +1,5 @@
 package DTB;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,7 +18,7 @@ public class DBConnection {
 
             // Credentials
             String username = "sa";
-            String password = "nhapmatkhau"; // Thay bằng mật khẩu thật của bạn
+            String password = "vaicaten01"; // Thay bằng mật khẩu thật của bạn
 
             // Kết nối
             connection = DriverManager.getConnection(url, username, password);
