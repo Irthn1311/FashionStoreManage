@@ -214,26 +214,27 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         List<nhaCungCapDTO> nhaCungCapList = nhaCungCapDAO.getAllNhaCungCap();
         DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
-        
+    
         int stt = 1;
         for (nhaCungCapDTO ncc : nhaCungCapList) {
             model.addRow(new Object[]{
                 stt++,
                 ncc.getMaNhaCungCap(),
                 ncc.getTenNhaCungCap(),
-                "", // Mã SP
-                "", // Loại SP
-                "", // Mã SP
-                "", // Tên SP
-                "", // Năm hợp tác
+                ncc.getMaSanPham(),
+                ncc.getLoaiSP(),
+                ncc.getMaSanPham(), // Cột bị lặp trong table header, có thể sửa tên
+                ncc.getTenSanPham(),
+                ncc.getNamHopTac(),
                 ncc.getAddress(),
                 ncc.getEmail(),
                 ncc.getSoDienThoai(),
-                "Đang hoạt động", // Trạng thái
+                ncc.getTrangThai(),
                 "Xem chi tiết"
             });
         }
     }
+    
     
     private void searchNhaCungCap() {
         String keyword = jTextField1.getText().trim();
@@ -241,29 +242,30 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
             List<nhaCungCapDTO> searchResults = nhaCungCapDAO.searchNhaCungCap(keyword);
             DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
             model.setRowCount(0);
-            
+    
             int stt = 1;
             for (nhaCungCapDTO ncc : searchResults) {
                 model.addRow(new Object[]{
                     stt++,
                     ncc.getMaNhaCungCap(),
                     ncc.getTenNhaCungCap(),
-                    "", // Mã SP
-                    "", // Loại SP
-                    "", // Mã SP
-                    "", // Tên SP
-                    "", // Năm hợp tác
+                    ncc.getMaSanPham(),
+                    ncc.getLoaiSP(),
+                    ncc.getMaSanPham(),
+                    ncc.getTenSanPham(),
+                    ncc.getNamHopTac(),
                     ncc.getAddress(),
                     ncc.getEmail(),
                     ncc.getSoDienThoai(),
-                    "Đang hoạt động", // Trạng thái
+                    ncc.getTrangThai(),
                     "Xem chi tiết"
                 });
             }
         } else {
-            loadNhaCungCapData(); // Nếu từ khóa trống, load lại tất cả dữ liệu
+            loadNhaCungCapData();
         }
     }
+    
 
     /**
      * @param args the command line arguments
