@@ -101,4 +101,20 @@ public class khachHangDTO {
     public void setMaTaiKhoan(String maTaiKhoan) {
         this.maTaiKhoan = maTaiKhoan;
     }
+
+    @Override
+public String toString() {
+    return "KhachHang {" +
+            "maKhachHang='" + maKhachHang + '\'' +
+            ", hoTen='" + hoTen + '\'' +
+            ", email='" + email + '\'' +
+            ", phone='" + phone + '\'' +
+            ", diaChi='" + diaChi + '\'' +
+            ", gioiTinh='" + gioiTinh + '\'' +
+            ", ngaySinh=" + ngaySinh +
+            ", ngayDangKy=" + ngayDangKy +
+            ", maTaiKhoan='" + maTaiKhoan + '\'' +
+            '}';
+}
+
 } 

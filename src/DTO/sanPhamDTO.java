@@ -1,7 +1,7 @@
 package DTO;
 
 public class sanPhamDTO {
-    private String maSanPham; // Dùng String thay vì int vì MaSanPham là VARCHAR(50)
+    private String maSanPham;  // Dùng String thay vì int vì MaSanPham là VARCHAR(50)
     private String tenSanPham;
     private String maThuongHieu;
     private String maDanhMuc;
@@ -13,8 +13,8 @@ public class sanPhamDTO {
     private String maKhoHang;
 
     // Constructor
-    public sanPhamDTO(String maSanPham, String tenSanPham, String maThuongHieu, String maDanhMuc, double giaBan,
-            int soLuongTonKho, String size, String trangThai, String imgURL, String maKhoHang) {
+    public sanPhamDTO(String maSanPham, String tenSanPham, String maThuongHieu, String maDanhMuc, double giaBan, 
+                   int soLuongTonKho, String size, String trangThai, String imgURL, String maKhoHang) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
         this.maThuongHieu = maThuongHieu;
@@ -107,24 +107,20 @@ public class sanPhamDTO {
     public void setMaKhoHang(String maKhoHang) {
         this.maKhoHang = maKhoHang;
     }
+    @Override
+public String toString() {
+    return "SanPham {" +
+            "maSanPham='" + maSanPham + '\'' +
+            ", tenSanPham='" + tenSanPham + '\'' +
+            ", maThuongHieu='" + maThuongHieu + '\'' +
+            ", maDanhMuc='" + maDanhMuc + '\'' +
+            ", giaBan=" + giaBan +
+            ", soLuongTonKho=" + soLuongTonKho +
+            ", size='" + size + '\'' +
+            ", trangThai='" + trangThai + '\'' +
+            ", imgURL='" + imgURL + '\'' +
+            ", maKhoHang='" + maKhoHang + '\'' +
+            '}';
+}
 
-    public Object getLoaiSP() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLoaiSP'");
-    }
-
-    public Object getMaNCC() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaNCC'");
-    }
-
-    public Object getMauSac() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMauSac'");
-    }
-
-    public Object getKichCo() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getKichCo'");
-    }
 }

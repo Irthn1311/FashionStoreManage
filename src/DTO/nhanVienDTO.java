@@ -132,4 +132,21 @@ public class nhanVienDTO {
     public void setMaQuanLy(Long maQuanLy) {
         this.maQuanLy = maQuanLy;
     }
+    @Override
+public String toString() {
+    return "NhanVien {" +
+            "maNhanVien='" + maNhanVien + '\'' +
+            ", hoTen='" + hoTen + '\'' +
+            ", email='" + email + '\'' +
+            ", soDienThoai='" + soDienThoai + '\'' +
+            ", diaChi='" + diaChi + '\'' +
+            ", gioiTinh='" + gioiTinh + '\'' +
+            ", ngaySinh=" + ngaySinh +
+            ", ngayVaoLam=" + ngayVaoLam +
+            ", chucVu='" + chucVu + '\'' +
+            ", mucLuong=" + mucLuong +
+            ", maTaiKhoan='" + maTaiKhoan + '\'' +
+            ", maQuanLy=" + maQuanLy +
+            '}';
+}
 } 
