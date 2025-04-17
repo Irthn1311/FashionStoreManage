@@ -4,8 +4,25 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import DAO.KhachhangDAO;
 import DTO.khachHangDTO;
+import DTO.taiKhoanDTO;
 import java.util.List;
 import java.text.SimpleDateFormat;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class khachHangPanel extends javax.swing.JPanel {
     private KhachhangDAO khachHangDAO;
@@ -21,36 +38,145 @@ public class khachHangPanel extends javax.swing.JPanel {
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         timestampFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-        // Thiết lập combobox tìm kiếm
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
-                "Tất cả", "Mã khách hàng", "Tên khách hàng", "Email", "Số điện thoại"
-        }));
-
+        setupSearchComponents();
+        setupTable();
         // Load dữ liệu khách hàng
         loadKhachHangData();
+        setupListeners();
+        setupTableListeners();
+    }
 
-        // Thêm action listener cho nút tìm kiếm
-        jButton30.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchKhachHang();
+    private void setupTable() {
+        // Thiết lập chiều rộng cho các cột
+        khachHangTable.getColumnModel().getColumn(0).setPreferredWidth(50);  // STT
+        khachHangTable.getColumnModel().getColumn(1).setPreferredWidth(100); // Mã KH
+        khachHangTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên KH
+        khachHangTable.getColumnModel().getColumn(3).setPreferredWidth(100); // Tên đăng nhập
+        khachHangTable.getColumnModel().getColumn(4).setPreferredWidth(80);  // Năm sinh
+        khachHangTable.getColumnModel().getColumn(5).setPreferredWidth(70);  // Giới tính
+        khachHangTable.getColumnModel().getColumn(6).setPreferredWidth(150); // Email
+        khachHangTable.getColumnModel().getColumn(7).setPreferredWidth(100); // Số điện thoại
+        khachHangTable.getColumnModel().getColumn(8).setPreferredWidth(150); // Địa chỉ
+        khachHangTable.getColumnModel().getColumn(9).setPreferredWidth(80);  // Chi tiết
+
+        // Thiết lập căn giữa cho một số cột
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        
+        khachHangTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);  // STT
+        khachHangTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);  // Mã KH
+        khachHangTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);  // Năm sinh
+        khachHangTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);  // Giới tính
+        khachHangTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);  // Số điện thoại
+        khachHangTable.getColumnModel().getColumn(9).setCellRenderer(centerRenderer);  // Chi tiết
+
+        // Thiết lập màu nền cho cột "Chi tiết"
+        khachHangTable.getColumnModel().getColumn(9).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setForeground(new Color(0, 0, 255)); // Màu xanh cho chữ
+                setHorizontalAlignment(JLabel.CENTER);
+                return c;
+            }
+        });
+
+        // Thiết lập row height
+        khachHangTable.setRowHeight(25);
+    }
+
+    private void setupTableListeners() {
+        khachHangTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = khachHangTable.rowAtPoint(e.getPoint());
+                int col = khachHangTable.columnAtPoint(e.getPoint());
+                
+                // Lấy chỉ số cột cuối cùng (cột Chi Tiết)
+                int lastColumnIndex = khachHangTable.getColumnCount() - 1;
+                
+                if (row >= 0 && col == lastColumnIndex) {
+                    showChiTietKhachHang(row);
+                }
+            }
+        });
+
+        // Thêm cursor hand khi di chuột qua cột Chi Tiết
+        khachHangTable.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int col = khachHangTable.columnAtPoint(e.getPoint());
+                // Sử dụng chỉ số cột cuối cùng thay vì tìm theo tên
+                if (col == khachHangTable.getColumnCount() - 1) {
+                    khachHangTable.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                } else {
+                    khachHangTable.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
             }
         });
     }
 
+    private void showChiTietKhachHang(int row) {
+        try {
+            // Parse ngày sinh từ chuỗi trong bảng
+            String ngaySinhStr = khachHangTable.getValueAt(row, 4).toString();
+            Date ngaySinh = null;
+            if (!ngaySinhStr.isEmpty() && !ngaySinhStr.equals("Chưa cập nhật")) {
+                java.util.Date parsedDate = dateFormat.parse(ngaySinhStr);
+                ngaySinh = new Date(parsedDate.getTime());
+            }
+
+            // Tạo đối tượng taiKhoanDTO
+            taiKhoanDTO taiKhoan = new taiKhoanDTO(
+                null, // maTaiKhoan sẽ được tạo tự động
+                khachHangTable.getValueAt(row, 3).toString(), // tenDangNhap
+                null, // matKhau
+                khachHangTable.getValueAt(row, 6).toString(), // email
+                khachHangTable.getValueAt(row, 7).toString(), // phone
+                "USER", // vaiTro
+                "ACTIVE" // trangThai
+            );
+
+            // Lấy thông tin khách hàng từ row được chọn
+            khachHangDTO kh = new khachHangDTO(
+                khachHangTable.getValueAt(row, 1).toString(), // maKhachHang
+                khachHangTable.getValueAt(row, 2).toString(), // hoTen
+                khachHangTable.getValueAt(row, 6).toString(), // email
+                khachHangTable.getValueAt(row, 7).toString(), // phone
+                khachHangTable.getValueAt(row, 8).toString(), // diaChi
+                khachHangTable.getValueAt(row, 5).toString(), // gioiTinh
+                ngaySinh,                                     // ngaySinh
+                new Timestamp(System.currentTimeMillis()),    // ngayDangKy
+                taiKhoan                                     // taiKhoan
+            );
+
+            // Hiển thị dialog chi tiết
+            chiTietKhachHangDialog dialog = new chiTietKhachHangDialog(null, kh);
+            dialog.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                "Có lỗi xảy ra khi hiển thị thông tin chi tiết!",
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void loadKhachHangData() {
         List<khachHangDTO> khachHangList = khachHangDAO.getAllKhachHang();
+        updateTableData(khachHangList);
+    }
+
+    private void updateTableData(List<khachHangDTO> khachHangList) {
         DefaultTableModel model = (DefaultTableModel) khachHangTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
 
         int stt = 1;
         for (khachHangDTO kh : khachHangList) {
-            String ngayDangKyStr = "";
             String ngaySinhStr = "";
 
             try {
-                if (kh.getNgayDangKy() != null) {
-                    ngayDangKyStr = timestampFormat.format(kh.getNgayDangKy());
-                }
                 if (kh.getNgaySinh() != null) {
                     ngaySinhStr = dateFormat.format(kh.getNgaySinh());
                 }
@@ -62,14 +188,12 @@ public class khachHangPanel extends javax.swing.JPanel {
                     stt++,
                     kh.getMaKhachHang(),
                     kh.getHoTen(),
-                    kh.getMaTaiKhoan(),
-                    kh.getMaTaiKhoan(),
-                    ngayDangKyStr,
+                    kh.getTenDangNhap(),
                     ngaySinhStr,
                     kh.getGioiTinh(),
-                    kh.getDiaChi(),
                     kh.getEmail(),
                     kh.getPhone(),
+                    kh.getDiaChi() != null && !kh.getDiaChi().trim().isEmpty() ? kh.getDiaChi() : "Chưa cập nhật",
                     "Xem chi tiết"
             });
         }
@@ -77,45 +201,191 @@ public class khachHangPanel extends javax.swing.JPanel {
 
     private void searchKhachHang() {
         String keyword = jTextField1.getText().trim();
-        if (!keyword.isEmpty()) {
-            List<khachHangDTO> searchResults = khachHangDAO.searchKhachHang(keyword);
-            DefaultTableModel model = (DefaultTableModel) khachHangTable.getModel();
-            model.setRowCount(0);
-
-            int stt = 1;
-            for (khachHangDTO kh : searchResults) {
-                String ngayDangKyStr = "";
-                String ngaySinhStr = "";
-
-                try {
-                    if (kh.getNgayDangKy() != null) {
-                        ngayDangKyStr = timestampFormat.format(kh.getNgayDangKy());
-                    }
-                    if (kh.getNgaySinh() != null) {
-                        ngaySinhStr = dateFormat.format(kh.getNgaySinh());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                model.addRow(new Object[] {
-                        stt++,
-                        kh.getMaKhachHang(),
-                        kh.getHoTen(),
-                        kh.getMaTaiKhoan(),
-                        kh.getMaTaiKhoan(),
-                        ngayDangKyStr,
-                        ngaySinhStr,
-                        kh.getGioiTinh(),
-                        kh.getDiaChi(),
-                        kh.getEmail(),
-                        kh.getPhone(),
-                        "Xem chi tiết"
-                });
-            }
-        } else {
+        String searchType = jComboBox1.getSelectedItem().toString();
+        
+        if (keyword.isEmpty()) {
             loadKhachHangData(); // Nếu từ khóa trống, load lại tất cả dữ liệu
+            return;
         }
+
+        List<khachHangDTO> searchResults = khachHangDAO.searchKhachHang(keyword, searchType);
+        if (searchResults.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Không tìm thấy khách hàng nào!",
+                "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+        updateTableData(searchResults);
+    }
+
+    private void setupSearchComponents() {
+        // Thiết lập combobox tìm kiếm
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+            "Tất cả", "Mã khách hàng", "Tên khách hàng", "Email", "Số điện thoại"
+        }));
+
+        // Thêm action listener cho nút tìm kiếm
+        jButton30.addActionListener(e -> searchKhachHang());
+
+        // Thêm action listener cho textfield để tìm kiếm khi nhấn Enter
+        jTextField1.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchKhachHang();
+                }
+            }
+        });
+    }
+
+    private void setupListeners() {
+        // Nút Thêm
+        jButton31.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog = new JDialog();
+                dialog.setTitle("Thêm Khách Hàng Mới");
+                dialog.setModal(true);
+                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                
+                themKhachHangPanel themPanel = new themKhachHangPanel();
+                dialog.add(themPanel);
+                
+                dialog.pack();
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
+                
+                loadKhachHangData();
+            }
+        });
+
+        // Nút Sửa
+        jButton32.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = khachHangTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    try {
+                        // Parse ngày sinh từ chuỗi trong bảng
+                        String ngaySinhStr = khachHangTable.getValueAt(selectedRow, 4).toString();
+                        Date ngaySinh = null;
+                        if (!ngaySinhStr.isEmpty() && !ngaySinhStr.equals("Chưa cập nhật")) {
+                            java.util.Date parsedDate = dateFormat.parse(ngaySinhStr);
+                            ngaySinh = new Date(parsedDate.getTime());
+                        }
+
+                        // Lấy địa chỉ từ bảng
+                        String diaChi = khachHangTable.getValueAt(selectedRow, 8).toString();
+                        if (diaChi.equals("Chưa cập nhật")) {
+                            diaChi = "";
+                        }
+
+                        // Tạo đối tượng taiKhoanDTO
+                        taiKhoanDTO taiKhoan = new taiKhoanDTO(
+                            null, // maTaiKhoan
+                            khachHangTable.getValueAt(selectedRow, 3).toString(), // tenDangNhap
+                            null, // matKhau
+                            khachHangTable.getValueAt(selectedRow, 6).toString(), // email
+                            khachHangTable.getValueAt(selectedRow, 7).toString(), // phone
+                            "USER", // vaiTro
+                            "ACTIVE" // trangThai
+                        );
+
+                        // Tạo đối tượng khachHangDTO
+                        khachHangDTO kh = new khachHangDTO(
+                            khachHangTable.getValueAt(selectedRow, 1).toString(), // maKhachHang
+                            khachHangTable.getValueAt(selectedRow, 2).toString(), // hoTen
+                            khachHangTable.getValueAt(selectedRow, 6).toString(), // email
+                            khachHangTable.getValueAt(selectedRow, 7).toString(), // phone
+                            diaChi,                                               // diaChi
+                            khachHangTable.getValueAt(selectedRow, 5).toString(), // gioiTinh
+                            ngaySinh,                                             // ngaySinh
+                            new Timestamp(System.currentTimeMillis()),            // ngayDangKy
+                            taiKhoan                                             // taiKhoan
+                        );
+
+                        // Hiển thị dialog sửa thông tin
+                        JDialog dialog = new JDialog();
+                        dialog.setTitle("Sửa Thông Tin Khách Hàng");
+                        dialog.setModal(true);
+                        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                        
+                        suaKhachHangPanel suaPanel = new suaKhachHangPanel(dialog, kh);
+                        dialog.add(suaPanel);
+                        
+                        dialog.pack();
+                        dialog.setLocationRelativeTo(null);
+                        dialog.setVisible(true);
+                        
+                        // Sau khi dialog đóng, cập nhật lại bảng
+                        loadKhachHangData();
+                        
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null,
+                            "Có lỗi xảy ra khi hiển thị form sửa thông tin!",
+                            "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                        "Vui lòng chọn khách hàng cần sửa",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        // Nút Xóa
+        jButton33.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = khachHangTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    String maKH = khachHangTable.getValueAt(selectedRow, 1).toString();
+                    String tenKH = khachHangTable.getValueAt(selectedRow, 2).toString();
+                    
+                    int confirm = JOptionPane.showConfirmDialog(null,
+                            "Bạn có chắc chắn muốn xóa khách hàng " + tenKH + " không?",
+                            "Xác nhận xóa",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        try {
+                            boolean success = khachHangDAO.xoaKhachHang(maKH);
+                            if (success) {
+                                JOptionPane.showMessageDialog(null,
+                                    "Đã xóa khách hàng thành công!",
+                                    "Thông báo",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                                // Cập nhật lại bảng
+                                loadKhachHangData();
+                            }
+                        } catch (RuntimeException ex) {
+                            JOptionPane.showMessageDialog(null,
+                                ex.getMessage(),
+                                "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                        "Vui lòng chọn khách hàng cần xóa",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+        // Nút Xuất file
+        jButton34.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: Implement xuất file
+                JOptionPane.showMessageDialog(null, "Chức năng đang được phát triển");
+            }
+        });
     }
 
     public javax.swing.JPanel getKhachHangPanel() {
@@ -193,11 +463,11 @@ public class khachHangPanel extends javax.swing.JPanel {
                 new Object[][] {
                 },
                 new String[] {
-                        "STT", "Mã KH", "Tên KH", "Mã TK", "Mã TK", "Ngày ĐK", "Năm sinh", "Giới tính", "Địa chỉ",
-                        "Email", "Số điện thoại", "Chi tiết"
+                        "STT", "Mã Khách Hàng", "Tên Khách Hàng", "Tên Đăng Nhập", "Năm Sinh", "Giới Tính",
+                        "Email", "Số Điện Thoại", "Địa Chỉ", "Chi Tiết"
                 }) {
             boolean[] canEdit = new boolean[] {
-                    false, false, false, false, false, false, false, false, false, false, false, false
+                    false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -217,11 +487,6 @@ public class khachHangPanel extends javax.swing.JPanel {
         jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton30.setText("Tìm kiếm");
-        jButton30.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton30ActionPerformed(evt);
-            }
-        });
         jPanel33.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, 90, 36));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -286,10 +551,6 @@ public class khachHangPanel extends javax.swing.JPanel {
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         add(containerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 700));
-    }
-
-    private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     private void setupUI() {

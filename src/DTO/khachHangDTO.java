@@ -12,11 +12,11 @@ public class khachHangDTO {
     private String gioiTinh;
     private Date ngaySinh;
     private Timestamp ngayDangKy;
-    private String maTaiKhoan;
+    private taiKhoanDTO taiKhoan;
 
     public khachHangDTO(String maKhachHang, String hoTen, String email, String phone, 
                      String diaChi, String gioiTinh, Date ngaySinh, 
-                     Timestamp ngayDangKy, String maTaiKhoan) {
+                     Timestamp ngayDangKy, taiKhoanDTO taiKhoan) {
         this.maKhachHang = maKhachHang;
         this.hoTen = hoTen;
         this.email = email;
@@ -25,7 +25,7 @@ public class khachHangDTO {
         this.gioiTinh = gioiTinh;
         this.ngaySinh = ngaySinh;
         this.ngayDangKy = ngayDangKy;
-        this.maTaiKhoan = maTaiKhoan;
+        this.taiKhoan = taiKhoan;
     }
 
     // Getters
@@ -61,8 +61,17 @@ public class khachHangDTO {
         return ngayDangKy;
     }
 
+    public taiKhoanDTO getTaiKhoan() {
+        return taiKhoan;
+    }
+
+    // Các phương thức tiện ích để lấy thông tin từ taiKhoan
     public String getMaTaiKhoan() {
-        return maTaiKhoan;
+        return taiKhoan != null ? taiKhoan.getMaTaiKhoan() : null;
+    }
+
+    public String getTenDangNhap() {
+        return taiKhoan != null ? taiKhoan.getTenDangNhap() : null;
     }
 
     // Setters
@@ -98,7 +107,7 @@ public class khachHangDTO {
         this.ngayDangKy = ngayDangKy;
     }
 
-    public void setMaTaiKhoan(String maTaiKhoan) {
-        this.maTaiKhoan = maTaiKhoan;
+    public void setTaiKhoan(taiKhoanDTO taiKhoan) {
+        this.taiKhoan = taiKhoan;
     }
 } 

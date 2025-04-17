@@ -48,8 +48,8 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 dateFormat.format(km.getNgayBatDau()),
                 dateFormat.format(km.getNgayKetThuc()),
                 String.format("%.2f%%", km.getGiamGia()),
-                "",  // Giá mới
-                "",  // Khác
+                km.getGiaMoi(),  // Giá mới
+                km.getKhac(),  // Khác
                 km.getTrangThai()
             });
         }
