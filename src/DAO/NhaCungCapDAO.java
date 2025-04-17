@@ -13,7 +13,11 @@ public class NhaCungCapDAO {
     
     public List<nhaCungCapDTO> getAllNhaCungCap() {
         List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
-        String sql = "SELECT MaNhaCungCap, TenNhaCungCap, MaSanPham, LoaiSP, TenSanPham, NamHopTac, Address, Email, SoDienThoai, TrangThai FROM NhaCungCap";
+        String sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, ncc.MaSanPham, ncc.LoaiSP, " +
+                    "ncc.NamHopTac, ncc.Address, ncc.Email, ncc.SoDienThoai, ncc.TrangThai, " +
+                    "sp.TenSanPham " +
+                    "FROM NhaCungCap ncc " +
+                    "LEFT JOIN SanPham sp ON ncc.MaSanPham = sp.MaSanPham";
 
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -43,8 +47,12 @@ public class NhaCungCapDAO {
 
     public List<nhaCungCapDTO> searchNhaCungCap(String keyword) {
         List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
-        String sql = "SELECT MaNhaCungCap, TenNhaCungCap, MaSanPham, LoaiSP, TenSanPham, NamHopTac, Address, Email, SoDienThoai, TrangThai " +
-                     "FROM NhaCungCap WHERE TenNhaCungCap LIKE ? OR Email LIKE ? OR SoDienThoai LIKE ? OR MaNhaCungCap LIKE ?";
+        String sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, ncc.MaSanPham, ncc.LoaiSP, " +
+                    "ncc.NamHopTac, ncc.Address, ncc.Email, ncc.SoDienThoai, ncc.TrangThai, " +
+                    "sp.TenSanPham " +
+                    "FROM NhaCungCap ncc " +
+                    "LEFT JOIN SanPham sp ON ncc.MaSanPham = sp.MaSanPham " +
+                    "WHERE ncc.TenNhaCungCap LIKE ? OR ncc.Email LIKE ? OR ncc.SoDienThoai LIKE ? OR ncc.MaNhaCungCap LIKE ?";
 
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

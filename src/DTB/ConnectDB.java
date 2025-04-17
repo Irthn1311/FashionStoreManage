@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 public class ConnectDB {
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=FashionStore;encrypt=true;trustServerCertificate=true";
     private static final String USER = "sa"; // Tài khoản SQL Server của bạn
-    private static final String PASSWORD = "123456789"; // vaicaten01Mật khẩu SQL Server của bạn
+    private static final String PASSWORD = "1201nhtri1311"; // vaicaten01Mật khẩu SQL Server của bạn
 
     public static Connection getConnection() {
         try {

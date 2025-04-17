@@ -16,11 +16,11 @@ public class nhanVienDTO {
     private String chucVu;
     private BigDecimal mucLuong;
     private String maTaiKhoan;
-    private Long maQuanLy;
+    private String maQuanLy;
 
     public nhanVienDTO(String maNhanVien, String hoTen, String email, String soDienThoai, 
                     String diaChi, String gioiTinh, Date ngaySinh, Timestamp ngayVaoLam, 
-                    String chucVu, BigDecimal mucLuong, String maTaiKhoan, Long maQuanLy) {
+                    String chucVu, BigDecimal mucLuong, String maTaiKhoan, String maQuanLy) {
         this.maNhanVien = maNhanVien;
         this.hoTen = hoTen;
         this.email = email;
@@ -80,7 +80,7 @@ public class nhanVienDTO {
         return maTaiKhoan;
     }
 
-    public Long getMaQuanLy() {
+    public String getMaQuanLy() {
         return maQuanLy;
     }
 
@@ -129,7 +129,7 @@ public class nhanVienDTO {
         this.maTaiKhoan = maTaiKhoan;
     }
 
-    public void setMaQuanLy(Long maQuanLy) {
+    public void setMaQuanLy(String maQuanLy) {
         this.maQuanLy = maQuanLy;
     }
     @Override
@@ -146,7 +146,7 @@ public String toString() {
             ", chucVu='" + chucVu + '\'' +
             ", mucLuong=" + mucLuong +
             ", maTaiKhoan='" + maTaiKhoan + '\'' +
-            ", maQuanLy=" + maQuanLy +
+            ", maQuanLy='" + maQuanLy + '\'' +
             '}';
 }
 } 

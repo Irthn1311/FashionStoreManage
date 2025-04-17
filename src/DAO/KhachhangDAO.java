@@ -30,13 +30,10 @@ public class KhachhangDAO {
 
     public List<khachHangDTO> getAllKhachHang() {
         List<khachHangDTO> khachHangList = new ArrayList<>();
-        String sql = "SELECT kh.MaKhachHang, kh.HoTen, kh.Email, kh.Phone, kh.DiaChi, kh.GioiTinh, " +
-                "CAST(kh.NgaySinh AS DATE) AS NgaySinh, " +
-                "CAST(kh.NgayDangKy AS DATETIME) AS NgayDangKy, " +
-                "kh.MaTaiKhoan, tk.TenDangNhap, tk.Email as TK_Email, tk.SoDienThoai as TK_Phone, " +
-                "tk.VaiTro, tk.TrangThai " +
-                "FROM KhachHang kh " +
-                "LEFT JOIN TaiKhoanNguoiDung tk ON kh.MaTaiKhoan = tk.MaTaiKhoan";
+        String sql = "SELECT MaKhachHang, HoTen, Email, Phone, DiaChi, GioiTinh, " +
+                "CAST(NgaySinh AS DATE) AS NgaySinh, " +
+                "CAST(NgayDangKy AS DATETIME) AS NgayDangKy " +
+                "FROM KhachHang";
 
         try (Connection conn = ConnectDB.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
@@ -47,21 +44,6 @@ public class KhachhangDAO {
                 Date ngaySinh = rs.getDate("NgaySinh");
                 Timestamp ngayDangKy = rs.getTimestamp("NgayDangKy");
 
-                // Tạo đối tượng taiKhoanDTO
-                String maTaiKhoan = rs.getString("MaTaiKhoan");
-                taiKhoanDTO taiKhoan = null;
-                if (maTaiKhoan != null) {
-                    taiKhoan = new taiKhoanDTO(
-                        maTaiKhoan,
-                        rs.getString("TenDangNhap"),
-                        null, // Không lấy mật khẩu
-                        rs.getString("TK_Email"),
-                        rs.getString("TK_Phone"),
-                        rs.getString("VaiTro"),
-                        rs.getString("TrangThai")
-                    );
-                }
-
                 khachHangDTO kh = new khachHangDTO(
                         rs.getString("MaKhachHang"),
                         rs.getString("HoTen"),
@@ -71,7 +53,7 @@ public class KhachhangDAO {
                         rs.getString("GioiTinh"),
                         ngaySinh,
                         ngayDangKy,
-                        taiKhoan);
+                        null); // Không lấy thông tin tài khoản
                 khachHangList.add(kh);
             }
         } catch (SQLException e) {
@@ -84,31 +66,28 @@ public class KhachhangDAO {
     // Thêm phương thức tìm kiếm khách hàng theo tên
     public List<khachHangDTO> searchKhachHang(String keyword, String searchType) {
         List<khachHangDTO> khachHangList = new ArrayList<>();
-        String sql = "SELECT kh.MaKhachHang, kh.HoTen, kh.Email, kh.Phone, kh.DiaChi, kh.GioiTinh, " +
-                "CAST(kh.NgaySinh AS DATE) AS NgaySinh, " +
-                "CAST(kh.NgayDangKy AS DATETIME) AS NgayDangKy, " +
-                "kh.MaTaiKhoan, tk.TenDangNhap, tk.Email as TK_Email, tk.SoDienThoai as TK_Phone, " +
-                "tk.VaiTro, tk.TrangThai " +
-                "FROM KhachHang kh " +
-                "LEFT JOIN TaiKhoanNguoiDung tk ON kh.MaTaiKhoan = tk.MaTaiKhoan " +
+        String sql = "SELECT MaKhachHang, HoTen, Email, Phone, DiaChi, GioiTinh, " +
+                "CAST(NgaySinh AS DATE) AS NgaySinh, " +
+                "CAST(NgayDangKy AS DATETIME) AS NgayDangKy " +
+                "FROM KhachHang " +
                 "WHERE 1=1 ";
 
         // Thêm điều kiện tìm kiếm dựa vào loại tìm kiếm
         switch (searchType) {
             case "Mã khách hàng":
-                sql += "AND kh.MaKhachHang LIKE ? ";
+                sql += "AND MaKhachHang LIKE ? ";
                 break;
             case "Tên khách hàng":
-                sql += "AND kh.HoTen LIKE ? ";
+                sql += "AND HoTen LIKE ? ";
                 break;
             case "Email":
-                sql += "AND kh.Email LIKE ? ";
+                sql += "AND Email LIKE ? ";
                 break;
             case "Số điện thoại":
-                sql += "AND kh.Phone LIKE ? ";
+                sql += "AND Phone LIKE ? ";
                 break;
             default:
-                sql += "AND (kh.MaKhachHang LIKE ? OR kh.HoTen LIKE ? OR kh.Email LIKE ? OR kh.Phone LIKE ?) ";
+                sql += "AND (MaKhachHang LIKE ? OR HoTen LIKE ? OR Email LIKE ? OR Phone LIKE ?) ";
                 break;
         }
 
@@ -132,21 +111,6 @@ public class KhachhangDAO {
                     Date ngaySinh = rs.getDate("NgaySinh");
                     Timestamp ngayDangKy = rs.getTimestamp("NgayDangKy");
 
-                    // Tạo đối tượng taiKhoanDTO
-                    String maTaiKhoan = rs.getString("MaTaiKhoan");
-                    taiKhoanDTO taiKhoan = null;
-                    if (maTaiKhoan != null) {
-                        taiKhoan = new taiKhoanDTO(
-                            maTaiKhoan,
-                            rs.getString("TenDangNhap"),
-                            null, // Không lấy mật khẩu
-                            rs.getString("TK_Email"),
-                            rs.getString("TK_Phone"),
-                            rs.getString("VaiTro"),
-                            rs.getString("TrangThai")
-                        );
-                    }
-
                     khachHangDTO kh = new khachHangDTO(
                             rs.getString("MaKhachHang"),
                             rs.getString("HoTen"),
@@ -156,7 +120,7 @@ public class KhachhangDAO {
                             rs.getString("GioiTinh"),
                             ngaySinh,
                             ngayDangKy,
-                            taiKhoan);
+                            null); // Không lấy thông tin tài khoản
                     khachHangList.add(kh);
                 }
             }

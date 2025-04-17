@@ -122,7 +122,6 @@ public String toString() {
             ", gioiTinh='" + gioiTinh + '\'' +
             ", ngaySinh=" + ngaySinh +
             ", ngayDangKy=" + ngayDangKy +
-            ", maTaiKhoan='" + maTaiKhoan + '\'' +
             '}';
 }
 

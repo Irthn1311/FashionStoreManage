@@ -38,7 +38,7 @@ public class NhanVienDAO {
                     rs.getString("ChucVu"),
                     rs.getBigDecimal("MucLuong"),
                     rs.getString("MaTaiKhoan"),
-                    rs.getLong("MaQuanLy")
+                    rs.getString("MaQuanLy")
                 );
                 nhanVienList.add(nv);
             }

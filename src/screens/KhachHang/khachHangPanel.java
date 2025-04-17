@@ -120,35 +120,41 @@ public class khachHangPanel extends javax.swing.JPanel {
     private void showChiTietKhachHang(int row) {
         try {
             // Parse ngày sinh từ chuỗi trong bảng
-            String ngaySinhStr = khachHangTable.getValueAt(row, 4).toString();
+            Object ngaySinhObj = khachHangTable.getValueAt(row, 4);
             Date ngaySinh = null;
-            if (!ngaySinhStr.isEmpty() && !ngaySinhStr.equals("Chưa cập nhật")) {
-                java.util.Date parsedDate = dateFormat.parse(ngaySinhStr);
+            if (ngaySinhObj != null && !ngaySinhObj.toString().isEmpty() && !ngaySinhObj.toString().equals("Chưa cập nhật")) {
+                java.util.Date parsedDate = dateFormat.parse(ngaySinhObj.toString());
                 ngaySinh = new Date(parsedDate.getTime());
             }
 
+            // Lấy các giá trị từ bảng và xử lý null
+            String tenDangNhap = getTableValueAsString(row, 3);
+            String email = getTableValueAsString(row, 6);
+            String phone = getTableValueAsString(row, 7);
+            String diaChi = getTableValueAsString(row, 8);
+
             // Tạo đối tượng taiKhoanDTO
             taiKhoanDTO taiKhoan = new taiKhoanDTO(
-                null, // maTaiKhoan sẽ được tạo tự động
-                khachHangTable.getValueAt(row, 3).toString(), // tenDangNhap
+                null, // maTaiKhoan
+                tenDangNhap,
                 null, // matKhau
-                khachHangTable.getValueAt(row, 6).toString(), // email
-                khachHangTable.getValueAt(row, 7).toString(), // phone
+                email,
+                phone,
                 "USER", // vaiTro
                 "ACTIVE" // trangThai
             );
 
             // Lấy thông tin khách hàng từ row được chọn
             khachHangDTO kh = new khachHangDTO(
-                khachHangTable.getValueAt(row, 1).toString(), // maKhachHang
-                khachHangTable.getValueAt(row, 2).toString(), // hoTen
-                khachHangTable.getValueAt(row, 6).toString(), // email
-                khachHangTable.getValueAt(row, 7).toString(), // phone
-                khachHangTable.getValueAt(row, 8).toString(), // diaChi
-                khachHangTable.getValueAt(row, 5).toString(), // gioiTinh
-                ngaySinh,                                     // ngaySinh
-                new Timestamp(System.currentTimeMillis()),    // ngayDangKy
-                taiKhoan                                     // taiKhoan
+                getTableValueAsString(row, 1), // maKhachHang
+                getTableValueAsString(row, 2), // hoTen
+                email,
+                phone,
+                diaChi,
+                getTableValueAsString(row, 5), // gioiTinh
+                ngaySinh,
+                new Timestamp(System.currentTimeMillis()),
+                taiKhoan
             );
 
             // Hiển thị dialog chi tiết
@@ -157,10 +163,16 @@ public class khachHangPanel extends javax.swing.JPanel {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                "Có lỗi xảy ra khi hiển thị thông tin chi tiết!",
+                "Có lỗi xảy ra khi hiển thị thông tin chi tiết: " + e.getMessage(),
                 "Lỗi",
                 JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    // Phương thức hỗ trợ để lấy giá trị từ bảng và xử lý null
+    private String getTableValueAsString(int row, int column) {
+        Object value = khachHangTable.getValueAt(row, column);
+        return value != null ? value.toString() : "";
     }
 
     private void loadKhachHangData() {
@@ -267,41 +279,57 @@ public class khachHangPanel extends javax.swing.JPanel {
                 if (selectedRow >= 0) {
                     try {
                         // Parse ngày sinh từ chuỗi trong bảng
-                        String ngaySinhStr = khachHangTable.getValueAt(selectedRow, 4).toString();
+                        Object ngaySinhObj = khachHangTable.getValueAt(selectedRow, 4);
                         Date ngaySinh = null;
-                        if (!ngaySinhStr.isEmpty() && !ngaySinhStr.equals("Chưa cập nhật")) {
-                            java.util.Date parsedDate = dateFormat.parse(ngaySinhStr);
-                            ngaySinh = new Date(parsedDate.getTime());
+                        if (ngaySinhObj != null && !ngaySinhObj.toString().isEmpty() && !ngaySinhObj.toString().equals("Chưa cập nhật")) {
+                            try {
+                                java.util.Date parsedDate = dateFormat.parse(ngaySinhObj.toString());
+                                ngaySinh = new Date(parsedDate.getTime());
+                            } catch (Exception ex) {
+                                System.out.println("Lỗi parse ngày sinh: " + ex.getMessage());
+                            }
                         }
 
-                        // Lấy địa chỉ từ bảng
-                        String diaChi = khachHangTable.getValueAt(selectedRow, 8).toString();
-                        if (diaChi.equals("Chưa cập nhật")) {
-                            diaChi = "";
+                        // Lấy các giá trị từ bảng và xử lý null
+                        String maKH = getTableValueAsString(selectedRow, 1);
+                        String hoTen = getTableValueAsString(selectedRow, 2);
+                        String tenDangNhap = getTableValueAsString(selectedRow, 3);
+                        String gioiTinh = getTableValueAsString(selectedRow, 5);
+                        String email = getTableValueAsString(selectedRow, 6);
+                        String phone = getTableValueAsString(selectedRow, 7);
+                        String diaChi = getTableValueAsString(selectedRow, 8);
+
+                        // Kiểm tra các giá trị bắt buộc
+                        if (maKH.isEmpty() || hoTen.isEmpty()) {
+                            JOptionPane.showMessageDialog(null,
+                                "Không thể lấy thông tin khách hàng. Vui lòng thử lại.",
+                                "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
+                            return;
                         }
 
                         // Tạo đối tượng taiKhoanDTO
                         taiKhoanDTO taiKhoan = new taiKhoanDTO(
                             null, // maTaiKhoan
-                            khachHangTable.getValueAt(selectedRow, 3).toString(), // tenDangNhap
+                            tenDangNhap,
                             null, // matKhau
-                            khachHangTable.getValueAt(selectedRow, 6).toString(), // email
-                            khachHangTable.getValueAt(selectedRow, 7).toString(), // phone
+                            email,
+                            phone,
                             "USER", // vaiTro
                             "ACTIVE" // trangThai
                         );
 
                         // Tạo đối tượng khachHangDTO
                         khachHangDTO kh = new khachHangDTO(
-                            khachHangTable.getValueAt(selectedRow, 1).toString(), // maKhachHang
-                            khachHangTable.getValueAt(selectedRow, 2).toString(), // hoTen
-                            khachHangTable.getValueAt(selectedRow, 6).toString(), // email
-                            khachHangTable.getValueAt(selectedRow, 7).toString(), // phone
-                            diaChi,                                               // diaChi
-                            khachHangTable.getValueAt(selectedRow, 5).toString(), // gioiTinh
-                            ngaySinh,                                             // ngaySinh
-                            new Timestamp(System.currentTimeMillis()),            // ngayDangKy
-                            taiKhoan                                             // taiKhoan
+                            maKH,
+                            hoTen,
+                            email,
+                            phone,
+                            diaChi,
+                            gioiTinh,
+                            ngaySinh,
+                            new Timestamp(System.currentTimeMillis()),
+                            taiKhoan
                         );
 
                         // Hiển thị dialog sửa thông tin
@@ -323,7 +351,7 @@ public class khachHangPanel extends javax.swing.JPanel {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(null,
-                            "Có lỗi xảy ra khi hiển thị form sửa thông tin!",
+                            "Có lỗi xảy ra khi hiển thị form sửa thông tin: " + ex.getMessage(),
                             "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
                     }

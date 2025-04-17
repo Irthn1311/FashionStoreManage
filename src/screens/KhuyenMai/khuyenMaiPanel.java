@@ -74,33 +74,8 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                     km.getGiaMoi(), // Giá mới
                     km.getKhac(),
                     km.getTrangThai()
-            });
-        }
-    }
-
-    private void searchKhuyenMai() {
-        String keyword = jTextField1.getText().trim();
-        if (!keyword.isEmpty()) {
-            List<khuyenMaiDTO> searchResults = khuyenMaiDAO.searchKhuyenMai(keyword);
-            DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
-            model.setRowCount(0);
-
-            int stt = 1;
-            for (khuyenMaiDTO km : searchResults) {
-                model.addRow(new Object[] {
-                        stt++,
-                        km.getMaKhuyenMai(),
-                        km.getTenChuongTrinh(),
-                        dateFormat.format(km.getNgayBatDau()),
-                        dateFormat.format(km.getNgayKetThuc()),
-                        String.format("%.2f%%", km.getGiamGia()),
-                        "", // Giá mới
-                        "", // Khác
-                        km.getTrangThai()
                 });
             }
-        } else {
-            loadKhuyenMaiData(); // Nếu từ khóa trống, load lại tất cả dữ liệu
         }
     }
 
