@@ -132,7 +132,7 @@ public class KhachhangDAO {
     }
 
     private boolean kiemTraTaiKhoanTonTai(String maTaiKhoan) {
-        String sql = "SELECT COUNT(*) FROM TaiKhoanNguoiDung WHERE MaTaiKhoan = ?";
+        String sql = "SELECT COUNT(*) FROM TaiKhoan WHERE ID = ?";
         
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -212,7 +212,7 @@ public class KhachhangDAO {
     }
 
     private void xoaTaiKhoan(String maTaiKhoan) {
-        String sql = "DELETE FROM TaiKhoanNguoiDung WHERE MaTaiKhoan = ?";
+        String sql = "DELETE FROM TaiKhoan WHERE ID = ?";
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, maTaiKhoan);
@@ -239,14 +239,14 @@ public class KhachhangDAO {
                 }
             }
 
-            // Lấy mã tài khoản trước khi xóa khách hàng
+            // Lấy ID tài khoản trước khi xóa khách hàng
             String maTaiKhoan = null;
-            String sqlGetTaiKhoan = "SELECT MaTaiKhoan FROM KhachHang WHERE MaKhachHang = ?";
+            String sqlGetTaiKhoan = "SELECT ID FROM TaiKhoan WHERE ID = (SELECT MaTaiKhoan FROM KhachHang WHERE MaKhachHang = ?)";
             try (PreparedStatement psGet = conn.prepareStatement(sqlGetTaiKhoan)) {
                 psGet.setString(1, maKhachHang);
                 ResultSet rs = psGet.executeQuery();
                 if (rs.next()) {
-                    maTaiKhoan = rs.getString("MaTaiKhoan");
+                    maTaiKhoan = rs.getString("ID");
                 }
             }
 
@@ -265,9 +265,9 @@ public class KhachhangDAO {
                 rowsAffected = psDelete.executeUpdate();
             }
 
-            // Nếu xóa khách hàng thành công và có mã tài khoản, xóa tài khoản
+            // Nếu xóa khách hàng thành công và có ID tài khoản, xóa tài khoản
             if (rowsAffected > 0 && maTaiKhoan != null) {
-                String sqlDeleteTaiKhoan = "DELETE FROM TaiKhoanNguoiDung WHERE MaTaiKhoan = ?";
+                String sqlDeleteTaiKhoan = "DELETE FROM TaiKhoan WHERE ID = ?";
                 try (PreparedStatement psDeleteTK = conn.prepareStatement(sqlDeleteTaiKhoan)) {
                     psDeleteTK.setString(1, maTaiKhoan);
                     psDeleteTK.executeUpdate();
@@ -298,39 +298,72 @@ public class KhachhangDAO {
         }
     }
 
-    public boolean capNhatKhachHang(khachHangDTO khachHang) {
-        String sql = "UPDATE KhachHang SET HoTen = ?, Email = ?, Phone = ?, DiaChi = ?, " +
-                    "GioiTinh = ?, NgaySinh = ? WHERE MaKhachHang = ?";
+    public boolean capNhatKhachHang(khachHangDTO kh) {
+        String updateKhachHangSQL = "UPDATE KhachHang SET HoTen=?, Email=?, SoDienThoai=?, DiaChi=?, GioiTinh=?, NgaySinh=? WHERE MaKhachHang=?";
+        String updateTaiKhoanSQL = "UPDATE TaiKhoan SET Email=?, SoDienThoai=? WHERE MaTaiKhoan=?";
         
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        Connection conn = null;
+        PreparedStatement pstmtKhachHang = null;
+        PreparedStatement pstmtTaiKhoan = null;
+        
+        try {
+            conn = ConnectDB.getConnection();
+            conn.setAutoCommit(false);
             
-            ps.setString(1, khachHang.getHoTen());
-            ps.setString(2, khachHang.getEmail());
-            ps.setString(3, khachHang.getPhone());
-            ps.setString(4, khachHang.getDiaChi());
-            ps.setString(5, khachHang.getGioiTinh());
-            ps.setDate(6, khachHang.getNgaySinh());
-            ps.setString(7, khachHang.getMaKhachHang());
-
-            int rowsAffected = ps.executeUpdate();
+            // Cập nhật thông tin khách hàng
+            pstmtKhachHang = conn.prepareStatement(updateKhachHangSQL);
+            pstmtKhachHang.setString(1, kh.getHoTen());
+            pstmtKhachHang.setString(2, kh.getEmail());
+            pstmtKhachHang.setString(3, kh.getPhone());
+            pstmtKhachHang.setString(4, kh.getDiaChi());
+            pstmtKhachHang.setString(5, kh.getGioiTinh());
+            pstmtKhachHang.setDate(6, kh.getNgaySinh());
+            pstmtKhachHang.setString(7, kh.getMaKhachHang());
             
-            // Cập nhật thông tin tài khoản nếu có
-            if (rowsAffected > 0 && khachHang.getTaiKhoan() != null) {
-                String sqlUpdateTK = "UPDATE TaiKhoanNguoiDung SET Email = ?, SoDienThoai = ? " +
-                                   "WHERE MaTaiKhoan = ?";
-                try (PreparedStatement psTK = conn.prepareStatement(sqlUpdateTK)) {
-                    psTK.setString(1, khachHang.getEmail());
-                    psTK.setString(2, khachHang.getPhone());
-                    psTK.setString(3, khachHang.getTaiKhoan().getMaTaiKhoan());
-                    psTK.executeUpdate();
+            int khachHangRowsAffected = pstmtKhachHang.executeUpdate();
+            
+            // Nếu khách hàng có tài khoản, cập nhật thông tin tài khoản
+            if (kh.getMaTaiKhoan() != null) {
+                pstmtTaiKhoan = conn.prepareStatement(updateTaiKhoanSQL);
+                pstmtTaiKhoan.setString(1, kh.getEmail());
+                pstmtTaiKhoan.setString(2, kh.getPhone());
+                pstmtTaiKhoan.setString(3, kh.getMaTaiKhoan());
+                
+                int taiKhoanRowsAffected = pstmtTaiKhoan.executeUpdate();
+                
+                if (taiKhoanRowsAffected > 0) {
+                    conn.commit();
+                    return true;
                 }
+            } else if (khachHangRowsAffected > 0) {
+                conn.commit();
+                return true;
             }
             
-            return rowsAffected > 0;
+            conn.rollback();
+            return false;
+            
         } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
             return false;
+        } finally {
+            try {
+                if (pstmtTaiKhoan != null) pstmtTaiKhoan.close();
+                if (pstmtKhachHang != null) pstmtKhachHang.close();
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
