@@ -1,318 +1,408 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+package screens.KhuyenMai;
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
-  <SyntheticProperties>
-    <SyntheticProperty name="formSizePolicy" type="int" value="2"/>
-  </SyntheticProperties>
-  <AuxValues>
-    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
-    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
-    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
-    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
-    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,-68,0,0,3,-24"/>
-  </AuxValues>
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import DAO.KhuyenMaiDAO;
+import DTO.khuyenMaiDTO;
+import java.util.List;
+import java.text.SimpleDateFormat;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
-  <SubComponents>
-    <Container class="javax.swing.JPanel" name="containerPanel">
-      <Properties>
-        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[960, 680]"/>
-        </Property>
-      </Properties>
+public class khuyenMaiPanel extends javax.swing.JPanel {
+    private KhuyenMaiDAO khuyenMaiDAO;
+    private SimpleDateFormat dateFormat;
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-        <Property name="useNullLayout" type="boolean" value="false"/>
-      </Layout>
-      <SubComponents>
-        <Container class="javax.swing.JPanel" name="pnlHeader">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="9c" green="96" red="c" type="rgb"/>
-            </Property>
-          </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="0" y="0" width="1000" height="70"/>
-            </Constraint>
-          </Constraints>
+    public khuyenMaiPanel() {
+        initComponents();
 
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="373" max="32767" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="351" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" pref="42" max="-2" attributes="0"/>
-                      <EmptySpace pref="14" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JLabel" name="jLabel1">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="24" style="0"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Qu&#x1ea3;n l&#xfd; H&#xe0;ng Khuy&#x1ebf;n M&#xe3;i"/>
-              </Properties>
-            </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="pnlContent">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="be" green="a3" red="6b" type="rgb"/>
-            </Property>
-          </Properties>
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-              <AbsoluteConstraints x="0" y="70" width="1000" height="630"/>
-            </Constraint>
-          </Constraints>
+        // Khởi tạo DAO và định dạng ngày
+        khuyenMaiDAO = new KhuyenMaiDAO();
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="317" max="-2" attributes="0"/>
-                              <Component id="jButton34" min="-2" pref="340" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jPanel33" min="-2" pref="961" max="-2" attributes="0"/>
-                                  <Component id="jPanel18" alignment="1" min="-2" pref="960" max="-2" attributes="0"/>
-                                  <Component id="jPanel17" alignment="1" min="-2" pref="960" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                      </Group>
-                      <EmptySpace pref="20" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace pref="14" max="32767" attributes="0"/>
-                      <Component id="jPanel33" min="-2" pref="110" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jPanel17" min="-2" pref="70" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jPanel18" min="-2" pref="336" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButton34" min="-2" pref="40" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Container class="javax.swing.JPanel" name="jPanel17">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="be" green="a3" red="6b" type="rgb"/>
-                </Property>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Ch&#x1ec9;nh s&#x1eed;a">
-                      <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                        <LineBorder/>
-                      </Border>
-                    </TitledBorder>
-                  </Border>
-                </Property>
-              </Properties>
+        // Thiết lập combobox tìm kiếm
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+            "Tất cả", "Mã KM", "Mã sản phẩm", "Tên sản phẩm", "Tên chương trình", "Trạng thái"
+        }));
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-                <Property name="useNullLayout" type="boolean" value="false"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JButton" name="jButton31">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Th&#xea;m "/>
-                  </Properties>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="165" y="24" width="-1" height="34"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
-                <Component class="javax.swing.JButton" name="jButton32">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="S&#x1eed;a"/>
-                  </Properties>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="430" y="20" width="-1" height="34"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
-                <Component class="javax.swing.JButton" name="jButton33">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="X&#xf3;a"/>
-                  </Properties>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="703" y="24" width="-1" height="34"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="jPanel18">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="be" green="a3" red="6b" type="rgb"/>
-                </Property>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="B&#x1ea3;ng th&#xf4;ng tin&#xa;">
-                      <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                        <LineBorder/>
-                      </Border>
-                    </TitledBorder>
-                  </Border>
-                </Property>
-              </Properties>
+        // Load dữ liệu khuyến mãi
+        loadKhuyenMaiData();
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-                <Property name="useNullLayout" type="boolean" value="false"/>
-              </Layout>
-              <SubComponents>
-                <Container class="javax.swing.JScrollPane" name="jScrollPane2">
-                  <AuxValues>
-                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-                  </AuxValues>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="11" y="24" width="920" height="290"/>
-                    </Constraint>
-                  </Constraints>
+        // Thêm action listener cho nút tìm kiếm
+        jButton30.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchKhuyenMai();
+            }
+        });
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                  <SubComponents>
-                    <Component class="javax.swing.JTable" name="jTable2">
-                      <Properties>
-                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="9" rowCount="13">
-                            <Column editable="true" title="STT" type="java.lang.Object"/>
-                            <Column editable="true" title="M&#xe3; SP" type="java.lang.Object"/>
-                            <Column editable="true" title="T&#xea;n SP" type="java.lang.Object"/>
-                            <Column editable="true" title="Time start" type="java.lang.Object"/>
-                            <Column editable="true" title="Time end" type="java.lang.Object"/>
-                            <Column editable="true" title="Gi&#xe1; c&#x169;" type="java.lang.Object"/>
-                            <Column editable="true" title="Gi&#xe1; m&#x1edb;i" type="java.lang.Object"/>
-                            <Column editable="true" title="Kh&#xe1;c(nh&#x1ead;p v&#xe0;o)" type="java.lang.Object"/>
-                            <Column editable="true" title="Chi ti&#x1ebf;t" type="java.lang.Object"/>
-                          </Table>
-                        </Property>
-                        <Property name="showGrid" type="boolean" value="true"/>
-                      </Properties>
-                    </Component>
-                  </SubComponents>
-                </Container>
-              </SubComponents>
-            </Container>
-            <Component class="javax.swing.JButton" name="jButton34">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="L&#x1b0;u v&#xe0; xu&#x1ea5;t file"/>
-              </Properties>
-            </Component>
-            <Container class="javax.swing.JPanel" name="jPanel33">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="be" green="a3" red="6b" type="rgb"/>
-                </Property>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="T&#xec;m ki&#x1ebf;m&#xa;">
-                      <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                        <LineBorder/>
-                      </Border>
-                    </TitledBorder>
-                  </Border>
-                </Property>
-              </Properties>
+        // Thêm action listener cho nút "Thêm"
+        jButton31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                KhuyenMaiEditDialog addDialog = new KhuyenMaiEditDialog(
+                    (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(khuyenMaiPanel.this),
+                    null, khuyenMaiDAO, dateFormat, khuyenMaiTable, false);
+                addDialog.setVisible(true);
+            }
+        });
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
-                <Property name="useNullLayout" type="boolean" value="false"/>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JButton" name="jButton30">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="T&#xec;m ki&#x1ebf;m"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton30ActionPerformed"/>
-                  </Events>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="830" y="40" width="90" height="36"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
-                <Component class="javax.swing.JLabel" name="jLabel2">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Segoe UI" size="18" style="0"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="T&#xec;m ki&#x1ebf;m"/>
-                  </Properties>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="30" y="50" width="-1" height="-1"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
-                <Component class="javax.swing.JComboBox" name="jComboBox1">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="4">
-                        <StringItem index="0" value="Item 1"/>
-                        <StringItem index="1" value="Item 2"/>
-                        <StringItem index="2" value="Item 3"/>
-                        <StringItem index="3" value="Item 4"/>
-                      </StringArray>
-                    </Property>
-                  </Properties>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-                  </AuxValues>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="130" y="50" width="300" height="30"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
-                <Component class="javax.swing.JTextField" name="jTextField1">
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="460" y="50" width="320" height="30"/>
-                    </Constraint>
-                  </Constraints>
-                </Component>
-              </SubComponents>
-            </Container>
-          </SubComponents>
-        </Container>
-      </SubComponents>
-    </Container>
-  </SubComponents>
-</Form>
+        // Thêm action listener cho nút "Sửa"
+        jButton32.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedRow = khuyenMaiTable.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(khuyenMaiPanel.this,
+                        "Vui lòng chọn một chương trình khuyến mãi để sửa!");
+                    return;
+                }
+
+                DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
+                String maKhuyenMai = model.getValueAt(selectedRow, 1).toString();
+                List<khuyenMaiDTO> khuyenMaiList = khuyenMaiDAO.getAllKhuyenMai();
+                khuyenMaiDTO km = khuyenMaiList.stream()
+                    .filter(k -> k.getMaKhuyenMai().equals(maKhuyenMai))
+                    .findFirst()
+                    .orElse(null);
+
+                if (km != null) {
+                    KhuyenMaiEditDialog editDialog = new KhuyenMaiEditDialog(
+                        (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(khuyenMaiPanel.this),
+                        km, khuyenMaiDAO, dateFormat, khuyenMaiTable, true);
+                    editDialog.setVisible(true);
+                }
+            }
+        });
+
+        // Thêm action listener cho nút "Xóa"
+        jButton33.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedRow = khuyenMaiTable.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(khuyenMaiPanel.this,
+                        "Vui lòng chọn một chương trình khuyến mãi để xóa!");
+                    return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(khuyenMaiPanel.this,
+                    "Bạn có chắc chắn muốn xóa chương trình khuyến mãi này?",
+                    "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
+                    String maKhuyenMai = model.getValueAt(selectedRow, 1).toString();
+
+                    if (khuyenMaiDAO.deleteKhuyenMai(maKhuyenMai)) {
+                        JOptionPane.showMessageDialog(khuyenMaiPanel.this, "Xóa thành công!");
+                        loadKhuyenMaiData();
+                    } else {
+                        JOptionPane.showMessageDialog(khuyenMaiPanel.this, "Xóa thất bại!");
+                    }
+                }
+            }
+        });
+
+        // Thêm renderer cho cột "Chi tiết" để hiển thị text màu xanh
+        khuyenMaiTable.getColumnModel().getColumn(10).setCellRenderer(new HyperlinkRenderer());
+
+        // Thêm MouseListener để xử lý sự kiện click trên cột "Chi tiết"
+        khuyenMaiTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int column = khuyenMaiTable.columnAtPoint(e.getPoint());
+                int row = khuyenMaiTable.rowAtPoint(e.getPoint());
+
+                // Kiểm tra nếu click vào cột "Chi tiết" (cột 10)
+                if (column == 10) {
+                    DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
+                    String maKhuyenMai = model.getValueAt(row, 1).toString();
+                    List<khuyenMaiDTO> khuyenMaiList = khuyenMaiDAO.getAllKhuyenMai();
+                    khuyenMaiDTO km = khuyenMaiList.stream()
+                        .filter(k -> k.getMaKhuyenMai().equals(maKhuyenMai))
+                        .findFirst()
+                        .orElse(null);
+
+                    if (km != null) {
+                        KhuyenMaiDetailsDialog detailsDialog = new KhuyenMaiDetailsDialog(
+                            (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(khuyenMaiPanel.this),
+                            km, dateFormat);
+                        detailsDialog.setVisible(true);
+                    }
+                }
+            }
+        });
+    }
+
+    private void loadKhuyenMaiData() {
+        List<khuyenMaiDTO> khuyenMaiList = khuyenMaiDAO.getAllKhuyenMai();
+        DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
+        model.setRowCount(0);
+
+        int stt = 1;
+        for (khuyenMaiDTO km : khuyenMaiList) {
+            model.addRow(new Object[] {
+                stt++,
+                km.getMaKhuyenMai(),
+                km.getMaSanPham(),
+                km.getTenSanPham(),
+                km.getTenChuongTrinh(),
+                dateFormat.format(km.getNgayBatDau()),
+                dateFormat.format(km.getNgayKetThuc()),
+                String.format("%.2f%%", km.getGiamGia()),
+                km.getGiaMoi(),
+                km.getTrangThai(),
+                "Xem chi tiết"
+            });
+        }
+    }
+
+    private void searchKhuyenMai() {
+        String keyword = jTextField1.getText().trim();
+        if (!keyword.isEmpty()) {
+            List<khuyenMaiDTO> searchResults = khuyenMaiDAO.searchKhuyenMai(keyword);
+            DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
+            model.setRowCount(0);
+
+            int stt = 1;
+            for (khuyenMaiDTO km : searchResults) {
+                model.addRow(new Object[] {
+                    stt++,
+                    km.getMaKhuyenMai(),
+                    km.getMaSanPham(),
+                    km.getTenSanPham(),
+                    km.getTenChuongTrinh(),
+                    dateFormat.format(km.getNgayBatDau()),
+                    dateFormat.format(km.getNgayKetThuc()),
+                    String.format("%.2f%%", km.getGiamGia()),
+                    km.getGiaMoi(),
+                    km.getTrangThai(),
+                    "Xem chi tiết"
+                });
+            }
+        }
+    }
+
+    public javax.swing.JPanel getKhuyenMaiPanel() {
+        return containerPanel;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+        containerPanel = new javax.swing.JPanel();
+        containerPanel.setPreferredSize(new java.awt.Dimension(1000, 700));
+        containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        pnlHeader = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        pnlContent = new javax.swing.JPanel();
+        jPanel17 = new javax.swing.JPanel();
+        jButton31 = new javax.swing.JButton();
+        jButton32 = new javax.swing.JButton();
+        jButton33 = new javax.swing.JButton();
+        jPanel18 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        khuyenMaiTable = new javax.swing.JTable();
+        jButton34 = new javax.swing.JButton();
+        jPanel33 = new javax.swing.JPanel();
+        jButton30 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jTextField1 = new javax.swing.JTextField();
+
+        containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
+        containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24));
+        jLabel1.setText("Quản lý Hàng Khuyến Mãi");
+
+        javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
+        pnlHeader.setLayout(pnlHeaderLayout);
+        pnlHeaderLayout.setHorizontalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                    pnlHeaderLayout.createSequentialGroup()
+                        .addContainerGap(373, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(351, 351, 351)));
+        pnlHeaderLayout.setVerticalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlHeaderLayout.createSequentialGroup()
+                    .addGap(14, 14, 14)
+                    .addComponent(jLabel1,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        42,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(14, Short.MAX_VALUE)));
+
+        containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
+
+        pnlContent.setBackground(new java.awt.Color(107, 163, 190));
+
+        jPanel17.setBackground(new java.awt.Color(107, 163, 190));
+        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
+        jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jButton31.setText("Thêm ");
+        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 24, -1, 34));
+
+        jButton32.setText("Sửa");
+        jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 20, -1, 34));
+
+        jButton33.setText("Xóa");
+        jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(703, 24, -1, 34));
+
+        jPanel18.setBackground(new java.awt.Color(107, 163, 190));
+        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)),
+            "Bảng thông tin\n"));
+        jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        khuyenMaiTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object[][] {},
+            new String[] {
+                "STT", "Mã KM", "Mã sản phẩm", "Tên sản phẩm", "Tên chương trình",
+                "Ngày bắt đầu", "Ngày kết thúc",
+                "Giảm giá", "Giá mới", "Trạng thái", "Chi tiết"
+            }) {
+            boolean[] canEdit = new boolean[] {
+                false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
+        khuyenMaiTable.setShowGrid(true);
+        jScrollPane2.setViewportView(khuyenMaiTable);
+
+        jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 24, 920, 290));
+
+        jButton34.setText("Lưu và xuất file");
+
+        jPanel33.setBackground(new java.awt.Color(107, 163, 190));
+        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
+        jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jButton30.setText("Tìm kiếm");
+        jButton30.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton30ActionPerformed(evt);
+            }
+        });
+        jPanel33.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, 90, 36));
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18));
+        jLabel2.setText("Tìm kiếm");
+        jPanel33.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
+
+        jComboBox1.setModel(
+            new javax.swing.DefaultComboBoxModel<>(
+                new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel33.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 300, 30));
+        jPanel33.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 320, 30));
+
+        javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
+        pnlContent.setLayout(pnlContentLayout);
+        pnlContentLayout.setHorizontalGroup(
+            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlContentLayout.createSequentialGroup()
+                    .addGroup(pnlContentLayout.createParallelGroup(
+                        javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContentLayout
+                            .createSequentialGroup()
+                            .addGap(317, 317, 317)
+                            .addComponent(jButton34,
+                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                340,
+                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnlContentLayout
+                            .createSequentialGroup()
+                            .addGap(19, 19, 19)
+                            .addGroup(pnlContentLayout
+                                .createParallelGroup(
+                                    javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jPanel33,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    961,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel18,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    960,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel17,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE,
+                                    960,
+                                    javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addContainerGap(20, Short.MAX_VALUE)));
+        pnlContentLayout.setVerticalGroup(
+            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlContentLayout.createSequentialGroup()
+                    .addContainerGap(14, Short.MAX_VALUE)
+                    .addComponent(jPanel33,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        110,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(
+                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel17,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        70,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(
+                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel18,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        336,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(jButton34,
+                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                        40,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)));
+
+        containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
+
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        add(containerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 700));
+    }
+
+    private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {
+    }
+
+    // Renderer for the "Chi tiết" column to display blue clickable text
+    class HyperlinkRenderer extends javax.swing.table.DefaultTableCellRenderer {
+        public HyperlinkRenderer() {
+            setHorizontalAlignment(CENTER);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            label.setForeground(Color.BLUE); // Màu xanh
+            label.setText("<html><u>" + value.toString() + "</u></html>"); // Thêm gạch chân để giống hyperlink
+            return label;
+        }
+    }
+
+    private javax.swing.JPanel containerPanel;
+    private javax.swing.JButton jButton30;
+    private javax.swing.JButton jButton31;
+    private javax.swing.JButton jButton32;
+    private javax.swing.JButton jButton33;
+    private javax.swing.JButton jButton34;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel17;
+    private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel33;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable khuyenMaiTable;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPanel pnlContent;
+    private javax.swing.JPanel pnlHeader;
+}

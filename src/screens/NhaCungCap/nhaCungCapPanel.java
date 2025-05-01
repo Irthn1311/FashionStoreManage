@@ -22,18 +22,18 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
      */
     public nhaCungCapPanel() {
         initComponents();
-        
+
         // Khởi tạo DAO
         nhaCungCapDAO = new NhaCungCapDAO();
-        
+
         // Thiết lập combobox tìm kiếm
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { 
-            "Tất cả", "Mã NCC", "Tên NCC", "Email", "Số điện thoại" 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+                "Tất cả", "Mã NCC", "Tên NCC", "Email", "Số điện thoại"
         }));
-        
+
         // Load dữ liệu nhà cung cấp
         loadNhaCungCapData();
-        
+
         // Thêm action listener cho nút tìm kiếm
         jButton30.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -41,7 +41,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
             }
         });
     }
-    
+
     public javax.swing.JPanel getNhaCungCapPanel() {
         return containerPanel;
     }
@@ -90,19 +90,18 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(383, 383, 383)
-                .addComponent(jLabel1)
-                .addContainerGap(387, Short.MAX_VALUE))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addGap(383, 383, 383)
+                                .addComponent(jLabel1)
+                                .addContainerGap(387, Short.MAX_VALUE)));
         pnlHeaderLayout.setVerticalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(14, Short.MAX_VALUE)));
 
         containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
@@ -114,7 +113,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         jButton34.setText("Lưu và xuất file");
 
         jPanel17.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
+        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
         jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton31.setText("Thêm ");
@@ -127,20 +127,20 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(705, 24, -1, 34));
 
         jPanel18.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
+        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
         jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         nhaCungCapTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-            },
-            new String [] {
-                "STT", "Mã NCC", "Tên NCC", "Mã SP", "Loại SP", "Mã SP", "Tên SP", 
-                "Năm hợp tác", "Địa chỉ", "Email", "Số điện thoại", "Trạng thái", "Chi tiết"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false,
-                false, false, false, false, false, false
+                new Object[][] {
+                },
+                new String[] {
+                        "STT", "Mã NCC", "Tên NCC", "Mã SP", "Loại SP", "Tên SP",
+                        "Năm hợp tác", "Địa chỉ", "Email", "Số điện thoại", "Trạng thái", "Chi tiết"
+                }) {
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false, false,
+                    false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -153,7 +153,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 920, 310));
 
         jPanel33.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
+        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
         jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton30.setText("Tìm kiếm");
@@ -168,40 +169,53 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         jLabel2.setText("Tìm kiếm");
         jPanel33.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(
+                new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel33.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 300, 30));
         jPanel33.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 320, 30));
 
         javax.swing.GroupLayout pnlContent1Layout = new javax.swing.GroupLayout(pnlContent1);
         pnlContent1.setLayout(pnlContent1Layout);
         pnlContent1Layout.setHorizontalGroup(
-            pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContent1Layout.createSequentialGroup()
-                .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlContent1Layout.createSequentialGroup()
-                        .addGap(325, 325, 325)
-                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlContent1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 961, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(18, Short.MAX_VALUE))
-        );
+                pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContent1Layout.createSequentialGroup()
+                                .addGroup(pnlContent1Layout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(pnlContent1Layout.createSequentialGroup()
+                                                .addGap(325, 325, 325)
+                                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(pnlContent1Layout.createSequentialGroup()
+                                                .addGap(21, 21, 21)
+                                                .addGroup(pnlContent1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                961, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(pnlContent1Layout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                .addComponent(jPanel18,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 956,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(jPanel17,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 956,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addContainerGap(18, Short.MAX_VALUE)));
         pnlContent1Layout.setVerticalGroup(
-            pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContent1Layout.createSequentialGroup()
-                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
-        );
+                pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContent1Layout.createSequentialGroup()
+                                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 70,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 348,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)));
 
         pnlContent.add(pnlContent1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 600));
 
@@ -214,54 +228,54 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         List<nhaCungCapDTO> nhaCungCapList = nhaCungCapDAO.getAllNhaCungCap();
         DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu cũ
-        
+
         int stt = 1;
         for (nhaCungCapDTO ncc : nhaCungCapList) {
-            model.addRow(new Object[]{
-                stt++,
-                ncc.getMaNhaCungCap(),
-                ncc.getTenNhaCungCap(),
-                "", // Mã SP
-                "", // Loại SP
-                "", // Mã SP
-                "", // Tên SP
-                "", // Năm hợp tác
-                ncc.getAddress(),
-                ncc.getEmail(),
-                ncc.getSoDienThoai(),
-                "Đang hoạt động", // Trạng thái
-                "Xem chi tiết"
+            model.addRow(new Object[] {
+                    stt++,
+                    ncc.getMaNhaCungCap(),
+                    ncc.getTenNhaCungCap(),
+                    ncc.getMaSanPham(),
+                    ncc.getLoaiSP(),
+                    ncc.getMaSanPham(), // Cột bị lặp trong table header, có thể sửa tên
+                    ncc.getTenSanPham(),
+                    ncc.getNamHopTac(),
+                    ncc.getAddress(),
+                    ncc.getEmail(),
+                    ncc.getSoDienThoai(),
+                    ncc.getTrangThai(),
+                    "Xem chi tiết"
             });
         }
     }
-    
+
     private void searchNhaCungCap() {
         String keyword = jTextField1.getText().trim();
         if (!keyword.isEmpty()) {
             List<nhaCungCapDTO> searchResults = nhaCungCapDAO.searchNhaCungCap(keyword);
             DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
             model.setRowCount(0);
-            
+
             int stt = 1;
             for (nhaCungCapDTO ncc : searchResults) {
-                model.addRow(new Object[]{
-                    stt++,
-                    ncc.getMaNhaCungCap(),
-                    ncc.getTenNhaCungCap(),
-                    "", // Mã SP
-                    "", // Loại SP
-                    "", // Mã SP
-                    "", // Tên SP
-                    "", // Năm hợp tác
-                    ncc.getAddress(),
-                    ncc.getEmail(),
-                    ncc.getSoDienThoai(),
-                    "Đang hoạt động", // Trạng thái
-                    "Xem chi tiết"
+                model.addRow(new Object[] {
+                        stt++,
+                        ncc.getMaNhaCungCap(),
+                        ncc.getTenNhaCungCap(),
+                        ncc.getMaSanPham(),
+                        ncc.getLoaiSP(),
+                        ncc.getMaSanPham(),
+                        ncc.getTenSanPham(),
+                        ncc.getNamHopTac(),
+                        ncc.getAddress(),
+                        ncc.getEmail(),
+                        ncc.getSoDienThoai(),
+                        ncc.getTrangThai(),
+                        "Xem chi tiết"
                 });
             }
         } else {
-            loadNhaCungCapData(); // Nếu từ khóa trống, load lại tất cả dữ liệu
+            loadNhaCungCapData();
         }
     }
 
@@ -270,9 +284,13 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -282,16 +300,20 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
+        // </editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
