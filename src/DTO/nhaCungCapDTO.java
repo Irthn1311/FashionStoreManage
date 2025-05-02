@@ -1,13 +1,11 @@
 package DTO;
 
 public class nhaCungCapDTO {
- private String maNhaCungCap;
+    private String maNhaCungCap;
     private String tenNhaCungCap;
     private String loaiSP;
-    private String maSanPham;
-    private String tenSanPham;
     private int namHopTac;
-    private String address;
+    private String diaChi;
     private String email;
     private String soDienThoai;
     private String trangThai;
@@ -15,14 +13,14 @@ public class nhaCungCapDTO {
     public nhaCungCapDTO() {
     }
 
-    public nhaCungCapDTO(String maNhaCungCap, String tenNhaCungCap, String loaiSP, String maSanPham, String tenSanPham, int namHopTac, String address, String email, String soDienThoai, String trangThai) {
+    public nhaCungCapDTO(String maNhaCungCap, String tenNhaCungCap, String loaiSP, 
+                        int namHopTac, String diaChi, String email, 
+                        String soDienThoai, String trangThai) {
         this.maNhaCungCap = maNhaCungCap;
         this.tenNhaCungCap = tenNhaCungCap;
         this.loaiSP = loaiSP;
-        this.maSanPham = maSanPham;
-        this.tenSanPham = tenSanPham;
         this.namHopTac = namHopTac;
-        this.address = address;
+        this.diaChi = diaChi;
         this.email = email;
         this.soDienThoai = soDienThoai;
         this.trangThai = trangThai;
@@ -52,22 +50,6 @@ public class nhaCungCapDTO {
         this.loaiSP = loaiSP;
     }
 
-    public String getMaSanPham() {
-        return maSanPham;
-    }
-
-    public void setMaSanPham(String maSanPham) {
-        this.maSanPham = maSanPham;
-    }
-
-    public String getTenSanPham() {
-        return tenSanPham;
-    }
-
-    public void setTenSanPham(String tenSanPham) {
-        this.tenSanPham = tenSanPham;
-    }
-
     public int getNamHopTac() {
         return namHopTac;
     }
@@ -76,12 +58,12 @@ public class nhaCungCapDTO {
         this.namHopTac = namHopTac;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDiaChi() {
+        return diaChi;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
     }
 
     public String getEmail() {
@@ -108,17 +90,14 @@ public class nhaCungCapDTO {
         this.trangThai = trangThai;
     }
 
-    
-     @Override
+    @Override
     public String toString() {
         return "NhaCungCap{" +
-                "maNCC='" + maNhaCungCap + '\'' +
-                ", tenNCC='" + tenNhaCungCap + '\'' +
+                "maNhaCungCap='" + maNhaCungCap + '\'' +
+                ", tenNhaCungCap='" + tenNhaCungCap + '\'' +
                 ", loaiSP='" + loaiSP + '\'' +
-                ", maSP='" + maSanPham + '\'' +
-                ", tenSP='" + tenSanPham + '\'' +
                 ", namHopTac=" + namHopTac +
-                ", diaChi='" + address + '\'' +
+                ", diaChi='" + diaChi + '\'' +
                 ", email='" + email + '\'' +
                 ", soDienThoai='" + soDienThoai + '\'' +
                 ", trangThai='" + trangThai + '\'' +

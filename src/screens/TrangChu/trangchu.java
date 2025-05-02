@@ -3,6 +3,7 @@ package screens.TrangChu;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import javax.swing.UIManager;
+import DTO.taiKhoanDTO;
 
 import screens.HoaDon.hoadon;
 import screens.KhachHang.khachHangPanel;
@@ -15,6 +16,7 @@ import screens.NhapHang.phieunhap;
 import screens.SanPham.sanPhamPanel;
 import screens.TaiKhoan.taikhoan;
 import screens.XuatHang.xuathang;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -22,11 +24,13 @@ import screens.XuatHang.xuathang;
  * @author nson9
  */
 public class trangchu extends javax.swing.JFrame {
+    private taiKhoanDTO taiKhoan;
 
     /**
      * Creates new form adminscreen
      */
-    public trangchu() {
+    public trangchu(taiKhoanDTO taiKhoan) {
+        this.taiKhoan = taiKhoan;
         initComponents();
         
         // Set kích thước cố định cho frame (thêm 35px cho thanh tiêu đề Windows)
@@ -45,6 +49,9 @@ public class trangchu extends javax.swing.JFrame {
         // Lưu lại panel chào mừng và main content
         welcomePanel = jPanel3;
         mainContent = jPanel4;
+
+        // Cập nhật thông tin người dùng
+        jLabel3.setText("Xin chào, " + taiKhoan.getTenDangNhap());
 
         /*
          * // Them action listener cho btnSetting
@@ -218,7 +225,7 @@ public class trangchu extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(10, 112, 117));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnLogin.setText("Login");
+        btnLogin.setText("Đăng Xuất");
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
@@ -229,7 +236,7 @@ public class trangchu extends javax.swing.JFrame {
         btnSetting.setText("Setting");
         btnSetting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // btnSettingActionPerformed(evt);
+                btnSettingActionPerformed(evt);
             }
         });
         jPanel1.add(btnSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 16, -1, 37));
@@ -379,15 +386,26 @@ public class trangchu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // Hiển thị hộp thoại xác nhận đăng xuất
+        int option = JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc chắn muốn đăng xuất?", 
+            "Xác nhận đăng xuất", 
+            JOptionPane.YES_NO_OPTION);
+        
+        if (option == JOptionPane.YES_OPTION) {
+            // Đóng cửa sổ hiện tại
+            this.dispose();
+            // Mở lại màn hình đăng nhập
+            new screens.DangNhap.login().setVisible(true);
+        }
     }
 
-    /*
-     * private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {
-     * setting settingScreen = new setting();
-     * switchPanel(settingScreen.getSettingPanel());
-     * }
-     */
+    private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {
+        // Mở màn hình cài đặt tài khoản
+        screens.TaiKhoan.TaiKhoanPanel taiKhoanPanel = new screens.TaiKhoan.TaiKhoanPanel(taiKhoan);
+        switchPanel(taiKhoanPanel);
+    }
+
     private void btnNhapHangActionPerformed(java.awt.event.ActionEvent evt) {
         nhaphang nhapHangScreen = new nhaphang();
         switchPanel(nhapHangScreen.getNhapHangPanel());

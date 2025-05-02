@@ -50,25 +50,25 @@ public class KhuyenMaiDAO {
             String searchPattern = "%" + keyword + "%";
             ps.setString(1, searchPattern);
             ps.setString(2, searchPattern);
-            ps.setString(3, searchPattern);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    khuyenMaiDTO km = new khuyenMaiDTO(
-                        rs.getString("MaKhuyenMai"),
-                        rs.getString("TenChuongTrinh"),
-                        rs.getDouble("GiamGia"),
-                        rs.getDate("NgayBatDau"),
-                        rs.getDate("NgayKetThuc"),
-                        rs.getString("TrangThai"),
-                        rs.getDouble("GiaMoi"),
-                        rs.getString("Khac"));
-                khuyenMaiList.add(km);
+                ps.setString(3, searchPattern);
+    
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        khuyenMaiDTO km = new khuyenMaiDTO(
+                            rs.getString("MaKhuyenMai"),
+                            rs.getString("TenChuongTrinh"),
+                            rs.getDouble("GiamGia"),
+                            rs.getDate("NgayBatDau"),
+                            rs.getDate("NgayKetThuc"),
+                            rs.getString("TrangThai"),
+                            rs.getDouble("GiaMoi"),
+                            rs.getString("Khac"));
+                        khuyenMaiList.add(km);
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        return khuyenMaiList;
-        }
+            return khuyenMaiList;
     }
 }
