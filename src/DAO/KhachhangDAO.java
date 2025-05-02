@@ -112,7 +112,7 @@ public class KhachhangDAO {
     }
 
     private boolean kiemTraTaiKhoanTonTai(String maTaiKhoan) {
-        String sql = "SELECT COUNT(*) FROM TaiKhoan WHERE ID = ?";
+        String sql = "SELECT COUNT(*) FROM TaiKhoanNguoiDung WHERE MaTaiKhoan = ?";
         
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

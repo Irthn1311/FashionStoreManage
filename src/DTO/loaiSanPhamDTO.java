@@ -1,6 +1,6 @@
 package DTO;
 
-public class sanPhamDTO {
+public class loaiSanPhamDTO {
     private String maSanPham;
     private String tenSanPham;
     private String maNhaCungCap;
@@ -9,16 +9,16 @@ public class sanPhamDTO {
     private String size;
     private int soLuongTonKho;
     private double giaBan;
-    private String KhuyenMai;
     private String imgURL;
     private String trangThai;
+    private String maKhoHang;
 
     // Constructor không tham số
-    public sanPhamDTO() {
+    public loaiSanPhamDTO() {
     }
 
     // Constructor đầy đủ tham số
-    public sanPhamDTO(String maSanPham, String tenSanPham, String maNhaCungCap, String maDanhMuc, String mauSac,
+    public loaiSanPhamDTO(String maSanPham, String tenSanPham, String maNhaCungCap, String maDanhMuc, String mauSac,
             String size, int soLuongTonKho, double giaBan, String imgURL, String trangThai) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
@@ -113,6 +113,10 @@ public class sanPhamDTO {
         this.trangThai = trangThai;
     }
 
+    public String getMaKhoHang() {
+        return maKhoHang;
+    }
+
     @Override
     public String toString() {
         return "SanPhamDTO {" +
@@ -126,6 +130,8 @@ public class sanPhamDTO {
                 ", giaBan=" + giaBan +
                 ", imgURL='" + imgURL + '\'' +
                 ", trangThai='" + trangThai + '\'' +
+                ", maKhoHang='" + maKhoHang + '\'' +
                 '}';
     }
+
 }

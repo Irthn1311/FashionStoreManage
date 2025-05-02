@@ -145,7 +145,7 @@ public class TaiKhoanDAO {
     }
 
     private boolean kiemTraTenDangNhapTonTai(String tenDangNhap) {
-        String sql = "SELECT COUNT(*) FROM TaiKhoan WHERE TenDangNhap = ?";
+        String sql = "SELECT COUNT(*) FROM TaiKhoan WHERE HoVaTen = ?";
         
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -185,18 +185,17 @@ public class TaiKhoanDAO {
         // Tạo tên đăng nhập
         String tenDangNhap = taoTenDangNhap(hoTen, ngay, thang);
 
-        String sql = "INSERT INTO TaiKhoan (ID, HoVaTen, TenDangNhap, Email, SoDienThoai, DiaChi, GioiTinh, Tuoi, ChucVu, NgayThanhLap, TenCongTy, TrangThai) " +
-                    "VALUES (?, ?, ?, ?, ?, NULL, NULL, ?, 'USER', GETDATE(), NULL, 'ACTIVE')";
+        String sql = "INSERT INTO TaiKhoan (ID, HoVaTen, Email, SoDienThoai, DiaChi, GioiTinh, Tuoi, ChucVu, NgayThanhLap, TenCongTy) " +
+                    "VALUES (?, ?, ?, ?, NULL, NULL, ?, 'USER', GETDATE(), NULL)";
 
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, maTaiKhoan);
             ps.setString(2, hoTen);
-            ps.setString(3, tenDangNhap);
-            ps.setString(4, email);
-            ps.setString(5, soDienThoai);
-            ps.setString(6, String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - nam)); // Tính tuổi
+            ps.setString(3, email);
+            ps.setString(4, soDienThoai);
+            ps.setString(5, String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - nam)); // Tính tuổi
 
             if (ps.executeUpdate() > 0) {
                 return maTaiKhoan;

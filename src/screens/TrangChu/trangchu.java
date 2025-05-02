@@ -18,7 +18,6 @@ import screens.TaiKhoan.taikhoan;
 import screens.XuatHang.xuathang;
 import javax.swing.JOptionPane;
 
-
 /**
  *
  * @author nson9
@@ -32,12 +31,12 @@ public class trangchu extends javax.swing.JFrame {
     public trangchu(taiKhoanDTO taiKhoan) {
         this.taiKhoan = taiKhoan;
         initComponents();
-        
+
         // Set kích thước cố định cho frame (thêm 35px cho thanh tiêu đề Windows)
         setSize(1215, 735);
         setLocationRelativeTo(null);
         setResizable(false);
-        
+
         ImageIcon checkIcon = new ImageIcon(getClass().getResource("/icon_img/box.png"));
         Image checkImg = checkIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         btnLogin.setIcon(new ImageIcon(checkImg));
@@ -45,7 +44,7 @@ public class trangchu extends javax.swing.JFrame {
         // Khởi tạo các panel
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        
+
         // Lưu lại panel chào mừng và main content
         welcomePanel = jPanel3;
         mainContent = jPanel4;
@@ -263,7 +262,7 @@ public class trangchu extends javax.swing.JFrame {
         btnSanPham.setText("Sản phẩm");
         jPanel1.add(btnSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 214, 188, 36));
 
-        btnLoaiSanPham.setText("Loại sản phẩm");
+        btnLoaiSanPham.setText("Quản lý sản phẩm");
         btnLoaiSanPham.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoaiSanPhamActionPerformed(evt);

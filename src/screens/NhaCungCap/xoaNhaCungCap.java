@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package screens.NhaCungCap;
+package screens.NhanVien;
 
 /**
  *
@@ -29,7 +29,9 @@ public class xoaNhaCungCap extends javax.swing.JFrame {
         jPanel21 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
         jTextField25 = new javax.swing.JTextField();
         jTextField26 = new javax.swing.JTextField();
         jTextField27 = new javax.swing.JTextField();
@@ -51,6 +53,7 @@ public class xoaNhaCungCap extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel21.setBackground(new java.awt.Color(107, 163, 190));
+        jPanel21.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng sửa"));
         jPanel21.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng sửa"));
         jPanel21.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -75,7 +78,19 @@ public class xoaNhaCungCap extends javax.swing.JFrame {
                 jTextField26ActionPerformed(evt);
             }
         });
+
+        jTextField26.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField26ActionPerformed(evt);
+            }
+        });
         jPanel21.add(jTextField26, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, 220, -1));
+
+        jTextField27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField27ActionPerformed(evt);
+            }
+        });
 
         jTextField27.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,10 +105,21 @@ public class xoaNhaCungCap extends javax.swing.JFrame {
                 jTextField29ActionPerformed(evt);
             }
         });
+
+        jTextField29.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField29ActionPerformed(evt);
+            }
+        });
         jPanel21.add(jTextField29, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 360, 220, -1));
         jPanel21.add(jTextField30, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 60, 240, -1));
 
         jButton38.setText("Hủy");
+        jButton38.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton38ActionPerformed(evt);
+            }
+        });
         jButton38.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton38ActionPerformed(evt);
@@ -114,13 +140,13 @@ public class xoaNhaCungCap extends javax.swing.JFrame {
         jLabel3.setText("Ngày ĐK");
         jPanel21.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, -1, -1));
 
-        jLabel4.setText("Địa chỉ");
+        jLabel4.setText("Chức vụ");
         jPanel21.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 70, -1, -1));
 
-        jLabel5.setText("Email");
+        jLabel5.setText("Mức lương");
         jPanel21.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 120, -1, 20));
 
-        jLabel6.setText("Số điện thoại");
+        jLabel6.setText("Năm vào làm");
         jPanel21.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 180, -1, -1));
         jPanel21.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 120, 240, -1));
 
@@ -210,7 +236,9 @@ public class xoaNhaCungCap extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -219,7 +247,6 @@ public class xoaNhaCungCap extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel21;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField14;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField25;
     private javax.swing.JTextField jTextField26;
     private javax.swing.JTextField jTextField27;

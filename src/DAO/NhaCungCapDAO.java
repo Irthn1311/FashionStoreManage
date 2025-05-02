@@ -8,9 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NhaCungCapDAO {
-    
+
+    private static final Logger LOGGER = Logger.getLogger(NhaCungCapDAO.class.getName());
+
     public List<nhaCungCapDTO> getAllNhaCungCap() {
         List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
         String sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, ncc.LoaiSP, " +
@@ -18,10 +22,15 @@ public class NhaCungCapDAO {
                     "FROM NhaCungCap ncc";
 
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
+                String tenSanPham = rs.getString("TenSanPham");
+                if (tenSanPham == null) {
+                    tenSanPham = "Không có sản phẩm"; // Xử lý trường hợp null
+                }
+
                 nhaCungCapDTO ncc = new nhaCungCapDTO(
                     rs.getString("MaNhaCungCap"),
                     rs.getString("TenNhaCungCap"),
@@ -35,7 +44,7 @@ public class NhaCungCapDAO {
                 nhaCungCapList.add(ncc);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy danh sách nhà cung cấp: {0}", e.getMessage());
         }
 
         return nhaCungCapList;
@@ -76,7 +85,7 @@ public class NhaCungCapDAO {
         }
 
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String searchPattern = "%" + keyword + "%";
             if (searchType.equals("Tất cả")) {
@@ -89,6 +98,11 @@ public class NhaCungCapDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
+                    String tenSanPham = rs.getString("TenSanPham");
+                    if (tenSanPham == null) {
+                        tenSanPham = "Không có sản phẩm"; // Xử lý trường hợp null
+                    }
+
                     nhaCungCapDTO ncc = new nhaCungCapDTO(
                         rs.getString("MaNhaCungCap"),
                         rs.getString("TenNhaCungCap"),
@@ -103,7 +117,8 @@ public class NhaCungCapDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm nhà cung cấp với từ khóa {0}: {1}",
+                    new Object[] { keyword, e.getMessage() });
         }
 
         return nhaCungCapList;
