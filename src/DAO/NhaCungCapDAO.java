@@ -26,11 +26,6 @@ public class NhaCungCapDAO {
                 ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                String tenSanPham = rs.getString("TenSanPham");
-                if (tenSanPham == null) {
-                    tenSanPham = "Không có sản phẩm"; // Xử lý trường hợp null
-                }
-
                 nhaCungCapDTO ncc = new nhaCungCapDTO(
                     rs.getString("MaNhaCungCap"),
                     rs.getString("TenNhaCungCap"),
@@ -98,11 +93,6 @@ public class NhaCungCapDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    String tenSanPham = rs.getString("TenSanPham");
-                    if (tenSanPham == null) {
-                        tenSanPham = "Không có sản phẩm"; // Xử lý trường hợp null
-                    }
-
                     nhaCungCapDTO ncc = new nhaCungCapDTO(
                         rs.getString("MaNhaCungCap"),
                         rs.getString("TenNhaCungCap"),

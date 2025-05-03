@@ -101,35 +101,6 @@ INSERT INTO KhoHang (MaKhoHang, TenKho, DiaChi, SoLuong, MaQuanLy) VALUES
 ('K010', N'Kho Nam Trung Bộ', N'Nha Trang', 190, 1010);
 
 
--- Tạo bảng SanPham
-CREATE TABLE SanPham (
-    MaSanPham VARCHAR(100) PRIMARY KEY,
-    TenSanPham NVARCHAR(200),
-    MaThuongHieu VARCHAR(100),
-    MaDanhMuc VARCHAR(100),
-    GiaBan DECIMAL(15,2),
-    SoLuongTonKho INT,
-    Size NVARCHAR(50),
-    TrangThai NVARCHAR(50),
-    ImgURL VARCHAR(500),
-    MaKhoHang VARCHAR(100),
-    FOREIGN KEY (MaKhoHang) REFERENCES KhoHang(MaKhoHang)
-);
-
-
-INSERT INTO SanPham (MaSanPham, TenSanPham, MaThuongHieu, MaDanhMuc, GiaBan, SoLuongTonKho, Size, TrangThai, ImgURL, MaKhoHang) VALUES
-('SP001', N'Áo sơ mi nam trắng', 'TH001', 'DM001', 299000, 120, 'L', N'Còn hàng', 'https://example.com/images/aosomi.jpg', 'K001'),
-('SP002', N'Quần jean nam xanh', 'TH002', 'DM002', 459000, 80, 'M', N'Còn hàng', 'https://example.com/images/quanjean.jpg', 'K002'),
-('SP003', N'Áo khoác dù nữ', 'TH003', 'DM003', 499000, 60, 'S', N'Còn hàng', 'https://example.com/images/aokhoac.jpg', 'K003'),
-('SP004', N'Váy maxi nữ', 'TH004', 'DM004', 399000, 75, 'M', N'Còn hàng', 'https://example.com/images/vaymaxi.jpg', 'K004'),
-('SP005', N'Giày thể thao nam', 'TH005', 'DM005', 750000, 50, '42', N'Còn hàng', 'https://example.com/images/giaythethao.jpg', 'K005'),
-('SP006', N'Túi xách nữ thời trang', 'TH006', 'DM006', 550000, 40, 'Free size', N'Còn hàng', 'https://example.com/images/tuixach.jpg', 'K006'),
-('SP007', N'Mũ lưỡi trai', 'TH007', 'DM007', 150000, 200, 'Free size', N'Còn hàng', 'https://example.com/images/muluoitrai.jpg', 'K007'),
-('SP008', N'Đồng hồ đeo tay', 'TH008', 'DM008', 1200000, 30, 'Free size', N'Còn hàng', 'https://example.com/images/dongho.jpg', 'K008'),
-('SP009', N'Thắt lưng da nam', 'TH009', 'DM009', 299000, 100, 'Free size', N'Còn hàng', 'https://example.com/images/thatlung.jpg', 'K009'),
-('SP010', N'Áo phông nữ', 'TH010', 'DM010', 199000, 90, 'S', N'Còn hàng', 'https://example.com/images/aophong.jpg', 'K010');
-
-
 -- Tạo bảng NhaCungCap
 CREATE TABLE NhaCungCap (
     MaNhaCungCap VARCHAR(100) PRIMARY KEY,
@@ -153,6 +124,46 @@ INSERT INTO NhaCungCap (MaNhaCungCap, TenNhaCungCap, LoaiSP, NamHopTac, DiaChi, 
 ('NCC008', N'Vớ Việt', N'Vớ thời trang', 2016, N'95 Tô Hiến Thành, Q10', 'contact@voviet.vn', '0911227788', N'Đang hợp tác'),
 ('NCC009', N'Sunglasses Hub', N'Kính mát', 2021, N'10 Nguyễn Văn Cừ, Q5', 'support@sghub.vn', '0906778899', N'Đang hợp tác'),
 ('NCC010', N'Túi Xách Trẻ', N'Túi đeo chéo', 2018, N'66 Cách Mạng Tháng Tám, Q3', 'info@tuixachtre.vn', '0909988112', N'Ngưng hợp tác');
+
+
+-- Tạo bảng SanPham
+CREATE TABLE SanPham (
+    MaSanPham VARCHAR(100) PRIMARY KEY,
+    TenSanPham NVARCHAR(200),
+	MaNhaCungCap VARCHAR(100),
+    MaDanhMuc VARCHAR(100),
+	MauSac VARCHAR(100),
+	Size NVARCHAR(50),
+    SoLuongTonKho INT,
+	GiaBan DECIMAL(15,2),
+	ImgURL VARCHAR(500),
+    TrangThai NVARCHAR(50),
+    FOREIGN KEY (MaNhaCungCap) REFERENCES NhaCungCap(MaNhaCungCap)
+);
+
+
+
+
+INSERT INTO SanPham (MaSanPham, TenSanPham, MaNhaCungCap, MaDanhMuc, MauSac, Size, SoLuongTonKho, GiaBan, ImgURL, TrangThai)
+VALUES
+-- Dữ liệu từ danh sách 1 (bổ sung MauSac mặc định là 'Khác')
+('SP001', N'Áo sơ mi nam trắng', 'NCC001', 'DM001', N'Trắng', 'L', 120, 299000, 'https://example.com/images/aosomi.jpg', N'Còn hàng'),
+('SP002', N'Quần jean nam xanh', 'NCC002', 'DM002', N'Xanh', 'M', 80, 459000, 'https://example.com/images/quanjean.jpg', N'Còn hàng'),
+('SP003', N'Áo khoác dù nữ', 'NCC003', 'DM003', N'Đen', 'S', 60, 499000, 'https://example.com/images/aokhoac.jpg', N'Còn hàng'),
+('SP004', N'Váy maxi nữ', 'NCC004', 'DM004', N'Hồng', 'M', 75, 399000, 'https://example.com/images/vaymaxi.jpg', N'Còn hàng'),
+('SP005', N'Giày thể thao nam', 'NCC005', 'DM005', N'Trắng', '42', 50, 750000, 'https://example.com/images/giaythethao.jpg', N'Còn hàng'),
+('SP006', N'Túi xách nữ thời trang', 'NCC006', 'DM006', N'Nâu', 'Free size', 40, 550000, 'https://example.com/images/tuixach.jpg', N'Còn hàng'),
+('SP007', N'Mũ lưỡi trai', 'NCC007', 'DM007', N'Đen', 'Free size', 200, 150000, 'https://example.com/images/muluoitrai.jpg', N'Còn hàng'),
+('SP008', N'Đồng hồ đeo tay', 'NCC008', 'DM008', N'Bạc', 'Free size', 30, 1200000, 'https://example.com/images/dongho.jpg', N'Còn hàng'),
+('SP009', N'Thắt lưng da nam', 'NCC009', 'DM009', N'Nâu', 'Free size', 100, 299000, 'https://example.com/images/thatlung.jpg', N'Còn hàng'),
+('SP010', N'Áo phông nữ', 'NCC010', 'DM010', N'Đen', 'S', 90, 199000, 'https://example.com/images/aophong.jpg', N'Còn hàng'),
+('SP011', N'Áo Thun Nam', 'NCC001', 'DM001', N'Đen', 'L', 50, 199009, 'https://example.com/images/aothun1.jpg', N'Còn hàng'),
+('SP012', N'Quần Jeans Nữ', 'NCC002', 'DM002', N'Xanh', 'M', 30, 399000, 'https://example.com/images/jeansnu.jpg', N'Còn hàng'),
+('SP013', N'Áo Khoác Hoodie', 'NCC003', 'DM003', N'Đỏ', 'XL', 20, 499000, 'images/hoodie.jpg', N'Hết hàng'),
+('SP014', N'Váy Công Sở', 'NCC004', 'DM004', N'Hồng', 'S', 40, 299000, 'images/vay.jpg', N'Còn hàng'),
+('SP015', N'Áo Sơ Mi Nam', 'NCC001', 'DM001', N'Trắng', 'M', 60, 259000, 'images/somi.jpg', N'Còn hàng');
+
+
 
 
 
@@ -232,17 +243,28 @@ CREATE TABLE XuatHang (
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
 );
 
--- Tạo bảng KhuyenMai
+
 CREATE TABLE KhuyenMai (
-    MaKhuyenMai VARCHAR(100) PRIMARY KEY,
-    TenChuongTrinh NVARCHAR(200),
-    GiamGia DECIMAL(5,2),
-    NgayBatDau DATE,
-    NgayKetThuc DATE,
-    TrangThai NVARCHAR(50),
-    GiaMoi DECIMAL(15,2),
-    Khac NVARCHAR(200)
+    MaKhuyenMai VARCHAR(50) PRIMARY KEY,
+    MaSanPham VARCHAR(50) NOT NULL,
+    TenSanPham VARCHAR(100) NOT NULL,
+    TenChuongTrinh VARCHAR(100) NOT NULL,
+    GiamGia DECIMAL(5, 2) NOT NULL,
+    NgayBatDau DATE NOT NULL,
+    NgayKetThuc DATE NOT NULL,
+	GiaCu DECIMAL(10, 2) NOT NULL,
+	GiaMoi DECIMAL(10, 2) NOT NULL,
+    TrangThai VARCHAR(50) NOT NULL
 );
+
+
+INSERT INTO KhuyenMai (MaKhuyenMai, MaSanPham, TenSanPham, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, GiaCu, GiaMoi, TrangThai)
+VALUES
+    ('KM001', 'SP011', 'Áo thun nam', 'Quý 1 năm nay', 30.0, '2025-01-01', '2025-03-31', 150000.0, 105000.0, 'Hoạt động'),
+    ('KM002', 'SP012', 'Quần jeans nữ', 'Khuyến mãi đầu năm', 20.0, '2025-01-15', '2025-02-15', 300000.0, 240000.0, 'Hết hạn'),
+    ('KM003', 'SP013', 'Giày thể thao', 'Mùa lễ hội', 25.0, '2025-04-01', '2025-04-30', 500000.0, 375000.0, 'Chưa bắt đầu'),
+    ('KM004', 'SP014', 'Balo du lịch', 'Khuyến mãi hè', 15.0, '2025-05-01', '2025-06-30', 400000.0, 340000.0, 'Chưa bắt đầu'),
+    ('KM005', 'SP015', 'Mũ lưỡi trai', 'Khuyến mãi nhỏ', 10.0, '2025-02-01', '2025-02-28', 100000.0, 90000.0, 'Hết hạn');
 
 -- Tạo bảng ThongKe
 CREATE TABLE ThongKe (
@@ -309,16 +331,3 @@ VALUES
 ('SP001', N'Áo sơ mi nam trắng', 40, 10000000),
 ('SP001', N'Áo sơ mi nam trắng', 30, 7500000);
 
-
-INSERT INTO KhuyenMai (MaKhuyenMai, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, TrangThai, GiaMoi, Khac)
-VALUES
-('KM001', N'Ưu đãi mùa hè', 10.00, '2024-06-01', '2024-06-30', N'Hoạt động', 225000, N'Giảm giá mùa hè cho áo sơ mi nam trắng'),
-('KM002', N'Black Friday', 20.00, '2024-11-25', '2024-11-29', N'Chưa bắt đầu', 200000, N'Ưu đãi đặc biệt Black Friday'),
-('KM003', N'Giáng sinh vui vẻ', 15.00, '2024-12-20', '2024-12-26', N'Chưa bắt đầu', 212500, N'Mừng Giáng Sinh, giảm giá áo sơ mi nam'),
-('KM004', N'Tết nguyên đán', 25.00, '2025-01-20', '2025-01-31', N'Chưa bắt đầu', 187500, N'Ưu đãi chào năm mới'),
-('KM005', N'Ngày của cha', 12.50, '2024-06-10', '2024-06-20', N'Hoạt động', 218750, N'Khuyến mãi dành cho ngày của cha'),
-('KM006', N'Khuyến mãi chào hè', 18.00, '2024-05-01', '2024-05-15', N'Kết thúc', 205000, N'Chương trình ưu đãi đặc biệt tháng 5'),
-('KM007', N'Quốc Khánh 2/9', 15.00, '2024-08-28', '2024-09-05', N'Chưa bắt đầu', 212500, N'Ưu đãi ngày Quốc Khánh'),
-('KM008', N'Sinh nhật công ty', 22.00, '2024-07-15', '2024-07-20', N'Chưa bắt đầu', 195000, N'Giảm giá nhân dịp sinh nhật công ty'),
-('KM009', N'Tri ân khách hàng', 17.00, '2024-09-10', '2024-09-20', N'Chưa bắt đầu', 207500, N'Khuyến mãi tri ân khách hàng thân thiết'),
-('KM010', N'Lễ hội mua sắm cuối năm', 30.00, '2024-12-01', '2024-12-10', N'Chưa bắt đầu', 175000, N'Giảm giá lớn dịp cuối năm');
