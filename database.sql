@@ -322,3 +322,15 @@ VALUES
 ('KM008', N'Sinh nhật công ty', 22.00, '2024-07-15', '2024-07-20', N'Chưa bắt đầu', 195000, N'Giảm giá nhân dịp sinh nhật công ty'),
 ('KM009', N'Tri ân khách hàng', 17.00, '2024-09-10', '2024-09-20', N'Chưa bắt đầu', 207500, N'Khuyến mãi tri ân khách hàng thân thiết'),
 ('KM010', N'Lễ hội mua sắm cuối năm', 30.00, '2024-12-01', '2024-12-10', N'Chưa bắt đầu', 175000, N'Giảm giá lớn dịp cuối năm');
+
+CREATE TABLE PhieuNhap (
+    MaPhieuNhap INT PRIMARY KEY IDENTITY(1,1),
+    NgayNhap DATETIME DEFAULT GETDATE(),
+    MaSanPham VARCHAR(100),
+    SoLuongNhap INT,
+    MaNhaCungCap VARCHAR(100),
+    MaNhanVien VARCHAR(100),
+    FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham),
+    FOREIGN KEY (MaNhaCungCap) REFERENCES NhaCungCap(MaNhaCungCap),
+    FOREIGN KEY (MaNhanVien) REFERENCES NhanVien(MaNhanVien)
+);
