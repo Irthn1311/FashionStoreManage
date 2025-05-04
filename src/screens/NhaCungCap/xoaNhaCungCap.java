@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package screens.NhanVien;
+package screens.NhaCungCap;
 
 /**
  *
@@ -247,6 +247,7 @@ public class xoaNhaCungCap extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel21;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField14;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField25;
     private javax.swing.JTextField jTextField26;
     private javax.swing.JTextField jTextField27;
