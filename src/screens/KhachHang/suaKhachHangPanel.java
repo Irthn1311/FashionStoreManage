@@ -128,7 +128,6 @@ public class suaKhachHangPanel extends JPanel {
     private void loadKhachHangData() {
         txtMaKH.setText(khachHang.getMaKhachHang());
         txtHoTen.setText(khachHang.getHoTen());
-        txtTenDangNhap.setText(khachHang.getTenDangNhap());
         txtEmail.setText(khachHang.getEmail());
         txtSoDienThoai.setText(khachHang.getSoDienThoai());
         txtDiaChi.setText(khachHang.getDiaChi());

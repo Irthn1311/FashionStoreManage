@@ -1,3 +1,4 @@
+
 -- Tạo bảng NhanVien
 CREATE TABLE NhanVien (
     MaNhanVien VARCHAR(100) PRIMARY KEY,
@@ -33,7 +34,7 @@ CREATE TABLE TaiKhoan (
     MaTaiKhoan VARCHAR(100) PRIMARY KEY,
     TenDangNhap VARCHAR(50) UNIQUE,
     MatKhau VARCHAR(100),
-    VaiTro NVARCHAR(50),
+    VaiTro NVARCHAR(50) CHECK (VaiTro IN (N'Quản trị', N'Quản lý kho', N'Quản lý nhân viên', N'Nhân viên')),
     TrangThai INT DEFAULT 1,
     NgayTao DATETIME DEFAULT GETDATE(),
     MaNhanVien VARCHAR(100) UNIQUE,
@@ -41,16 +42,16 @@ CREATE TABLE TaiKhoan (
 );
 
 INSERT INTO TaiKhoan VALUES
-('TK001', 'admin', 'admin123', 'Quản trị', 1, '2025-01-01', 'NV001'),
-('TK002', 'nhanvien1', 'nv123', 'Nhân viên', 1, '2025-01-01', 'NV002'),
-('TK003', 'nv_c', 'pass123', 'Nhân viên', 0, '2025-01-01', 'NV003'),
-('TK004', 'user_d', '123456', 'Nhân viên', 1, '2025-01-01', 'NV004'),
-('TK005', 'nv_e', 'matkhau', 'Nhân viên', 1, '2025-01-01', 'NV005'),
-('TK006', 'nguyenf', '12345', 'Nhân viên', 1, '2025-01-01', 'NV006'),
-('TK007', 'vog', 'abc123', 'Nhân viên', 0, '2025-01-01', 'NV007'),
-('TK008', 'lyh', 'xyz789', 'Nhân viên', 1, '2025-01-01', 'NV008'),
-('TK009', 'phani', '000111', 'Nhân viên', 1, '2025-01-01', 'NV009'),
-('TK010', 'buij', '987654', 'Nhân viên', 1, '2025-01-01', 'NV010');
+('TK001', 'admin', 'admin123', N'Quản trị', 1, '2025-01-01', 'NV001'),
+('TK002', 'nhanvien1', 'nv123', N'Nhân viên', 1, '2025-01-01', 'NV002'),
+('TK003', 'nv_c', 'pass123', N'Nhân viên', 0, '2025-01-01', 'NV003'),
+('TK004', 'user_d', '123456', N'Nhân viên', 1, '2025-01-01', 'NV004'),
+('TK005', 'nv_e', 'matkhau', N'Nhân viên', 1, '2025-01-01', 'NV005'),
+('TK006', 'nguyenf', '12345', N'Quản lý kho', 1, '2025-01-01', 'NV006'),
+('TK007', 'vog', 'abc123', N'Nhân viên', 0, '2025-01-01', 'NV007'),
+('TK008', 'lyh', 'xyz789', N'Nhân viên', 1, '2025-01-01', 'NV008'),
+('TK009', 'phani', '000111', N'Nhân viên', 1, '2025-01-01', 'NV009'),
+('TK010', 'buij', '987654', N'Quản lý nhân viên', 1, '2025-01-01', 'NV010');
 
 
 -- Tạo bảng KhachHang

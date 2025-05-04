@@ -4,7 +4,7 @@ public class taiKhoanDTO {
     private String maTaiKhoan;
     private String tenDangNhap;
     private String matKhau;
-    private String vaiTro;
+    private VaiTro vaiTro;
     private int trangThai;
     private String maNhanVien;
 
@@ -16,7 +16,7 @@ public class taiKhoanDTO {
         this.maTaiKhoan = maTaiKhoan;
         this.tenDangNhap = tenDangNhap;
         this.matKhau = matKhau;
-        this.vaiTro = vaiTro;
+        this.vaiTro = VaiTro.fromString(vaiTro);
         this.trangThai = trangThai;
         this.maNhanVien = maNhanVien;
     }
@@ -45,12 +45,16 @@ public class taiKhoanDTO {
         this.matKhau = matKhau;
     }
 
-    public String getVaiTro() {
+    public VaiTro getVaiTro() {
         return vaiTro;
     }
 
-    public void setVaiTro(String vaiTro) {
+    public void setVaiTro(VaiTro vaiTro) {
         this.vaiTro = vaiTro;
+    }
+
+    public void setVaiTro(String vaiTro) {
+        this.vaiTro = VaiTro.fromString(vaiTro);
     }
 
     public int getTrangThai() {
@@ -75,7 +79,7 @@ public class taiKhoanDTO {
                 "maTaiKhoan='" + maTaiKhoan + '\'' +
                 ", tenDangNhap='" + tenDangNhap + '\'' +
                 ", matKhau='" + matKhau + '\'' +
-                ", vaiTro='" + vaiTro + '\'' +
+                ", vaiTro='" + (vaiTro != null ? vaiTro.getDisplayName() : "null") + '\'' +
                 ", trangThai=" + trangThai +
                 ", maNhanVien='" + maNhanVien + '\'' +
                 '}';

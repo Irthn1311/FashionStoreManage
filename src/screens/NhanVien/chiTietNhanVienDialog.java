@@ -96,7 +96,7 @@ public class chiTietNhanVienDialog extends JDialog {
             addField("Tên đăng nhập:", taiKhoan.getTenDangNhap(), gbc);
             
             gbc.gridy++;
-            addField("Vai trò:", taiKhoan.getVaiTro(), gbc);
+            addField("Vai trò:", taiKhoan.getVaiTro().getDisplayName(), gbc);
             
             gbc.gridy++;
             addField("Trạng thái:", taiKhoan.getTrangThai() == 1 ? "Hoạt động" : "Không hoạt động", gbc);

@@ -21,6 +21,18 @@ import java.util.ArrayList;
 import BUS.TaiKhoanBUS;
 import DTO.taiKhoanDTO;
 import java.awt.Dimension;
+import javax.swing.JComboBox;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import BUS.PhanQuyenBUS;
+import java.util.EnumSet;
+import BUS.NhanVienBUS;
+import DTO.VaiTro;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import utils.ExcelUtils;
+import javax.swing.JPopupMenu;
+import javax.swing.JMenuItem;
 
 /**
  *
@@ -33,11 +45,14 @@ public class nhanVienPanel extends javax.swing.JPanel {
     private DecimalFormat decimalFormat;
     private DefaultTableModel tableModel;
     private TaiKhoanBUS taiKhoanBUS;
+    private JComboBox<String> cboVaiTro;
+    private taiKhoanDTO taiKhoan;
 
     /**
      * Creates new form nhanvien
      */
-    public nhanVienPanel() {
+    public nhanVienPanel(taiKhoanDTO taiKhoan) {
+        this.taiKhoan = taiKhoan;
         initComponents();
         
         // Khởi tạo DAO và định dạng
@@ -79,6 +94,55 @@ public class nhanVienPanel extends javax.swing.JPanel {
         jButton33.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xoaNhanVien();
+            }
+        });
+
+        // Thêm action listener cho nút Lưu và xuất file
+        jButton34.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showExportOptions();
+            }
+        });
+
+        // Thêm ComboBox cho VaiTro
+        String[] vaiTroOptions = {
+            VaiTro.QUAN_TRI.getDisplayName(),
+            VaiTro.QUAN_LY_KHO.getDisplayName(),
+            VaiTro.QUAN_LY_NHAN_VIEN.getDisplayName(),
+            VaiTro.NHAN_VIEN.getDisplayName()
+        };
+        cboVaiTro = new JComboBox<>(vaiTroOptions);
+        
+        // Kiểm tra quyền thay đổi vai trò
+        if (taiKhoan.getVaiTro() != VaiTro.QUAN_TRI) {
+            cboVaiTro.setEnabled(false);
+            cboVaiTro.setToolTipText("Chỉ Quản trị viên mới có quyền thay đổi vai trò");
+        }
+        
+        // Thêm sự kiện khi thay đổi vai trò
+        cboVaiTro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (taiKhoan.getVaiTro() == VaiTro.QUAN_TRI) {
+                    String selectedVaiTro = (String) cboVaiTro.getSelectedItem();
+                    String maTaiKhoan = getSelectedMaTaiKhoan();
+                    
+                    if (maTaiKhoan != null) {
+                        boolean success = taiKhoanBUS.capNhatVaiTro(maTaiKhoan, selectedVaiTro);
+                        if (success) {
+                            JOptionPane.showMessageDialog(null, 
+                                "Cập nhật vai trò thành công!", 
+                                "Thông báo", 
+                                JOptionPane.INFORMATION_MESSAGE);
+                            loadNhanVienData(); // Refresh bảng
+                        } else {
+                            JOptionPane.showMessageDialog(null, 
+                                "Cập nhật vai trò thất bại!", 
+                                "Lỗi", 
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
             }
         });
     }
@@ -537,6 +601,90 @@ public class nhanVienPanel extends javax.swing.JPanel {
                 }
             }
         }
+    }
+
+    private String getSelectedMaTaiKhoan() {
+        int selectedRow = nhanVienTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            return nhanVienTable.getValueAt(selectedRow, 0).toString(); // Giả sử cột 0 là MaTaiKhoan
+        }
+        return null;
+    }
+
+    private void showExportOptions() {
+        JPopupMenu popupMenu = new JPopupMenu();
+        
+        JMenuItem exportExcelItem = new JMenuItem("Xuất ra Excel");
+        exportExcelItem.addActionListener(e -> exportToExcel());
+        popupMenu.add(exportExcelItem);
+        
+        JMenuItem importExcelItem = new JMenuItem("Nhập từ Excel");
+        importExcelItem.addActionListener(e -> importFromExcel());
+        popupMenu.add(importExcelItem);
+        
+        JMenuItem generateReportItem = new JMenuItem("Tạo báo cáo");
+        generateReportItem.addActionListener(e -> generateReport());
+        popupMenu.add(generateReportItem);
+        
+        popupMenu.show(jButton34, 0, jButton34.getHeight());
+    }
+    
+    private void exportToExcel() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
+        
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            if (!filePath.endsWith(".xlsx")) {
+                filePath += ".xlsx";
+            }
+            
+            ExcelUtils.exportToExcel(nhanVienTable, filePath);
+            JOptionPane.showMessageDialog(this,
+                "Xuất dữ liệu thành công!",
+                "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
+    private void importFromExcel() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel để nhập");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
+        
+        int userSelection = fileChooser.showOpenDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            List<List<String>> data = ExcelUtils.importFromExcel(filePath);
+            
+            if (!data.isEmpty()) {
+                // Xóa dữ liệu cũ
+                tableModel.setRowCount(0);
+                
+                // Thêm dữ liệu mới (bỏ qua header row)
+                for (int i = 1; i < data.size(); i++) {
+                    List<String> row = data.get(i);
+                    if (row.size() >= tableModel.getColumnCount()) {
+                        tableModel.addRow(row.toArray());
+                    }
+                }
+                
+                JOptionPane.showMessageDialog(this,
+                    "Nhập dữ liệu thành công!",
+                    "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+    
+    private void generateReport() {
+        // TODO: Implement report generation using JasperReports
+        JOptionPane.showMessageDialog(this,
+            "Chức năng tạo báo cáo đang được phát triển...",
+            "Thông báo",
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

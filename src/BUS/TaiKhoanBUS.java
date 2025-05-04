@@ -2,6 +2,7 @@ package BUS;
 
 import DAO.TaiKhoanDAO;
 import DTO.taiKhoanDTO;
+import DTO.VaiTro;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
 import java.util.List;
@@ -89,5 +90,16 @@ public class TaiKhoanBUS {
 
     public boolean xoaTaiKhoan(String maTaiKhoan) throws SQLException {
         return taiKhoanDAO.xoaTaiKhoan(maTaiKhoan);
+    }
+
+    public boolean capNhatVaiTro(String maTaiKhoan, String vaiTroMoi) {
+        // Kiểm tra tính hợp lệ của vai trò mới
+        VaiTro vaiTro = VaiTro.fromString(vaiTroMoi);
+        if (vaiTro == null) {
+            return false;
+        }
+        
+        // Gọi DAO để cập nhật vai trò
+        return taiKhoanDAO.capNhatVaiTro(maTaiKhoan, vaiTroMoi);
     }
 }

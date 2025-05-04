@@ -1,6 +1,6 @@
 package BUS;
 
-import DAO.KhachhangDAO;
+import DAO.KhachHangDAO;
 import DTO.khachHangDTO;
 import java.util.List;
 import java.sql.Date;
@@ -8,10 +8,10 @@ import java.sql.Timestamp;
 import java.util.regex.Pattern;
 
 public class KhachHangBUS {
-    private KhachhangDAO khachHangDAO;
+    private KhachHangDAO khachHangDAO;
     
     public KhachHangBUS() {
-        khachHangDAO = new KhachhangDAO();
+        this.khachHangDAO = new KhachHangDAO();
     }
     
     /**
@@ -104,5 +104,13 @@ public class KhachHangBUS {
         }
         
         return true;
+    }
+
+    public List<String> getAllMaKhachHang() {
+        return khachHangDAO.getAllMaKhachHang();
+    }
+
+    public khachHangDTO getKhachHangByMa(String maKhachHang) {
+        return khachHangDAO.getKhachHangByMa(maKhachHang);
     }
 }

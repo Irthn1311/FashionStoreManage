@@ -21,17 +21,22 @@ public class ThongKeDAO {
                      "FROM HoaDon hd " +
                      "JOIN SanPham sp ON hd.MaSanPham = sp.MaSanPham " +
                      "JOIN KhachHang kh ON hd.MaKhachHang = kh.MaKhachHang " +
-                     "WHERE hd.ThoiGian BETWEEN ? AND ? " +
+                     "WHERE CONVERT(datetime, hd.ThoiGian, 120) BETWEEN CONVERT(datetime, ?, 120) AND CONVERT(datetime, ?, 120) " +
                      "GROUP BY sp.MaSanPham, sp.TenSanPham, kh.MaKhachHang, kh.HoTen " +
                      "ORDER BY SoLuong DESC";
 
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, tuNgay);
-            ps.setString(2, denNgay);
+            // Thêm giờ phút giây vào chuỗi ngày tháng
+            String tuNgayFormatted = tuNgay + " 00:00:00";
+            String denNgayFormatted = denNgay + " 23:59:59";
+            
+            ps.setString(1, tuNgayFormatted);
+            ps.setString(2, denNgayFormatted);
+            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    sanPhamThongKeDTO sp = new sanPhamThongKeDTO(
+                    sanPhamThongKeDTO dto = new sanPhamThongKeDTO(
                         rs.getString("MaSanPham"),
                         rs.getString("TenSanPham"),
                         rs.getString("MaKhachHang"),
@@ -39,12 +44,11 @@ public class ThongKeDAO {
                         rs.getInt("SoLuong"),
                         rs.getDouble("DoanhThu")
                     );
-                    result.add(sp);
-                    System.out.println("SanPhamThongKe: " + sp.getMaSanPham() + " - " + sp.getTenSanPham() + " - " + sp.getSoLuong());
+                    result.add(dto);
                 }
             }
         } catch (SQLException e) {
-            throw new Exception("Lỗi khi thống kê sản phẩm: " + e.getMessage(), e);
+            throw new Exception("Lỗi khi thống kê sản phẩm: " + e.getMessage());
         }
         return result;
     }

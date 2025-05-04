@@ -65,7 +65,7 @@ public class TaiKhoanPanel extends JPanel {
         gbc.gridx = 0; gbc.gridy = 2;
         pnlInfo.add(new JLabel("Vai trò:"), gbc);
         gbc.gridx = 1;
-        lblVaiTro = new JLabel(taiKhoan.getVaiTro());
+        lblVaiTro = new JLabel(taiKhoan.getVaiTro().getDisplayName());
         lblVaiTro.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         pnlInfo.add(lblVaiTro, gbc);
 

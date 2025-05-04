@@ -9,17 +9,17 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.sql.Timestamp;
-import DAO.HoaDonDAO;
-import DAO.SanPhamDAO;
-import DAO.KhachHangDAO;
+import BUS.HoaDonBUS;
+import BUS.SanPhamBUS;
+import BUS.KhachHangBUS;
 import DTO.hoaDonDTO;
 import DTO.sanPhamDTO;
 import DTO.khachHangDTO;
 
 public class themHoaDonPanel extends JPanel {
-    private HoaDonDAO hoaDonDAO;
-    private SanPhamDAO sanPhamDAO;
-    private KhachHangDAO khachHangDAO;
+    private HoaDonBUS hoaDonBUS;
+    private SanPhamBUS sanPhamBUS;
+    private KhachHangBUS khachHangBUS;
     private SimpleDateFormat dateFormat;
 
     private JTextField txtMaHD;
@@ -39,9 +39,9 @@ public class themHoaDonPanel extends JPanel {
     private JButton btnHuy;
 
     public themHoaDonPanel() {
-        hoaDonDAO = new HoaDonDAO();
-        sanPhamDAO = new SanPhamDAO();
-        khachHangDAO = new KhachHangDAO();
+        hoaDonBUS = new HoaDonBUS();
+        sanPhamBUS = new SanPhamBUS();
+        khachHangBUS = new KhachHangBUS();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         initComponents();
         loadMaSanPham();
@@ -50,31 +50,54 @@ public class themHoaDonPanel extends JPanel {
     }
 
     private void loadMaSanPham() {
-        List<String> maSanPhamList = sanPhamDAO.getAllMaSanPham();
-        cboMaSP.addItem(""); // Thêm tùy chọn trống
-        for (String maSanPham : maSanPhamList) {
-            cboMaSP.addItem(maSanPham);
+        try {
+            List<String> maSanPhamList = sanPhamBUS.getAllMaSanPham();
+            cboMaSP.removeAllItems();
+            cboMaSP.addItem(""); // Thêm tùy chọn trống
+            for (String maSanPham : maSanPhamList) {
+                cboMaSP.addItem(maSanPham);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Lỗi khi tải danh sách sản phẩm: " + e.getMessage(),
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void loadMaKhachHang() {
-        List<String> maKhachHangList = khachHangDAO.getAllMaKhachHang();
-        cboMaKH.addItem(""); // Thêm tùy chọn trống
-        for (String maKhachHang : maKhachHangList) {
-            cboMaKH.addItem(maKhachHang);
+        try {
+            List<String> maKhachHangList = khachHangBUS.getAllMaKhachHang();
+            cboMaKH.removeAllItems();
+            cboMaKH.addItem(""); // Thêm tùy chọn trống
+            for (String maKhachHang : maKhachHangList) {
+                cboMaKH.addItem(maKhachHang);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Lỗi khi tải danh sách khách hàng: " + e.getMessage(),
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void generateMaHoaDon() {
-        List<hoaDonDTO> hoaDonList = hoaDonDAO.getAllHoaDon();
-        int count = hoaDonList.size() + 1;
-        String maHoaDon;
-        do {
-            maHoaDon = String.format("HD%03d", count);
-            count++;
-        } while (hoaDonDAO.isMaHoaDonExists(maHoaDon)); // Đảm bảo mã không trùng
-        txtMaHD.setText(maHoaDon);
-        txtMaHD.setEditable(false);
+        try {
+            List<hoaDonDTO> hoaDonList = hoaDonBUS.getAllHoaDon();
+            int count = hoaDonList.size() + 1;
+            String maHoaDon;
+            do {
+                maHoaDon = String.format("HD%03d", count);
+                count++;
+            } while (hoaDonBUS.isMaHoaDonExists(maHoaDon));
+            txtMaHD.setText(maHoaDon);
+            txtMaHD.setEditable(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Lỗi khi tạo mã hóa đơn: " + e.getMessage(),
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void initComponents() {
@@ -210,7 +233,7 @@ public class themHoaDonPanel extends JPanel {
         cboMaSP.addActionListener(e -> {
             String selectedMaSP = (String) cboMaSP.getSelectedItem();
             if (selectedMaSP != null && !selectedMaSP.isEmpty()) {
-                sanPhamDTO sp = sanPhamDAO.getSanPhamByMa(selectedMaSP);
+                sanPhamDTO sp = sanPhamBUS.getSanPhamByMa(selectedMaSP);
                 if (sp != null) {
                     txtTenSP.setText(sp.getTenSanPham());
                     txtKichCo.setText(sp.getSize());
@@ -230,7 +253,7 @@ public class themHoaDonPanel extends JPanel {
         cboMaKH.addActionListener(e -> {
             String selectedMaKH = (String) cboMaKH.getSelectedItem();
             if (selectedMaKH != null && !selectedMaKH.isEmpty()) {
-                khachHangDTO kh = khachHangDAO.getKhachHangByMa(selectedMaKH);
+                khachHangDTO kh = khachHangBUS.getKhachHangByMa(selectedMaKH);
                 if (kh != null) {
                     txtTenKH.setText(kh.getHoTen());
                 }
@@ -259,6 +282,10 @@ public class themHoaDonPanel extends JPanel {
             txtThanhTien.setText(String.format("%.0f", thanhTien));
         } catch (NumberFormatException e) {
             txtThanhTien.setText("0");
+            JOptionPane.showMessageDialog(this, 
+                "Số lượng và đơn giá phải là số hợp lệ!",
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -312,7 +339,7 @@ public class themHoaDonPanel extends JPanel {
 
             // Kiểm tra số lượng tồn kho
             String maSanPham = cboMaSP.getSelectedItem().toString();
-            sanPhamDTO sp = sanPhamDAO.getSanPhamByMa(maSanPham);
+            sanPhamDTO sp = sanPhamBUS.getSanPhamByMa(maSanPham);
             if (sp == null) {
                 JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm với mã: " + maSanPham, "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -353,14 +380,14 @@ public class themHoaDonPanel extends JPanel {
                 cboTrangThai.getSelectedItem().toString()
             );
 
-            // Gọi phương thức addHoaDon từ HoaDonDAO
+            // Gọi phương thức addHoaDon từ HoaDonBUS
             try {
-                boolean success = hoaDonDAO.addHoaDon(hd);
+                boolean success = hoaDonBUS.addHoaDon(hd);
                 if (success) {
                     // Cập nhật số lượng tồn kho
                     int newSoLuongTonKho = sp.getSoLuongTonKho() - soLuong;
                     sp.setSoLuongTonKho(newSoLuongTonKho);
-                    boolean updateSuccess = sanPhamDAO.updateSanPham(sp);
+                    boolean updateSuccess = sanPhamBUS.updateSanPham(sp);
                     if (!updateSuccess) {
                         throw new RuntimeException("Cập nhật số lượng tồn kho thất bại!");
                     }

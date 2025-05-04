@@ -4,6 +4,8 @@ import javax.swing.ImageIcon;
 import java.awt.Image;
 import javax.swing.UIManager;
 import DTO.taiKhoanDTO;
+import BUS.PhanQuyenBUS;
+import DTO.VaiTro;
 
 import screens.HoaDon.HoaDonPanel;
 import screens.KhachHang.khachHangPanel;
@@ -51,6 +53,27 @@ public class trangchu extends javax.swing.JFrame {
 
         // Cập nhật thông tin người dùng
         jLabel3.setText("Xin chào, " + taiKhoan.getTenDangNhap());
+
+        // Áp dụng phân quyền cho các button
+        VaiTro vaiTro = taiKhoan.getVaiTro();
+        
+        // Kiểm tra và vô hiệu hóa các button dựa trên vai trò
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnNhapHang, vaiTro, "NhapHang");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnXuatHang, vaiTro, "XuatHang");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnSanPham, vaiTro, "SanPham");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnLoaiSanPham, vaiTro, "LoaiSanPham");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnHoaDon, vaiTro, "HoaDon");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnPhieuNhap, vaiTro, "NhapHang");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnKhuyenMai, vaiTro, "KhuyenMai");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnNhanVien, vaiTro, "NhanVien");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnKhachHang, vaiTro, "KhachHang");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnNhaCungCap, vaiTro, "NhaCungCap");
+
+        // Chỉ quản trị viên mới có quyền truy cập quản lý tài khoản
+        if (vaiTro != VaiTro.QUAN_TRI) {
+            btnTaiKhoan.setEnabled(false);
+            btnTaiKhoan.setToolTipText("Chỉ Quản trị viên mới có quyền truy cập");
+        }
 
         /*
          * // Them action listener cho btnSetting
@@ -417,7 +440,7 @@ public class trangchu extends javax.swing.JFrame {
     }
 
     private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {
-        nhanVienPanel nhanVienScreen = new nhanVienPanel();
+        nhanVienPanel nhanVienScreen = new nhanVienPanel(taiKhoan);
         switchPanel(nhanVienScreen.getNhanVienPanel());
     }
 

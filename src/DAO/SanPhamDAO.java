@@ -8,8 +8,13 @@ import DTB.ConnectDB;
 import DTO.sanPhamDTO;
 
 public class SanPhamDAO {
+    private Connection conn;
 
-    // Lấy sản phẩm theo mã sản phẩm
+    public SanPhamDAO() {
+        this.conn = ConnectDB.getConnection();
+    }
+
+    // Lấy thông tin sản phẩm theo mã sản phẩm
     public sanPhamDTO getSanPhamByMa(String maSanPham) {
         String sql = "SELECT * FROM SanPham WHERE MaSanPham = ?";
 
@@ -23,14 +28,14 @@ public class SanPhamDAO {
                     return new sanPhamDTO(
                             rs.getString("MaSanPham"),
                             rs.getString("TenSanPham"),
-                            rs.getString("MaThuongHieu"),
+                            rs.getString("MaNhaCungCap"),
                             rs.getString("MaDanhMuc"),
-                            rs.getDouble("GiaBan"),
-                            rs.getInt("SoLuongTonKho"),
+                            rs.getString("MauSac"),
                             rs.getString("Size"),
-                            rs.getString("TrangThai"),
+                            rs.getInt("SoLuongTonKho"),
+                            rs.getDouble("GiaBan"),
                             rs.getString("ImgURL"),
-                            rs.getString("MaKhoHang")
+                            rs.getString("TrangThai")
                     );
                 }
             }
@@ -177,36 +182,6 @@ public class SanPhamDAO {
         return sanPhamList;
     }
 
-    // Lấy thông tin sản phẩm theo mã sản phẩm
-    public sanPhamDTO getSanPhamByMa(String maSanPham) {
-        String sql = "SELECT * FROM SanPham WHERE MaSanPham = ?";
-
-        try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, maSanPham);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return new sanPhamDTO(
-                        rs.getString("MaSanPham"),
-                        rs.getString("TenSanPham"),
-                        rs.getString("MaNhaCungCap"),
-                        rs.getString("MaDanhMuc"),
-                        rs.getString("MauSac"),
-                        rs.getString("Size"),
-                        rs.getInt("SoLuongTonKho"),
-                        rs.getDouble("GiaBan"),
-                        rs.getString("ImgURL"),
-                        rs.getString("TrangThai"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     // Thêm sản phẩm mới
     public boolean addSanPham(sanPhamDTO sp) {
         String sql = "INSERT INTO SanPham (MaSanPham, TenSanPham, MaNhaCungCap, MaDanhMuc, MauSac, Size, SoLuongTonKho, GiaBan, ImgURL, TrangThai) "
@@ -351,5 +326,20 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<String> getAllMaSanPham() {
+        List<String> maSanPhamList = new ArrayList<>();
+        try {
+            String sql = "SELECT MaSanPham FROM SanPham";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                maSanPhamList.add(rs.getString("MaSanPham"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return maSanPhamList;
     }
 }

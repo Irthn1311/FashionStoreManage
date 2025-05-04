@@ -37,8 +37,8 @@ public class TaiKhoanDAO {
             
             ps.setString(1, maTaiKhoan);
             ps.setString(2, taiKhoan.getTenDangNhap());
-            ps.setString(3, taiKhoan.getMatKhau()); // Không hash mật khẩu
-            ps.setString(4, taiKhoan.getVaiTro());
+            ps.setString(3, taiKhoan.getMatKhau());
+            ps.setString(4, taiKhoan.getVaiTro().getDisplayName());
             ps.setInt(5, taiKhoan.getTrangThai());
             ps.setString(6, taiKhoan.getMaNhanVien());
 
@@ -296,7 +296,7 @@ public class TaiKhoanDAO {
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, taiKhoan.getTenDangNhap());
             pst.setString(2, taiKhoan.getMatKhau());
-            pst.setString(3, taiKhoan.getVaiTro());
+            pst.setString(3, taiKhoan.getVaiTro().getDisplayName());
             pst.setInt(4, taiKhoan.getTrangThai());
             pst.setString(5, taiKhoan.getMaTaiKhoan());
             return pst.executeUpdate() > 0;
@@ -330,5 +330,20 @@ public class TaiKhoanDAO {
             }
         }
         return null;
+    }
+
+    public boolean capNhatVaiTro(String maTaiKhoan, String vaiTroMoi) {
+        String sql = "UPDATE TaiKhoan SET VaiTro = ? WHERE MaTaiKhoan = ?";
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, vaiTroMoi);
+            pst.setString(2, maTaiKhoan);
+            
+            int rowsAffected = pst.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 } 

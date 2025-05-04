@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import java.sql.SQLException;
 import DAO.TaiKhoanDAO;
 import DTO.taiKhoanDTO;
+import DTO.VaiTro;
 
 public class NhanVienBUS {
     private NhanVienDAO nhanVienDAO;
@@ -58,7 +59,7 @@ public class NhanVienBUS {
                 taiKhoanDTO taiKhoan = new taiKhoanDTO();
                 taiKhoan.setTenDangNhap(nhanVien.getSoDienThoai()); // Sử dụng số điện thoại làm tên đăng nhập
                 taiKhoan.setMatKhau("12345678"); // Mật khẩu mặc định
-                taiKhoan.setVaiTro("Nhân viên");
+                taiKhoan.setVaiTro(VaiTro.NHAN_VIEN);
                 taiKhoan.setTrangThai(1); // Hoạt động
                 taiKhoan.setMaNhanVien(nhanVien.getMaNhanVien());
                 

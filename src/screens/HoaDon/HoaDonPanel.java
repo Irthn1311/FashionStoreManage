@@ -56,40 +56,52 @@ public class HoaDonPanel extends javax.swing.JPanel {
     private void setupIcons() {
         try {
             ImageIcon invoiceIcon = new ImageIcon(getClass().getResource("/icon_img/invoice.png"));
-            Image scaledInvoiceIcon = invoiceIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-            jLabel5.setIcon(new ImageIcon(scaledInvoiceIcon));
-            jLabel5.setHorizontalTextPosition(JLabel.RIGHT);
-            jLabel5.setIconTextGap(10);
+            if (invoiceIcon.getImage() != null) {
+                Image scaledInvoiceIcon = invoiceIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+                jLabel5.setIcon(new ImageIcon(scaledInvoiceIcon));
+                jLabel5.setHorizontalTextPosition(JLabel.RIGHT);
+                jLabel5.setIconTextGap(10);
+            }
 
             ImageIcon searchIcon = new ImageIcon(getClass().getResource("/icon_img/search.png"));
-            Image scaledSearchIcon = searchIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            jButton30.setIcon(new ImageIcon(scaledSearchIcon));
-            jButton30.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-            jButton30.setIconTextGap(5);
+            if (searchIcon.getImage() != null) {
+                Image scaledSearchIcon = searchIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                jButton30.setIcon(new ImageIcon(scaledSearchIcon));
+                jButton30.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                jButton30.setIconTextGap(5);
+            }
 
             ImageIcon addIcon = new ImageIcon(getClass().getResource("/icon_img/add.png"));
-            Image scaledAddIcon = addIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            jButton31.setIcon(new ImageIcon(scaledAddIcon));
-            jButton31.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-            jButton31.setIconTextGap(5);
+            if (addIcon.getImage() != null) {
+                Image scaledAddIcon = addIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                jButton31.setIcon(new ImageIcon(scaledAddIcon));
+                jButton31.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                jButton31.setIconTextGap(5);
+            }
 
             ImageIcon editIcon = new ImageIcon(getClass().getResource("/icon_img/edit.png"));
-            Image scaledEditIcon = editIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            jButton32.setIcon(new ImageIcon(scaledEditIcon));
-            jButton32.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-            jButton32.setIconTextGap(5);
+            if (editIcon.getImage() != null) {
+                Image scaledEditIcon = editIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                jButton32.setIcon(new ImageIcon(scaledEditIcon));
+                jButton32.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                jButton32.setIconTextGap(5);
+            }
 
             ImageIcon deleteIcon = new ImageIcon(getClass().getResource("/icon_img/delete.png"));
-            Image scaledDeleteIcon = deleteIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            jButton33.setIcon(new ImageIcon(scaledDeleteIcon));
-            jButton33.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-            jButton33.setIconTextGap(5);
+            if (deleteIcon.getImage() != null) {
+                Image scaledDeleteIcon = deleteIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                jButton33.setIcon(new ImageIcon(scaledDeleteIcon));
+                jButton33.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                jButton33.setIconTextGap(5);
+            }
 
             ImageIcon exportIcon = new ImageIcon(getClass().getResource("/icon_img/export_icon.png"));
-            Image scaledExportIcon = exportIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-            jButton34.setIcon(new ImageIcon(scaledExportIcon));
-            jButton34.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-            jButton34.setIconTextGap(5);
+            if (exportIcon.getImage() != null) {
+                Image scaledExportIcon = exportIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                jButton34.setIcon(new ImageIcon(scaledExportIcon));
+                jButton34.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                jButton34.setIconTextGap(5);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,

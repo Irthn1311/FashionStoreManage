@@ -53,7 +53,11 @@ public class HoaDonDAO {
     // Lấy tất cả hóa đơn
     public List<hoaDonDTO> getAllHoaDon() {
         List<hoaDonDTO> hoaDonList = new ArrayList<>();
-        String sql = "SELECT MaHoaDon, MaSanPham, TenSanPham, KichCo, MauSac, SoLuong, MaKhachHang, TenKhachHang, ThanhTien, DonGia, HinhThucThanhToan, ThoiGian, TrangThai FROM HoaDon";
+        String sql = "SELECT hd.MaHoaDon, hd.MaSanPham, hd.TenSanPham, hd.KichCo, hd.MauSac, hd.SoLuong, " +
+                    "hd.MaKhachHang, kh.HoTen as TenKhachHang, hd.ThanhTien, hd.DonGia, " +
+                    "hd.HinhThucThanhToan, CONVERT(datetime, hd.ThoiGian, 120) as ThoiGian, hd.TrangThai " +
+                    "FROM HoaDon hd " +
+                    "LEFT JOIN KhachHang kh ON hd.MaKhachHang = kh.MaKhachHang";
 
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -106,7 +110,12 @@ public class HoaDonDAO {
 
     // Lấy hóa đơn theo MaHoaDon
     public hoaDonDTO getHoaDonByMa(String maHoaDon) {
-        String sql = "SELECT MaHoaDon, MaSanPham, TenSanPham, KichCo, MauSac, SoLuong, MaKhachHang, TenKhachHang, ThanhTien, DonGia, HinhThucThanhToan, ThoiGian, TrangThai FROM HoaDon WHERE MaHoaDon = ?";
+        String sql = "SELECT hd.MaHoaDon, hd.MaSanPham, hd.TenSanPham, hd.KichCo, hd.MauSac, hd.SoLuong, " +
+                    "hd.MaKhachHang, kh.HoTen as TenKhachHang, hd.ThanhTien, hd.DonGia, " +
+                    "hd.HinhThucThanhToan, CONVERT(datetime, hd.ThoiGian, 120) as ThoiGian, hd.TrangThai " +
+                    "FROM HoaDon hd " +
+                    "LEFT JOIN KhachHang kh ON hd.MaKhachHang = kh.MaKhachHang " +
+                    "WHERE hd.MaHoaDon = ?";
         hoaDonDTO hd = null;
 
         try (Connection conn = ConnectDB.getConnection();
@@ -129,11 +138,6 @@ public class HoaDonDAO {
                         rs.getTimestamp("ThoiGian"),
                         rs.getString("TrangThai")
                     );
-                }
-                // Kiểm tra nếu có nhiều bản ghi trùng lặp
-                if (rs.next()) {
-                    System.err.println("Lỗi: Tìm thấy nhiều hóa đơn với MaHoaDon: " + maHoaDon);
-                    throw new SQLException("Lỗi: Tìm thấy nhiều hóa đơn với MaHoaDon: " + maHoaDon);
                 }
             }
         } catch (SQLException e) {
@@ -358,8 +362,43 @@ public class HoaDonDAO {
     }
 
     public List<sanPhamThongKeDTO> getSanPhamDoanhThuCao(Timestamp startDate, Timestamp endDate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSanPhamDoanhThuCao'");
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Thời gian bắt đầu và kết thúc không được null");
+        }
+        
+        List<sanPhamThongKeDTO> result = new ArrayList<>();
+        String sql = "SELECT h.MaSanPham, s.TenSanPham, h.MaKhachHang, k.HoTen as TenKhachHang, " +
+                    "SUM(h.SoLuong) as SoLuong, SUM(h.ThanhTien) as DoanhThu " +
+                    "FROM HoaDon h " +
+                    "JOIN SanPham s ON h.MaSanPham = s.MaSanPham " +
+                    "JOIN KhachHang k ON h.MaKhachHang = k.MaKhachHang " +
+                    "WHERE h.ThoiGian BETWEEN ? AND ? " +
+                    "GROUP BY h.MaSanPham, s.TenSanPham, h.MaKhachHang, k.HoTen " +
+                    "ORDER BY DoanhThu DESC";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, startDate);
+            ps.setTimestamp(2, endDate);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    sanPhamThongKeDTO dto = new sanPhamThongKeDTO(
+                        rs.getString("MaSanPham"),
+                        rs.getString("TenSanPham"),
+                        rs.getString("MaKhachHang"),
+                        rs.getString("TenKhachHang"),
+                        rs.getInt("SoLuong"),
+                        rs.getDouble("DoanhThu")
+                    );
+                    result.add(dto);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy danh sách sản phẩm doanh thu cao: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public List<sanPhamThongKeDTO> getSanPhamBanChayNhat(Timestamp startDate, Timestamp endDate) {

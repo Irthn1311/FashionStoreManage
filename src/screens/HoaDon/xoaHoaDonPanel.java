@@ -41,6 +41,12 @@ public class xoaHoaDonPanel extends JFrame {
      * Phương thức hiển thị hộp thoại xác nhận và thực hiện xóa
      */
     private void confirmAndDelete() {
+        if (hoaDon == null) {
+            JOptionPane.showMessageDialog(null, "Hóa đơn không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            dispose();
+            return;
+        }
+
         try {
             int confirm = JOptionPane.showConfirmDialog(null,
                     "Bạn có chắc chắn muốn xóa hóa đơn " + hoaDon.getMaHoaDon() + " không?",
@@ -72,11 +78,15 @@ public class xoaHoaDonPanel extends JFrame {
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
-        } catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(null, "Lỗi khi xóa hóa đơn: " + ex.getMessage(), "Lỗi",
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Lỗi khi xóa hóa đơn: " + e.getMessage(), "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
         } finally {
-            dispose(); // Đóng JFrame
+            // Đóng dialog sau khi xử lý xong
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window != null) {
+                window.dispose();
+            }
         }
     }
 
