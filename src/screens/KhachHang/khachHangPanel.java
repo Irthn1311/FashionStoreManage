@@ -2,9 +2,8 @@ package screens.KhachHang;
 
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
-import DAO.KhachhangDAO;
+import DAO.KhachHangDAO;
 import DTO.khachHangDTO;
-import DTO.taiKhoanDTO;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.awt.event.ActionListener;
@@ -20,23 +19,20 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class khachHangPanel extends javax.swing.JPanel {
-    private KhachhangDAO khachHangDAO;
+    private KhachHangDAO khachHangDAO;
     private SimpleDateFormat dateFormat;
-    private SimpleDateFormat timestampFormat;
 
     public khachHangPanel() {
         initComponents();
         setupUI();
 
         // Khởi tạo DAO và định dạng ngày tháng
-        khachHangDAO = new KhachhangDAO();
+        khachHangDAO = new KhachHangDAO();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        timestampFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
         setupSearchComponents();
         setupTable();
@@ -52,7 +48,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         khachHangTable.getColumnModel().getColumn(1).setPreferredWidth(100); // Mã KH
         khachHangTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên KH
         khachHangTable.getColumnModel().getColumn(3).setPreferredWidth(100); // Tên đăng nhập
-        khachHangTable.getColumnModel().getColumn(4).setPreferredWidth(80);  // Năm sinh
+        khachHangTable.getColumnModel().getColumn(4).setPreferredWidth(80);  // Ngày sinh
         khachHangTable.getColumnModel().getColumn(5).setPreferredWidth(70);  // Giới tính
         khachHangTable.getColumnModel().getColumn(6).setPreferredWidth(150); // Email
         khachHangTable.getColumnModel().getColumn(7).setPreferredWidth(100); // Số điện thoại
@@ -65,7 +61,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         
         khachHangTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);  // STT
         khachHangTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);  // Mã KH
-        khachHangTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);  // Năm sinh
+        khachHangTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);  // Ngày sinh
         khachHangTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);  // Giới tính
         khachHangTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);  // Số điện thoại
         khachHangTable.getColumnModel().getColumn(9).setCellRenderer(centerRenderer);  // Chi tiết
@@ -130,31 +126,19 @@ public class khachHangPanel extends javax.swing.JPanel {
             // Lấy các giá trị từ bảng và xử lý null
             String tenDangNhap = getTableValueAsString(row, 3);
             String email = getTableValueAsString(row, 6);
-            String phone = getTableValueAsString(row, 7);
+            String soDienThoai = getTableValueAsString(row, 7);
             String diaChi = getTableValueAsString(row, 8);
 
-            // Tạo đối tượng taiKhoanDTO
-            taiKhoanDTO taiKhoan = new taiKhoanDTO(
-                null, // maTaiKhoan
-                tenDangNhap,
-                null, // matKhau
-                email,
-                phone,
-                "USER", // vaiTro
-                "ACTIVE" // trangThai
-            );
-
-            // Lấy thông tin khách hàng từ row được chọn
+            // Tạo đối tượng khachHangDTO
             khachHangDTO kh = new khachHangDTO(
                 getTableValueAsString(row, 1), // maKhachHang
                 getTableValueAsString(row, 2), // hoTen
+                tenDangNhap,
                 email,
-                phone,
+                soDienThoai,
                 diaChi,
                 getTableValueAsString(row, 5), // gioiTinh
-                ngaySinh,
-                new Timestamp(System.currentTimeMillis()),
-                taiKhoan
+                ngaySinh
             );
 
             // Hiển thị dialog chi tiết
@@ -177,6 +161,7 @@ public class khachHangPanel extends javax.swing.JPanel {
 
     private void loadKhachHangData() {
         List<khachHangDTO> khachHangList = khachHangDAO.getAllKhachHang();
+        System.out.println("Số lượng khách hàng trong giao diện: " + khachHangList.size());
         updateTableData(khachHangList);
     }
 
@@ -186,7 +171,7 @@ public class khachHangPanel extends javax.swing.JPanel {
 
         int stt = 1;
         for (khachHangDTO kh : khachHangList) {
-            String ngaySinhStr = "";
+            String ngaySinhStr = "Chưa cập nhật";
 
             try {
                 if (kh.getNgaySinh() != null) {
@@ -204,7 +189,7 @@ public class khachHangPanel extends javax.swing.JPanel {
                     ngaySinhStr,
                     kh.getGioiTinh(),
                     kh.getEmail(),
-                    kh.getPhone(),
+                    kh.getSoDienThoai(),
                     kh.getDiaChi() != null && !kh.getDiaChi().trim().isEmpty() ? kh.getDiaChi() : "Chưa cập nhật",
                     "Xem chi tiết"
             });
@@ -296,7 +281,7 @@ public class khachHangPanel extends javax.swing.JPanel {
                         String tenDangNhap = getTableValueAsString(selectedRow, 3);
                         String gioiTinh = getTableValueAsString(selectedRow, 5);
                         String email = getTableValueAsString(selectedRow, 6);
-                        String phone = getTableValueAsString(selectedRow, 7);
+                        String soDienThoai = getTableValueAsString(selectedRow, 7);
                         String diaChi = getTableValueAsString(selectedRow, 8);
 
                         // Kiểm tra các giá trị bắt buộc
@@ -308,28 +293,16 @@ public class khachHangPanel extends javax.swing.JPanel {
                             return;
                         }
 
-                        // Tạo đối tượng taiKhoanDTO
-                        taiKhoanDTO taiKhoan = new taiKhoanDTO(
-                            null, // maTaiKhoan
-                            tenDangNhap,
-                            null, // matKhau
-                            email,
-                            phone,
-                            "USER", // vaiTro
-                            "ACTIVE" // trangThai
-                        );
-
                         // Tạo đối tượng khachHangDTO
                         khachHangDTO kh = new khachHangDTO(
                             maKH,
                             hoTen,
+                            tenDangNhap,
                             email,
-                            phone,
+                            soDienThoai,
                             diaChi,
                             gioiTinh,
-                            ngaySinh,
-                            new Timestamp(System.currentTimeMillis()),
-                            taiKhoan
+                            ngaySinh
                         );
 
                         // Hiển thị dialog sửa thông tin
@@ -491,7 +464,7 @@ public class khachHangPanel extends javax.swing.JPanel {
                 new Object[][] {
                 },
                 new String[] {
-                        "STT", "Mã Khách Hàng", "Tên Khách Hàng", "Tên Đăng Nhập", "Năm Sinh", "Giới Tính",
+                        "STT", "Mã Khách Hàng", "Tên Khách Hàng", "Tên Đăng Nhập", "Ngày Sinh", "Giới Tính",
                         "Email", "Số Điện Thoại", "Địa Chỉ", "Chi Tiết"
                 }) {
             boolean[] canEdit = new boolean[] {

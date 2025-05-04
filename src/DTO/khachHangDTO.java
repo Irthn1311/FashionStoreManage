@@ -1,31 +1,27 @@
 package DTO;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
 public class khachHangDTO {
     private String maKhachHang;
     private String hoTen;
+    private String tenDangNhap;
     private String email;
-    private String phone;
+    private String soDienThoai;
     private String diaChi;
     private String gioiTinh;
     private Date ngaySinh;
-    private Timestamp ngayDangKy;
-    private taiKhoanDTO taiKhoan;
 
-    public khachHangDTO(String maKhachHang, String hoTen, String email, String phone, 
-                     String diaChi, String gioiTinh, Date ngaySinh, 
-                     Timestamp ngayDangKy, taiKhoanDTO taiKhoan) {
+    public khachHangDTO(String maKhachHang, String hoTen, String tenDangNhap, String email, 
+                        String soDienThoai, String diaChi, String gioiTinh, Date ngaySinh) {
         this.maKhachHang = maKhachHang;
         this.hoTen = hoTen;
+        this.tenDangNhap = tenDangNhap;
         this.email = email;
-        this.phone = phone;
+        this.soDienThoai = soDienThoai;
         this.diaChi = diaChi;
         this.gioiTinh = gioiTinh;
         this.ngaySinh = ngaySinh;
-        this.ngayDangKy = ngayDangKy;
-        this.taiKhoan = taiKhoan;
     }
 
     // Getters
@@ -37,12 +33,16 @@ public class khachHangDTO {
         return hoTen;
     }
 
+    public String getTenDangNhap() {
+        return tenDangNhap;
+    }
+
     public String getEmail() {
         return email;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getSoDienThoai() {
+        return soDienThoai;
     }
 
     public String getDiaChi() {
@@ -57,23 +57,6 @@ public class khachHangDTO {
         return ngaySinh;
     }
 
-    public Timestamp getNgayDangKy() {
-        return ngayDangKy;
-    }
-
-    public taiKhoanDTO getTaiKhoan() {
-        return taiKhoan;
-    }
-
-    // Các phương thức tiện ích để lấy thông tin từ taiKhoan
-    public String getMaTaiKhoan() {
-        return taiKhoan != null ? taiKhoan.getMaTaiKhoan() : null;
-    }
-
-    public String getTenDangNhap() {
-        return taiKhoan != null ? taiKhoan.getTenDangNhap() : null;
-    }
-
     // Setters
     public void setMaKhachHang(String maKhachHang) {
         this.maKhachHang = maKhachHang;
@@ -83,12 +66,16 @@ public class khachHangDTO {
         this.hoTen = hoTen;
     }
 
+    public void setTenDangNhap(String tenDangNhap) {
+        this.tenDangNhap = tenDangNhap;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setSoDienThoai(String soDienThoai) {
+        this.soDienThoai = soDienThoai;
     }
 
     public void setDiaChi(String diaChi) {
@@ -103,26 +90,17 @@ public class khachHangDTO {
         this.ngaySinh = ngaySinh;
     }
 
-    public void setNgayDangKy(Timestamp ngayDangKy) {
-        this.ngayDangKy = ngayDangKy;
-    }
-
-    public void setTaiKhoan(taiKhoanDTO taiKhoan) {
-        this.taiKhoan = taiKhoan;
-    }
-
     @Override
-public String toString() {
-    return "KhachHang {" +
-            "maKhachHang='" + maKhachHang + '\'' +
-            ", hoTen='" + hoTen + '\'' +
-            ", email='" + email + '\'' +
-            ", phone='" + phone + '\'' +
-            ", diaChi='" + diaChi + '\'' +
-            ", gioiTinh='" + gioiTinh + '\'' +
-            ", ngaySinh=" + ngaySinh +
-            ", ngayDangKy=" + ngayDangKy +
-            '}';
+    public String toString() {
+        return "KhachHang {" +
+                "maKhachHang='" + maKhachHang + '\'' +
+                ", hoTen='" + hoTen + '\'' +
+                ", tenDangNhap='" + tenDangNhap + '\'' +
+                ", email='" + email + '\'' +
+                ", soDienThoai='" + soDienThoai + '\'' +
+                ", diaChi='" + diaChi + '\'' +
+                ", gioiTinh='" + gioiTinh + '\'' +
+                ", ngaySinh=" + ngaySinh +
+                '}';
+    }
 }
-
-} 

@@ -18,7 +18,7 @@ public class DBConnection {
 
             // Credentials
             String username = "sa";
-            String password = "vaicaten01"; // Thay bằng mật khẩu thật của bạn
+            String password = "12345678"; // Thay bằng mật khẩu thật của bạn
 
             // Kết nối
             connection = DriverManager.getConnection(url, username, password);

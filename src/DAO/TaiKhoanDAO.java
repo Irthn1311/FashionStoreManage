@@ -1,23 +1,51 @@
 package DAO;
 
 import DTB.ConnectDB;
+import DTO.taiKhoanDTO;
 import java.sql.*;
 import java.text.Normalizer;
 import java.util.regex.Pattern;
 import java.util.Calendar;
 
 public class TaiKhoanDAO {
-    
+
+    public taiKhoanDTO getTaiKhoanByMa(String maTaiKhoan) {
+        String sql = "SELECT * FROM TaiKhoan WHERE ID = ?";
+
+        try (Connection conn = ConnectDB.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maTaiKhoan);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new taiKhoanDTO(
+                            rs.getString("ID"),
+                            rs.getString("HoVaTen"),
+                            rs.getString("TenDangNhap"),
+                            rs.getString("Email"),
+                            rs.getString("SoDienThoai"),
+                            rs.getString("ChucVu"),
+                            rs.getString("TrangThai"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Trả về null nếu không tìm thấy tài khoản
+    }
+
     public synchronized String taoMaTaiKhoanMoi() {
         String prefix = "TK";
         String sql = "SELECT TOP 1 ID FROM TaiKhoan " +
-                    "WHERE ID LIKE 'TK%' " +
-                    "ORDER BY CAST(SUBSTRING(ID, 3, LEN(ID)) AS INT) DESC";
-        
+                "WHERE ID LIKE 'TK%' " +
+                "ORDER BY CAST(SUBSTRING(ID, 3, LEN(ID)) AS INT) DESC";
+
         try (Connection conn = ConnectDB.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+
             if (rs.next()) {
                 String maCuoi = rs.getString("ID");
                 // Lấy phần số từ mã cuối
@@ -39,29 +67,29 @@ public class TaiKhoanDAO {
     public String taoTenDangNhap(String hoTen, int ngaySinh, int thangSinh) {
         // Chuyển họ tên thành chữ thường không dấu
         String tenKhongDau = removeAccent(hoTen.toLowerCase().trim());
-        
+
         // Loại bỏ khoảng trắng và ký tự đặc biệt
         tenKhongDau = tenKhongDau.replaceAll("[^a-z0-9]", "");
-        
+
         // Thêm ngày và tháng sinh
         String tenDangNhap = String.format("%s%02d%02d", tenKhongDau, ngaySinh, thangSinh);
-        
+
         // Kiểm tra xem tên đăng nhập đã tồn tại chưa
         if (kiemTraTenDangNhapTonTai(tenDangNhap)) {
             // Nếu đã tồn tại, thêm số ngẫu nhiên vào cuối
             int soNgauNhien = (int) (Math.random() * 1000);
             tenDangNhap = String.format("%s%03d", tenDangNhap, soNgauNhien);
         }
-        
+
         return tenDangNhap;
     }
 
     private boolean kiemTraTenDangNhapTonTai(String tenDangNhap) {
         String sql = "SELECT COUNT(*) FROM TaiKhoan WHERE HoVaTen = ?";
-        
+
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, tenDangNhap);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -97,12 +125,13 @@ public class TaiKhoanDAO {
         // Tạo tên đăng nhập
         String tenDangNhap = taoTenDangNhap(hoTen, ngay, thang);
 
-        String sql = "INSERT INTO TaiKhoan (ID, HoVaTen, Email, SoDienThoai, DiaChi, GioiTinh, Tuoi, ChucVu, NgayThanhLap, TenCongTy) " +
-                    "VALUES (?, ?, ?, ?, NULL, NULL, ?, 'USER', GETDATE(), NULL)";
+        String sql = "INSERT INTO TaiKhoan (ID, HoVaTen, Email, SoDienThoai, DiaChi, GioiTinh, Tuoi, ChucVu, NgayThanhLap, TenCongTy) "
+                +
+                "VALUES (?, ?, ?, ?, NULL, NULL, ?, 'USER', GETDATE(), NULL)";
 
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, maTaiKhoan);
             ps.setString(2, hoTen);
             ps.setString(3, email);
@@ -116,7 +145,7 @@ public class TaiKhoanDAO {
             e.printStackTrace();
             throw new RuntimeException("Lỗi khi tạo tài khoản: " + e.getMessage());
         }
-        
+
         return null;
     }
-} 
+}

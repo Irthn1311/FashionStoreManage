@@ -2,22 +2,18 @@ package screens.KhachHang;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import DTO.khachHangDTO;
-import DTO.taiKhoanDTO;
 import java.text.SimpleDateFormat;
+import DTO.khachHangDTO;
 
 public class chiTietKhachHangDialog extends JDialog {
     private khachHangDTO khachHang;
     private SimpleDateFormat dateFormat;
-    private SimpleDateFormat timestampFormat;
     private JPanel mainPanel;
 
     public chiTietKhachHangDialog(Frame parent, khachHangDTO khachHang) {
         super(parent, "Chi Tiết Khách Hàng", true);
         this.khachHang = khachHang;
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        this.timestampFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         
         initComponents();
         setLocationRelativeTo(parent);
@@ -46,21 +42,8 @@ public class chiTietKhachHangDialog extends JDialog {
         gbc.gridy++;
         addField("Họ tên:", khachHang.getHoTen(), gbc);
 
-        // Thông tin tài khoản
-        taiKhoanDTO taiKhoan = khachHang.getTaiKhoan();
-        if (taiKhoan != null) {
-            gbc.gridy++;
-            addField("Mã tài khoản:", taiKhoan.getMaTaiKhoan(), gbc);
-
-            gbc.gridy++;
-            addField("Tên đăng nhập:", taiKhoan.getTenDangNhap(), gbc);
-
-            gbc.gridy++;
-            addField("Vai trò:", taiKhoan.getVaiTro(), gbc);
-
-            gbc.gridy++;
-            addField("Trạng thái:", taiKhoan.getTrangThai(), gbc);
-        }
+        gbc.gridy++;
+        addField("Tên đăng nhập:", khachHang.getTenDangNhap(), gbc);
 
         gbc.gridy++;
         addField("Ngày sinh:", khachHang.getNgaySinh() != null ? 
@@ -78,12 +61,8 @@ public class chiTietKhachHangDialog extends JDialog {
                 khachHang.getEmail() : "Chưa cập nhật", gbc);
 
         gbc.gridy++;
-        addField("Số điện thoại:", khachHang.getPhone() != null && !khachHang.getPhone().trim().isEmpty() ? 
-                khachHang.getPhone() : "Chưa cập nhật", gbc);
-
-        gbc.gridy++;
-        addField("Ngày đăng ký:", khachHang.getNgayDangKy() != null ? 
-                timestampFormat.format(khachHang.getNgayDangKy()) : "Chưa cập nhật", gbc);
+        addField("Số điện thoại:", khachHang.getSoDienThoai() != null && !khachHang.getSoDienThoai().trim().isEmpty() ? 
+                khachHang.getSoDienThoai() : "Chưa cập nhật", gbc);
 
         // Nút đóng
         gbc.gridy++;
@@ -115,4 +94,4 @@ public class chiTietKhachHangDialog extends JDialog {
 
         gbc.gridx = 0;
     }
-} 
+}

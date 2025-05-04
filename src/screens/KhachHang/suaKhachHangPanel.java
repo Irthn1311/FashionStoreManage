@@ -7,12 +7,11 @@ import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
 import DTO.khachHangDTO;
-import DTO.taiKhoanDTO;
-import DAO.KhachhangDAO;
+import DAO.KhachHangDAO;
 
 public class suaKhachHangPanel extends JPanel {
     private khachHangDTO khachHang;
-    private KhachhangDAO khachHangDAO;
+    private KhachHangDAO khachHangDAO;
     private SimpleDateFormat dateFormat;
     private JDialog parentDialog;
 
@@ -20,7 +19,7 @@ public class suaKhachHangPanel extends JPanel {
     private JTextField txtMaKH;
     private JTextField txtHoTen;
     private JTextField txtEmail;
-    private JTextField txtPhone;
+    private JTextField txtSoDienThoai;
     private JTextField txtDiaChi;
     private JComboBox<String> cboGioiTinh;
     private JTextField txtNgaySinh;
@@ -31,7 +30,7 @@ public class suaKhachHangPanel extends JPanel {
     public suaKhachHangPanel(JDialog parent, khachHangDTO khachHang) {
         this.parentDialog = parent;
         this.khachHang = khachHang;
-        this.khachHangDAO = new KhachhangDAO();
+        this.khachHangDAO = new KhachHangDAO();
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         initComponents();
@@ -60,7 +59,7 @@ public class suaKhachHangPanel extends JPanel {
         txtMaKH = new JTextField(20);
         txtHoTen = new JTextField(20);
         txtEmail = new JTextField(20);
-        txtPhone = new JTextField(20);
+        txtSoDienThoai = new JTextField(20);
         txtDiaChi = new JTextField(20);
         cboGioiTinh = new JComboBox<>(new String[]{"Nam", "Nữ"});
         txtNgaySinh = new JTextField(20);
@@ -82,34 +81,34 @@ public class suaKhachHangPanel extends JPanel {
         mainPanel.add(txtHoTen, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
+        mainPanel.add(new JLabel("Tên đăng nhập:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(txtTenDangNhap, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 3;
         mainPanel.add(new JLabel("Email:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtEmail, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 4;
         mainPanel.add(new JLabel("Số điện thoại:"), gbc);
         gbc.gridx = 1;
-        mainPanel.add(txtPhone, gbc);
+        mainPanel.add(txtSoDienThoai, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0; gbc.gridy = 5;
         mainPanel.add(new JLabel("Địa chỉ:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtDiaChi, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5;
+        gbc.gridx = 0; gbc.gridy = 6;
         mainPanel.add(new JLabel("Giới tính:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(cboGioiTinh, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 6;
+        gbc.gridx = 0; gbc.gridy = 7;
         mainPanel.add(new JLabel("Ngày sinh (dd/MM/yyyy):"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtNgaySinh, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 7;
-        mainPanel.add(new JLabel("Tên đăng nhập:"), gbc);
-        gbc.gridx = 1;
-        mainPanel.add(txtTenDangNhap, gbc);
 
         // Panel chứa buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -137,17 +136,14 @@ public class suaKhachHangPanel extends JPanel {
     private void loadKhachHangData() {
         txtMaKH.setText(khachHang.getMaKhachHang());
         txtHoTen.setText(khachHang.getHoTen());
+        txtTenDangNhap.setText(khachHang.getTenDangNhap());
         txtEmail.setText(khachHang.getEmail());
-        txtPhone.setText(khachHang.getPhone());
+        txtSoDienThoai.setText(khachHang.getSoDienThoai());
         txtDiaChi.setText(khachHang.getDiaChi());
         cboGioiTinh.setSelectedItem(khachHang.getGioiTinh());
         
         if (khachHang.getNgaySinh() != null) {
             txtNgaySinh.setText(dateFormat.format(khachHang.getNgaySinh()));
-        }
-        
-        if (khachHang.getTaiKhoan() != null) {
-            txtTenDangNhap.setText(khachHang.getTaiKhoan().getTenDangNhap());
         }
     }
 
@@ -164,7 +160,7 @@ public class suaKhachHangPanel extends JPanel {
                 return;
             }
 
-            if (txtPhone.getText().trim().isEmpty()) {
+            if (txtSoDienThoai.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -188,13 +184,12 @@ public class suaKhachHangPanel extends JPanel {
             khachHangDTO khachHangCapNhat = new khachHangDTO(
                 txtMaKH.getText(),
                 txtHoTen.getText().trim(),
+                txtTenDangNhap.getText().trim(),
                 txtEmail.getText().trim(),
-                txtPhone.getText().trim(),
+                txtSoDienThoai.getText().trim(),
                 txtDiaChi.getText().trim(),
                 cboGioiTinh.getSelectedItem().toString(),
-                ngaySinh,
-                khachHang.getNgayDangKy(),
-                khachHang.getTaiKhoan()
+                ngaySinh
             );
 
             // Gọi DAO để cập nhật
@@ -220,4 +215,4 @@ public class suaKhachHangPanel extends JPanel {
                 JOptionPane.ERROR_MESSAGE);
         }
     }
-} 
+}
