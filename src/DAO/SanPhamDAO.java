@@ -246,4 +246,77 @@ public class SanPhamDAO {
             return false;
         }
     }
+
+    // Cập nhật số lượng sản phẩm
+    public boolean capNhatSoLuongSanPham(String maSanPham, int soLuongThem) {
+        String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
+
+        try (Connection conn = ConnectDB.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, soLuongThem);
+            ps.setString(2, maSanPham);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Kiểm tra số lượng tồn kho của sản phẩm có đủ để xuất không
+    public boolean kiemTraTonKho(String maSanPham, int soLuongCanXuat) {
+        String sql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int soLuongHienTai = rs.getInt("SoLuongTonKho");
+                return soLuongHienTai >= soLuongCanXuat;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Giảm số lượng tồn kho khi xuất hàng
+    public boolean giamSoLuongTonKho(String maSanPham, int soLuongXuat) {
+        String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho - ? WHERE MaSanPham = ? AND SoLuongTonKho >= ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, soLuongXuat);
+            ps.setString(2, maSanPham);
+            ps.setInt(3, soLuongXuat);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Kiểm tra cảnh báo tồn kho thấp
+    public boolean kiemTraCanhBaoTonKho(String maSanPham) {
+        String sql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int soLuongHienTai = rs.getInt("SoLuongTonKho");
+                return soLuongHienTai <= 10; // Cảnh báo khi dưới hoặc bằng 10
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
