@@ -2,6 +2,8 @@ package screens.KhachHang;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import DTO.khachHangDTO;
 import java.text.SimpleDateFormat;
 import DTO.khachHangDTO;
 
@@ -43,26 +45,23 @@ public class chiTietKhachHangDialog extends JDialog {
         addField("Họ tên:", khachHang.getHoTen(), gbc);
 
         gbc.gridy++;
-        addField("Tên đăng nhập:", khachHang.getTenDangNhap(), gbc);
-
-        gbc.gridy++;
-        addField("Ngày sinh:", khachHang.getNgaySinh() != null ? 
-                dateFormat.format(khachHang.getNgaySinh()) : "Chưa cập nhật", gbc);
-
-        gbc.gridy++;
         addField("Giới tính:", khachHang.getGioiTinh(), gbc);
 
         gbc.gridy++;
-        addField("Địa chỉ:", khachHang.getDiaChi() != null && !khachHang.getDiaChi().trim().isEmpty() ? 
-                khachHang.getDiaChi() : "Chưa cập nhật", gbc);
+        addField("Số điện thoại:", khachHang.getSoDienThoai() != null && !khachHang.getSoDienThoai().trim().isEmpty() ? 
+                khachHang.getSoDienThoai() : "Chưa cập nhật", gbc);
 
         gbc.gridy++;
         addField("Email:", khachHang.getEmail() != null && !khachHang.getEmail().trim().isEmpty() ? 
                 khachHang.getEmail() : "Chưa cập nhật", gbc);
 
         gbc.gridy++;
-        addField("Số điện thoại:", khachHang.getSoDienThoai() != null && !khachHang.getSoDienThoai().trim().isEmpty() ? 
-                khachHang.getSoDienThoai() : "Chưa cập nhật", gbc);
+        addField("Địa chỉ:", khachHang.getDiaChi() != null && !khachHang.getDiaChi().trim().isEmpty() ? 
+                khachHang.getDiaChi() : "Chưa cập nhật", gbc);
+
+        gbc.gridy++;
+        addField("Ngày sinh:", khachHang.getNgaySinh() != null ? 
+                dateFormat.format(khachHang.getNgaySinh()) : "Chưa cập nhật", gbc);
 
         // Nút đóng
         gbc.gridy++;
@@ -79,7 +78,7 @@ public class chiTietKhachHangDialog extends JDialog {
         setResizable(false);
         
         // Đặt kích thước tối thiểu
-        setMinimumSize(new Dimension(500, 500));
+        setMinimumSize(new Dimension(500, 400));
     }
 
     private void addField(String label, String value, GridBagConstraints gbc) {

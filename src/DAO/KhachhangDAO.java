@@ -63,6 +63,8 @@ public class KhachHangDAO {
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 // Xử lý ngày tháng
@@ -116,7 +118,6 @@ public class KhachHangDAO {
                      "FROM KhachHang " +
                      "WHERE 1=1 ";
 
-        // Thêm điều kiện tìm kiếm dựa vào loại tìm kiếm
         switch (searchType) {
             case "Mã khách hàng":
                 sql += "AND MaKhachHang LIKE ? ";
@@ -129,8 +130,10 @@ public class KhachHangDAO {
                 break;
             case "Số điện thoại":
                 sql += "AND SoDienThoai LIKE ? ";
+                sql += "AND SoDienThoai LIKE ? ";
                 break;
             default:
+                sql += "AND (MaKhachHang LIKE ? OR HoTen LIKE ? OR Email LIKE ? OR SoDienThoai LIKE ?) ";
                 sql += "AND (MaKhachHang LIKE ? OR HoTen LIKE ? OR Email LIKE ? OR SoDienThoai LIKE ?) ";
                 break;
         }
@@ -138,7 +141,6 @@ public class KhachHangDAO {
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            // Set tham số cho câu truy vấn
             if ("Tất cả".equals(searchType)) {
                 String likePattern = "%" + keyword + "%";
                 ps.setString(1, likePattern);
@@ -191,9 +193,7 @@ public class KhachHangDAO {
             ps.setString(7, khachHang.getGioiTinh());
             ps.setDate(8, khachHang.getNgaySinh());
 
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
-
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Lỗi khi thêm khách hàng: " + e.getMessage());
             e.printStackTrace();

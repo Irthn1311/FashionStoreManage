@@ -5,6 +5,10 @@
 package screens.DangKy;
 
 import javax.swing.UIManager;
+import BUS.TaiKhoanBUS;
+import DTO.taiKhoanDTO;
+import javax.swing.JOptionPane;
+import DAO.NhanVienDAO;
 
 /**
  *
@@ -12,11 +16,15 @@ import javax.swing.UIManager;
  */
 public class register extends javax.swing.JFrame {
 
+    private TaiKhoanBUS taiKhoanBUS;
+
     /**
      * Creates new form register
      */
     public register() {
         initComponents();
+        taiKhoanBUS = new TaiKhoanBUS();
+        addActionListeners();
     }
 
     /**
@@ -27,141 +35,225 @@ public class register extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
+        jPasswordField1 = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField3 = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
-        jLabel84 = new javax.swing.JLabel();
-        jLabel86 = new javax.swing.JLabel();
-        jTextField15 = new javax.swing.JTextField();
-        jTextField16 = new javax.swing.JTextField();
-        jLabel87 = new javax.swing.JLabel();
-        jTextField17 = new javax.swing.JTextField();
-        jPanel14 = new javax.swing.JPanel();
-        jLabel85 = new javax.swing.JLabel();
-        jLabel83 = new javax.swing.JLabel();
-        jLabel82 = new javax.swing.JLabel();
-        jLabel81 = new javax.swing.JLabel();
-        jLabel80 = new javax.swing.JLabel();
+        jPasswordField2 = new javax.swing.JPasswordField();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Đăng ký - ShopStore");
+        setResizable(false);
 
-        jPanel2.setBackground(new java.awt.Color(153, 153, 255));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel6.setText("Đăng Kí");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(167, 52, 146, -1));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36));
+        jLabel1.setForeground(new java.awt.Color(70, 130, 180));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("SHOPSTORE");
 
-        jLabel7.setText("Chào mừng trở thành mấy cục cưng của trẫm");
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 122, -1, -1));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel8.setText("Tài khoản");
-        jPanel2.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 159, -1, -1));
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 24));
+        jLabel6.setForeground(new java.awt.Color(70, 130, 180));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Đăng ký");
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel9.setText("Mật khẩu");
-        jPanel2.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 357, -1, -1));
-        jPanel2.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 157, 259, 34));
-        jPanel2.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 355, 259, 35));
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jLabel7.setForeground(new java.awt.Color(128, 128, 128));
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Tạo tài khoản mới");
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("Tài khoản là email hoặc số điện thoại của bạn");
-        jPanel2.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 209, 304, -1));
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jLabel8.setText("Họ và tên");
 
-        jLabel11.setText("Mật khẩu có tối thiểu 8 ký tự bao gồm chữ hoa , thường , só và ký tự đặc biệt");
-        jPanel2.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 396, 418, -1));
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jLabel9.setText("Email");
 
+        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jTextField1.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)),
+            javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+
+        jPasswordField1.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jPasswordField1.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)),
+            javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+
+        jButton1.setBackground(new java.awt.Color(255, 255, 255));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jButton1.setForeground(new java.awt.Color(70, 130, 180));
         jButton1.setText("Thoát");
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(67, 517, 112, 32));
+        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(70, 130, 180)));
+        jButton1.setFocusPainted(false);
 
-        jButton2.setText("Xác nhận ");
-        jPanel2.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(297, 516, 103, 34));
+        jButton2.setBackground(new java.awt.Color(70, 130, 180));
+        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setText("Đăng ký");
+        jButton2.setBorder(null);
+        jButton2.setFocusPainted(false);
 
-        jButton4.setText("Đăng nhập ");
-        jPanel2.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(308, 603, -1, -1));
+        jButton4.setBackground(new java.awt.Color(255, 255, 255));
+        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jButton4.setForeground(new java.awt.Color(70, 130, 180));
+        jButton4.setText("Đăng nhập");
+        jButton4.setBorder(null);
+        jButton4.setFocusPainted(false);
 
-        jLabel12.setText("Đã có tài khoản ?");
-        jPanel2.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 606, -1, -1));
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jLabel10.setText("Số điện thoại");
 
-        jLabel84.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel84.setText("Họ và tên ");
-        jPanel2.add(jLabel84, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 247, -1, -1));
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jLabel11.setText("Mật khẩu");
 
-        jLabel86.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel86.setText("Địa chỉ");
-        jPanel2.add(jLabel86, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 301, 68, -1));
+        jTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jTextField2.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)),
+            javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
 
-        jTextField15.addActionListener(new java.awt.event.ActionListener() {
+        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jTextField3.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)),
+            javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jLabel12.setText("Nhập lại mật khẩu");
+
+        jPasswordField2.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        jPasswordField2.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200)),
+            javax.swing.BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+
+        jCheckBox1.setText("Hiển thị mật khẩu");
+        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        jCheckBox1.setForeground(new java.awt.Color(70, 130, 180));
+        jCheckBox1.setFocusPainted(false);
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField15ActionPerformed(evt);
+                jCheckBox1ActionPerformed(evt);
             }
         });
-        jPanel2.add(jTextField15, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 244, 259, 36));
 
-        jTextField16.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField16ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jTextField16, new org.netbeans.lib.awtextra.AbsoluteConstraints(144, 298, 259, 36));
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel12)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addGap(30, 30, 30)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBox1)
+                .addGap(30, 30, 30)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
-        jLabel87.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel87.setText("Nhập lại Mật khẩu");
-        jPanel2.add(jLabel87, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 442, 158, -1));
-        jPanel2.add(jTextField17, new org.netbeans.lib.awtextra.AbsoluteConstraints(207, 441, 193, 32));
-
-        jPanel14.setBackground(new java.awt.Color(153, 255, 255));
-        jPanel14.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel85.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel85.setText("SHOPSTORE");
-        jPanel14.add(jLabel85, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 106, 141, 46));
-
-        jLabel83.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel83.setText("XIN");
-        jPanel14.add(jLabel83, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 182, 266, 63));
-
-        jLabel82.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel82.setText("CHÀO");
-        jPanel14.add(jLabel82, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 281, 266, -1));
-
-        jLabel81.setBackground(new java.awt.Color(153, 255, 255));
-        jLabel81.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel81.setText("QUÝ");
-        jPanel14.add(jLabel81, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 373, 266, -1));
-
-        jLabel80.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel80.setText("KHÁCH !!!!");
-        jPanel14.add(jLabel80, new org.netbeans.lib.awtextra.AbsoluteConstraints(79, 460, 141, -1));
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(20, 20, 20)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
-            .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField16ActionPerformed
@@ -171,6 +263,59 @@ public class register extends javax.swing.JFrame {
     private void jTextField15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField15ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField15ActionPerformed
+
+    private void addActionListeners() {
+        // Nút đăng ký
+        jButton2.addActionListener(e -> {
+            String hoTen = jTextField1.getText();
+            String email = jTextField2.getText();
+            String sdt = jTextField3.getText();
+            String matKhau = new String(jPasswordField1.getPassword());
+            String nhapLaiMatKhau = new String(jPasswordField2.getPassword());
+            
+            // Kiểm tra thông tin
+            if (hoTen.isEmpty() || email.isEmpty() || sdt.isEmpty() || matKhau.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+            
+            if (!matKhau.equals(nhapLaiMatKhau)) {
+                JOptionPane.showMessageDialog(this, "Mật khẩu nhập lại không khớp!");
+                return;
+            }
+            
+            // Tạo tài khoản và nhân viên mới
+            NhanVienDAO nhanVienDAO = new NhanVienDAO();
+            if (nhanVienDAO.dangKyTaiKhoanVaNhanVien(hoTen, email, sdt, matKhau)) {
+                JOptionPane.showMessageDialog(this, "Đăng ký thành công! Vui lòng đợi quản trị viên xét duyệt.");
+                new screens.DangNhap.login().setVisible(true);
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Đăng ký thất bại! Email hoặc số điện thoại đã tồn tại.");
+            }
+        });
+        
+        // Nút đăng nhập
+        jButton4.addActionListener(e -> {
+            new screens.DangNhap.login().setVisible(true);
+            this.dispose();
+        });
+        
+        // Nút thoát
+        jButton1.addActionListener(e -> {
+            System.exit(0);
+        });
+    }
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {
+        if (jCheckBox1.isSelected()) {
+            jPasswordField1.setEchoChar((char) 0); // Hiển thị mật khẩu
+            jPasswordField2.setEchoChar((char) 0); // Hiển thị mật khẩu nhập lại
+        } else {
+            jPasswordField1.setEchoChar('•'); // Ẩn mật khẩu
+            jPasswordField2.setEchoChar('•'); // Ẩn mật khẩu nhập lại
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -211,27 +356,21 @@ public class register extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel80;
-    private javax.swing.JLabel jLabel81;
-    private javax.swing.JLabel jLabel82;
-    private javax.swing.JLabel jLabel83;
-    private javax.swing.JLabel jLabel84;
-    private javax.swing.JLabel jLabel85;
-    private javax.swing.JLabel jLabel86;
-    private javax.swing.JLabel jLabel87;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField15;
-    private javax.swing.JTextField jTextField16;
-    private javax.swing.JTextField jTextField17;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JPasswordField jPasswordField2;
+    private javax.swing.JCheckBox jCheckBox1;
     // End of variables declaration//GEN-END:variables
 }

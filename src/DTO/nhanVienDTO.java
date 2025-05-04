@@ -15,12 +15,15 @@ public class nhanVienDTO {
     private Timestamp ngayVaoLam;
     private String chucVu;
     private BigDecimal mucLuong;
-    private String maTaiKhoan;
     private String maQuanLy;
+    private String trangThai;
+
+    public nhanVienDTO() {
+    }
 
     public nhanVienDTO(String maNhanVien, String hoTen, String email, String soDienThoai, 
-                    String diaChi, String gioiTinh, Date ngaySinh, Timestamp ngayVaoLam, 
-                    String chucVu, BigDecimal mucLuong, String maTaiKhoan, String maQuanLy) {
+                      String diaChi, String gioiTinh, Date ngaySinh, Timestamp ngayVaoLam,
+                      String chucVu, BigDecimal mucLuong, String maQuanLy, String trangThai) {
         this.maNhanVien = maNhanVien;
         this.hoTen = hoTen;
         this.email = email;
@@ -31,8 +34,8 @@ public class nhanVienDTO {
         this.ngayVaoLam = ngayVaoLam;
         this.chucVu = chucVu;
         this.mucLuong = mucLuong;
-        this.maTaiKhoan = maTaiKhoan;
         this.maQuanLy = maQuanLy;
+        this.trangThai = trangThai;
     }
 
     // Getters
@@ -76,12 +79,12 @@ public class nhanVienDTO {
         return mucLuong;
     }
 
-    public String getMaTaiKhoan() {
-        return maTaiKhoan;
-    }
-
     public String getMaQuanLy() {
         return maQuanLy;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
     }
 
     // Setters
@@ -117,6 +120,10 @@ public class nhanVienDTO {
         this.ngayVaoLam = ngayVaoLam;
     }
 
+    public void setNgayVaoLam(Date ngayVaoLam) {
+        this.ngayVaoLam = new Timestamp(ngayVaoLam.getTime());
+    }
+
     public void setChucVu(String chucVu) {
         this.chucVu = chucVu;
     }
@@ -125,28 +132,29 @@ public class nhanVienDTO {
         this.mucLuong = mucLuong;
     }
 
-    public void setMaTaiKhoan(String maTaiKhoan) {
-        this.maTaiKhoan = maTaiKhoan;
-    }
-
     public void setMaQuanLy(String maQuanLy) {
         this.maQuanLy = maQuanLy;
     }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+
     @Override
-public String toString() {
-    return "NhanVien {" +
-            "maNhanVien='" + maNhanVien + '\'' +
-            ", hoTen='" + hoTen + '\'' +
-            ", email='" + email + '\'' +
-            ", soDienThoai='" + soDienThoai + '\'' +
-            ", diaChi='" + diaChi + '\'' +
-            ", gioiTinh='" + gioiTinh + '\'' +
-            ", ngaySinh=" + ngaySinh +
-            ", ngayVaoLam=" + ngayVaoLam +
-            ", chucVu='" + chucVu + '\'' +
-            ", mucLuong=" + mucLuong +
-            ", maTaiKhoan='" + maTaiKhoan + '\'' +
-            ", maQuanLy='" + maQuanLy + '\'' +
-            '}';
-}
+    public String toString() {
+        return "NhanVien {" +
+                "maNhanVien='" + maNhanVien + '\'' +
+                ", hoTen='" + hoTen + '\'' +
+                ", email='" + email + '\'' +
+                ", soDienThoai='" + soDienThoai + '\'' +
+                ", diaChi='" + diaChi + '\'' +
+                ", gioiTinh='" + gioiTinh + '\'' +
+                ", ngaySinh=" + ngaySinh +
+                ", ngayVaoLam=" + ngayVaoLam +
+                ", chucVu='" + chucVu + '\'' +
+                ", mucLuong=" + mucLuong +
+                ", maQuanLy='" + maQuanLy + '\'' +
+                ", trangThai='" + trangThai + '\'' +
+                '}';
+    }
 } 

@@ -3,6 +3,7 @@ package screens.TrangChu;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import javax.swing.UIManager;
+import DTO.taiKhoanDTO;
 
 import screens.HoaDon.HoaDonPanel;
 import screens.KhachHang.khachHangPanel;
@@ -15,24 +16,27 @@ import screens.NhapHang.phieunhap;
 import screens.SanPham.sanPhamPanel;
 import screens.ThongKe.ThongKePanel; // Thêm import mới
 import screens.XuatHang.xuathang;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author nson9
  */
 public class trangchu extends javax.swing.JFrame {
+    private taiKhoanDTO taiKhoan;
 
     /**
      * Creates new form adminscreen
      */
-    public trangchu() {
+    public trangchu(taiKhoanDTO taiKhoan) {
+        this.taiKhoan = taiKhoan;
         initComponents();
-        
+
         // Set kích thước cố định cho frame (thêm 35px cho thanh tiêu đề Windows)
         setSize(1215, 735);
         setLocationRelativeTo(null);
         setResizable(false);
-        
+
         ImageIcon checkIcon = new ImageIcon(getClass().getResource("/icon_img/box.png"));
         Image checkImg = checkIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         btnLogin.setIcon(new ImageIcon(checkImg));
@@ -40,10 +44,22 @@ public class trangchu extends javax.swing.JFrame {
         // Khởi tạo các panel
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        
+
         // Lưu lại panel chào mừng và main content
         welcomePanel = jPanel3;
         mainContent = jPanel4;
+
+        // Cập nhật thông tin người dùng
+        jLabel3.setText("Xin chào, " + taiKhoan.getTenDangNhap());
+
+        /*
+         * // Them action listener cho btnSetting
+         * btnSetting.addActionListener(new java.awt.event.ActionListener() {
+         * public void actionPerformed(java.awt.event.ActionEvent evt) {
+         * btnSettingActionPerformed(evt);
+         * }
+         * });
+         */
 
         // Them action listener cho btnNhapHang
         btnNhapHang.addActionListener(new java.awt.event.ActionListener() {
@@ -203,7 +219,7 @@ public class trangchu extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(10, 112, 117));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnLogin.setText("Login");
+        btnLogin.setText("Đăng Xuất");
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
@@ -212,6 +228,11 @@ public class trangchu extends javax.swing.JFrame {
         jPanel1.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 16, 90, 37));
 
         btnSetting.setText("Setting");
+        btnSetting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSettingActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 16, -1, 37));
 
         jSeparator1.setBackground(new java.awt.Color(10, 112, 117));
@@ -231,7 +252,12 @@ public class trangchu extends javax.swing.JFrame {
         btnSanPham.setText("Sản phẩm");
         jPanel1.add(btnSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 214, 188, 36));
 
-        btnLoaiSanPham.setText("Loại sản phẩm");
+        btnLoaiSanPham.setText("Quản lý sản phẩm");
+        btnLoaiSanPham.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoaiSanPhamActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 262, 188, 36));
 
         btnHoaDon.setText("Hóa đơn");
@@ -335,7 +361,24 @@ public class trangchu extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // Hiển thị hộp thoại xác nhận đăng xuất
+        int option = JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc chắn muốn đăng xuất?", 
+            "Xác nhận đăng xuất", 
+            JOptionPane.YES_NO_OPTION);
+        
+        if (option == JOptionPane.YES_OPTION) {
+            // Đóng cửa sổ hiện tại
+            this.dispose();
+            // Mở lại màn hình đăng nhập
+            new screens.DangNhap.login().setVisible(true);
+        }
+    }
+
+    private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {
+        // Mở màn hình cài đặt tài khoản
+        screens.TaiKhoan.TaiKhoanPanel taiKhoanPanel = new screens.TaiKhoan.TaiKhoanPanel(taiKhoan);
+        switchPanel(taiKhoanPanel);
     }
 
     private void btnNhapHangActionPerformed(java.awt.event.ActionEvent evt) {

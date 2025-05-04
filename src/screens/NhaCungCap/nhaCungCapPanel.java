@@ -9,6 +9,16 @@ import javax.swing.table.DefaultTableModel;
 import DAO.NhaCungCapDAO;
 import DTO.nhaCungCapDTO;
 import java.util.List;
+import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import BUS.NhaCungCapBUS;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import java.awt.Cursor;
+import javax.swing.ListSelectionModel;
 
 /**
  *
@@ -16,6 +26,11 @@ import java.util.List;
  */
 public class nhaCungCapPanel extends javax.swing.JPanel {
     private NhaCungCapDAO nhaCungCapDAO;
+    private NhaCungCapBUS nhaCungCapBUS;
+    private DefaultTableModel tableModel;
+    private JTable table;
+    private JTextField txtSearch;
+    private JButton btnThem, btnSua, btnXoa, btnChiTiet;
 
     /**
      * Creates new form ncc
@@ -23,16 +38,20 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     public nhaCungCapPanel() {
         initComponents();
         
-        // Khởi tạo DAO
+        // Khởi tạo DAO và BUS
         nhaCungCapDAO = new NhaCungCapDAO();
+        nhaCungCapBUS = new NhaCungCapBUS();
         
         // Thiết lập combobox tìm kiếm
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { 
-            "Tất cả", "Mã NCC", "Tên NCC", "Email", "Số điện thoại" 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+                "Tất cả", "Mã NCC", "Tên NCC", "Email", "Số điện thoại"
         }));
-        
+
         // Load dữ liệu nhà cung cấp
-        loadNhaCungCapData();
+        loadData();
+        
+        // Thiết lập bảng
+        setupTable();
         
         // Thêm action listener cho nút tìm kiếm
         jButton30.addActionListener(new java.awt.event.ActionListener() {
@@ -40,8 +59,32 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                 searchNhaCungCap();
             }
         });
+
+        // Thêm action listener cho nút thêm
+        jButton31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showThemNhaCungCapDialog();
+            }
+        });
+
+        // Thêm action listener cho nút sửa
+        jButton32.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showSuaNhaCungCapDialog();
+            }
+        });
+
+        // Thêm action listener cho nút xóa
+        jButton33.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xoaNhaCungCap();
+            }
+        });
+
+        // Thêm action listener cho nút chi tiết
+        // Đã xóa ListSelectionListener để khắc phục lỗi tự động hiển thị panel chi tiết khi chỉ chọn dòng
     }
-    
+
     public javax.swing.JPanel getNhaCungCapPanel() {
         return containerPanel;
     }
@@ -90,19 +133,18 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(383, 383, 383)
-                .addComponent(jLabel1)
-                .addContainerGap(387, Short.MAX_VALUE))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addGap(383, 383, 383)
+                                .addComponent(jLabel1)
+                                .addContainerGap(387, Short.MAX_VALUE)));
         pnlHeaderLayout.setVerticalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(14, Short.MAX_VALUE)));
 
         containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
@@ -114,7 +156,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         jButton34.setText("Lưu và xuất file");
 
         jPanel17.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
+        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
         jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton31.setText("Thêm ");
@@ -127,20 +170,19 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(705, 24, -1, 34));
 
         jPanel18.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
+        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
         jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         nhaCungCapTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
             },
             new String [] {
-                "STT", "Mã NCC", "Tên NCC", "Mã SP", "Loại SP", "Mã SP", "Tên SP", 
-                "Năm hợp tác", "Địa chỉ", "Email", "Số điện thoại", "Trạng thái", "Chi tiết"
+                "STT", "Mã NCC", "Tên NCC", "Loại SP", "Năm hợp tác", "Địa chỉ", "Email", "Số điện thoại", "Trạng thái", "Chi tiết"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false,
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -153,7 +195,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 920, 310));
 
         jPanel33.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
+        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
         jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton30.setText("Tìm kiếm");
@@ -168,40 +211,53 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         jLabel2.setText("Tìm kiếm");
         jPanel33.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(
+                new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel33.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 300, 30));
         jPanel33.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 320, 30));
 
         javax.swing.GroupLayout pnlContent1Layout = new javax.swing.GroupLayout(pnlContent1);
         pnlContent1.setLayout(pnlContent1Layout);
         pnlContent1Layout.setHorizontalGroup(
-            pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContent1Layout.createSequentialGroup()
-                .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlContent1Layout.createSequentialGroup()
-                        .addGap(325, 325, 325)
-                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlContent1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 961, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 956, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(18, Short.MAX_VALUE))
-        );
+                pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContent1Layout.createSequentialGroup()
+                                .addGroup(pnlContent1Layout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(pnlContent1Layout.createSequentialGroup()
+                                                .addGap(325, 325, 325)
+                                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(pnlContent1Layout.createSequentialGroup()
+                                                .addGap(21, 21, 21)
+                                                .addGroup(pnlContent1Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                961, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(pnlContent1Layout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                .addComponent(jPanel18,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 956,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(jPanel17,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 956,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addContainerGap(18, Short.MAX_VALUE)));
         pnlContent1Layout.setVerticalGroup(
-            pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContent1Layout.createSequentialGroup()
-                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
-        );
+                pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContent1Layout.createSequentialGroup()
+                                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 70,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 348,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)));
 
         pnlContent.add(pnlContent1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 600));
 
@@ -210,71 +266,257 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         add(containerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 700));
     }
 
-    private void loadNhaCungCapData() {
-        List<nhaCungCapDTO> nhaCungCapList = nhaCungCapDAO.getAllNhaCungCap();
+    private void loadData() {
         DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
-        model.setRowCount(0); // Xóa dữ liệu cũ
-    
-        int stt = 1;
-        for (nhaCungCapDTO ncc : nhaCungCapList) {
+        model.setRowCount(0);
+        
+        for (nhaCungCapDTO ncc : nhaCungCapBUS.getAllNhaCungCap()) {
             model.addRow(new Object[]{
-                stt++,
+                model.getRowCount() + 1, // STT
                 ncc.getMaNhaCungCap(),
                 ncc.getTenNhaCungCap(),
-                ncc.getMaSanPham(),
                 ncc.getLoaiSP(),
-                ncc.getMaSanPham(), // Cột bị lặp trong table header, có thể sửa tên
-                ncc.getTenSanPham(),
-                ncc.getNamHopTac(),
-                ncc.getAddress(),
+                ncc.getNamHopTac() > 0 ? ncc.getNamHopTac() : "Chưa cập nhật",
+                ncc.getDiaChi(),
                 ncc.getEmail(),
                 ncc.getSoDienThoai(),
                 ncc.getTrangThai(),
-                "Xem chi tiết"
+                "Chi tiết"
+            });
+        }
+    }
+
+    private void searchNhaCungCap() {
+        String keyword = jTextField1.getText().trim();
+        String searchType = (String) jComboBox1.getSelectedItem();
+        
+        DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
+        model.setRowCount(0);
+        
+        for (nhaCungCapDTO ncc : nhaCungCapBUS.searchNhaCungCap(keyword, searchType)) {
+            model.addRow(new Object[]{
+                model.getRowCount() + 1, // STT
+                ncc.getMaNhaCungCap(),
+                ncc.getTenNhaCungCap(),
+                ncc.getLoaiSP(),
+                ncc.getNamHopTac() > 0 ? ncc.getNamHopTac() : "Chưa cập nhật",
+                ncc.getDiaChi(),
+                ncc.getEmail(),
+                ncc.getSoDienThoai(),
+                ncc.getTrangThai(),
+                "Chi tiết"
             });
         }
     }
     
-    
-    private void searchNhaCungCap() {
-        String keyword = jTextField1.getText().trim();
-        if (!keyword.isEmpty()) {
-            List<nhaCungCapDTO> searchResults = nhaCungCapDAO.searchNhaCungCap(keyword);
-            DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
-            model.setRowCount(0);
-    
-            int stt = 1;
-            for (nhaCungCapDTO ncc : searchResults) {
-                model.addRow(new Object[]{
-                    stt++,
-                    ncc.getMaNhaCungCap(),
-                    ncc.getTenNhaCungCap(),
-                    ncc.getMaSanPham(),
-                    ncc.getLoaiSP(),
-                    ncc.getMaSanPham(),
-                    ncc.getTenSanPham(),
-                    ncc.getNamHopTac(),
-                    ncc.getAddress(),
-                    ncc.getEmail(),
-                    ncc.getSoDienThoai(),
-                    ncc.getTrangThai(),
-                    "Xem chi tiết"
-                });
+    private void showThemNhaCungCapDialog() {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm nhà cung cấp", true);
+        dialog.setLayout(new BorderLayout());
+        
+        themNhaCungCapPanel panel = new themNhaCungCapPanel();
+        dialog.add(panel, BorderLayout.CENTER);
+        
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        
+        // Reload data after dialog is closed
+        loadData();
+    }
+
+    private void showSuaNhaCungCapDialog() {
+        int selectedRow = nhaCungCapTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp cần sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String maNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 1);
+        nhaCungCapDTO ncc = nhaCungCapBUS.getNhaCungCapByMa(maNCC);
+        if (ncc == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin nhà cung cấp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa nhà cung cấp", true);
+        dialog.setLayout(new BorderLayout());
+        
+        suaNhaCungCapPanel panel = new suaNhaCungCapPanel(dialog, ncc);
+        dialog.add(panel, BorderLayout.CENTER);
+        
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        
+        // Reload data after dialog is closed
+        loadData();
+    }
+
+    private void xoaNhaCungCap() {
+        int selectedRow = nhaCungCapTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp cần xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String maNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 1);
+        int choice = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc chắn muốn xóa nhà cung cấp này?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
+                JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thành công!");
+                loadData();
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thất bại!");
             }
-        } else {
-            loadNhaCungCapData();
         }
     }
-    
+
+    private void showChiTietNhaCungCapDialog(nhaCungCapDTO ncc) {
+        Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+        chiTietNhaCungCapDialog dialog = new chiTietNhaCungCapDialog(parentFrame, ncc);
+        dialog.setVisible(true);
+    }
+
+    private void setupTable() {
+        // Thiết lập chiều rộng cho các cột
+        nhaCungCapTable.getColumnModel().getColumn(0).setPreferredWidth(50);  // STT
+        nhaCungCapTable.getColumnModel().getColumn(1).setPreferredWidth(100); // Mã NCC
+        nhaCungCapTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên NCC
+        nhaCungCapTable.getColumnModel().getColumn(3).setPreferredWidth(100); // Loại SP
+        nhaCungCapTable.getColumnModel().getColumn(4).setPreferredWidth(100); // Năm hợp tác
+        nhaCungCapTable.getColumnModel().getColumn(5).setPreferredWidth(150); // Địa chỉ
+        nhaCungCapTable.getColumnModel().getColumn(6).setPreferredWidth(150); // Email
+        nhaCungCapTable.getColumnModel().getColumn(7).setPreferredWidth(100); // Số điện thoại
+        nhaCungCapTable.getColumnModel().getColumn(8).setPreferredWidth(100); // Trạng thái
+        nhaCungCapTable.getColumnModel().getColumn(9).setPreferredWidth(80);  // Chi tiết
+
+        // Thiết lập căn giữa cho một số cột
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        
+        nhaCungCapTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);  // STT
+        nhaCungCapTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);  // Mã NCC
+        nhaCungCapTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);  // Năm hợp tác
+        nhaCungCapTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);  // Số điện thoại
+        nhaCungCapTable.getColumnModel().getColumn(9).setCellRenderer(centerRenderer);  // Chi tiết
+
+        // Thiết lập màu xanh và gạch chân cho cột "Chi tiết"
+        nhaCungCapTable.getColumnModel().getColumn(9).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setForeground(new Color(0, 0, 255)); // Màu xanh cho chữ
+                setHorizontalAlignment(JLabel.CENTER);
+                return c;
+            }
+        });
+
+        // Thiết lập row height
+        nhaCungCapTable.setRowHeight(25);
+        
+        // Tắt chế độ chọn dòng khi click
+        nhaCungCapTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        // Thêm sự kiện click cho cột "Chi tiết"
+        nhaCungCapTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = nhaCungCapTable.rowAtPoint(e.getPoint());
+                int col = nhaCungCapTable.columnAtPoint(e.getPoint());
+                
+
+                int lastColumnIndex = nhaCungCapTable.getColumnCount() - 1;
+                // Chỉ xử lý khi click vào cột "Chi tiết" (cột cuối cùng)
+                if (row >= 0 && col == lastColumnIndex) {
+                    showChiTietNhaCungCap(row);
+                }
+            }
+        });
+        
+        // Thêm cursor hand khi di chuột qua cột Chi Tiết
+        nhaCungCapTable.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int col = nhaCungCapTable.columnAtPoint(e.getPoint());
+                if (col == nhaCungCapTable.getColumnCount() - 1) {
+                    nhaCungCapTable.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                } else {
+                    nhaCungCapTable.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+    }
+
+    private void showChiTietNhaCungCap(int row) {
+        try {
+            // Lấy các giá trị từ bảng và xử lý null
+            String maNCC = getTableValueAsString(row, 1);
+            String tenNCC = getTableValueAsString(row, 2);
+            String loaiSP = getTableValueAsString(row, 3);
+            String namHopTacStr = getTableValueAsString(row, 4);
+            String diaChi = getTableValueAsString(row, 5);
+            String email = getTableValueAsString(row, 6);
+            String soDienThoai = getTableValueAsString(row, 7);
+            String trangThai = getTableValueAsString(row, 8);
+            
+            // Chuyển đổi năm hợp tác từ chuỗi sang số
+            int namHopTac = 0;
+            if (namHopTacStr != null && !namHopTacStr.isEmpty() && !namHopTacStr.equals("Chưa cập nhật")) {
+                try {
+                    namHopTac = Integer.parseInt(namHopTacStr);
+                } catch (NumberFormatException e) {
+                    System.out.println("Lỗi chuyển đổi năm hợp tác: " + e.getMessage());
+                }
+            }
+
+            // Tạo đối tượng nhaCungCapDTO
+            nhaCungCapDTO ncc = new nhaCungCapDTO(
+                maNCC,
+                tenNCC,
+                loaiSP,
+                namHopTac,
+                diaChi,
+                email,
+                soDienThoai,
+                trangThai
+            );
+
+            // Hiển thị dialog chi tiết
+            Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+            chiTietNhaCungCapDialog dialog = new chiTietNhaCungCapDialog(parentFrame, ncc);
+            dialog.setVisible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                "Có lỗi xảy ra khi hiển thị thông tin chi tiết: " + e.getMessage(),
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Phương thức hỗ trợ để lấy giá trị từ bảng và xử lý null
+    private String getTableValueAsString(int row, int column) {
+        Object value = nhaCungCapTable.getValueAt(row, column);
+        return value != null ? value.toString() : "";
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -284,16 +526,20 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(nhaCungCapPanel.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
+        // </editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

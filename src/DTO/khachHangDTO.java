@@ -5,22 +5,23 @@ import java.sql.Date;
 public class khachHangDTO {
     private String maKhachHang;
     private String hoTen;
-    private String tenDangNhap;
-    private String email;
-    private String soDienThoai;
-    private String diaChi;
     private String gioiTinh;
+    private String soDienThoai;
+    private String email;
+    private String diaChi;
     private Date ngaySinh;
 
-    public khachHangDTO(String maKhachHang, String hoTen, String tenDangNhap, String email, 
-                        String soDienThoai, String diaChi, String gioiTinh, Date ngaySinh) {
+    public khachHangDTO() {
+    }
+
+    public khachHangDTO(String maKhachHang, String hoTen, String gioiTinh, String soDienThoai, 
+                     String email, String diaChi, Date ngaySinh) {
         this.maKhachHang = maKhachHang;
         this.hoTen = hoTen;
-        this.tenDangNhap = tenDangNhap;
-        this.email = email;
-        this.soDienThoai = soDienThoai;
-        this.diaChi = diaChi;
         this.gioiTinh = gioiTinh;
+        this.soDienThoai = soDienThoai;
+        this.email = email;
+        this.diaChi = diaChi;
         this.ngaySinh = ngaySinh;
     }
 
@@ -33,24 +34,20 @@ public class khachHangDTO {
         return hoTen;
     }
 
-    public String getTenDangNhap() {
-        return tenDangNhap;
-    }
-
-    public String getEmail() {
-        return email;
+    public String getGioiTinh() {
+        return gioiTinh;
     }
 
     public String getSoDienThoai() {
         return soDienThoai;
     }
 
-    public String getDiaChi() {
-        return diaChi;
+    public String getEmail() {
+        return email;
     }
 
-    public String getGioiTinh() {
-        return gioiTinh;
+    public String getDiaChi() {
+        return diaChi;
     }
 
     public Date getNgaySinh() {
@@ -66,24 +63,20 @@ public class khachHangDTO {
         this.hoTen = hoTen;
     }
 
-    public void setTenDangNhap(String tenDangNhap) {
-        this.tenDangNhap = tenDangNhap;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setGioiTinh(String gioiTinh) {
+        this.gioiTinh = gioiTinh;
     }
 
     public void setSoDienThoai(String soDienThoai) {
         this.soDienThoai = soDienThoai;
     }
 
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setGioiTinh(String gioiTinh) {
-        this.gioiTinh = gioiTinh;
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
     }
 
     public void setNgaySinh(Date ngaySinh) {
@@ -95,12 +88,11 @@ public class khachHangDTO {
         return "KhachHang {" +
                 "maKhachHang='" + maKhachHang + '\'' +
                 ", hoTen='" + hoTen + '\'' +
-                ", tenDangNhap='" + tenDangNhap + '\'' +
-                ", email='" + email + '\'' +
-                ", soDienThoai='" + soDienThoai + '\'' +
-                ", diaChi='" + diaChi + '\'' +
                 ", gioiTinh='" + gioiTinh + '\'' +
+                ", soDienThoai='" + soDienThoai + '\'' +
+                ", email='" + email + '\'' +
+                ", diaChi='" + diaChi + '\'' +
                 ", ngaySinh=" + ngaySinh +
                 '}';
     }
-}
+} 

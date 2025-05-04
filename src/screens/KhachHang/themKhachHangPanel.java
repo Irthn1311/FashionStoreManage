@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
 import java.util.List;
-import DAO.KhachHangDAO;
+import BUS.KhachHangBUS;
 import DTO.khachHangDTO;
 
 public class themKhachHangPanel extends JPanel {
@@ -19,22 +19,16 @@ public class themKhachHangPanel extends JPanel {
     private JComboBox<String> cboGioiTinh;
     private JButton btnThem;
     private JButton btnHuy;
-    private KhachHangDAO khachHangDAO;
+    private KhachHangBUS khachHangBUS;
 
     public themKhachHangPanel() {
-        khachHangDAO = new KhachHangDAO();
+        khachHangBUS = new KhachHangBUS();
         initComponents();
         setupListeners();
     }
 
     private String generateNextMaKH() {
-        List<khachHangDTO> danhSachKH = khachHangDAO.getAllKhachHang();
-        System.out.println("Số lượng khách hàng hiện có: " + (danhSachKH != null ? danhSachKH.size() : "null"));
-        
-        if (danhSachKH == null || danhSachKH.isEmpty()) {
-            return "KH1"; // Nếu không có khách hàng nào, bắt đầu từ KH1
-        }
-
+        List<khachHangDTO> danhSachKH = khachHangBUS.getAllKhachHang();
         int maxNumber = 0;
         for (khachHangDTO kh : danhSachKH) {
             String maKH = kh.getMaKhachHang();
@@ -130,9 +124,7 @@ public class themKhachHangPanel extends JPanel {
         // Số điện thoại (required)
         gbc.gridx = 0;
         gbc.gridy++;
-        JLabel lblSoDienThoai = new JLabel("Số điện thoại: *");
-        lblSoDienThoai.setForeground(Color.RED);
-        mainPanel.add(lblSoDienThoai, gbc);
+        mainPanel.add(new JLabel("Số điện thoại:"), gbc);
         txtSoDienThoai = new JTextField(20);
         gbc.gridx = 1;
         mainPanel.add(txtSoDienThoai, gbc);
@@ -161,74 +153,61 @@ public class themKhachHangPanel extends JPanel {
     }
 
     private void themKhachHang() {
-        // Kiểm tra dữ liệu nhập
         if (!validateInput()) {
             System.out.println("Dữ liệu đầu vào không hợp lệ, dừng thêm khách hàng.");
             return;
         }
 
         try {
-            String maKH = generateNextMaKH();
-            System.out.println("Đang thêm khách hàng với mã: " + maKH);
-
-            // Xử lý ngày sinh
+            // Parse ngày sinh
             Date ngaySinh = null;
             if (!txtNgaySinh.getText().trim().isEmpty()) {
-                java.util.Date parsedDate = parseDate(txtNgaySinh.getText().trim());
-                ngaySinh = new Date(parsedDate.getTime());
-                System.out.println("Ngày sinh: " + ngaySinh);
-            } else {
-                System.out.println("Không có ngày sinh được nhập.");
+                try {
+                    java.util.Date parsedDate = new SimpleDateFormat("dd/MM/yyyy").parse(txtNgaySinh.getText().trim());
+                    ngaySinh = new Date(parsedDate.getTime());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this,
+                        "Ngày sinh không hợp lệ! Vui lòng nhập theo định dạng dd/MM/yyyy",
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
 
-            // Tạo đối tượng khachHangDTO mới
+            // Tạo đối tượng khachHangDTO
             khachHangDTO khachHang = new khachHangDTO(
-                maKH,
+                generateNextMaKH(),
                 txtHoTen.getText().trim(),
-                txtTenDangNhap.getText().trim(),
-                txtEmail.getText().trim(),
-                txtSoDienThoai.getText().trim(),
-                txtDiaChi.getText().trim(),
                 cboGioiTinh.getSelectedItem().toString(),
+                txtSoDienThoai.getText().trim(),
+                txtEmail.getText().trim(),
+                txtDiaChi.getText().trim(),
                 ngaySinh
             );
 
-            System.out.println("Thông tin khách hàng: " + khachHang.toString());
-
-            // Thêm khách hàng vào database
-            boolean success = khachHangDAO.themKhachHang(khachHang);
+            // Gọi BUS để thêm khách hàng
+            boolean success = khachHangBUS.themKhachHang(khachHang);
             if (success) {
                 JOptionPane.showMessageDialog(this,
-                    "Thêm khách hàng thành công!\nMã khách hàng: " + maKH,
+                    "Thêm khách hàng thành công!",
                     "Thông báo",
                     JOptionPane.INFORMATION_MESSAGE);
                 clearForm();
-                // Đóng dialog
-                Window window = SwingUtilities.getWindowAncestor(this);
-                if (window != null) {
-                    window.dispose();
-                }
             } else {
                 System.out.println("Thêm khách hàng thất bại trong DAO.");
                 JOptionPane.showMessageDialog(this,
-                    "Thêm khách hàng thất bại! Kiểm tra dữ liệu nhập vào hoặc cơ sở dữ liệu.",
+                    "Không thể thêm khách hàng!",
                     "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
             }
+
         } catch (Exception e) {
-            System.out.println("Lỗi khi thêm khách hàng: " + e.getMessage());
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, 
-                "Lỗi khi thêm khách hàng: " + e.getMessage(), 
-                "Lỗi", 
+            JOptionPane.showMessageDialog(this,
+                "Có lỗi xảy ra: " + e.getMessage(),
+                "Lỗi",
                 JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private java.util.Date parseDate(String dateStr) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        sdf.setLenient(false);
-        return sdf.parse(dateStr);
     }
 
     private boolean validateInput() {
@@ -255,7 +234,7 @@ public class themKhachHangPanel extends JPanel {
         // Kiểm tra ngày sinh (không bắt buộc nhưng phải đúng định dạng nếu có)
         if (!txtNgaySinh.getText().trim().isEmpty()) {
             try {
-                parseDate(txtNgaySinh.getText().trim());
+                new SimpleDateFormat("dd/MM/yyyy").parse(txtNgaySinh.getText().trim());
             } catch (Exception e) {
                 System.out.println("Lỗi validate ngày sinh: " + e.getMessage());
                 JOptionPane.showMessageDialog(this,
@@ -285,18 +264,9 @@ public class themKhachHangPanel extends JPanel {
             return false;
         }
 
-        // Kiểm tra số điện thoại (bắt buộc và phải đúng định dạng)
+        // Kiểm tra số điện thoại (không bắt buộc nhưng phải đúng định dạng nếu có)
         String soDienThoai = txtSoDienThoai.getText().trim();
-        if (soDienThoai.isEmpty()) {
-            System.out.println("Lỗi validate: Số điện thoại trống.");
-            JOptionPane.showMessageDialog(this, 
-                "Vui lòng nhập số điện thoại!", 
-                "Lỗi", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        if (!soDienThoai.matches("\\d{10}")) {
-            System.out.println("Lỗi validate: Số điện thoại không hợp lệ - " + soDienThoai);
+        if (!soDienThoai.isEmpty() && !soDienThoai.matches("\\d{10}")) {
             JOptionPane.showMessageDialog(this, 
                 "Số điện thoại không hợp lệ! Vui lòng nhập 10 chữ số.", 
                 "Lỗi", 

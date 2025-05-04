@@ -1,30 +1,35 @@
 package DTO;
 
 public class sanPhamDTO {
-    private String maSanPham;  // Dùng String thay vì int vì MaSanPham là VARCHAR(50)
+    private String maSanPham;
     private String tenSanPham;
-    private String maThuongHieu;
+    private String maNhaCungCap;
     private String maDanhMuc;
-    private double giaBan;
-    private int soLuongTonKho;
+    private String mauSac;
     private String size;
-    private String trangThai;
+    private int soLuongTonKho;
+    private double giaBan;
+    private String KhuyenMai;
     private String imgURL;
-    private String maKhoHang;
+    private String trangThai;
 
-    // Constructor
-    public sanPhamDTO(String maSanPham, String tenSanPham, String maThuongHieu, String maDanhMuc, double giaBan, 
-                   int soLuongTonKho, String size, String trangThai, String imgURL, String maKhoHang) {
+    // Constructor không tham số
+    public sanPhamDTO() {
+    }
+
+    // Constructor đầy đủ tham số
+    public sanPhamDTO(String maSanPham, String tenSanPham, String maNhaCungCap, String maDanhMuc, String mauSac,
+            String size, int soLuongTonKho, double giaBan, String imgURL, String trangThai) {
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
-        this.maThuongHieu = maThuongHieu;
+        this.maNhaCungCap = maNhaCungCap;
         this.maDanhMuc = maDanhMuc;
-        this.giaBan = giaBan;
-        this.soLuongTonKho = soLuongTonKho;
+        this.mauSac = mauSac;
         this.size = size;
-        this.trangThai = trangThai;
+        this.soLuongTonKho = soLuongTonKho;
+        this.giaBan = giaBan;
         this.imgURL = imgURL;
-        this.maKhoHang = maKhoHang;
+        this.trangThai = trangThai;
     }
 
     // Getter và Setter
@@ -44,12 +49,12 @@ public class sanPhamDTO {
         this.tenSanPham = tenSanPham;
     }
 
-    public String getMaThuongHieu() {
-        return maThuongHieu;
+    public String getMaNhaCungCap() {
+        return maNhaCungCap;
     }
 
-    public void setMaThuongHieu(String maThuongHieu) {
-        this.maThuongHieu = maThuongHieu;
+    public void setMaNhaCungCap(String maNhaCungCap) {
+        this.maNhaCungCap = maNhaCungCap;
     }
 
     public String getMaDanhMuc() {
@@ -60,20 +65,12 @@ public class sanPhamDTO {
         this.maDanhMuc = maDanhMuc;
     }
 
-    public double getGiaBan() {
-        return giaBan;
+    public String getMauSac() {
+        return mauSac;
     }
 
-    public void setGiaBan(double giaBan) {
-        this.giaBan = giaBan;
-    }
-
-    public int getSoLuongTonKho() {
-        return soLuongTonKho;
-    }
-
-    public void setSoLuongTonKho(int soLuongTonKho) {
-        this.soLuongTonKho = soLuongTonKho;
+    public void setMauSac(String mauSac) {
+        this.mauSac = mauSac;
     }
 
     public String getSize() {
@@ -84,12 +81,20 @@ public class sanPhamDTO {
         this.size = size;
     }
 
-    public String getTrangThai() {
-        return trangThai;
+    public int getSoLuongTonKho() {
+        return soLuongTonKho;
     }
 
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
+    public void setSoLuongTonKho(int soLuongTonKho) {
+        this.soLuongTonKho = soLuongTonKho;
+    }
+
+    public double getGiaBan() {
+        return giaBan;
+    }
+
+    public void setGiaBan(double giaBan) {
+        this.giaBan = giaBan;
     }
 
     public String getImgURL() {
@@ -100,27 +105,27 @@ public class sanPhamDTO {
         this.imgURL = imgURL;
     }
 
-    public String getMaKhoHang() {
-        return maKhoHang;
+    public String getTrangThai() {
+        return trangThai;
     }
 
-    public void setMaKhoHang(String maKhoHang) {
-        this.maKhoHang = maKhoHang;
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
+
     @Override
-public String toString() {
-    return "SanPham {" +
-            "maSanPham='" + maSanPham + '\'' +
-            ", tenSanPham='" + tenSanPham + '\'' +
-            ", maThuongHieu='" + maThuongHieu + '\'' +
-            ", maDanhMuc='" + maDanhMuc + '\'' +
-            ", giaBan=" + giaBan +
-            ", soLuongTonKho=" + soLuongTonKho +
-            ", size='" + size + '\'' +
-            ", trangThai='" + trangThai + '\'' +
-            ", imgURL='" + imgURL + '\'' +
-            ", maKhoHang='" + maKhoHang + '\'' +
-            '}';
-}
-
+    public String toString() {
+        return "SanPhamDTO {" +
+                "maSanPham='" + maSanPham + '\'' +
+                ", tenSanPham='" + tenSanPham + '\'' +
+                ", maNhaCungCap='" + maNhaCungCap + '\'' +
+                ", maDanhMuc='" + maDanhMuc + '\'' +
+                ", mauSac='" + mauSac + '\'' +
+                ", size='" + size + '\'' +
+                ", soLuongTonKho=" + soLuongTonKho +
+                ", giaBan=" + giaBan +
+                ", imgURL='" + imgURL + '\'' +
+                ", trangThai='" + trangThai + '\'' +
+                '}';
+    }
 }

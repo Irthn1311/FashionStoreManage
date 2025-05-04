@@ -24,6 +24,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import java.awt.Image;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JFileChooser;
+import java.io.File;
 
 public class HoaDonPanel extends javax.swing.JPanel {
     private HoaDonDAO hoaDonDAO;
@@ -392,6 +396,60 @@ public class HoaDonPanel extends javax.swing.JPanel {
         });
     }
 
+    private void exportToCSV() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file CSV");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV files", "csv"));
+        fileChooser.setSelectedFile(new File("DanhSachHoaDon.csv"));
+
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            String filePath = fileToSave.getAbsolutePath();
+            if (!filePath.toLowerCase().endsWith(".csv")) {
+                filePath += ".csv";
+            }
+
+            try (FileWriter writer = new FileWriter(filePath)) {
+                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                // Ghi tiêu đề cột
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    writer.write("\"" + model.getColumnName(i) + "\"");
+                    if (i < model.getColumnCount() - 1) {
+                        writer.write(",");
+                    }
+                }
+                writer.write("\n");
+
+                // Ghi dữ liệu dòng
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    for (int j = 0; j < model.getColumnCount(); j++) {
+                        Object value = model.getValueAt(i, j);
+                        String cellValue = value == null ? "" : value.toString();
+                        // Thoát các ký tự đặc biệt trong CSV
+                        cellValue = "\"" + cellValue.replace("\"", "\"\"") + "\"";
+                        writer.write(cellValue);
+                        if (j < model.getColumnCount() - 1) {
+                            writer.write(",");
+                        }
+                    }
+                    writer.write("\n");
+                }
+
+                JOptionPane.showMessageDialog(this,
+                    "Xuất file CSV thành công!",
+                    "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this,
+                    "Lỗi khi xuất file CSV: " + ex.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     private void setupListeners() {
         // Nút Thêm
         jButton31.addActionListener(new ActionListener() {
@@ -507,7 +565,14 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jButton34.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Chức năng xuất file đang được phát triển");
+                if (jTable2.getRowCount() == 0) {
+                    JOptionPane.showMessageDialog(null,
+                        "Không có dữ liệu để xuất!",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                exportToCSV();
             }
         });
     }
