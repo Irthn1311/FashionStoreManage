@@ -1,6 +1,11 @@
 package screens.NhapHang;
 
 import javax.swing.UIManager;
+import javax.swing.JOptionPane;
+import DAO.SanPhamDAO;
+import DAO.PhieuNhapDAO;
+import DTO.PhieuNhapDTO;
+import java.util.Date;
 
 /**
  *
@@ -361,9 +366,49 @@ public class nhaphang extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
-    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton18ActionPerformed
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            String maSP = jComboBox7.getSelectedItem().toString();
+            int soLuongNhap = Integer.parseInt(jTextField10.getText());
+            String maNCC = jComboBox9.getSelectedItem().toString();
+            String maNV = "NV001"; // Cần lấy từ tài khoản đăng nhập
+
+            SanPhamDAO sanPhamDAO = new SanPhamDAO();
+            PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
+
+            boolean result = sanPhamDAO.capNhatSoLuongSanPham(maSP, soLuongNhap);
+
+            if (result) {
+                PhieuNhapDTO phieuNhap = new PhieuNhapDTO();
+                phieuNhap.setNgayNhap(new Date());
+                phieuNhap.setMaSanPham(maSP);
+                phieuNhap.setSoLuongNhap(soLuongNhap);
+                phieuNhap.setMaNhaCungCap(maNCC);
+                phieuNhap.setMaNhanVien(maNV);
+
+                boolean luuLichSu = phieuNhapDAO.themPhieuNhap(phieuNhap);
+                if (luuLichSu) {
+                    // Kiểm tra cảnh báo tồn kho thấp sau khi nhập thành công
+                    boolean canhBao = sanPhamDAO.kiemTraCanhBaoTonKho(maSP);
+                    if (canhBao) {
+                        JOptionPane.showMessageDialog(this, "Cảnh báo: Sản phẩm sắp hết hàng, hãy nhập thêm!");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Nhập hàng và lưu lịch sử thành công.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Nhập hàng thành công nhưng lưu lịch sử thất bại.");
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Cập nhật tồn kho thất bại.");
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng hợp lệ.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra: " + e.getMessage());
+        }
+    }
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
         // TODO add your handling code here:
