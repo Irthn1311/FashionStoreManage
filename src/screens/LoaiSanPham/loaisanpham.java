@@ -10,6 +10,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class loaisanpham extends javax.swing.JPanel {
 
@@ -63,33 +70,40 @@ public class loaisanpham extends javax.swing.JPanel {
 
         private void setupTable() {
                 jTable2.getColumn("Chi tiết").setCellRenderer(new DefaultTableCellRenderer() {
-                        private Color normalColor = new Color(0, 102, 204);
-                        private Color hoverColor = new Color(51, 153, 255);
+                        private final java.awt.Color normalColor = new java.awt.Color(0, 102, 204);
+                        private final java.awt.Color hoverColor = new java.awt.Color(51, 153, 255);
 
                         @Override
                         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                         boolean hasFocus, int row, int column) {
                                 JLabel label = new JLabel((String) value);
                                 label.setForeground(normalColor);
-                                label.setFont(new Font("Arial", Font.PLAIN, 12));
+                                label.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
                                 label.setCursor(new Cursor(Cursor.HAND_CURSOR));
                                 label.setHorizontalAlignment(SwingConstants.CENTER);
 
-                                jTable2.addMouseMotionListener(new MouseAdapter() {
-                                        @Override
-                                        public void mouseMoved(MouseEvent e) {
-                                                int mouseRow = jTable2.rowAtPoint(e.getPoint());
-                                                int mouseColumn = jTable2.columnAtPoint(e.getPoint());
-                                                if (mouseRow == row && mouseColumn == column) {
-                                                        label.setForeground(hoverColor);
-                                                } else {
-                                                        label.setForeground(normalColor);
-                                                }
-                                                jTable2.repaint();
-                                        }
-                                });
+                                if (table.getClientProperty("hoverRow") != null
+                                                && (int) table.getClientProperty("hoverRow") == row) {
+                                        label.setForeground(hoverColor);
+                                } else {
+                                        label.setForeground(normalColor);
+                                }
 
                                 return label;
+                        }
+                });
+
+                jTable2.addMouseMotionListener(new MouseAdapter() {
+                        @Override
+                        public void mouseMoved(MouseEvent e) {
+                                int mouseRow = jTable2.rowAtPoint(e.getPoint());
+                                int mouseColumn = jTable2.columnAtPoint(e.getPoint());
+                                if (mouseColumn == jTable2.getColumnModel().getColumnIndex("Chi tiết")) {
+                                        jTable2.putClientProperty("hoverRow", mouseRow);
+                                } else {
+                                        jTable2.putClientProperty("hoverRow", -1);
+                                }
+                                jTable2.repaint();
                         }
                 });
 
@@ -257,7 +271,7 @@ public class loaisanpham extends javax.swing.JPanel {
                                 jButton31ActionPerformed(evt);
                         }
                 });
-                jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 24, 100, 34));
+                jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 14, 100, 34));
 
                 jButton32.setText("Sửa");
                 ImageIcon editIcon = new ImageIcon("src/icon_img/edit.png");
@@ -270,7 +284,7 @@ public class loaisanpham extends javax.swing.JPanel {
                                 jButton32ActionPerformed(evt);
                         }
                 });
-                jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 24, 100, 34));
+                jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 14, 100, 34));
 
                 jButton33.setText("Xóa");
                 ImageIcon deleteIcon = new ImageIcon("src/icon_img/delete.png");
@@ -283,20 +297,10 @@ public class loaisanpham extends javax.swing.JPanel {
                                 jButton33ActionPerformed(evt);
                         }
                 });
-                jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 24, 100, 34));
+                jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 14, 100, 34));
 
                 jButton35.setText("Làm mới");
                 ImageIcon refreshIcon = new ImageIcon("src/icon_img/refresh.png");
-                jButton35.setIcon(new ImageIcon(
-                                refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-                jButton35.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton35.setPreferredSize(new java.awt.Dimension(100, 34));
-                jPanel17.add(jButton35, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 24, 100, 34)); // Điều
-                                                                                                              // chỉnh
-                                                                                                              // chiều
-                                                                                                              // rộng
-                                                                                                              // thành
-                                                                                                              // 100
                 jButton35.setIcon(new ImageIcon(
                                 refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
                 jButton35.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -314,7 +318,7 @@ public class loaisanpham extends javax.swing.JPanel {
                                 searchComboBox.setSelectedIndex(0);
                         }
                 });
-                jPanel17.add(jButton35, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 24, 120, 34));
+                jPanel17.add(jButton35, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 14, 120, 34));
 
                 jPanel18.setBackground(new java.awt.Color(107, 163, 190));
                 jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
@@ -326,8 +330,7 @@ public class loaisanpham extends javax.swing.JPanel {
                                 new Object[][] {},
                                 new String[] {
                                                 "STT", "Mã SP", "Tên SP", "Mã NCC", "Loại SP", "Màu sắc", "Kích cỡ",
-                                                "Số lượng", "Đơn giá",
-                                                "Hình ảnh", "Trạng thái", "Chi tiết"
+                                                "Số lượng", "Đơn giá", "Hình ảnh", "Trạng thái", "Chi tiết"
                                 }) {
                         boolean[] canEdit = new boolean[] {
                                         false, false, false, false, false, false, false, false, false, false, false,
@@ -349,6 +352,11 @@ public class loaisanpham extends javax.swing.JPanel {
                                 exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
                 jButton34.setHorizontalTextPosition(SwingConstants.RIGHT);
                 jButton34.setPreferredSize(new java.awt.Dimension(340, 40));
+                jButton34.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton34ActionPerformed(evt);
+                        }
+                });
 
                 javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
                 pnlContent.setLayout(pnlContentLayout);
@@ -409,6 +417,86 @@ public class loaisanpham extends javax.swing.JPanel {
                                                                 .addContainerGap(12, Short.MAX_VALUE)));
 
                 containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
+        }
+
+        private void jButton34ActionPerformed(java.awt.event.ActionEvent evt) {
+                Workbook workbook = new HSSFWorkbook();
+                Sheet sheet = workbook.createSheet("Danh sách sản phẩm");
+
+                Row headerRow = sheet.createRow(0);
+                String[] headers = { "STT", "Mã SP", "Tên SP", "Mã NCC", "Loại SP", "Màu sắc", "Kích cỡ", "Số lượng",
+                                "Đơn giá", "Hình ảnh", "Trạng thái" };
+                for (int i = 0; i < headers.length; i++) {
+                        Cell cell = headerRow.createCell(i);
+                        cell.setCellValue(headers[i]);
+                        CellStyle headerStyle = workbook.createCellStyle();
+                        Font font = workbook.createFont();
+                        font.setBold(true);
+                        headerStyle.setFont(font);
+                        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+                        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                        cell.setCellStyle(headerStyle);
+                }
+
+                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                        Row row = sheet.createRow(i + 1);
+                        for (int j = 0; j < headers.length; j++) {
+                                Cell cell = row.createCell(j);
+                                Object value = model.getValueAt(i, j);
+                                if (value != null) {
+                                        cell.setCellValue(value.toString());
+                                }
+                        }
+                }
+
+                for (int i = 0; i < headers.length; i++) {
+                        sheet.autoSizeColumn(i);
+                }
+
+                String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String fileName = "DanhSachSanPham_" + timestamp + ".xls";
+
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+                fileChooser.setSelectedFile(new java.io.File(fileName));
+                fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                        @Override
+                        public boolean accept(java.io.File f) {
+                                return f.isDirectory() || f.getName().toLowerCase().endsWith(".xls");
+                        }
+
+                        @Override
+                        public String getDescription() {
+                                return "Excel Files (*.xls)";
+                        }
+                });
+
+                int userSelection = fileChooser.showSaveDialog(this);
+                if (userSelection == JFileChooser.APPROVE_OPTION) {
+                        java.io.File fileToSave = fileChooser.getSelectedFile();
+                        String filePath = fileToSave.getAbsolutePath();
+                        if (!filePath.toLowerCase().endsWith(".xls")) {
+                                filePath += ".xls";
+                                fileToSave = new java.io.File(filePath);
+                        }
+
+                        try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
+                                workbook.write(fileOut);
+                                JOptionPane.showMessageDialog(this,
+                                                "Xuất file Excel thành công: " + fileToSave.getAbsolutePath(),
+                                                "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException e) {
+                                JOptionPane.showMessageDialog(this, "Lỗi khi xuất file Excel: " + e.getMessage(), "Lỗi",
+                                                JOptionPane.ERROR_MESSAGE);
+                        } finally {
+                                try {
+                                        workbook.close();
+                                } catch (IOException e) {
+                                        e.printStackTrace();
+                                }
+                        }
+                }
         }
 
         private List<sanPhamDTO> filterByPriceRange(List<sanPhamDTO> list, Double priceFrom, Double priceTo) {

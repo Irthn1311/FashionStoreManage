@@ -11,6 +11,12 @@ import java.text.SimpleDateFormat;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
 
 public class khuyenMaiPanel extends javax.swing.JPanel {
         private KhuyenMaiService khuyenMaiService;
@@ -107,6 +113,8 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                         jComboBox1.setSelectedIndex(0);
                 });
 
+                jButton34.addActionListener(e -> exportToExcel());
+
                 khuyenMaiTable.getColumnModel().getColumn(11).setCellRenderer(new HyperlinkRenderer());
 
                 khuyenMaiTable.addMouseListener(new MouseAdapter() {
@@ -134,6 +142,92 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                                 }
                         }
                 });
+        }
+
+        private void exportToExcel() {
+                Workbook workbook = new HSSFWorkbook();
+                Sheet sheet = workbook.createSheet("Danh sách khuyến mãi");
+
+                // Tạo header
+                Row headerRow = sheet.createRow(0);
+                String[] headers = { "STT", "Mã KM", "Mã sản phẩm", "Tên sản phẩm", "Tên chương trình",
+                                "Ngày bắt đầu", "Ngày kết thúc", "Giảm giá", "Giá cũ", "Giá mới", "Trạng thái" };
+                for (int i = 0; i < headers.length; i++) {
+                        Cell cell = headerRow.createCell(i);
+                        cell.setCellValue(headers[i]);
+                        CellStyle headerStyle = workbook.createCellStyle();
+                        Font font = workbook.createFont();
+                        font.setBold(true);
+                        headerStyle.setFont(font);
+                        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+                        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                        cell.setCellStyle(headerStyle);
+                }
+
+                // Thêm dữ liệu từ bảng
+                DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                        Row row = sheet.createRow(i + 1);
+                        for (int j = 0; j < headers.length; j++) {
+                                Cell cell = row.createCell(j);
+                                Object value = model.getValueAt(i, j);
+                                if (value != null) {
+                                        cell.setCellValue(value.toString());
+                                }
+                        }
+                }
+
+                // Tự động điều chỉnh kích thước cột
+                for (int i = 0; i < headers.length; i++) {
+                        sheet.autoSizeColumn(i);
+                }
+
+                // Đặt tên file mặc định
+                String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String fileName = "DanhSachKhuyenMai_" + timestamp + ".xls";
+
+                // Sử dụng JFileChooser để cho phép người dùng chọn vị trí lưu file
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+                fileChooser.setSelectedFile(new java.io.File(fileName));
+                fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                        @Override
+                        public boolean accept(java.io.File f) {
+                                return f.isDirectory() || f.getName().toLowerCase().endsWith(".xls");
+                        }
+
+                        @Override
+                        public String getDescription() {
+                                return "Excel Files (*.xls)";
+                        }
+                });
+
+                int userSelection = fileChooser.showSaveDialog(this);
+                if (userSelection == JFileChooser.APPROVE_OPTION) {
+                        java.io.File fileToSave = fileChooser.getSelectedFile();
+                        // Đảm bảo đuôi file là .xls
+                        String filePath = fileToSave.getAbsolutePath();
+                        if (!filePath.toLowerCase().endsWith(".xls")) {
+                                filePath += ".xls";
+                                fileToSave = new java.io.File(filePath);
+                        }
+
+                        try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
+                                workbook.write(fileOut);
+                                JOptionPane.showMessageDialog(this,
+                                                "Xuất file Excel thành công: " + fileToSave.getAbsolutePath(),
+                                                "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        } catch (IOException e) {
+                                JOptionPane.showMessageDialog(this, "Lỗi khi xuất file Excel: " + e.getMessage(), "Lỗi",
+                                                JOptionPane.ERROR_MESSAGE);
+                        } finally {
+                                try {
+                                        workbook.close();
+                                } catch (IOException e) {
+                                        e.printStackTrace();
+                                }
+                        }
+                }
         }
 
         public void loadKhuyenMaiData() {
@@ -527,7 +621,7 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                                 int row, int column) {
                         JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
                                         row, column);
-                        label.setForeground(new Color(0, 102, 204));
+                        label.setForeground(new java.awt.Color(0, 102, 204));
                         label.setText(value.toString());
                         label.setBorder(null);
                         return label;
