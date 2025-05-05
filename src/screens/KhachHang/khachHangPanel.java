@@ -21,6 +21,9 @@ import java.awt.Cursor;
 import java.sql.Date;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import utils.FileUtils;
 
 public class khachHangPanel extends javax.swing.JPanel {
     private KhachHangBUS khachHangBUS;
@@ -65,7 +68,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         jPanel18 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         khachHangTable = new javax.swing.JTable();
-        jButton34 = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
         jPanel33 = new javax.swing.JPanel();
         jButton30 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -135,7 +138,18 @@ public class khachHangPanel extends javax.swing.JPanel {
 
         jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 910, 270));
 
-        jButton34.setText("Lưu và xuất file");
+        btnExport.setText("Xuất file");
+        ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
+        btnExport.setIcon(new ImageIcon(
+                        exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnExport.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnExport.setPreferredSize(new java.awt.Dimension(340, 40));
+        btnExport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                utils.FileUtils.showExportOptions(khachHangTable, "Danh sách khách hàng");
+            }
+        });
 
         jPanel33.setBackground(new java.awt.Color(107, 163, 190));
         jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(
@@ -154,6 +168,36 @@ public class khachHangPanel extends javax.swing.JPanel {
         jPanel33.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 300, 30));
         jPanel33.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 320, 30));
 
+        // Add Import button
+        jButton36 = new javax.swing.JButton("Import");
+        ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
+        jButton36.setIcon(new ImageIcon(
+                        importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
+        jButton36.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        utils.FileUtils.importFromFile(khachHangTable);
+                }
+        });
+
+        // Add Print button
+        jButton37 = new javax.swing.JButton("In");
+        ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
+        jButton37.setIcon(new ImageIcon(
+                        printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton37.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton37.setPreferredSize(new java.awt.Dimension(100, 40));
+        jButton37.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        try {
+                                khachHangTable.print();
+                        } catch (Exception e) {
+                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        }
+                }
+        });
+
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
         pnlContentLayout.setHorizontalGroup(
@@ -164,8 +208,14 @@ public class khachHangPanel extends javax.swing.JPanel {
                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
                                                 pnlContentLayout.createSequentialGroup()
-                                                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(18, 18, 18)
+                                                        .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(18, 18, 18)
+                                                        .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGap(313, 313, 313))
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout
                                                 .createSequentialGroup()
@@ -199,8 +249,13 @@ public class khachHangPanel extends javax.swing.JPanel {
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28,
                                         Short.MAX_VALUE)
-                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(16, 16, 16)));
 
         containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
@@ -540,15 +595,6 @@ public class khachHangPanel extends javax.swing.JPanel {
                 }
             }
         });
-
-        // Nút Xuất file
-        jButton34.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO: Implement xuất file
-                JOptionPane.showMessageDialog(null, "Chức năng đang được phát triển");
-            }
-        });
     }
 
     public javax.swing.JPanel getKhachHangPanel() {
@@ -561,7 +607,7 @@ public class khachHangPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton33;
-    private javax.swing.JButton jButton34;
+    private javax.swing.JButton btnExport;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -573,5 +619,7 @@ public class khachHangPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
+    private javax.swing.JButton jButton36;
+    private javax.swing.JButton jButton37;
     // End of variables declaration
 }

@@ -14,7 +14,7 @@ import screens.LoaiSanPham.loaisanpham;
 import screens.NhaCungCap.nhaCungCapPanel;
 import screens.NhanVien.nhanVienPanel;
 import screens.NhapHang.nhaphang;
-import screens.NhapHang.phieunhap;
+import screens.PhieuNhap.phieunhap;
 import screens.SanPham.sanPhamPanel;
 import screens.ThongKe.ThongKePanel; // Thêm import mới
 import screens.XuatHang.xuathang;

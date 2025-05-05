@@ -259,27 +259,38 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
 
         @SuppressWarnings("unchecked")
         private void initComponents() {
+                // Khởi tạo các panel trước
                 containerPanel = new javax.swing.JPanel();
-                containerPanel.setPreferredSize(new java.awt.Dimension(1000, 700));
-                containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
                 pnlHeader = new javax.swing.JPanel();
-                jLabel1 = new javax.swing.JLabel();
                 pnlContent = new javax.swing.JPanel();
+                pnlContent1 = new javax.swing.JPanel();
                 jPanel17 = new javax.swing.JPanel();
-                jButton31 = new javax.swing.JButton();
-                jButton32 = new javax.swing.JButton();
-                jButton33 = new javax.swing.JButton();
-                jButton35 = new javax.swing.JButton();
                 jPanel18 = new javax.swing.JPanel();
+                jPanel33 = new javax.swing.JPanel();
+
+                // Khởi tạo các button
+                jButton30 = new javax.swing.JButton("Tìm kiếm");
+                jButton31 = new javax.swing.JButton("Thêm");
+                jButton32 = new javax.swing.JButton("Sửa");
+                jButton33 = new javax.swing.JButton("Xóa");
+                jButton34 = new javax.swing.JButton("Xuất file");
+                jButton35 = new javax.swing.JButton("Làm mới");
+
+                // Khởi tạo các label
+                jLabel1 = new javax.swing.JLabel();
+                jLabel2 = new javax.swing.JLabel();
+
+                // Khởi tạo các text field và combo box
+                jTextField1 = new javax.swing.JTextField();
+                jComboBox1 = new javax.swing.JComboBox<>();
+                giamGiaTuField = new javax.swing.JTextField();
+                giamGiaDenField = new javax.swing.JTextField();
+                giaMoiTuField = new javax.swing.JTextField();
+                giaMoiDenField = new javax.swing.JTextField();
+
+                // Khởi tạo table và scroll pane
                 jScrollPane2 = new javax.swing.JScrollPane();
                 khuyenMaiTable = new javax.swing.JTable();
-                jButton34 = new javax.swing.JButton();
-                jPanel33 = new javax.swing.JPanel();
-                jButton30 = new javax.swing.JButton();
-                jLabel2 = new javax.swing.JLabel();
-                jComboBox1 = new javax.swing.JComboBox<>();
-                jTextField1 = new javax.swing.JTextField();
 
                 containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
                 containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -551,5 +562,6 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
         private javax.swing.JTable khuyenMaiTable;
         private javax.swing.JTextField jTextField1;
         private javax.swing.JPanel pnlContent;
+        private javax.swing.JPanel pnlContent1;
         private javax.swing.JPanel pnlHeader;
 }

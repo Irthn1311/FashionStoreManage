@@ -28,11 +28,6 @@ import BUS.PhanQuyenBUS;
 import java.util.EnumSet;
 import BUS.NhanVienBUS;
 import DTO.VaiTro;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import utils.ExcelUtils;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenuItem;
 
 /**
  *
@@ -94,13 +89,6 @@ public class nhanVienPanel extends javax.swing.JPanel {
         jButton33.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xoaNhanVien();
-            }
-        });
-
-        // Thêm action listener cho nút Lưu và xuất file
-        jButton34.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showExportOptions();
             }
         });
 
@@ -609,82 +597,6 @@ public class nhanVienPanel extends javax.swing.JPanel {
             return nhanVienTable.getValueAt(selectedRow, 0).toString(); // Giả sử cột 0 là MaTaiKhoan
         }
         return null;
-    }
-
-    private void showExportOptions() {
-        JPopupMenu popupMenu = new JPopupMenu();
-        
-        JMenuItem exportExcelItem = new JMenuItem("Xuất ra Excel");
-        exportExcelItem.addActionListener(e -> exportToExcel());
-        popupMenu.add(exportExcelItem);
-        
-        JMenuItem importExcelItem = new JMenuItem("Nhập từ Excel");
-        importExcelItem.addActionListener(e -> importFromExcel());
-        popupMenu.add(importExcelItem);
-        
-        JMenuItem generateReportItem = new JMenuItem("Tạo báo cáo");
-        generateReportItem.addActionListener(e -> generateReport());
-        popupMenu.add(generateReportItem);
-        
-        popupMenu.show(jButton34, 0, jButton34.getHeight());
-    }
-    
-    private void exportToExcel() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
-        
-        int userSelection = fileChooser.showSaveDialog(this);
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-            if (!filePath.endsWith(".xlsx")) {
-                filePath += ".xlsx";
-            }
-            
-            ExcelUtils.exportToExcel(nhanVienTable, filePath);
-            JOptionPane.showMessageDialog(this,
-                "Xuất dữ liệu thành công!",
-                "Thông báo",
-                JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-    
-    private void importFromExcel() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Chọn file Excel để nhập");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
-        
-        int userSelection = fileChooser.showOpenDialog(this);
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-            List<List<String>> data = ExcelUtils.importFromExcel(filePath);
-            
-            if (!data.isEmpty()) {
-                // Xóa dữ liệu cũ
-                tableModel.setRowCount(0);
-                
-                // Thêm dữ liệu mới (bỏ qua header row)
-                for (int i = 1; i < data.size(); i++) {
-                    List<String> row = data.get(i);
-                    if (row.size() >= tableModel.getColumnCount()) {
-                        tableModel.addRow(row.toArray());
-                    }
-                }
-                
-                JOptionPane.showMessageDialog(this,
-                    "Nhập dữ liệu thành công!",
-                    "Thông báo",
-                    JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-    }
-    
-    private void generateReport() {
-        // TODO: Implement report generation using JasperReports
-        JOptionPane.showMessageDialog(this,
-            "Chức năng tạo báo cáo đang được phát triển...",
-            "Thông báo",
-            JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

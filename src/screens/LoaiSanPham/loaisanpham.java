@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.stream.Collectors;
+import utils.FileUtils;
 
 public class loaisanpham extends javax.swing.JPanel {
 
@@ -20,6 +21,8 @@ public class loaisanpham extends javax.swing.JPanel {
         private JTextField quantityToField;
         private JRadioButton priceRadioButton;
         private JRadioButton quantityRadioButton;
+        private javax.swing.JButton jButton36;
+        private javax.swing.JButton jButton37;
 
         public loaisanpham() {
                 productService = new ProductService();
@@ -291,16 +294,6 @@ public class loaisanpham extends javax.swing.JPanel {
                                 refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
                 jButton35.setHorizontalTextPosition(SwingConstants.RIGHT);
                 jButton35.setPreferredSize(new java.awt.Dimension(100, 34));
-                jPanel17.add(jButton35, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 24, 100, 34)); // Điều
-                                                                                                              // chỉnh
-                                                                                                              // chiều
-                                                                                                              // rộng
-                                                                                                              // thành
-                                                                                                              // 100
-                jButton35.setIcon(new ImageIcon(
-                                refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-                jButton35.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton35.setPreferredSize(new java.awt.Dimension(100, 34));
                 jButton35.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 loadTableData();
@@ -315,6 +308,38 @@ public class loaisanpham extends javax.swing.JPanel {
                         }
                 });
                 jPanel17.add(jButton35, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 24, 120, 34));
+
+                // Add Import button
+                jButton36 = new javax.swing.JButton("Import");
+                ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
+                jButton36.setIcon(new ImageIcon(
+                                importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
+                jButton36.setPreferredSize(new java.awt.Dimension(100, 34));
+                jButton36.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                utils.FileUtils.importFromFile(jTable2);
+                        }
+                });
+                jPanel17.add(jButton36, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 24, 100, 34));
+
+                // Add Print button
+                jButton37 = new javax.swing.JButton("In");
+                ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
+                jButton37.setIcon(new ImageIcon(
+                                printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                jButton37.setHorizontalTextPosition(SwingConstants.RIGHT);
+                jButton37.setPreferredSize(new java.awt.Dimension(100, 34));
+                jButton37.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                try {
+                                        jTable2.print();
+                                } catch (Exception e) {
+                                        JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                                }
+                        }
+                });
+                jPanel17.add(jButton37, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 24, 100, 34));
 
                 jPanel18.setBackground(new java.awt.Color(107, 163, 190));
                 jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
@@ -343,12 +368,17 @@ public class loaisanpham extends javax.swing.JPanel {
 
                 jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 940, 270));
 
-                jButton34.setText("Xuất file xuất hàng");
+                jButton34.setText("Xuất file");
                 ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
                 jButton34.setIcon(new ImageIcon(
                                 exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
                 jButton34.setHorizontalTextPosition(SwingConstants.RIGHT);
                 jButton34.setPreferredSize(new java.awt.Dimension(340, 40));
+                jButton34.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                utils.FileUtils.showExportOptions(jTable2, "Danh sách sản phẩm");
+                        }
+                });
 
                 javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
                 pnlContent.setLayout(pnlContentLayout);
