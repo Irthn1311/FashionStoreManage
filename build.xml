@@ -4,7 +4,7 @@
 <property name="build.dir" value="build"/>
 <property name="lib.dir" value="lib"/>
 <property name="dist.dir" value="dist"/>
-<property name="main-class" value="your.main.ClassName"/>
+<property name="main-class" value="main.Main"/>
 <!--  Thay bằng lớp chính của bạn  -->
 <!--  Đường dẫn cho các thư viện  -->
 <path id="classpath">
