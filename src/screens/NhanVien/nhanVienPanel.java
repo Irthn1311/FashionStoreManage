@@ -7,6 +7,32 @@ import DTO.nhanVienDTO;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import java.awt.Cursor;
+import java.util.ArrayList;
+import BUS.TaiKhoanBUS;
+import DTO.taiKhoanDTO;
+import java.awt.Dimension;
+import javax.swing.JComboBox;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import BUS.PhanQuyenBUS;
+import java.util.EnumSet;
+import BUS.NhanVienBUS;
+import DTO.VaiTro;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import utils.ExcelUtils;
+import javax.swing.JPopupMenu;
+import javax.swing.JMenuItem;
 
 /**
  *
@@ -17,11 +43,16 @@ public class nhanVienPanel extends javax.swing.JPanel {
     private SimpleDateFormat dateFormat;
     private SimpleDateFormat timestampFormat;
     private DecimalFormat decimalFormat;
+    private DefaultTableModel tableModel;
+    private TaiKhoanBUS taiKhoanBUS;
+    private JComboBox<String> cboVaiTro;
+    private taiKhoanDTO taiKhoan;
 
     /**
      * Creates new form nhanvien
      */
-    public nhanVienPanel() {
+    public nhanVienPanel(taiKhoanDTO taiKhoan) {
+        this.taiKhoan = taiKhoan;
         initComponents();
         
         // Khởi tạo DAO và định dạng
@@ -42,6 +73,76 @@ public class nhanVienPanel extends javax.swing.JPanel {
         jButton30.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchNhanVien();
+            }
+        });
+
+        // Thêm action listener cho nút Thêm
+        jButton31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                themNhanVien();
+            }
+        });
+
+        // Thêm action listener cho nút Sửa
+        jButton32.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                suaNhanVien();
+            }
+        });
+
+        // Thêm action listener cho nút Xóa
+        jButton33.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xoaNhanVien();
+            }
+        });
+
+        // Thêm action listener cho nút Lưu và xuất file
+        jButton34.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showExportOptions();
+            }
+        });
+
+        // Thêm ComboBox cho VaiTro
+        String[] vaiTroOptions = {
+            VaiTro.QUAN_TRI.getDisplayName(),
+            VaiTro.QUAN_LY_KHO.getDisplayName(),
+            VaiTro.QUAN_LY_NHAN_VIEN.getDisplayName(),
+            VaiTro.NHAN_VIEN.getDisplayName()
+        };
+        cboVaiTro = new JComboBox<>(vaiTroOptions);
+        
+        // Kiểm tra quyền thay đổi vai trò
+        if (taiKhoan.getVaiTro() != VaiTro.QUAN_TRI) {
+            cboVaiTro.setEnabled(false);
+            cboVaiTro.setToolTipText("Chỉ Quản trị viên mới có quyền thay đổi vai trò");
+        }
+        
+        // Thêm sự kiện khi thay đổi vai trò
+        cboVaiTro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (taiKhoan.getVaiTro() == VaiTro.QUAN_TRI) {
+                    String selectedVaiTro = (String) cboVaiTro.getSelectedItem();
+                    String maTaiKhoan = getSelectedMaTaiKhoan();
+                    
+                    if (maTaiKhoan != null) {
+                        boolean success = taiKhoanBUS.capNhatVaiTro(maTaiKhoan, selectedVaiTro);
+                        if (success) {
+                            JOptionPane.showMessageDialog(null, 
+                                "Cập nhật vai trò thành công!", 
+                                "Thông báo", 
+                                JOptionPane.INFORMATION_MESSAGE);
+                            loadNhanVienData(); // Refresh bảng
+                        } else {
+                            JOptionPane.showMessageDialog(null, 
+                                "Cập nhật vai trò thất bại!", 
+                                "Lỗi", 
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
             }
         });
     }
@@ -119,35 +220,47 @@ public class nhanVienPanel extends javax.swing.JPanel {
         jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton31.setText("Thêm ");
-        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 30, -1, 34));
+        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, 100, 34));
 
         jButton32.setText("Sửa");
-        jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 30, -1, 34));
+        jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 30, 100, 34));
 
         jButton33.setText("Xóa");
-        jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 30, -1, 34));
+        jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 30, 100, 34));
+
+        // Thêm nút thay đổi trạng thái
+        btnTrangThai = new javax.swing.JButton();
+        btnTrangThai.setText("Khóa");
+        btnTrangThai.setPreferredSize(new Dimension(100, 35));
+        jPanel17.add(btnTrangThai, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 30, 100, 34));
+        btnTrangThai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thayDoiTrangThai();
+            }
+        });
 
         jPanel18.setBackground(new java.awt.Color(107, 163, 190));
         jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
         jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        nhanVienTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-            },
-            new String [] {
-                "STT", "Mã NV", "Tên NV", "Mã TK", "Năm sinh", "Giới tính", "Địa chỉ", 
-                "Chức vụ", "Mức lương", "Năm vào làm", "Email", "Số điện thoại", "Chi tiết"
+        tableModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false,
-                false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
-            }
-        });
+        };
+        
+        tableModel.addColumn("Mã nhân viên");
+        tableModel.addColumn("Họ tên");
+        tableModel.addColumn("Số điện thoại");
+        tableModel.addColumn("Email");
+        tableModel.addColumn("Địa chỉ");
+        tableModel.addColumn("Vị trí");
+        tableModel.addColumn("Tên đăng nhập");
+        tableModel.addColumn("Trạng thái tài khoản");
+        tableModel.addColumn("Chi tiết");
+        
+        nhanVienTable.setModel(tableModel);
         nhanVienTable.setShowGrid(true);
         jScrollPane2.setViewportView(nhanVienTable);
 
@@ -215,85 +328,363 @@ public class nhanVienPanel extends javax.swing.JPanel {
 
     private void loadNhanVienData() {
         List<nhanVienDTO> nhanVienList = nhanVienDAO.getAllNhanVien();
-        DefaultTableModel model = (DefaultTableModel) nhanVienTable.getModel();
-        model.setRowCount(0); // Xóa dữ liệu cũ
+        tableModel.setRowCount(0); // Xóa dữ liệu cũ
         
-        int stt = 1;
         for (nhanVienDTO nv : nhanVienList) {
-            String ngaySinhStr = "";
-            String ngayVaoLamStr = "";
+            taiKhoanDTO taiKhoan = nhanVienDAO.getTaiKhoanByMaNhanVien(nv.getMaNhanVien());
+            String tenDangNhap = taiKhoan != null ? taiKhoan.getTenDangNhap() : "Chưa có";
+            String trangThai = taiKhoan != null ? (taiKhoan.getTrangThai() == 1 ? "Hoạt động" : "Không hoạt động") : "Chưa có";
             
-            try {
-                if (nv.getNgaySinh() != null) {
-                    ngaySinhStr = dateFormat.format(nv.getNgaySinh());
-                }
-                if (nv.getNgayVaoLam() != null) {
-                    ngayVaoLamStr = timestampFormat.format(nv.getNgayVaoLam());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            model.addRow(new Object[]{
-                stt++,
+            tableModel.addRow(new Object[]{
                 nv.getMaNhanVien(),
                 nv.getHoTen(),
-                nv.getMaTaiKhoan(),
-                ngaySinhStr,
-                nv.getGioiTinh(),
+                nv.getSoDienThoai(),
+                nv.getEmail(),
                 nv.getDiaChi(),
                 nv.getChucVu(),
-                decimalFormat.format(nv.getMucLuong()),
-                ngayVaoLamStr,
-                nv.getEmail(),
-                nv.getSoDienThoai(),
+                tenDangNhap,
+                trangThai,
                 "Xem chi tiết"
             });
         }
+        
+        setupTable(); // Gọi setupTable sau khi load dữ liệu
+    }
+    
+    private void setupTable() {
+        // Thiết lập chiều rộng cho các cột
+        nhanVienTable.getColumnModel().getColumn(0).setPreferredWidth(100);  // Mã NV
+        nhanVienTable.getColumnModel().getColumn(1).setPreferredWidth(150);  // Tên NV
+        nhanVienTable.getColumnModel().getColumn(2).setPreferredWidth(120);  // Số điện thoại
+        nhanVienTable.getColumnModel().getColumn(3).setPreferredWidth(150);  // Email
+        nhanVienTable.getColumnModel().getColumn(4).setPreferredWidth(200);  // Địa chỉ
+        nhanVienTable.getColumnModel().getColumn(5).setPreferredWidth(100);  // Vị trí
+        nhanVienTable.getColumnModel().getColumn(6).setPreferredWidth(120);  // Tên đăng nhập
+        nhanVienTable.getColumnModel().getColumn(7).setPreferredWidth(120);  // Trạng thái tài khoản
+
+        // Thiết lập căn giữa cho một số cột
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        
+        nhanVienTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);  // Mã NV
+        nhanVienTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);  // Tên NV
+        nhanVienTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);  // Số điện thoại
+        nhanVienTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);  // Email
+        nhanVienTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);  // Địa chỉ
+        nhanVienTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);  // Vị trí
+        nhanVienTable.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);  // Tên đăng nhập
+        nhanVienTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);  // Trạng thái tài khoản
+
+        // Thiết lập màu xanh và gạch chân cho cột "Chi tiết"
+        nhanVienTable.getColumnModel().getColumn(8).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setForeground(new Color(0, 0, 255)); // Màu xanh cho chữ
+                setHorizontalAlignment(JLabel.CENTER);
+                return c;
+            }
+        });
+
+        // Thiết lập row height
+        nhanVienTable.setRowHeight(25);
+
+        // Thêm sự kiện chuột cho cột Chi tiết
+        nhanVienTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = nhanVienTable.rowAtPoint(evt.getPoint());
+                int col = nhanVienTable.columnAtPoint(evt.getPoint());
+                
+                if (row >= 0 && col == 8) { // Cột Chi tiết
+                    String maNV = nhanVienTable.getValueAt(row, 0).toString(); // Sửa từ cột 1 thành cột 0
+                    xemChiTietNhanVien(maNV);
+                }
+            }
+        });
+
+        // Thêm cursor hand khi di chuột qua cột Chi tiết
+        nhanVienTable.addMouseMotionListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                int col = nhanVienTable.columnAtPoint(evt.getPoint());
+                if (col == 8) { // Cột Chi tiết
+                    nhanVienTable.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                } else {
+                    nhanVienTable.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+        });
+
+        // Thêm sự kiện chọn dòng trong bảng
+        nhanVienTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = nhanVienTable.getSelectedRow();
+                if (selectedRow >= 0) {
+                    String trangThai = nhanVienTable.getValueAt(selectedRow, 7).toString();
+                    btnTrangThai.setText(trangThai.equals("Hoạt động") ? "Khóa" : "Mở Khóa");
+                }
+            }
+        });
     }
     
     private void searchNhanVien() {
         String keyword = jTextField1.getText().trim();
         if (!keyword.isEmpty()) {
             List<nhanVienDTO> searchResults = nhanVienDAO.searchNhanVien(keyword);
-            DefaultTableModel model = (DefaultTableModel) nhanVienTable.getModel();
-            model.setRowCount(0);
+            tableModel.setRowCount(0);
             
-            int stt = 1;
             for (nhanVienDTO nv : searchResults) {
-                String ngaySinhStr = "";
-                String ngayVaoLamStr = "";
+                taiKhoanDTO taiKhoan = nhanVienDAO.getTaiKhoanByMaNhanVien(nv.getMaNhanVien());
+                String tenDangNhap = taiKhoan != null ? taiKhoan.getTenDangNhap() : "Chưa có";
+                String trangThai = taiKhoan != null ? (taiKhoan.getTrangThai() == 1 ? "Hoạt động" : "Không hoạt động") : "Chưa có";
                 
-                try {
-                    if (nv.getNgaySinh() != null) {
-                        ngaySinhStr = dateFormat.format(nv.getNgaySinh());
-                    }
-                    if (nv.getNgayVaoLam() != null) {
-                        ngayVaoLamStr = timestampFormat.format(nv.getNgayVaoLam());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                
-                model.addRow(new Object[]{
-                    stt++,
+                tableModel.addRow(new Object[]{
                     nv.getMaNhanVien(),
                     nv.getHoTen(),
-                    nv.getMaTaiKhoan(),
-                    ngaySinhStr,
-                    nv.getGioiTinh(),
+                    nv.getSoDienThoai(),
+                    nv.getEmail(),
                     nv.getDiaChi(),
                     nv.getChucVu(),
-                    decimalFormat.format(nv.getMucLuong()),
-                    ngayVaoLamStr,
-                    nv.getEmail(),
-                    nv.getSoDienThoai(),
+                    tenDangNhap,
+                    trangThai,
                     "Xem chi tiết"
                 });
             }
         } else {
             loadNhanVienData(); // Nếu từ khóa trống, load lại tất cả dữ liệu
         }
+    }
+
+    private void themNhanVien() {
+        JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Thêm Nhân Viên", true);
+        themNhanVienPanel panel = new themNhanVienPanel();
+        dialog.add(panel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+        loadNhanVienData(); // Reload data after adding
+    }
+
+    private void suaNhanVien() {
+        int selectedRow = nhanVienTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            String maNV = nhanVienTable.getValueAt(selectedRow, 0).toString(); // Sửa từ cột 1 thành cột 0
+            try {
+                nhanVienDTO nhanVien = nhanVienDAO.getNhanVienByMa(maNV);
+                if (nhanVien != null) {
+                    JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Sửa Nhân Viên", true);
+                    suaNhanVienPanel panel = new suaNhanVienPanel(dialog, nhanVien);
+                    dialog.add(panel);
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(this);
+                    dialog.setVisible(true);
+                    loadNhanVienData(); // Reload data after editing
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
+                    "Lỗi khi lấy thông tin nhân viên: " + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Vui lòng chọn nhân viên cần sửa!",
+                "Thông báo",
+                JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void xoaNhanVien() {
+        int selectedRow = nhanVienTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            String maNV = nhanVienTable.getValueAt(selectedRow, 0).toString();
+            String tenNV = nhanVienTable.getValueAt(selectedRow, 1).toString();
+            
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Bạn có chắc chắn muốn xóa nhân viên " + tenNV + " không?",
+                    "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    boolean success = nhanVienDAO.xoaNhanVien(maNV);
+                    if (success) {
+                        JOptionPane.showMessageDialog(this,
+                            "Đã xóa nhân viên thành công!",
+                            "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                        // Cập nhật lại bảng
+                        loadNhanVienData();
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "Không thể xóa nhân viên!",
+                            "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this,
+                        "Lỗi khi xóa nhân viên: " + ex.getMessage(),
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Vui lòng chọn nhân viên cần xóa",
+                "Thông báo",
+                JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private void xemChiTietNhanVien(String maNV) {
+        try {
+            nhanVienDTO nhanVien = nhanVienDAO.getNhanVienByMa(maNV);
+            if (nhanVien != null) {
+                chiTietNhanVienDialog dialog = new chiTietNhanVienDialog((JFrame) SwingUtilities.getWindowAncestor(this), nhanVien);
+                dialog.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy thông tin nhân viên!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Lỗi khi lấy thông tin chi tiết: " + e.getMessage(),
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void thayDoiTrangThai() {
+        int selectedRow = nhanVienTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            String maNhanVien = (String) nhanVienTable.getValueAt(selectedRow, 0);
+            taiKhoanDTO taiKhoan = nhanVienDAO.getTaiKhoanByMaNhanVien(maNhanVien);
+            
+            if (taiKhoan != null) {
+                if (nhanVienDAO.capNhatTrangThaiTaiKhoan(taiKhoan)) {
+                    // Cập nhật lại trạng thái trong bảng
+                    String trangThai = "";
+                    switch (taiKhoan.getTrangThai()) {
+                        case -1:
+                            trangThai = "Đang xét duyệt";
+                            break;
+                        case 1:
+                            trangThai = "Hoạt động";
+                            break;
+                        case 0:
+                            trangThai = "Không hoạt động";
+                            break;
+                    }
+                    nhanVienTable.setValueAt(trangThai, selectedRow, 7);
+                    
+                    // Cập nhật text của nút
+                    switch (taiKhoan.getTrangThai()) {
+                        case -1:
+                            btnTrangThai.setText("Duyệt");
+                            break;
+                        case 1:
+                            btnTrangThai.setText("Khóa");
+                            break;
+                        case 0:
+                            btnTrangThai.setText("Mở Khóa");
+                            break;
+                    }
+                    
+                    JOptionPane.showMessageDialog(this, "Cập nhật trạng thái thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật trạng thái thất bại!");
+                }
+            }
+        }
+    }
+
+    private String getSelectedMaTaiKhoan() {
+        int selectedRow = nhanVienTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            return nhanVienTable.getValueAt(selectedRow, 0).toString(); // Giả sử cột 0 là MaTaiKhoan
+        }
+        return null;
+    }
+
+    private void showExportOptions() {
+        JPopupMenu popupMenu = new JPopupMenu();
+        
+        JMenuItem exportExcelItem = new JMenuItem("Xuất ra Excel");
+        exportExcelItem.addActionListener(e -> exportToExcel());
+        popupMenu.add(exportExcelItem);
+        
+        JMenuItem importExcelItem = new JMenuItem("Nhập từ Excel");
+        importExcelItem.addActionListener(e -> importFromExcel());
+        popupMenu.add(importExcelItem);
+        
+        JMenuItem generateReportItem = new JMenuItem("Tạo báo cáo");
+        generateReportItem.addActionListener(e -> generateReport());
+        popupMenu.add(generateReportItem);
+        
+        popupMenu.show(jButton34, 0, jButton34.getHeight());
+    }
+    
+    private void exportToExcel() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
+        
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            if (!filePath.endsWith(".xlsx")) {
+                filePath += ".xlsx";
+            }
+            
+            ExcelUtils.exportToExcel(nhanVienTable, filePath);
+            JOptionPane.showMessageDialog(this,
+                "Xuất dữ liệu thành công!",
+                "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
+    private void importFromExcel() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel để nhập");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
+        
+        int userSelection = fileChooser.showOpenDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            List<List<String>> data = ExcelUtils.importFromExcel(filePath);
+            
+            if (!data.isEmpty()) {
+                // Xóa dữ liệu cũ
+                tableModel.setRowCount(0);
+                
+                // Thêm dữ liệu mới (bỏ qua header row)
+                for (int i = 1; i < data.size(); i++) {
+                    List<String> row = data.get(i);
+                    if (row.size() >= tableModel.getColumnCount()) {
+                        tableModel.addRow(row.toArray());
+                    }
+                }
+                
+                JOptionPane.showMessageDialog(this,
+                    "Nhập dữ liệu thành công!",
+                    "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+    
+    private void generateReport() {
+        // TODO: Implement report generation using JasperReports
+        JOptionPane.showMessageDialog(this,
+            "Chức năng tạo báo cáo đang được phát triển...",
+            "Thông báo",
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -315,5 +706,6 @@ public class nhanVienPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
+    private javax.swing.JButton btnTrangThai;
     // End of variables declaration//GEN-END:variables
 }

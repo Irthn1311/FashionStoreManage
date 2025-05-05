@@ -4,22 +4,21 @@ public class taiKhoanDTO {
     private String maTaiKhoan;
     private String tenDangNhap;
     private String matKhau;
-    private String email;
-    private String phone;
-    private String vaiTro;
-    private String trangThai;
+    private VaiTro vaiTro;
+    private int trangThai;
+    private String maNhanVien;
 
     public taiKhoanDTO() {
     }
 
-    public taiKhoanDTO(String maTaiKhoan, String tenDangNhap, String matKhau, String email, String phone, String vaiTro, String trangThai) {
+    public taiKhoanDTO(String maTaiKhoan, String tenDangNhap, String matKhau, 
+                      String vaiTro, int trangThai, String maNhanVien) {
         this.maTaiKhoan = maTaiKhoan;
         this.tenDangNhap = tenDangNhap;
         this.matKhau = matKhau;
-        this.email = email;
-        this.phone = phone;
-        this.vaiTro = vaiTro;
+        this.vaiTro = VaiTro.fromString(vaiTro);
         this.trangThai = trangThai;
+        this.maNhanVien = maNhanVien;
     }
 
     public String getMaTaiKhoan() {
@@ -46,44 +45,43 @@ public class taiKhoanDTO {
         this.matKhau = matKhau;
     }
 
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getVaiTro() {
+    public VaiTro getVaiTro() {
         return vaiTro;
     }
-    public void setVaiTro(String vaiTro) {
+
+    public void setVaiTro(VaiTro vaiTro) {
         this.vaiTro = vaiTro;
     }
 
-    public String getTrangThai() {
+    public void setVaiTro(String vaiTro) {
+        this.vaiTro = VaiTro.fromString(vaiTro);
+    }
+
+    public int getTrangThai() {
         return trangThai;
     }
-    public void setTrangThai(String trangThai) {
+
+    public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
+    }
+
+    public String getMaNhanVien() {
+        return maNhanVien;
+    }
+
+    public void setMaNhanVien(String maNhanVien) {
+        this.maNhanVien = maNhanVien;
     }
 
     @Override
     public String toString() {
-        return "TaiKhoanNguoiDung{" +
+        return "TaiKhoan{" +
                 "maTaiKhoan='" + maTaiKhoan + '\'' +
                 ", tenDangNhap='" + tenDangNhap + '\'' +
                 ", matKhau='" + matKhau + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", vaiTro='" + vaiTro + '\'' +
-                ", trangThai='" + trangThai + '\'' +
+                ", vaiTro='" + (vaiTro != null ? vaiTro.getDisplayName() : "null") + '\'' +
+                ", trangThai=" + trangThai +
+                ", maNhanVien='" + maNhanVien + '\'' +
                 '}';
     }
 }

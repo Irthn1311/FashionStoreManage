@@ -179,135 +179,45 @@ public class KhuyenMaiDAO {
         String sql = "SELECT MaKhuyenMai, MaSanPham, TenSanPham, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, GiaCu, GiaMoi "
                 + "FROM KhuyenMai WHERE MaKhuyenMai LIKE ? OR TenChuongTrinh LIKE ? OR MaSanPham LIKE ? OR TenSanPham LIKE ?";
 
-        try (Connection conn = ConnectDB.getConnection()) {
-            if (conn == null) {
-                System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
-                return khuyenMaiList;
-            }
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                String searchPattern = "%" + keyword + "%";
-                ps.setString(1, searchPattern);
-                ps.setString(2, searchPattern);
+            String searchPattern = "%" + keyword + "%";
+            ps.setString(1, searchPattern);
+            ps.setString(2, searchPattern);
                 ps.setString(3, searchPattern);
-                ps.setString(4, searchPattern);
-
+    
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        Date ngayBatDau = rs.getDate("NgayBatDau");
-                        Date ngayKetThuc = rs.getDate("NgayKetThuc");
-                        String trangThai = determineStatus(ngayBatDau, ngayKetThuc);
-
                         khuyenMaiDTO km = new khuyenMaiDTO(
-                                rs.getString("MaKhuyenMai"),
-                                rs.getString("MaSanPham"),
-                                rs.getString("TenSanPham"),
-                                rs.getString("TenChuongTrinh"),
-                                rs.getDouble("GiamGia"),
-                                ngayBatDau,
-                                ngayKetThuc,
-                                rs.getDouble("GiaCu"),
-                                rs.getDouble("GiaMoi"),
-                                trangThai);
+                            rs.getString("MaKhuyenMai"),
+                            rs.getString("MaSanPham"),
+                            rs.getString("TenSanPham"),
+                            rs.getString("TenChuongTrinh"),
+                            rs.getDouble("GiamGia"),
+                            rs.getDate("NgayBatDau"),
+                            rs.getDate("NgayKetThuc"),
+                            rs.getDouble("GiaCu"),
+                            rs.getDouble("GiaMoi"),
+                            determineStatus(rs.getDate("NgayBatDau"), rs.getDate("NgayKetThuc")));
                         khuyenMaiList.add(km);
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            System.err.println("Lỗi khi tìm kiếm khuyến mãi: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return khuyenMaiList;
-    }
-
-    public boolean updateKhuyenMai(khuyenMaiDTO km) {
-        String sql = "UPDATE KhuyenMai SET MaSanPham = ?, TenSanPham = ?, TenChuongTrinh = ?, GiamGia = ?, NgayBatDau = ?, NgayKetThuc = ?, GiaCu = ?, GiaMoi = ?, TrangThai = ? WHERE MaKhuyenMai = ?";
-        try (Connection conn = ConnectDB.getConnection()) {
-            if (conn == null) {
-                System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
-                return false;
-            }
-
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, km.getMaSanPham());
-                ps.setString(2, km.getTenSanPham());
-                ps.setString(3, km.getTenChuongTrinh());
-                ps.setDouble(4, km.getGiamGia());
-                ps.setDate(5, new java.sql.Date(km.getNgayBatDau().getTime()));
-                ps.setDate(6, new java.sql.Date(km.getNgayKetThuc().getTime()));
-                ps.setDouble(7, km.getGiaCu());
-                ps.setDouble(8, km.getGiaMoi());
-                ps.setString(9, determineStatus(km.getNgayBatDau(), km.getNgayKetThuc()));
-                ps.setString(10, km.getMaKhuyenMai());
-
-                boolean success = ps.executeUpdate() > 0;
-                if (success) {
-                    String trangThai = determineStatus(km.getNgayBatDau(), km.getNgayKetThuc());
-                    if ("Hoạt động".equals(trangThai)) {
-                        updateProductPrice(km.getMaSanPham(), km.getGiaMoi());
-                    } else if ("Hết hạn".equals(trangThai)) {
-                        updateProductPrice(km.getMaSanPham(), km.getGiaCu());
-                    }
-                }
-                return success;
-            }
-        } catch (SQLException e) {
-            System.err.println("Lỗi khi cập nhật khuyến mãi: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean deleteKhuyenMai(String maKhuyenMai) {
-        String sqlSelect = "SELECT MaSanPham, GiaCu FROM KhuyenMai WHERE MaKhuyenMai = ?";
-        String maSanPham = null;
-        double giaCu = 0;
-
-        try (Connection conn = ConnectDB.getConnection()) {
-            if (conn == null) {
-                System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
-                return false;
-            }
-
-            try (PreparedStatement psSelect = conn.prepareStatement(sqlSelect)) {
-                psSelect.setString(1, maKhuyenMai);
-                try (ResultSet rs = psSelect.executeQuery()) {
-                    if (rs.next()) {
-                        maSanPham = rs.getString("MaSanPham");
-                        giaCu = rs.getDouble("GiaCu");
-                    }
-                }
-            }
-
-            String sqlDelete = "DELETE FROM KhuyenMai WHERE MaKhuyenMai = ?";
-            try (PreparedStatement psDelete = conn.prepareStatement(sqlDelete)) {
-                psDelete.setString(1, maKhuyenMai);
-                boolean success = psDelete.executeUpdate() > 0;
-                if (success && maSanPham != null) {
-                    updateProductPrice(maSanPham, giaCu);
-                }
-                return success;
-            }
-        } catch (SQLException e) {
-            System.err.println("Lỗi khi xóa khuyến mãi: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
+            return khuyenMaiList;
     }
 
     public boolean addKhuyenMai(khuyenMaiDTO km) {
-        if (hasActivePromotionForProduct(km.getMaSanPham())) {
-            System.err.println("Sản phẩm " + km.getMaSanPham() + " đã có khuyến mãi đang hoạt động hoặc chưa bắt đầu.");
-            return false;
-        }
-
-        String sql = "INSERT INTO KhuyenMai (MaKhuyenMai, MaSanPham, TenSanPham, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, GiaCu, GiaMoi, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO KhuyenMai (MaKhuyenMai, MaSanPham, TenSanPham, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, GiaCu, GiaMoi) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
         try (Connection conn = ConnectDB.getConnection()) {
             if (conn == null) {
                 System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
                 return false;
             }
-
+            
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, km.getMaKhuyenMai());
                 ps.setString(2, km.getMaSanPham());
@@ -318,19 +228,60 @@ public class KhuyenMaiDAO {
                 ps.setDate(7, new java.sql.Date(km.getNgayKetThuc().getTime()));
                 ps.setDouble(8, km.getGiaCu());
                 ps.setDouble(9, km.getGiaMoi());
-                ps.setString(10, determineStatus(km.getNgayBatDau(), km.getNgayKetThuc()));
-
-                boolean success = ps.executeUpdate() > 0;
-                if (success) {
-                    String trangThai = determineStatus(km.getNgayBatDau(), km.getNgayKetThuc());
-                    if ("Hoạt động".equals(trangThai)) {
-                        updateProductPrice(km.getMaSanPham(), km.getGiaMoi());
-                    }
-                }
-                return success;
+                
+                return ps.executeUpdate() > 0;
             }
         } catch (SQLException e) {
             System.err.println("Lỗi khi thêm khuyến mãi: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateKhuyenMai(khuyenMaiDTO km) {
+        String sql = "UPDATE KhuyenMai SET MaSanPham = ?, TenSanPham = ?, TenChuongTrinh = ?, GiamGia = ?, NgayBatDau = ?, NgayKetThuc = ?, GiaCu = ?, GiaMoi = ? WHERE MaKhuyenMai = ?";
+        
+        try (Connection conn = ConnectDB.getConnection()) {
+            if (conn == null) {
+                System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
+                return false;
+            }
+            
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, km.getMaSanPham());
+                ps.setString(2, km.getTenSanPham());
+                ps.setString(3, km.getTenChuongTrinh());
+                ps.setDouble(4, km.getGiamGia());
+                ps.setDate(5, new java.sql.Date(km.getNgayBatDau().getTime()));
+                ps.setDate(6, new java.sql.Date(km.getNgayKetThuc().getTime()));
+                ps.setDouble(7, km.getGiaCu());
+                ps.setDouble(8, km.getGiaMoi());
+                ps.setString(9, km.getMaKhuyenMai());
+                
+                return ps.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi cập nhật khuyến mãi: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteKhuyenMai(String maKhuyenMai) {
+        String sql = "DELETE FROM KhuyenMai WHERE MaKhuyenMai = ?";
+        
+        try (Connection conn = ConnectDB.getConnection()) {
+            if (conn == null) {
+                System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
+                return false;
+            }
+            
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, maKhuyenMai);
+                return ps.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi xóa khuyến mãi: " + e.getMessage());
             e.printStackTrace();
             return false;
         }

@@ -1,31 +1,28 @@
 package DTO;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
 public class khachHangDTO {
     private String maKhachHang;
     private String hoTen;
-    private String email;
-    private String phone;
-    private String diaChi;
     private String gioiTinh;
+    private String soDienThoai;
+    private String email;
+    private String diaChi;
     private Date ngaySinh;
-    private Timestamp ngayDangKy;
-    private taiKhoanDTO taiKhoan;
 
-    public khachHangDTO(String maKhachHang, String hoTen, String email, String phone, 
-                     String diaChi, String gioiTinh, Date ngaySinh, 
-                     Timestamp ngayDangKy, taiKhoanDTO taiKhoan) {
+    public khachHangDTO() {
+    }
+
+    public khachHangDTO(String maKhachHang, String hoTen, String gioiTinh, String soDienThoai, 
+                     String email, String diaChi, Date ngaySinh) {
         this.maKhachHang = maKhachHang;
         this.hoTen = hoTen;
-        this.email = email;
-        this.phone = phone;
-        this.diaChi = diaChi;
         this.gioiTinh = gioiTinh;
+        this.soDienThoai = soDienThoai;
+        this.email = email;
+        this.diaChi = diaChi;
         this.ngaySinh = ngaySinh;
-        this.ngayDangKy = ngayDangKy;
-        this.taiKhoan = taiKhoan;
     }
 
     // Getters
@@ -37,41 +34,24 @@ public class khachHangDTO {
         return hoTen;
     }
 
-    public String getEmail() {
-        return email;
+    public String getGioiTinh() {
+        return gioiTinh;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getSoDienThoai() {
+        return soDienThoai;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getDiaChi() {
         return diaChi;
     }
 
-    public String getGioiTinh() {
-        return gioiTinh;
-    }
-
     public Date getNgaySinh() {
         return ngaySinh;
-    }
-
-    public Timestamp getNgayDangKy() {
-        return ngayDangKy;
-    }
-
-    public taiKhoanDTO getTaiKhoan() {
-        return taiKhoan;
-    }
-
-    // Các phương thức tiện ích để lấy thông tin từ taiKhoan
-    public String getMaTaiKhoan() {
-        return taiKhoan != null ? taiKhoan.getMaTaiKhoan() : null;
-    }
-
-    public String getTenDangNhap() {
-        return taiKhoan != null ? taiKhoan.getTenDangNhap() : null;
     }
 
     // Setters
@@ -83,46 +63,36 @@ public class khachHangDTO {
         this.hoTen = hoTen;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setGioiTinh(String gioiTinh) {
+        this.gioiTinh = gioiTinh;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setSoDienThoai(String soDienThoai) {
+        this.soDienThoai = soDienThoai;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
     }
 
-    public void setGioiTinh(String gioiTinh) {
-        this.gioiTinh = gioiTinh;
-    }
-
     public void setNgaySinh(Date ngaySinh) {
         this.ngaySinh = ngaySinh;
     }
 
-    public void setNgayDangKy(Timestamp ngayDangKy) {
-        this.ngayDangKy = ngayDangKy;
-    }
-
-    public void setTaiKhoan(taiKhoanDTO taiKhoan) {
-        this.taiKhoan = taiKhoan;
-    }
-
     @Override
-public String toString() {
-    return "KhachHang {" +
-            "maKhachHang='" + maKhachHang + '\'' +
-            ", hoTen='" + hoTen + '\'' +
-            ", email='" + email + '\'' +
-            ", phone='" + phone + '\'' +
-            ", diaChi='" + diaChi + '\'' +
-            ", gioiTinh='" + gioiTinh + '\'' +
-            ", ngaySinh=" + ngaySinh +
-            ", ngayDangKy=" + ngayDangKy +
-            '}';
-}
-
+    public String toString() {
+        return "KhachHang {" +
+                "maKhachHang='" + maKhachHang + '\'' +
+                ", hoTen='" + hoTen + '\'' +
+                ", gioiTinh='" + gioiTinh + '\'' +
+                ", soDienThoai='" + soDienThoai + '\'' +
+                ", email='" + email + '\'' +
+                ", diaChi='" + diaChi + '\'' +
+                ", ngaySinh=" + ngaySinh +
+                '}';
+    }
 } 

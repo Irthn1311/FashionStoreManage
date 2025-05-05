@@ -5,34 +5,31 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
-import DAO.KhachhangDAO;
+import BUS.KhachHangBUS;
 import DTO.khachHangDTO;
-import DTO.taiKhoanDTO;
 
 public class themKhachHangPanel extends JPanel {
     private JTextField txtHoTen;
+    private JTextField txtTenDangNhap;
     private JTextField txtDiaChi;
     private JTextField txtEmail;
-    private JTextField txtPhone;
+    private JTextField txtSoDienThoai;
     private JTextField txtNgaySinh;
     private JComboBox<String> cboGioiTinh;
     private JButton btnThem;
     private JButton btnHuy;
-    private KhachhangDAO khachHangDAO;
+    private KhachHangBUS khachHangBUS;
 
     public themKhachHangPanel() {
-        khachHangDAO = new KhachhangDAO();
+        khachHangBUS = new KhachHangBUS();
         initComponents();
         setupListeners();
     }
 
     private String generateNextMaKH() {
-        List<khachHangDTO> danhSachKH = khachHangDAO.getAllKhachHang();
+        List<khachHangDTO> danhSachKH = khachHangBUS.getAllKhachHang();
         int maxNumber = 0;
-        
         for (khachHangDTO kh : danhSachKH) {
             String maKH = kh.getMaKhachHang();
             if (maKH != null && maKH.startsWith("KH")) {
@@ -40,12 +37,14 @@ public class themKhachHangPanel extends JPanel {
                     int number = Integer.parseInt(maKH.substring(2));
                     maxNumber = Math.max(maxNumber, number);
                 } catch (NumberFormatException e) {
-                    // Bỏ qua nếu không parse được số
+                    System.out.println("Lỗi parse mã khách hàng: " + maKH + ", " + e.getMessage());
                 }
             }
         }
         
-        return String.format("KH%d", maxNumber + 1);
+        String newMaKH = String.format("KH%d", maxNumber + 1);
+        System.out.println("Mã khách hàng mới: " + newMaKH);
+        return newMaKH;
     }
 
     private void initComponents() {
@@ -78,6 +77,16 @@ public class themKhachHangPanel extends JPanel {
         gbc.gridx = 1;
         mainPanel.add(txtHoTen, gbc);
 
+        // Tên đăng nhập (required)
+        gbc.gridx = 0;
+        gbc.gridy++;
+        JLabel lblTenDangNhap = new JLabel("Tên đăng nhập: *");
+        lblTenDangNhap.setForeground(Color.RED);
+        mainPanel.add(lblTenDangNhap, gbc);
+        txtTenDangNhap = new JTextField(20);
+        gbc.gridx = 1;
+        mainPanel.add(txtTenDangNhap, gbc);
+
         // Ngày sinh
         gbc.gridx = 0;
         gbc.gridy++;
@@ -102,21 +111,23 @@ public class themKhachHangPanel extends JPanel {
         gbc.gridx = 1;
         mainPanel.add(txtDiaChi, gbc);
 
-        // Email
+        // Email (required)
         gbc.gridx = 0;
         gbc.gridy++;
-        mainPanel.add(new JLabel("Email:"), gbc);
+        JLabel lblEmail = new JLabel("Email: *");
+        lblEmail.setForeground(Color.RED);
+        mainPanel.add(lblEmail, gbc);
         txtEmail = new JTextField(20);
         gbc.gridx = 1;
         mainPanel.add(txtEmail, gbc);
 
-        // Số điện thoại
+        // Số điện thoại (required)
         gbc.gridx = 0;
         gbc.gridy++;
         mainPanel.add(new JLabel("Số điện thoại:"), gbc);
-        txtPhone = new JTextField(20);
+        txtSoDienThoai = new JTextField(20);
         gbc.gridx = 1;
-        mainPanel.add(txtPhone, gbc);
+        mainPanel.add(txtSoDienThoai, gbc);
 
         // Panel chứa nút
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -142,87 +153,79 @@ public class themKhachHangPanel extends JPanel {
     }
 
     private void themKhachHang() {
-        // Kiểm tra dữ liệu nhập
         if (!validateInput()) {
+            System.out.println("Dữ liệu đầu vào không hợp lệ, dừng thêm khách hàng.");
             return;
         }
 
         try {
-            String maKH = generateNextMaKH();
-            
-            // Xử lý ngày sinh
+            // Parse ngày sinh
             Date ngaySinh = null;
             if (!txtNgaySinh.getText().trim().isEmpty()) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(parseDate(txtNgaySinh.getText().trim()));
-                ngaySinh = new Date(cal.getTimeInMillis());
+                try {
+                    java.util.Date parsedDate = new SimpleDateFormat("dd/MM/yyyy").parse(txtNgaySinh.getText().trim());
+                    ngaySinh = new Date(parsedDate.getTime());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this,
+                        "Ngày sinh không hợp lệ! Vui lòng nhập theo định dạng dd/MM/yyyy",
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
-            
-            // Lấy thời điểm hiện tại làm ngày đăng ký
-            Timestamp ngayDangKy = new Timestamp(System.currentTimeMillis());
 
-            // Tạo đối tượng taiKhoanDTO mới (sẽ được tạo trong DAO)
-            taiKhoanDTO taiKhoan = new taiKhoanDTO(
-                null, // maTaiKhoan sẽ được tạo tự động
-                null, // tenDangNhap sẽ được tạo tự động
-                null, // matKhau sẽ được tạo tự động
-                txtEmail.getText().trim(),
-                txtPhone.getText().trim(),
-                "USER",
-                "ACTIVE"
-            );
-            
-            // Tạo đối tượng khachHangDTO mới
+            // Tạo đối tượng khachHangDTO
             khachHangDTO khachHang = new khachHangDTO(
-                maKH,
+                generateNextMaKH(),
                 txtHoTen.getText().trim(),
-                txtEmail.getText().trim(),
-                txtPhone.getText().trim(),
-                txtDiaChi.getText().trim(),
                 cboGioiTinh.getSelectedItem().toString(),
-                ngaySinh,
-                ngayDangKy,
-                taiKhoan
+                txtSoDienThoai.getText().trim(),
+                txtEmail.getText().trim(),
+                txtDiaChi.getText().trim(),
+                ngaySinh
             );
 
-            // Thêm khách hàng vào database
-            boolean success = khachHangDAO.themKhachHang(khachHang);
+            // Gọi BUS để thêm khách hàng
+            boolean success = khachHangBUS.themKhachHang(khachHang);
             if (success) {
                 JOptionPane.showMessageDialog(this,
-                    "Thêm khách hàng thành công!\nMã khách hàng: " + maKH,
+                    "Thêm khách hàng thành công!",
                     "Thông báo",
                     JOptionPane.INFORMATION_MESSAGE);
                 clearForm();
-                // Đóng dialog
-                Window window = SwingUtilities.getWindowAncestor(this);
-                if (window != null) {
-                    window.dispose();
-                }
             } else {
+                System.out.println("Thêm khách hàng thất bại trong DAO.");
                 JOptionPane.showMessageDialog(this,
-                    "Thêm khách hàng thất bại!",
+                    "Không thể thêm khách hàng!",
                     "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
             }
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "Lỗi: " + e.getMessage(), 
-                "Lỗi", 
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                "Có lỗi xảy ra: " + e.getMessage(),
+                "Lỗi",
                 JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private java.util.Date parseDate(String dateStr) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        sdf.setLenient(false);
-        return sdf.parse(dateStr);
     }
 
     private boolean validateInput() {
         // Kiểm tra họ tên (bắt buộc)
         if (txtHoTen.getText().trim().isEmpty()) {
+            System.out.println("Lỗi validate: Họ tên trống.");
             JOptionPane.showMessageDialog(this, 
                 "Vui lòng nhập họ tên!", 
+                "Lỗi", 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Kiểm tra tên đăng nhập (bắt buộc)
+        if (txtTenDangNhap.getText().trim().isEmpty()) {
+            System.out.println("Lỗi validate: Tên đăng nhập trống.");
+            JOptionPane.showMessageDialog(this, 
+                "Vui lòng nhập tên đăng nhập!", 
                 "Lỗi", 
                 JOptionPane.ERROR_MESSAGE);
             return false;
@@ -231,8 +234,9 @@ public class themKhachHangPanel extends JPanel {
         // Kiểm tra ngày sinh (không bắt buộc nhưng phải đúng định dạng nếu có)
         if (!txtNgaySinh.getText().trim().isEmpty()) {
             try {
-                parseDate(txtNgaySinh.getText().trim());
+                new SimpleDateFormat("dd/MM/yyyy").parse(txtNgaySinh.getText().trim());
             } catch (Exception e) {
+                System.out.println("Lỗi validate ngày sinh: " + e.getMessage());
                 JOptionPane.showMessageDialog(this,
                     "Ngày sinh không hợp lệ! Vui lòng nhập theo định dạng dd/MM/yyyy",
                     "Lỗi",
@@ -241,9 +245,18 @@ public class themKhachHangPanel extends JPanel {
             }
         }
 
-        // Kiểm tra email (không bắt buộc nhưng phải đúng định dạng nếu có)
+        // Kiểm tra email (bắt buộc và phải đúng định dạng)
         String email = txtEmail.getText().trim();
-        if (!email.isEmpty() && !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+        if (email.isEmpty()) {
+            System.out.println("Lỗi validate: Email trống.");
+            JOptionPane.showMessageDialog(this, 
+                "Vui lòng nhập email!", 
+                "Lỗi", 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            System.out.println("Lỗi validate: Email không hợp lệ - " + email);
             JOptionPane.showMessageDialog(this, 
                 "Email không hợp lệ!", 
                 "Lỗi", 
@@ -252,10 +265,10 @@ public class themKhachHangPanel extends JPanel {
         }
 
         // Kiểm tra số điện thoại (không bắt buộc nhưng phải đúng định dạng nếu có)
-        String phone = txtPhone.getText().trim();
-        if (!phone.isEmpty() && !phone.matches("\\d{10}")) {
+        String soDienThoai = txtSoDienThoai.getText().trim();
+        if (!soDienThoai.isEmpty() && !soDienThoai.matches("\\d{10}")) {
             JOptionPane.showMessageDialog(this, 
-                "Số điện thoại không hợp lệ!", 
+                "Số điện thoại không hợp lệ! Vui lòng nhập 10 chữ số.", 
                 "Lỗi", 
                 JOptionPane.ERROR_MESSAGE);
             return false;
@@ -293,14 +306,16 @@ public class themKhachHangPanel extends JPanel {
                 window.dispose();
             }
         }
-    }
+    }  
+
 
     private void clearForm() {
         txtHoTen.setText("");
+        txtTenDangNhap.setText("");
         txtNgaySinh.setText("");
         cboGioiTinh.setSelectedIndex(0);
         txtDiaChi.setText("");
         txtEmail.setText("");
-        txtPhone.setText("");
+        txtSoDienThoai.setText("");
     }
-} 
+}

@@ -8,6 +8,44 @@ import DTB.ConnectDB;
 import DTO.sanPhamDTO;
 
 public class SanPhamDAO {
+    private Connection conn;
+
+    public SanPhamDAO() {
+        this.conn = ConnectDB.getConnection();
+    }
+
+    // Lấy thông tin sản phẩm theo mã sản phẩm
+    public sanPhamDTO getSanPhamByMa(String maSanPham) {
+        String sql = "SELECT * FROM SanPham WHERE MaSanPham = ?";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maSanPham);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new sanPhamDTO(
+                            rs.getString("MaSanPham"),
+                            rs.getString("TenSanPham"),
+                            rs.getString("MaNhaCungCap"),
+                            rs.getString("MaDanhMuc"),
+                            rs.getString("MauSac"),
+                            rs.getString("Size"),
+                            rs.getInt("SoLuongTonKho"),
+                            rs.getDouble("GiaBan"),
+                            rs.getString("ImgURL"),
+                            rs.getString("TrangThai")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Trả về null nếu không tìm thấy sản phẩm
+    }
 
     // Lấy danh sách tất cả sản phẩm
     public List<sanPhamDTO> getAllSanPham() {
@@ -144,36 +182,6 @@ public class SanPhamDAO {
         return sanPhamList;
     }
 
-    // Lấy thông tin sản phẩm theo mã sản phẩm
-    public sanPhamDTO getSanPhamByMa(String maSanPham) {
-        String sql = "SELECT * FROM SanPham WHERE MaSanPham = ?";
-
-        try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, maSanPham);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return new sanPhamDTO(
-                        rs.getString("MaSanPham"),
-                        rs.getString("TenSanPham"),
-                        rs.getString("MaNhaCungCap"),
-                        rs.getString("MaDanhMuc"),
-                        rs.getString("MauSac"),
-                        rs.getString("Size"),
-                        rs.getInt("SoLuongTonKho"),
-                        rs.getDouble("GiaBan"),
-                        rs.getString("ImgURL"),
-                        rs.getString("TrangThai"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     // Thêm sản phẩm mới
     public boolean addSanPham(sanPhamDTO sp) {
         String sql = "INSERT INTO SanPham (MaSanPham, TenSanPham, MaNhaCungCap, MaDanhMuc, MauSac, Size, SoLuongTonKho, GiaBan, ImgURL, TrangThai) "
@@ -245,5 +253,93 @@ public class SanPhamDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    // Cập nhật số lượng sản phẩm
+    public boolean capNhatSoLuongSanPham(String maSanPham, int soLuongThem) {
+        String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
+
+        try (Connection conn = ConnectDB.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, soLuongThem);
+            ps.setString(2, maSanPham);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Kiểm tra số lượng tồn kho của sản phẩm có đủ để xuất không
+    public boolean kiemTraTonKho(String maSanPham, int soLuongCanXuat) {
+        String sql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int soLuongHienTai = rs.getInt("SoLuongTonKho");
+                return soLuongHienTai >= soLuongCanXuat;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Giảm số lượng tồn kho khi xuất hàng
+    public boolean giamSoLuongTonKho(String maSanPham, int soLuongXuat) {
+        String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho - ? WHERE MaSanPham = ? AND SoLuongTonKho >= ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, soLuongXuat);
+            ps.setString(2, maSanPham);
+            ps.setInt(3, soLuongXuat);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Kiểm tra cảnh báo tồn kho thấp
+    public boolean kiemTraCanhBaoTonKho(String maSanPham) {
+        String sql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int soLuongHienTai = rs.getInt("SoLuongTonKho");
+                return soLuongHienTai <= 10; // Cảnh báo khi dưới hoặc bằng 10
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<String> getAllMaSanPham() {
+        List<String> maSanPhamList = new ArrayList<>();
+        try {
+            String sql = "SELECT MaSanPham FROM SanPham";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                maSanPhamList.add(rs.getString("MaSanPham"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return maSanPhamList;
     }
 }

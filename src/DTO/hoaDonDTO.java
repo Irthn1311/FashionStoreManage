@@ -1,46 +1,50 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DTO;
-;
 
-/**
- *
- * @author ASUS
- */
+import java.sql.Timestamp;
+
 public class hoaDonDTO {
-   private String maSanPham;
+    private String maHoaDon;
+    private String maSanPham;
     private String tenSanPham;
     private String kichCo;
     private String mauSac;
     private int soLuong;
     private String maKhachHang;
-    private String hoTen;
+    private String tenKhachHang;
     private double thanhTien;
     private double donGia;
     private String hinhThucThanhToan;
-    private String gioXuatHang;
-    private String thoiGian;
+    private Timestamp thoiGian; // Đổi từ String sang Timestamp
     private String trangThai;
 
     public hoaDonDTO() {
     }
 
-    public hoaDonDTO(String maSanPham, String tenSanPham, String kichCo, String mauSac, int soLuong, String maKhachHang, String hoTen, double thanhTien, double donGia, String hinhThucThanhToan, String gioXuatHang, String thoiGian, String trangThai) {
+    public hoaDonDTO(String maHoaDon, String maSanPham, String tenSanPham, String kichCo, String mauSac, 
+                     int soLuong, String maKhachHang, String tenKhachHang, double thanhTien, double donGia, 
+                     String hinhThucThanhToan, Timestamp thoiGian, String trangThai) {
+        this.maHoaDon = maHoaDon;
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
         this.kichCo = kichCo;
         this.mauSac = mauSac;
         this.soLuong = soLuong;
         this.maKhachHang = maKhachHang;
-        this.hoTen = hoTen;
+        this.tenKhachHang = tenKhachHang;
         this.thanhTien = thanhTien;
         this.donGia = donGia;
         this.hinhThucThanhToan = hinhThucThanhToan;
-        this.gioXuatHang = gioXuatHang;
         this.thoiGian = thoiGian;
         this.trangThai = trangThai;
+    }
+
+    // Getters và Setters
+    public String getMaHoaDon() {
+        return maHoaDon;
+    }
+
+    public void setMaHoaDon(String maHoaDon) {
+        this.maHoaDon = maHoaDon;
     }
 
     public String getMaSanPham() {
@@ -91,12 +95,12 @@ public class hoaDonDTO {
         this.maKhachHang = maKhachHang;
     }
 
-    public String getHoTen() {
-        return hoTen;
+    public String getTenKhachHang() {
+        return tenKhachHang;
     }
 
-    public void setHoTen(String hoTen) {
-        this.hoTen = hoTen;
+    public void setTenKhachHang(String tenKhachHang) {
+        this.tenKhachHang = tenKhachHang;
     }
 
     public double getThanhTien() {
@@ -123,19 +127,11 @@ public class hoaDonDTO {
         this.hinhThucThanhToan = hinhThucThanhToan;
     }
 
-    public String getGioXuatHang() {
-        return gioXuatHang;
-    }
-
-    public void setGioXuatHang(String gioXuatHang) {
-        this.gioXuatHang = gioXuatHang;
-    }
-
-    public String getThoiGian() {
+    public Timestamp getThoiGian() {
         return thoiGian;
     }
 
-    public void setThoiGian(String thoiGian) {
+    public void setThoiGian(Timestamp thoiGian) {
         this.thoiGian = thoiGian;
     }
 
@@ -146,26 +142,23 @@ public class hoaDonDTO {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
-    
+
     @Override
-public String toString() {
-    return "SanPham{" +
-            "maSanPham='" + maSanPham + '\'' +
-            ", tenSanPham='" + tenSanPham + '\'' +
-            ", kichCo='" + kichCo + '\'' +
-            ", mauSac='" + mauSac + '\'' +
-            ", soLuong=" + soLuong +
-            ", maKhachHang='" + maKhachHang + '\'' +
-            ", hoTen='" + hoTen + '\'' +
-            ", thanhTien=" + thanhTien +
-            ", donGia=" + donGia +
-            ", hinhThucThanhToan='" + hinhThucThanhToan + '\'' +
-            ", gioXuatHang='" + gioXuatHang + '\'' +
-            ", thoiGian='" + thoiGian + '\'' +
-            ", trangThai='" + trangThai + '\'' +
-            '}';
+    public String toString() {
+        return "hoaDonDTO{" +
+                "maHoaDon='" + maHoaDon + '\'' +
+                ", maSanPham='" + maSanPham + '\'' +
+                ", tenSanPham='" + tenSanPham + '\'' +
+                ", kichCo='" + kichCo + '\'' +
+                ", mauSac='" + mauSac + '\'' +
+                ", soLuong=" + soLuong +
+                ", maKhachHang='" + maKhachHang + '\'' +
+                ", tenKhachHang='" + tenKhachHang + '\'' +
+                ", thanhTien=" + thanhTien +
+                ", donGia=" + donGia +
+                ", hinhThucThanhToan='" + hinhThucThanhToan + '\'' +
+                ", thoiGian=" + thoiGian +
+                ", trangThai='" + trangThai + '\'' +
+                '}';
+    }
 }
-
-}
-
-
