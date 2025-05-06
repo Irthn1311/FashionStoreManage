@@ -4,7 +4,6 @@
  */
 package DTO;
 
-import model.*;
 import java.sql.Timestamp;
 
 /**
@@ -12,7 +11,7 @@ import java.sql.Timestamp;
  * @author ASUS
  */
 public class nhapHangDTO {
-   private String maPN;
+    private String maPN;
     private String maNhaCungCap;
     private String loaiSP;
     private String maSanPham;
@@ -28,7 +27,9 @@ public class nhapHangDTO {
     public nhapHangDTO() {
     }
 
-    public nhapHangDTO(String maPN, String maNhaCungCap, String loaiSP, String maSanPham, String tenSanPham, String mauSac, String kichThuoc, String soLuong, String donGia, String thanhTien, String thoiGian, String trangThai) {
+    public nhapHangDTO(String maPN, String maNhaCungCap, String loaiSP, String maSanPham, 
+                      String tenSanPham, String mauSac, String kichThuoc, String soLuong, 
+                      String donGia, String thanhTien, String thoiGian, String trangThai) {
         this.maPN = maPN;
         this.maNhaCungCap = maNhaCungCap;
         this.loaiSP = loaiSP;
@@ -138,22 +139,22 @@ public class nhapHangDTO {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
-@Override
-public String toString() {
-    return "PhieuNhap{" +
-            "maPN='" + maPN + '\'' +
-            ", maNhaCungCap='" + maNhaCungCap + '\'' +
-            ", loaiSP='" + loaiSP + '\'' +
-            ", maSanPham='" + maSanPham + '\'' +
-            ", tenSanPham='" + tenSanPham + '\'' +
-            ", mauSac='" + mauSac + '\'' +
-            ", kichThuoc='" + kichThuoc + '\'' +
-            ", soLuong='" + soLuong + '\'' +
-            ", donGia='" + donGia + '\'' +
-            ", thanhTien='" + thanhTien + '\'' +
-            ", thoiGian='" + thoiGian + '\'' +
-            ", trangThai='" + trangThai + '\'' +
-            '}';
-}
 
+    @Override
+    public String toString() {
+        return "NhapHangDTO{" +
+                "maPN='" + maPN + '\'' +
+                ", maNhaCungCap='" + maNhaCungCap + '\'' +
+                ", loaiSP='" + loaiSP + '\'' +
+                ", maSanPham='" + maSanPham + '\'' +
+                ", tenSanPham='" + tenSanPham + '\'' +
+                ", mauSac='" + mauSac + '\'' +
+                ", kichThuoc='" + kichThuoc + '\'' +
+                ", soLuong='" + soLuong + '\'' +
+                ", donGia='" + donGia + '\'' +
+                ", thanhTien='" + thanhTien + '\'' +
+                ", thoiGian='" + thoiGian + '\'' +
+                ", trangThai='" + trangThai + '\'' +
+                '}';
+    }
 }

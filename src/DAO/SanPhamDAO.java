@@ -256,18 +256,14 @@ public class SanPhamDAO {
     }
 
     // Cập nhật số lượng sản phẩm
-    public boolean capNhatSoLuongSanPham(String maSanPham, int soLuongThem) {
+    public boolean capNhatSoLuongSanPham(String maSanPham, int soLuongNhap) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
-
         try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, soLuongThem);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, soLuongNhap);
             ps.setString(2, maSanPham);
-
             return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -343,16 +339,6 @@ public class SanPhamDAO {
         return maSanPhamList;
     }
 
-    // Cập nhật trạng thái sản phẩm dựa trên số lượng tồn kho
-    public void updateProductStatus() {
-        String sql = "UPDATE SanPham SET TrangThai = CASE WHEN SoLuongTonKho <= 10 THEN 'Sắp hết hàng' ELSE 'Còn hàng' END";
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     // Get all product types (distinct MaDanhMuc or LoaiSP)
     public List<String> getAllProductTypes() {
         List<String> types = new ArrayList<>();
@@ -383,5 +369,20 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
         return codes;
+    }
+
+    public boolean isProductExists(String maSanPham) {
+        String sql = "SELECT COUNT(*) FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

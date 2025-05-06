@@ -73,6 +73,35 @@ public class XuatHangDAO {
         }
     }
 
+    public xuatHangDTO getXuatHangByMa(String maPX) {
+        String sql = "SELECT * FROM XuatHang WHERE MaPX = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maPX);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                xuatHangDTO xh = new xuatHangDTO();
+                xh.setMaPX(rs.getString("MaPX"));
+                xh.setMaKhachHang(rs.getString("MaKhachHang"));
+                xh.setHoTen(rs.getString("HoTen"));
+                xh.setMaSanPham(rs.getString("MaSanPham"));
+                xh.setTenSanPham(rs.getString("TenSanPham"));
+                xh.setLoaiSP(rs.getString("LoaiSP"));
+                xh.setKichThuoc(rs.getString("KichThuoc"));
+                xh.setMauSac(rs.getString("MauSac"));
+                xh.setSoLuong(String.valueOf(rs.getInt("SoLuong")));
+                xh.setThoiGian(rs.getString("ThoiGian"));
+                xh.setDonGia(String.valueOf(rs.getDouble("DonGia")));
+                xh.setThanhTien(String.valueOf(rs.getDouble("ThanhTien")));
+                xh.setTrangThai(rs.getString("TrangThai"));
+                return xh;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean xoaXuatHang(String maPX) {
         String sql = "DELETE FROM XuatHang WHERE MaPX = ?";
         try (Connection conn = ConnectDB.getConnection();
@@ -83,6 +112,36 @@ public class XuatHangDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<xuatHangDTO> searchXuatHang(String keyword, String searchType) {
+        List<xuatHangDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM XuatHang WHERE " + searchType + " LIKE ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                xuatHangDTO xh = new xuatHangDTO();
+                xh.setMaPX(rs.getString("MaPX"));
+                xh.setMaKhachHang(rs.getString("MaKhachHang"));
+                xh.setHoTen(rs.getString("HoTen"));
+                xh.setMaSanPham(rs.getString("MaSanPham"));
+                xh.setTenSanPham(rs.getString("TenSanPham"));
+                xh.setLoaiSP(rs.getString("LoaiSP"));
+                xh.setKichThuoc(rs.getString("KichThuoc"));
+                xh.setMauSac(rs.getString("MauSac"));
+                xh.setSoLuong(String.valueOf(rs.getInt("SoLuong")));
+                xh.setThoiGian(rs.getString("ThoiGian"));
+                xh.setDonGia(String.valueOf(rs.getDouble("DonGia")));
+                xh.setThanhTien(String.valueOf(rs.getDouble("ThanhTien")));
+                xh.setTrangThai(rs.getString("TrangThai"));
+                list.add(xh);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public boolean kiemTraTonKho(String maSanPham, int soLuongXuat) {

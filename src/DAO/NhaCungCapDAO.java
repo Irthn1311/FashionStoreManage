@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -205,6 +206,35 @@ public class NhaCungCapDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<String> getAllSuppliers() {
+        List<String> suppliers = new ArrayList<>();
+        try (Connection conn = ConnectDB.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT MaNhaCungCap FROM NhaCungCap")) {
+            while (rs.next()) {
+                suppliers.add(rs.getString("MaNhaCungCap"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return suppliers;
+    }
+
+    public boolean isSupplierActive(String maNhaCungCap) {
+        String sql = "SELECT COUNT(*) FROM NhaCungCap WHERE MaNhaCungCap = ? AND TrangThai = N'Đang hợp tác'";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maNhaCungCap);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public List<String> getAllSuppliers() {

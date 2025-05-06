@@ -153,11 +153,12 @@ public class xuatHangDTO {
 
     @Override
     public String toString() {
-        return "LichSuMuaHang{" +
-                "maKH='" + maKhachHang + '\'' +
-                ", tenKH='" + hoTen + '\'' +
-                ", maSP='" + maSanPham + '\'' +
-                ", tenSP='" + tenSanPham + '\'' +
+        return "XuatHangDTO{" +
+                "maPX='" + maPX + '\'' +
+                ", maKhachHang='" + maKhachHang + '\'' +
+                ", hoTen='" + hoTen + '\'' +
+                ", maSanPham='" + maSanPham + '\'' +
+                ", tenSanPham='" + tenSanPham + '\'' +
                 ", loaiSP='" + loaiSP + '\'' +
                 ", kichThuoc='" + kichThuoc + '\'' +
                 ", mauSac='" + mauSac + '\'' +

@@ -228,4 +228,20 @@ public class KhachHangDAO {
         }
         return kh;
     }
+
+    public boolean isCustomerExists(String maKhachHang) {
+        String sql = "SELECT COUNT(*) FROM KhachHang WHERE MaKhachHang = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maKhachHang);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
