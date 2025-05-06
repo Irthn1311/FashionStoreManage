@@ -199,7 +199,7 @@ public class loaisanpham extends javax.swing.JPanel {
                 jPanel15.add(searchLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 30));
 
                 searchComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
-                                "Tất cả", "Mã sản phẩm", "Tên sản phẩm", "Mã nhà cung cấp", "Màu sắc", "Size"
+                                "Tất cả", "Mã sản phẩm", "Tên sản phẩm", "Mã nhà cung cấp", "Loại sản phẩm", "Màu sắc", "Size"
                 }));
                 jPanel15.add(searchComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, 180, 30));
 

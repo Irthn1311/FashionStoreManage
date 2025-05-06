@@ -159,6 +159,9 @@ public class LoaiSanPhamDAO {
             case "Mã nhà cung cấp":
                 sql.append("AND MaNhaCungCap LIKE ? ");
                 break;
+            case "Loại sản phẩm":
+                sql.append("AND MaDanhMuc LIKE ? ");
+                break;
             case "Màu sắc":
                 sql.append("AND MauSac LIKE ? ");
                 break;
@@ -167,7 +170,7 @@ public class LoaiSanPhamDAO {
                 break;
             default:
                 sql.append(
-                        "AND (MaSanPham LIKE ? OR TenSanPham LIKE ? OR MaNhaCungCap LIKE ? OR MauSac LIKE ? OR Size LIKE ?) ");
+                        "AND (MaSanPham LIKE ? OR TenSanPham LIKE ? OR MaNhaCungCap LIKE ? OR MaDanhMuc LIKE ? OR MauSac LIKE ? OR Size LIKE ?) ");
                 break;
         }
 
@@ -181,7 +184,7 @@ public class LoaiSanPhamDAO {
 
             try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
                 if ("Tất cả".equals(searchType)) {
-                    for (int i = 1; i <= 5; i++) {
+                    for (int i = 1; i <= 6; i++) {
                         ps.setString(i, likePattern);
                     }
                 } else {

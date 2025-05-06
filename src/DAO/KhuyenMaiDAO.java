@@ -58,13 +58,44 @@ public class KhuyenMaiDAO {
     }
 
     public String generateMaKhuyenMai() {
-        int nextNumber = getNextKhuyenMaiNumber();
-        String maKhuyenMai;
-        do {
-            maKhuyenMai = String.format("KM%04d", nextNumber);
-            nextNumber++;
-        } while (isMaKhuyenMaiExists(maKhuyenMai));
-        return maKhuyenMai;
+        String sql = "SELECT CAST(SUBSTRING(MaKhuyenMai, 3, LEN(MaKhuyenMai)-2) AS INT) as number FROM KhuyenMai WHERE MaKhuyenMai LIKE 'KM%' ORDER BY number";
+        List<Integer> existingNumbers = new ArrayList<>();
+        
+        try (Connection conn = ConnectDB.getConnection()) {
+            if (conn == null) {
+                System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
+                return "KM0001";
+            }
+            
+            try (PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    existingNumbers.add(rs.getInt("number"));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy danh sách mã khuyến mãi: " + e.getMessage());
+            e.printStackTrace();
+            return "KM0001";
+        }
+
+        // Nếu không có mã nào, trả về KM0001
+        if (existingNumbers.isEmpty()) {
+            return "KM0001";
+        }
+
+        // Tìm khoảng trống đầu tiên
+        for (int i = 0; i < existingNumbers.size(); i++) {
+            int current = existingNumbers.get(i);
+            int next = (i + 1 < existingNumbers.size()) ? existingNumbers.get(i + 1) : current + 2;
+            
+            if (next - current > 1) {
+                return String.format("KM%04d", current + 1);
+            }
+        }
+
+        // Nếu không có khoảng trống, trả về số tiếp theo
+        return String.format("KM%04d", existingNumbers.get(existingNumbers.size() - 1) + 1);
     }
 
     private String determineStatus(Date ngayBatDau, Date ngayKetThuc) {
