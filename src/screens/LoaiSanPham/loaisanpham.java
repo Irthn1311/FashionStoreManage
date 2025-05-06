@@ -27,6 +27,8 @@ public class loaisanpham extends javax.swing.JPanel {
         private JTextField quantityToField;
         private JRadioButton priceRadioButton;
         private JRadioButton quantityRadioButton;
+        private javax.swing.JButton jButton36;
+        private javax.swing.JButton jButton37;
 
         public loaisanpham() {
                 productService = new ProductService();
@@ -346,7 +348,7 @@ public class loaisanpham extends javax.swing.JPanel {
 
                 jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 940, 270));
 
-                jButton34.setText("Xuất file xuất hàng");
+                jButton34.setText("Xuất file");
                 ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
                 jButton34.setIcon(new ImageIcon(
                                 exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));

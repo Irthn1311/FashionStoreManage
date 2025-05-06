@@ -28,6 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import java.io.File;
+import utils.FileUtils;
 
 public class HoaDonPanel extends javax.swing.JPanel {
     private HoaDonDAO hoaDonDAO;
@@ -584,9 +585,41 @@ public class HoaDonPanel extends javax.swing.JPanel {
                         JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                exportToCSV();
+                utils.FileUtils.showExportOptions(jTable2, "Danh sách hóa đơn");
             }
         });
+
+        // Add Import button
+        jButton36 = new javax.swing.JButton("Import");
+        ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
+        jButton36.setIcon(new ImageIcon(
+                        importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton36.setPreferredSize(new java.awt.Dimension(100, 34));
+        jButton36.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        utils.FileUtils.importFromFile(jTable2);
+                }
+        });
+        jPanel17.add(jButton36, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 24, 100, 34));
+
+        // Add Print button
+        jButton37 = new javax.swing.JButton("In");
+        ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
+        jButton37.setIcon(new ImageIcon(
+                        printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton37.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton37.setPreferredSize(new java.awt.Dimension(100, 34));
+        jButton37.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        try {
+                                jTable2.print();
+                        } catch (Exception e) {
+                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        }
+                }
+        });
+        jPanel17.add(jButton37, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 24, 100, 34));
     }
 
     public javax.swing.JPanel getHoaDonPanel() {
@@ -626,6 +659,8 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jButton34 = new javax.swing.JButton();
+        jButton36 = new javax.swing.JButton();
+        jButton37 = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(960, 680));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -814,4 +849,6 @@ public class HoaDonPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldThanhTienDen;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
+    private javax.swing.JButton jButton36;
+    private javax.swing.JButton jButton37;
 }
