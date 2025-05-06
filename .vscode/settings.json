@@ -32,6 +32,6 @@
     ],
     "java.project.sourcePaths": [
       "src",
-      "src\\main"
+      "src\\Main\\main"
     ]
 }
