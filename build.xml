@@ -1,46 +1,46 @@
 <project name="YourProjectName" default="run" basedir=".">
 <!--  Định nghĩa thư mục  -->
-<property name="src.dir" value="src"/>
-<property name="build.dir" value="build"/>
-<property name="lib.dir" value="lib"/>
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="lib"/>
 <property name="dist.dir" value="dist"/>
 <property name="main-class" value="your.main.ClassName"/>
 <!--  Thay bằng lớp chính của bạn  -->
 <!--  Đường dẫn cho các thư viện  -->
-<path id="classpath">
+    <path id="classpath">
 <fileset dir="${lib.dir}" includes="*.jar"/>
-</path>
+    </path>
 <!--  Khởi tạo thư mục  -->
-<target name="init">
-<mkdir dir="${build.dir}"/>
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
 <mkdir dir="${dist.dir}"/>
-</target>
+    </target>
 <!--  Biên dịch  -->
-<target name="compile" depends="init">
+    <target name="compile" depends="init">
 <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false">
-<classpath refid="classpath"/>
-</javac>
-</target>
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
 <!--  Tạo file JAR  -->
-<target name="jar" depends="compile">
+    <target name="jar" depends="compile">
 <jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}">
-<manifest>
-<attribute name="Main-Class" value="${main-class}"/>
-</manifest>
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
 <zipfileset dir="${lib.dir}" includes="*.jar" prefix="lib"/>
-</jar>
-</target>
+        </jar>
+    </target>
 <!--  Chạy chương trình  -->
-<target name="run" depends="jar">
+    <target name="run" depends="jar">
 <java jar="${dist.dir}/${ant.project.name}.jar" fork="true">
-<classpath>
-<path refid="classpath"/>
-</classpath>
-</java>
-</target>
+            <classpath>
+                <path refid="classpath"/>
+            </classpath>
+        </java>
+    </target>
 <!--  Xóa thư mục build  -->
-<target name="clean">
-<delete dir="${build.dir}"/>
+    <target name="clean">
+        <delete dir="${build.dir}"/>
 <delete dir="${dist.dir}"/>
-</target>
+    </target>
 </project>
