@@ -1,4 +1,3 @@
-
 -- Tạo bảng NhanVien
 CREATE TABLE NhanVien (
     MaNhanVien VARCHAR(100) PRIMARY KEY,
@@ -219,7 +218,7 @@ CREATE TABLE NhapHang (
     SoLuong INT,
     DonGia DECIMAL(15,2),
     ThanhTien DECIMAL(15,2),
-    ThoiGian TIMESTAMP,
+    ThoiGian DATETIME DEFAULT GETDATE(),
     TrangThai NVARCHAR(50),
     FOREIGN KEY (MaNhaCungCap) REFERENCES NhaCungCap(MaNhaCungCap),
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
@@ -236,7 +235,7 @@ CREATE TABLE XuatHang (
     KichThuoc NVARCHAR(50),
     MauSac NVARCHAR(50),
     SoLuong INT,
-    ThoiGian TIMESTAMP,
+    ThoiGian DATETIME,
     DonGia DECIMAL(15,2),
     ThanhTien DECIMAL(15,2),
     TrangThai NVARCHAR(50),
@@ -357,3 +356,9 @@ CREATE TABLE PhieuNhap (
     FOREIGN KEY (MaNhaCungCap) REFERENCES NhaCungCap(MaNhaCungCap),
     FOREIGN KEY (MaNhanVien) REFERENCES NhanVien(MaNhanVien)
 );
+
+ALTER TABLE NhapHang DROP COLUMN ThoiGian;
+ALTER TABLE NhapHang ADD ThoiGian DATETIME DEFAULT GETDATE();
+
+ALTER TABLE XuatHang DROP COLUMN ThoiGian;
+ALTER TABLE XuatHang ADD ThoiGian DATETIME DEFAULT GETDATE();
