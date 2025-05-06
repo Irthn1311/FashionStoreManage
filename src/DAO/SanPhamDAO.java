@@ -342,4 +342,15 @@ public class SanPhamDAO {
         }
         return maSanPhamList;
     }
+
+    // Cập nhật trạng thái sản phẩm dựa trên số lượng tồn kho
+    public void updateProductStatus() {
+        String sql = "UPDATE SanPham SET TrangThai = CASE WHEN SoLuongTonKho <= 10 THEN 'Sắp hết hàng' ELSE 'Còn hàng' END";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
