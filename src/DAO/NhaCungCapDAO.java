@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -204,5 +205,19 @@ public class NhaCungCapDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<String> getAllSuppliers() {
+        List<String> suppliers = new ArrayList<>();
+        try (Connection conn = ConnectDB.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT MaNhaCungCap FROM NhaCungCap")) {
+            while (rs.next()) {
+                suppliers.add(rs.getString("MaNhaCungCap"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return suppliers;
     }
 }

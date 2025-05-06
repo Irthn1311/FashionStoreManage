@@ -22,4 +22,8 @@ public class SanPhamBUS {
     public boolean updateSanPham(sanPhamDTO sp) {
         return sanPhamDAO.updateSanPham(sp);
     }
+
+    public void updateProductStatus() {
+        sanPhamDAO.updateProductStatus();
+    }
 } 

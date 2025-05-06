@@ -21,6 +21,14 @@ public class KhuyenMaiService {
         return khuyenMaiDAO.getAllKhuyenMai();
     }
 
+    public khuyenMaiDTO getKhuyenMaiByMaSanPham(String maSanPham) {
+        List<khuyenMaiDTO> allKhuyenMai = khuyenMaiDAO.getAllKhuyenMai();
+        return allKhuyenMai.stream()
+                .filter(km -> km.getMaSanPham().equals(maSanPham))
+                .findFirst()
+                .orElse(null);
+    }
+
     public List<khuyenMaiDTO> searchKhuyenMai(String keyword, String searchField) {
         if (keyword == null || keyword.trim().isEmpty()) {
             throw new IllegalArgumentException("Từ khóa tìm kiếm không được để trống.");
