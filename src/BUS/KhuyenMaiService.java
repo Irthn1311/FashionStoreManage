@@ -79,6 +79,16 @@ public class KhuyenMaiService {
         km.setTenSanPham(product.getTenSanPham());
         km.setGiaCu(product.getGiaBan());
         km.setGiaMoi(calculateNewPrice(km.getGiaCu(), km.getGiamGia()));
+        
+        // Set initial status based on dates
+        Date currentDate = new Date();
+        if (currentDate.before(km.getNgayBatDau())) {
+            km.setTrangThai("Chưa bắt đầu");
+        } else if (!currentDate.before(km.getNgayBatDau()) && !currentDate.after(km.getNgayKetThuc())) {
+            km.setTrangThai("Hoạt động");
+        } else {
+            km.setTrangThai("Hết hạn");
+        }
 
         return khuyenMaiDAO.addKhuyenMai(km);
     }

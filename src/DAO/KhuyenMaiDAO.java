@@ -38,7 +38,7 @@ public class KhuyenMaiDAO {
     }
 
     private int getNextKhuyenMaiNumber() {
-        String sql = "SELECT MAX(CAST(SUBSTRING(MaKhuyenMai, 3) AS UNSIGNED)) FROM KhuyenMai WHERE MaKhuyenMai LIKE 'KM%'";
+        String sql = "SELECT MAX(CAST(SUBSTRING(MaKhuyenMai, 3, LEN(MaKhuyenMai)-2) AS INT)) FROM KhuyenMai WHERE MaKhuyenMai LIKE 'KM%'";
         try (Connection conn = ConnectDB.getConnection()) {
             if (conn == null) {
                 System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
@@ -210,7 +210,7 @@ public class KhuyenMaiDAO {
     }
 
     public boolean addKhuyenMai(khuyenMaiDTO km) {
-        String sql = "INSERT INTO KhuyenMai (MaKhuyenMai, MaSanPham, TenSanPham, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, GiaCu, GiaMoi) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO KhuyenMai (MaKhuyenMai, MaSanPham, TenSanPham, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, GiaCu, GiaMoi, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = ConnectDB.getConnection()) {
             if (conn == null) {
@@ -228,6 +228,7 @@ public class KhuyenMaiDAO {
                 ps.setDate(7, new java.sql.Date(km.getNgayKetThuc().getTime()));
                 ps.setDouble(8, km.getGiaCu());
                 ps.setDouble(9, km.getGiaMoi());
+                ps.setString(10, km.getTrangThai());
                 
                 return ps.executeUpdate() > 0;
             }
