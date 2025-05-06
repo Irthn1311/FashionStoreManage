@@ -353,4 +353,35 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
     }
+    // Get all product types (distinct MaDanhMuc or LoaiSP)
+    public List<String> getAllProductTypes() {
+        List<String> types = new ArrayList<>();
+        String sql = "SELECT DISTINCT MaDanhMuc FROM SanPham";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                types.add(rs.getString("MaDanhMuc"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return types;
+    }
+
+    // Get all product codes
+    public List<String> getAllProductCodes() {
+        List<String> codes = new ArrayList<>();
+        String sql = "SELECT MaSanPham FROM SanPham";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                codes.add(rs.getString("MaSanPham"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return codes;
+    }
 }
