@@ -256,18 +256,14 @@ public class SanPhamDAO {
     }
 
     // Cập nhật số lượng sản phẩm
-    public boolean capNhatSoLuongSanPham(String maSanPham, int soLuongThem) {
+    public boolean capNhatSoLuongSanPham(String maSanPham, int soLuongNhap) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
-
         try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, soLuongThem);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, soLuongNhap);
             ps.setString(2, maSanPham);
-
             return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -341,5 +337,52 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
         return maSanPhamList;
+    }
+
+    // Get all product types (distinct MaDanhMuc or LoaiSP)
+    public List<String> getAllProductTypes() {
+        List<String> types = new ArrayList<>();
+        String sql = "SELECT DISTINCT MaDanhMuc FROM SanPham";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                types.add(rs.getString("MaDanhMuc"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return types;
+    }
+
+    // Get all product codes
+    public List<String> getAllProductCodes() {
+        List<String> codes = new ArrayList<>();
+        String sql = "SELECT MaSanPham FROM SanPham";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                codes.add(rs.getString("MaSanPham"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return codes;
+    }
+
+    public boolean isProductExists(String maSanPham) {
+        String sql = "SELECT COUNT(*) FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

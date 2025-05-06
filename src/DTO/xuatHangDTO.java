@@ -11,7 +11,8 @@ import model.*;
  * @author ASUS
  */
 public class xuatHangDTO {
-     private String maKhachHang;
+    private String maPX;
+    private String maKhachHang;
     private String hoTen;
     private String maSanPham;
     private String tenSanPham;
@@ -27,7 +28,11 @@ public class xuatHangDTO {
     public xuatHangDTO() {
     }
 
-    public xuatHangDTO(String maKhachHang, String hoTen, String maSanPham, String tenSanPham, String loaiSP, String kichThuoc, String mauSac, String soLuong, String thoiGian, String donGia, String thanhTien, String trangThai) {
+    public xuatHangDTO(String maPX, String maKhachHang, String hoTen, String maSanPham, 
+                      String tenSanPham, String loaiSP, String kichThuoc, String mauSac, 
+                      String soLuong, String thoiGian, String donGia, String thanhTien, 
+                      String trangThai) {
+        this.maPX = maPX;
         this.maKhachHang = maKhachHang;
         this.hoTen = hoTen;
         this.maSanPham = maSanPham;
@@ -40,6 +45,14 @@ public class xuatHangDTO {
         this.donGia = donGia;
         this.thanhTien = thanhTien;
         this.trangThai = trangThai;
+    }
+
+    public String getMaPX() {
+        return maPX;
+    }
+
+    public void setMaPX(String maPX) {
+        this.maPX = maPX;
     }
 
     public String getMaKhachHang() {
@@ -138,15 +151,14 @@ public class xuatHangDTO {
         this.trangThai = trangThai;
     }
 
-    
-    
-     @Override
+    @Override
     public String toString() {
-        return "LichSuMuaHang{" +
-                "maKH='" + maKhachHang + '\'' +
-                ", tenKH='" + hoTen + '\'' +
-                ", maSP='" + maSanPham + '\'' +
-                ", tenSP='" + tenSanPham + '\'' +
+        return "XuatHangDTO{" +
+                "maPX='" + maPX + '\'' +
+                ", maKhachHang='" + maKhachHang + '\'' +
+                ", hoTen='" + hoTen + '\'' +
+                ", maSanPham='" + maSanPham + '\'' +
+                ", tenSanPham='" + tenSanPham + '\'' +
                 ", loaiSP='" + loaiSP + '\'' +
                 ", kichThuoc='" + kichThuoc + '\'' +
                 ", mauSac='" + mauSac + '\'' +
