@@ -17,8 +17,9 @@ public class PhieuNhapBUS {
         if (phieuNhap == null) return false;
         if (phieuNhap.getMaSanPham() == null || phieuNhap.getMaSanPham().trim().isEmpty()) return false;
         if (phieuNhap.getMaNhaCungCap() == null || phieuNhap.getMaNhaCungCap().trim().isEmpty()) return false;
-        if (phieuNhap.getMaNhanVien() == null || phieuNhap.getMaNhanVien().trim().isEmpty()) return false;
-        if (phieuNhap.getSoLuongNhap() <= 0) return false;
+        if (phieuNhap.getSoLuong() <= 0) return false;
+        if (phieuNhap.getDonGia() <= 0) return false;
+        if (phieuNhap.getTrangThai() == null || phieuNhap.getTrangThai().trim().isEmpty()) return false;
         return true;
     }
 
@@ -28,14 +29,16 @@ public class PhieuNhapBUS {
             return false;
         }
         // Set current date if not provided
-        if (phieuNhap.getNgayNhap() == null) {
-            phieuNhap.setNgayNhap(new Date());
+        if (phieuNhap.getThoiGian() == null) {
+            phieuNhap.setThoiGian(new Date());
         }
+        // Calculate total amount
+        phieuNhap.setThanhTien(phieuNhap.getSoLuong() * phieuNhap.getDonGia());
         return phieuNhapDAO.create(phieuNhap);
     }
 
     // Get PhieuNhap by ID
-    public PhieuNhapDTO getPhieuNhap(int maPhieuNhap) {
+    public PhieuNhapDTO getPhieuNhap(String maPhieuNhap) {
         return phieuNhapDAO.read(maPhieuNhap);
     }
 
@@ -44,11 +47,13 @@ public class PhieuNhapBUS {
         if (!validatePhieuNhap(phieuNhap)) {
             return false;
         }
+        // Calculate total amount
+        phieuNhap.setThanhTien(phieuNhap.getSoLuong() * phieuNhap.getDonGia());
         return phieuNhapDAO.update(phieuNhap);
     }
 
     // Delete PhieuNhap
-    public boolean deletePhieuNhap(int maPhieuNhap) {
+    public boolean deletePhieuNhap(String maPhieuNhap) {
         return phieuNhapDAO.delete(maPhieuNhap);
     }
 
@@ -61,7 +66,7 @@ public class PhieuNhapBUS {
     public List<PhieuNhapDTO> searchByDateRange(Date startDate, Date endDate) {
         List<PhieuNhapDTO> allPhieuNhap = phieuNhapDAO.getAll();
         return allPhieuNhap.stream()
-            .filter(pn -> !pn.getNgayNhap().before(startDate) && !pn.getNgayNhap().after(endDate))
+            .filter(pn -> !pn.getThoiGian().before(startDate) && !pn.getThoiGian().after(endDate))
             .toList();
     }
 

@@ -1,4 +1,4 @@
-package screens;
+package screens.PhieuNhap;
 
 import BUS.PhieuNhapBUS;
 import DTO.PhieuNhapDTO;
@@ -11,17 +11,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class PhieuNhapGUI extends JFrame {
+public class chiTietPhieuNhap extends JFrame {
     private PhieuNhapBUS phieuNhapBUS;
     private JTable table;
     private DefaultTableModel tableModel;
-    private JTextField txtMaSanPham, txtSoLuong, txtMaNhaCungCap, txtMaNhanVien;
+    private JTextField txtMaSanPham, txtSoLuong, txtMaNhaCungCap, txtDonGia, txtThanhTien, txtTrangThai, txtHinhThucThanhToan;
     private JDateChooser dateChooser;
     private JButton btnAdd, btnUpdate, btnDelete, btnSearch, btnClear;
     private JComboBox<String> cboSearchType;
     private JTextField txtSearch;
 
-    public PhieuNhapGUI() {
+    public chiTietPhieuNhap() {
         phieuNhapBUS = new PhieuNhapBUS();
         initComponents();
         loadData();
@@ -37,7 +37,7 @@ public class PhieuNhapGUI extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         // Create input panel
-        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+        JPanel inputPanel = new JPanel(new GridLayout(8, 2, 5, 5));
         inputPanel.setBorder(BorderFactory.createTitledBorder("Thông tin Phiếu Nhập"));
 
         inputPanel.add(new JLabel("Mã Sản Phẩm:"));
@@ -52,11 +52,24 @@ public class PhieuNhapGUI extends JFrame {
         txtMaNhaCungCap = new JTextField();
         inputPanel.add(txtMaNhaCungCap);
 
-        inputPanel.add(new JLabel("Mã Nhân Viên:"));
-        txtMaNhanVien = new JTextField();
-        inputPanel.add(txtMaNhanVien);
+        inputPanel.add(new JLabel("Đơn Giá:"));
+        txtDonGia = new JTextField();
+        inputPanel.add(txtDonGia);
 
-        inputPanel.add(new JLabel("Ngày Nhập:"));
+        inputPanel.add(new JLabel("Thành Tiền:"));
+        txtThanhTien = new JTextField();
+        txtThanhTien.setEditable(false);
+        inputPanel.add(txtThanhTien);
+
+        inputPanel.add(new JLabel("Trạng Thái:"));
+        txtTrangThai = new JTextField();
+        inputPanel.add(txtTrangThai);
+
+        inputPanel.add(new JLabel("Hình Thức Thanh Toán:"));
+        txtHinhThucThanhToan = new JTextField();
+        inputPanel.add(txtHinhThucThanhToan);
+
+        inputPanel.add(new JLabel("Thời Gian:"));
         dateChooser = new JDateChooser();
         dateChooser.setDate(new Date());
         inputPanel.add(dateChooser);
@@ -75,7 +88,7 @@ public class PhieuNhapGUI extends JFrame {
 
         // Create search panel
         JPanel searchPanel = new JPanel(new FlowLayout());
-        cboSearchType = new JComboBox<>(new String[]{"Mã Sản Phẩm", "Mã Nhà Cung Cấp", "Mã Nhân Viên"});
+        cboSearchType = new JComboBox<>(new String[]{"Mã Sản Phẩm", "Mã Nhà Cung Cấp", "Trạng Thái"});
         txtSearch = new JTextField(20);
         btnSearch = new JButton("Tìm Kiếm");
 
@@ -85,8 +98,8 @@ public class PhieuNhapGUI extends JFrame {
         searchPanel.add(btnSearch);
 
         // Create table
-        String[] columns = {"Mã Phiếu Nhập", "Ngày Nhập", "Mã Sản Phẩm", "Số Lượng", 
-                          "Mã Nhà Cung Cấp", "Mã Nhân Viên"};
+        String[] columns = {"Mã Phiếu Nhập", "Mã Sản Phẩm", "Mã Nhà Cung Cấp", "Số Lượng", 
+                          "Đơn Giá", "Thành Tiền", "Thời Gian", "Trạng Thái", "Hình Thức Thanh Toán"};
         tableModel = new DefaultTableModel(columns, 0);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -113,7 +126,30 @@ public class PhieuNhapGUI extends JFrame {
             }
         });
 
+        // Add listeners for calculating total amount
+        txtSoLuong.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { calculateTotal(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { calculateTotal(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { calculateTotal(); }
+        });
+        
+        txtDonGia.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { calculateTotal(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { calculateTotal(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { calculateTotal(); }
+        });
+
         add(mainPanel);
+    }
+
+    private void calculateTotal() {
+        try {
+            int soLuong = Integer.parseInt(txtSoLuong.getText());
+            double donGia = Double.parseDouble(txtDonGia.getText());
+            txtThanhTien.setText(String.valueOf(soLuong * donGia));
+        } catch (Exception ex) {
+            txtThanhTien.setText("");
+        }
     }
 
     private void loadData() {
@@ -124,11 +160,14 @@ public class PhieuNhapGUI extends JFrame {
         for (PhieuNhapDTO pn : list) {
             Object[] row = {
                 pn.getMaPhieuNhap(),
-                sdf.format(pn.getNgayNhap()),
                 pn.getMaSanPham(),
-                pn.getSoLuongNhap(),
                 pn.getMaNhaCungCap(),
-                pn.getMaNhanVien()
+                pn.getSoLuong(),
+                pn.getDonGia(),
+                pn.getThanhTien(),
+                sdf.format(pn.getThoiGian()),
+                pn.getTrangThai(),
+                pn.getHinhThucThanhToan()
             };
             tableModel.addRow(row);
         }
@@ -138,10 +177,13 @@ public class PhieuNhapGUI extends JFrame {
         try {
             PhieuNhapDTO pn = new PhieuNhapDTO();
             pn.setMaSanPham(txtMaSanPham.getText());
-            pn.setSoLuongNhap(Integer.parseInt(txtSoLuong.getText()));
+            pn.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
             pn.setMaNhaCungCap(txtMaNhaCungCap.getText());
-            pn.setMaNhanVien(txtMaNhanVien.getText());
-            pn.setNgayNhap(dateChooser.getDate());
+            pn.setDonGia(Double.parseDouble(txtDonGia.getText()));
+            pn.setThanhTien(Double.parseDouble(txtThanhTien.getText()));
+            pn.setThoiGian(dateChooser.getDate());
+            pn.setTrangThai(txtTrangThai.getText());
+            pn.setHinhThucThanhToan(txtHinhThucThanhToan.getText());
 
             if (phieuNhapBUS.createPhieuNhap(pn)) {
                 JOptionPane.showMessageDialog(this, "Thêm phiếu nhập thành công!");
@@ -151,7 +193,7 @@ public class PhieuNhapGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Thêm phiếu nhập thất bại!");
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng hợp lệ!");
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng và đơn giá hợp lệ!");
         }
     }
 
@@ -164,12 +206,15 @@ public class PhieuNhapGUI extends JFrame {
 
         try {
             PhieuNhapDTO pn = new PhieuNhapDTO();
-            pn.setMaPhieuNhap((int) table.getValueAt(row, 0));
+            pn.setMaPhieuNhap(table.getValueAt(row, 0).toString());
             pn.setMaSanPham(txtMaSanPham.getText());
-            pn.setSoLuongNhap(Integer.parseInt(txtSoLuong.getText()));
+            pn.setSoLuong(Integer.parseInt(txtSoLuong.getText()));
             pn.setMaNhaCungCap(txtMaNhaCungCap.getText());
-            pn.setMaNhanVien(txtMaNhanVien.getText());
-            pn.setNgayNhap(dateChooser.getDate());
+            pn.setDonGia(Double.parseDouble(txtDonGia.getText()));
+            pn.setThanhTien(Double.parseDouble(txtThanhTien.getText()));
+            pn.setThoiGian(dateChooser.getDate());
+            pn.setTrangThai(txtTrangThai.getText());
+            pn.setHinhThucThanhToan(txtHinhThucThanhToan.getText());
 
             if (phieuNhapBUS.updatePhieuNhap(pn)) {
                 JOptionPane.showMessageDialog(this, "Cập nhật phiếu nhập thành công!");
@@ -179,7 +224,7 @@ public class PhieuNhapGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Cập nhật phiếu nhập thất bại!");
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng hợp lệ!");
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng và đơn giá hợp lệ!");
         }
     }
 
@@ -196,7 +241,7 @@ public class PhieuNhapGUI extends JFrame {
             JOptionPane.YES_NO_OPTION);
         
         if (confirm == JOptionPane.YES_OPTION) {
-            int maPhieuNhap = (int) table.getValueAt(row, 0);
+            String maPhieuNhap = table.getValueAt(row, 0).toString();
             if (phieuNhapBUS.deletePhieuNhap(maPhieuNhap)) {
                 JOptionPane.showMessageDialog(this, "Xóa phiếu nhập thành công!");
                 loadData();
@@ -211,19 +256,25 @@ public class PhieuNhapGUI extends JFrame {
         txtMaSanPham.setText("");
         txtSoLuong.setText("");
         txtMaNhaCungCap.setText("");
-        txtMaNhanVien.setText("");
+        txtDonGia.setText("");
+        txtThanhTien.setText("");
+        txtTrangThai.setText("");
+        txtHinhThucThanhToan.setText("");
         dateChooser.setDate(new Date());
         table.clearSelection();
     }
 
     private void fillFormFromTable(int row) {
-        txtMaSanPham.setText(table.getValueAt(row, 2).toString());
+        txtMaSanPham.setText(table.getValueAt(row, 1).toString());
         txtSoLuong.setText(table.getValueAt(row, 3).toString());
-        txtMaNhaCungCap.setText(table.getValueAt(row, 4).toString());
-        txtMaNhanVien.setText(table.getValueAt(row, 5).toString());
+        txtMaNhaCungCap.setText(table.getValueAt(row, 2).toString());
+        txtDonGia.setText(table.getValueAt(row, 4).toString());
+        txtThanhTien.setText(table.getValueAt(row, 5).toString());
+        txtTrangThai.setText(table.getValueAt(row, 7).toString());
+        txtHinhThucThanhToan.setText(table.getValueAt(row, 8).toString());
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            dateChooser.setDate(sdf.parse(table.getValueAt(row, 1).toString()));
+            dateChooser.setDate(sdf.parse(table.getValueAt(row, 6).toString()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -250,19 +301,22 @@ public class PhieuNhapGUI extends JFrame {
                 case "Mã Nhà Cung Cấp":
                     match = pn.getMaNhaCungCap().contains(searchText);
                     break;
-                case "Mã Nhân Viên":
-                    match = pn.getMaNhanVien().contains(searchText);
+                case "Trạng Thái":
+                    match = pn.getTrangThai().contains(searchText);
                     break;
             }
             
             if (match) {
                 Object[] row = {
                     pn.getMaPhieuNhap(),
-                    sdf.format(pn.getNgayNhap()),
                     pn.getMaSanPham(),
-                    pn.getSoLuongNhap(),
                     pn.getMaNhaCungCap(),
-                    pn.getMaNhanVien()
+                    pn.getSoLuong(),
+                    pn.getDonGia(),
+                    pn.getThanhTien(),
+                    sdf.format(pn.getThoiGian()),
+                    pn.getTrangThai(),
+                    pn.getHinhThucThanhToan()
                 };
                 tableModel.addRow(row);
             }
@@ -277,7 +331,7 @@ public class PhieuNhapGUI extends JFrame {
         }
         
         SwingUtilities.invokeLater(() -> {
-            new PhieuNhapGUI().setVisible(true);
+            new chiTietPhieuNhap().setVisible(true);
         });
     }
 } 
