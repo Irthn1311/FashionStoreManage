@@ -19,10 +19,51 @@ public class xuathang extends javax.swing.JPanel {
         loadComboBoxData();
         loadXuatHangTable();
         javax.swing.event.DocumentListener docListener = new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { calculateThanhTien(); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { calculateThanhTien(); }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { calculateThanhTien(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                calculateThanhTien();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                calculateThanhTien();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                calculateThanhTien();
+            }
         };
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần xóa!");
+                    return;
+                }
+                // Lấy mã phiếu xuất (MaPX) từ dòng được chọn
+                String maPX = jTable1.getValueAt(selectedRow, 0).toString();
+                int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa phiếu xuất này?",
+                        "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    try {
+                        java.sql.Connection conn = DTB.ConnectDB.getConnection();
+                        String sql = "DELETE FROM XuatHang WHERE MaPX = ?";
+                        java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+                        ps.setString(1, maPX);
+                        int result = ps.executeUpdate();
+                        ps.close();
+                        conn.close();
+                        if (result > 0) {
+                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thành công!");
+                            loadXuatHangTable();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thất bại!");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Lỗi khi xóa phiếu xuất: " + e.getMessage());
+                    }
+                }
+            }
+        });
         jTextField10.getDocument().addDocumentListener(docListener);
         jTextField7.getDocument().addDocumentListener(docListener);
         jComboBox7.addActionListener(new java.awt.event.ActionListener() {
@@ -40,6 +81,7 @@ public class xuathang extends javax.swing.JPanel {
             }
         });
     }
+
     public javax.swing.JPanel getXuatHangPanel() {
         return containerPanel;
     }
@@ -88,7 +130,6 @@ public class xuathang extends javax.swing.JPanel {
         jTextField4 = new javax.swing.JTextField();
         jTextField10 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        
 
         pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
 
@@ -98,19 +139,18 @@ public class xuathang extends javax.swing.JPanel {
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHeaderLayout.createSequentialGroup()
-                .addContainerGap(416, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(391, 391, 391))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHeaderLayout.createSequentialGroup()
+                                .addContainerGap(416, Short.MAX_VALUE)
+                                .addComponent(jLabel1)
+                                .addGap(391, 391, 391)));
         pnlHeaderLayout.setVerticalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(14, Short.MAX_VALUE)));
 
         containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
@@ -120,20 +160,22 @@ public class xuathang extends javax.swing.JPanel {
 
         jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
-            new String [] {
-                "Mã PX", "Mã KH", "Tên KH", "Mã SP", "Tên SP", "Loại SP", "Kích thước", "Màu sắc", "Số lượng", "Thời gian", "Đơn giá", "Thành tiền", "Trạng thái"
-            }
-        ));
+                new Object[][] {},
+                new String[] {
+                        "Mã PX", "Mã KH", "Tên KH", "Mã SP", "Tên SP", "Loại SP", "Kích thước", "Màu sắc", "Số lượng",
+                        "Thời gian", "Đơn giá", "Thành tiền", "Trạng thái"
+                }));
         jTable1.setShowGrid(true);
         jScrollPane1.setViewportView(jTable1);
 
         jPanel7.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Xuất hàng"));
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Xuất hàng"));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel5.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Khách hàng"));
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Khách hàng"));
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTextField6.setText("Mã khách hàng");
@@ -157,7 +199,8 @@ public class xuathang extends javax.swing.JPanel {
         jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 180, 320, 120));
 
         jPanel9.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chi phí"));
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chi phí"));
         jPanel9.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTextField8.setText("Thành tiền");
@@ -172,6 +215,22 @@ public class xuathang extends javax.swing.JPanel {
         jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(431, 36, 310, 120));
 
         jButton15.setText("Hủy");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                // Reset các trường nhập liệu ở phần Xuất hàng
+                jComboBox6.setSelectedIndex(0);
+                jComboBox7.setSelectedIndex(0);
+                jTextField1.setText("");
+                jTextField3.setText("");
+                jTextField4.setText("");
+                jTextField10.setText("");
+                jTextField7.setText("");
+                jTextField9.setText(""); // Chỉ reset ô tính tiền
+                jTextField14.setText("");
+                jTextField15.setText("");
+                // Không reset jTextField8 (ô mô tả)
+            }
+        });
         jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(791, 72, -1, 60));
 
         jButton18.setText("Thêm");
@@ -191,7 +250,7 @@ public class xuathang extends javax.swing.JPanel {
                     double donGia = Double.parseDouble(jTextField7.getText().trim());
                     double thanhTien = Double.parseDouble(jTextField9.getText().trim());
                     String trangThai = "Hoàn thành"; // Or get from a combo box if you have one
-        
+
                     // Insert into database
                     java.sql.Connection conn = DTB.ConnectDB.getConnection();
                     String sql = "INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, LoaiSP, KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -208,11 +267,11 @@ public class xuathang extends javax.swing.JPanel {
                     ps.setDouble(10, donGia);
                     ps.setDouble(11, thanhTien);
                     ps.setString(12, trangThai);
-        
+
                     int result = ps.executeUpdate();
                     ps.close();
                     conn.close();
-        
+
                     if (result > 0) {
                         JOptionPane.showMessageDialog(null, "Thêm phiếu xuất hàng thành công!");
                         loadXuatHangTable(); // Refresh table
@@ -228,11 +287,14 @@ public class xuathang extends javax.swing.JPanel {
         jPanel7.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(791, 213, -1, 64));
 
         jPanel8.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Sản phẩm & Số lượng"));
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Sản phẩm & Số lượng"));
 
-        jComboBox6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox6.setModel(
+                new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jComboBox7.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox7.setModel(
+                new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel2.setText("Loại SP");
 
@@ -263,160 +325,278 @@ public class xuathang extends javax.swing.JPanel {
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel5)
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel4))
-                        .addComponent(jLabel8))
-                    .addComponent(jLabel6)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(jLabel7)))
-                .addGap(50, 50, 50)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jComboBox6, 0, 172, Short.MAX_VALUE)
-                    .addComponent(jComboBox7, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField7)
-                    .addComponent(jTextField1)
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField4)
-                    .addComponent(jTextField10))
-                .addContainerGap(22, Short.MAX_VALUE))
-        );
+                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel8Layout
+                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jLabel5)
+                                                .addGroup(jPanel8Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jLabel3)
+                                                        .addComponent(jLabel2)
+                                                        .addComponent(jLabel4))
+                                                .addComponent(jLabel8))
+                                        .addComponent(jLabel6)
+                                        .addGroup(jPanel8Layout.createSequentialGroup()
+                                                .addGap(1, 1, 1)
+                                                .addComponent(jLabel7)))
+                                .addGap(50, 50, 50)
+                                .addGroup(jPanel8Layout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jComboBox6, 0, 172, Short.MAX_VALUE)
+                                        .addComponent(jComboBox7, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(jTextField7)
+                                        .addComponent(jTextField1)
+                                        .addComponent(jTextField3)
+                                        .addComponent(jTextField4)
+                                        .addComponent(jTextField10))
+                                .addContainerGap(22, Short.MAX_VALUE)));
         jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel8Layout.createSequentialGroup()
+                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addContainerGap()
                                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel8Layout.createSequentialGroup()
-                                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                    .addGroup(jPanel8Layout.createSequentialGroup()
-                                                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                    .addComponent(jComboBox6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                    .addComponent(jLabel2))
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                    .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                    .addComponent(jLabel3))
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(jLabel4))
-                                                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                            .addGap(18, 18, 18)
-                                                            .addComponent(jLabel5))
-                                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                      .addGap(18, 18, 18)
-                                                      .addComponent(jLabel6))
-                                                  .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                                              .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                  .addComponent(jLabel7)
-                                                  .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                              .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                  .addComponent(jLabel8)
-                                                  .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                              .addGap(9, 9, 9))
-                                          .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                              .addGroup(jPanel8Layout.createSequentialGroup()
-                                                  .addGap(28, 28, 28)
-                                                  .addComponent(jLabel5))
-                                              .addComponent(jLabel6))
-                                          .addComponent(jLabel7))
-                                      .addGap(50, 50, 50)
-                                      .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                          .addComponent(jComboBox6, 0, 172, Short.MAX_VALUE)
-                                          .addComponent(jComboBox7, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                          .addComponent(jTextField7)
-                                          .addComponent(jTextField1)
-                                          .addComponent(jTextField3)
-                                          .addComponent(jTextField4)
-                                          .addComponent(jTextField10))
-                                      .addContainerGap(22, Short.MAX_VALUE))
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel8Layout.createSequentialGroup()
-                                        .addGap(28, 28, 28)
-                                        .addComponent(jLabel5))
-                                    .addComponent(jLabel6))
-                                .addComponent(jLabel7))
-                            .addGap(50, 50, 50)
-                            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jComboBox6, 0, 172, Short.MAX_VALUE)
-                                .addComponent(jComboBox7, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jTextField7)
-                                .addComponent(jTextField1)
-                                .addComponent(jTextField3)
-                                .addComponent(jTextField4)
-                                .addComponent(jTextField10))
-                            .addContainerGap(22, Short.MAX_VALUE))
-                      .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                          .addGroup(jPanel8Layout.createSequentialGroup()
-                              .addGap(28, 28, 28)
-                              .addComponent(jLabel5))
-                          .addComponent(jLabel6))
-                      .addComponent(jLabel7))
-                  .addGap(50, 50, 50)
-                  .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                      .addComponent(jComboBox6, 0, 172, Short.MAX_VALUE)
-                      .addComponent(jComboBox7, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                      .addComponent(jTextField7)
-                      .addComponent(jTextField1)
-                      .addComponent(jTextField3)
-                      .addComponent(jTextField4)
-                      .addComponent(jTextField10))
-                  .addContainerGap(22, Short.MAX_VALUE))
-            );
+                                        .addGroup(jPanel8Layout.createSequentialGroup()
+                                                .addGroup(jPanel8Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addGroup(jPanel8Layout.createSequentialGroup()
+                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                        .addGroup(jPanel8Layout.createSequentialGroup()
+                                                                                .addGroup(jPanel8Layout
+                                                                                        .createParallelGroup(
+                                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                        .addGroup(jPanel8Layout
+                                                                                                .createSequentialGroup()
+                                                                                                .addGroup(jPanel8Layout
+                                                                                                        .createParallelGroup(
+                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                                        .addGroup(
+                                                                                                                jPanel8Layout
+                                                                                                                        .createSequentialGroup()
+                                                                                                                        .addGroup(
+                                                                                                                                jPanel8Layout
+                                                                                                                                        .createParallelGroup(
+                                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                                                                        .addGroup(
+                                                                                                                                                jPanel8Layout
+                                                                                                                                                        .createSequentialGroup()
+                                                                                                                                                        .addGroup(
+                                                                                                                                                                jPanel8Layout
+                                                                                                                                                                        .createParallelGroup(
+                                                                                                                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                                                                                                        .addComponent(
+                                                                                                                                                                                jComboBox6,
+                                                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                                                        .addComponent(
+                                                                                                                                                                                jLabel2))
+                                                                                                                                                        .addPreferredGap(
+                                                                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                                                                                        .addGroup(
+                                                                                                                                                                jPanel8Layout
+                                                                                                                                                                        .createParallelGroup(
+                                                                                                                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                                                                                                        .addComponent(
+                                                                                                                                                                                jComboBox7,
+                                                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                                                        .addComponent(
+                                                                                                                                                                                jLabel3))
+                                                                                                                                                        .addGap(18,
+                                                                                                                                                                18,
+                                                                                                                                                                18)
+                                                                                                                                                        .addComponent(
+                                                                                                                                                                jLabel4))
+                                                                                                                                        .addComponent(
+                                                                                                                                                jTextField1,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                                        .addGap(18,
+                                                                                                                                18,
+                                                                                                                                18)
+                                                                                                                        .addComponent(
+                                                                                                                                jLabel5))
+                                                                                                        .addComponent(
+                                                                                                                jTextField3,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                .addGap(18, 18, 18)
+                                                                                                .addComponent(jLabel6))
+                                                                                        .addComponent(jTextField4,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                .addPreferredGap(
+                                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                                        18, Short.MAX_VALUE)
+                                                                                .addGroup(jPanel8Layout
+                                                                                        .createParallelGroup(
+                                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                        .addComponent(jLabel7)
+                                                                                        .addComponent(jTextField10,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                .addPreferredGap(
+                                                                                        javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                .addGroup(jPanel8Layout
+                                                                                        .createParallelGroup(
+                                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                        .addComponent(jLabel8)
+                                                                                        .addComponent(jTextField7,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                .addGap(9, 9, 9))
+                                                                        .addGroup(jPanel8Layout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                .addGroup(jPanel8Layout
+                                                                                        .createSequentialGroup()
+                                                                                        .addGap(28, 28, 28)
+                                                                                        .addComponent(jLabel5))
+                                                                                .addComponent(jLabel6))
+                                                                        .addComponent(jLabel7))
+                                                                .addGap(50, 50, 50)
+                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                                                        false)
+                                                                        .addComponent(jComboBox6, 0, 172,
+                                                                                Short.MAX_VALUE)
+                                                                        .addComponent(jComboBox7, 0,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                Short.MAX_VALUE)
+                                                                        .addComponent(jTextField7)
+                                                                        .addComponent(jTextField1)
+                                                                        .addComponent(jTextField3)
+                                                                        .addComponent(jTextField4)
+                                                                        .addComponent(jTextField10))
+                                                                .addContainerGap(22, Short.MAX_VALUE))
+                                                        .addGroup(jPanel8Layout
+                                                                .createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                .addGroup(jPanel8Layout.createSequentialGroup()
+                                                                        .addGap(28, 28, 28)
+                                                                        .addComponent(jLabel5))
+                                                                .addComponent(jLabel6))
+                                                        .addComponent(jLabel7))
+                                                .addGap(50, 50, 50)
+                                                .addGroup(jPanel8Layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
+                                                                false)
+                                                        .addComponent(jComboBox6, 0, 172, Short.MAX_VALUE)
+                                                        .addComponent(jComboBox7, 0,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jTextField7)
+                                                        .addComponent(jTextField1)
+                                                        .addComponent(jTextField3)
+                                                        .addComponent(jTextField4)
+                                                        .addComponent(jTextField10))
+                                                .addContainerGap(22, Short.MAX_VALUE))
+                                        .addGroup(jPanel8Layout
+                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addGroup(jPanel8Layout.createSequentialGroup()
+                                                        .addGap(28, 28, 28)
+                                                        .addComponent(jLabel5))
+                                                .addComponent(jLabel6))
+                                        .addComponent(jLabel7))
+                                .addGap(50, 50, 50)
+                                .addGroup(jPanel8Layout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jComboBox6, 0, 172, Short.MAX_VALUE)
+                                        .addComponent(jComboBox7, 0, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                        .addComponent(jTextField7)
+                                        .addComponent(jTextField1)
+                                        .addComponent(jTextField3)
+                                        .addComponent(jTextField4)
+                                        .addComponent(jTextField10))
+                                .addContainerGap(22, Short.MAX_VALUE)));
 
         jPanel7.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 36, -1, 270));
 
         jButton1.setText("Xóa");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần xóa!");
+                    return;
+                }
+                // Lấy mã phiếu xuất (MaPX) từ dòng được chọn
+                String maPX = jTable1.getValueAt(selectedRow, 0).toString();
+                int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa phiếu xuất này?",
+                        "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    try {
+                        java.sql.Connection conn = DTB.ConnectDB.getConnection();
+                        String sql = "DELETE FROM XuatHang WHERE MaPX = ?";
+                        java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+                        ps.setString(1, maPX);
+                        int result = ps.executeUpdate();
+                        ps.close();
+                        conn.close();
+                        if (result > 0) {
+                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thành công!");
+                            loadXuatHangTable();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thất bại!");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Lỗi khi xóa phiếu xuất: " + e.getMessage());
+                    }
+                }
+            }
+        });
 
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
         pnlContentLayout.setHorizontalGroup(
-            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContentLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE))
-                .addContainerGap(20, Short.MAX_VALUE))
-            .addGroup(pnlContentLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(182, 182, 182)
-                .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(214, 214, 214))
-        );
+                pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContentLayout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addGroup(pnlContentLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jScrollPane1)
+                                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 960,
+                                                Short.MAX_VALUE))
+                                .addContainerGap(20, Short.MAX_VALUE))
+                        .addGroup(pnlContentLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(182, 182, 182)
+                                .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 205,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(214, 214, 214)));
         pnlContentLayout.setVerticalGroup(
-            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(19, 19, 19))
-        );
+                pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 317,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32,
+                                        Short.MAX_VALUE)
+                                .addGroup(
+                                        pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 54,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(19, 19, 19)));
 
         containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
-
 
         // Gọi setupUI() sau khi khởi tạo các components
         setupUI();
@@ -433,7 +613,7 @@ public class xuathang extends javax.swing.JPanel {
             if (sanPhamDAO.kiemTraTonKho(maSP, soLuongXuat)) {
                 // Nếu đủ hàng, giảm tồn kho
                 boolean result = sanPhamDAO.giamSoLuongTonKho(maSP, soLuongXuat);
-                
+
                 if (result) {
                     // Kiểm tra cảnh báo tồn kho thấp sau khi xuất thành công
                     boolean canhBao = sanPhamDAO.kiemTraCanhBaoTonKho(maSP);
@@ -462,25 +642,25 @@ public class xuathang extends javax.swing.JPanel {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(960, 190));
     }
 
-    private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
+    private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField8ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField8ActionPerformed
+    }// GEN-LAST:event_jTextField8ActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }// GEN-LAST:event_jTextField2ActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField6ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }// GEN-LAST:event_jTextField6ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }// GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
+    private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField10ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField10ActionPerformed
+    }// GEN-LAST:event_jTextField10ActionPerformed
 
     private void loadComboBoxData() {
         SanPhamDAO sanPhamDAO = new SanPhamDAO();
@@ -516,32 +696,32 @@ public class xuathang extends javax.swing.JPanel {
             // Table columns must match your table model
             javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
             model.setRowCount(0); // Clear old data
-    
+
             // Connect to DB and fetch all XuatHang records
             java.sql.Connection conn = DTB.ConnectDB.getConnection();
             String sql = "SELECT * FROM XuatHang";
             java.sql.PreparedStatement ps = conn.prepareStatement(sql);
             java.sql.ResultSet rs = ps.executeQuery();
-    
+
             while (rs.next()) {
                 Object[] row = new Object[] {
-    rs.getString("MaPX"),
-    rs.getString("MaKhachHang"),
-    rs.getString("HoTen"),
-    rs.getString("MaSanPham"),
-    rs.getString("TenSanPham"),
-    rs.getString("LoaiSP"),
-    rs.getString("KichThuoc"),
-    rs.getString("MauSac"),
-    rs.getInt("SoLuong"),
-    rs.getString("ThoiGian"), // <-- fix here
-    rs.getDouble("DonGia"),
-    rs.getDouble("ThanhTien"),
-    rs.getString("TrangThai")
-};
+                        rs.getString("MaPX"),
+                        rs.getString("MaKhachHang"),
+                        rs.getString("HoTen"),
+                        rs.getString("MaSanPham"),
+                        rs.getString("TenSanPham"),
+                        rs.getString("LoaiSP"),
+                        rs.getString("KichThuoc"),
+                        rs.getString("MauSac"),
+                        rs.getInt("SoLuong"),
+                        rs.getString("ThoiGian"), // <-- fix here
+                        rs.getDouble("DonGia"),
+                        rs.getDouble("ThanhTien"),
+                        rs.getString("TrangThai")
+                };
                 model.addRow(row);
             }
-    
+
             rs.close();
             ps.close();
             conn.close();
@@ -556,9 +736,13 @@ public class xuathang extends javax.swing.JPanel {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -576,10 +760,10 @@ public class xuathang extends javax.swing.JPanel {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(xuathang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+        // </editor-fold>
+        // </editor-fold>
+        // </editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

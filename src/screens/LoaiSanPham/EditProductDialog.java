@@ -2,6 +2,8 @@ package screens.LoaiSanPham;
 
 import DTO.sanPhamDTO;
 import BUS.ProductService;
+import DAO.NhaCungCapDAO;
+import DTO.nhaCungCapDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +13,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class EditProductDialog extends JDialog {
     private JTextField txtMaSanPham;
@@ -86,6 +90,34 @@ public class EditProductDialog extends JDialog {
             txtMaNhaCungCap.setEditable(false);
             txtMaNhaCungCap.setBackground(new Color(220, 220, 220));
         }
+        // Add DocumentListener to txtMaNhaCungCap
+        txtMaNhaCungCap.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateProductCategory();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateProductCategory();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateProductCategory();
+            }
+
+            private void updateProductCategory() {
+                String maNhaCungCap = txtMaNhaCungCap.getText().trim();
+                if (!maNhaCungCap.isEmpty()) {
+                    NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
+                    nhaCungCapDTO ncc = nhaCungCapDAO.getNhaCungCapByMa(maNhaCungCap);
+                    if (ncc != null) {
+                        txtMaDanhMuc.setText(ncc.getLoaiSP());
+                    }
+                }
+            }
+        });
         mainPanel.add(txtMaNhaCungCap, gbc);
 
         // Loại sản phẩm

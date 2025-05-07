@@ -30,6 +30,9 @@ public class nhaphang extends javax.swing.JPanel {
          */
         public nhaphang() {
                 initComponents();
+                populateComboBoxes();
+                loadImportTable();
+                setupAmountCalculation();
         }
 
         public javax.swing.JPanel getNhapHangPanel() {
@@ -405,6 +408,20 @@ public class nhaphang extends javax.swing.JPanel {
                 jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 40, 310, -1));
 
                 jButton15.setText("Hủy");
+                jButton15.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                // Reset các trường nhập liệu ở phần Đặt hàng
+                                jComboBox6.setSelectedIndex(0);
+                                jComboBox7.setSelectedIndex(0);
+                                jTextField1.setText("");
+                                jTextField3.setText("");
+                                jTextField4.setText("");
+                                jTextField10.setText("");
+                                jTextField7.setText("");
+                                jTextField9.setText("");
+                                // Không reset jTextField8 (ô mô tả)
+                        }
+                });
                 jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, -1, 60));
 
                 jButton18.setText("Thêm");
@@ -416,8 +433,12 @@ public class nhaphang extends javax.swing.JPanel {
                 jPanel7.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 220, -1, 64));
 
                 jButton16.setText("Xóa");
+                jButton16.addActionListener(evt -> jButton16ActionPerformed(evt));
+                jPanel7.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 340, -1, 60));
 
                 jButton17.setText("Xác nhận và Xuất hóa đơn ");
+                jButton17.addActionListener(evt -> jButton17ActionPerformed(evt));
+                jPanel7.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, -1, 60));
 
                 javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
                 pnlContent.setLayout(pnlContentLayout);
@@ -500,48 +521,88 @@ public class nhaphang extends javax.swing.JPanel {
 
         private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                        String maSP = jComboBox7.getSelectedItem().toString();
-                        int soLuongNhap = Integer.parseInt(jTextField10.getText());
-                        String maNCC = jComboBox9.getSelectedItem().toString();
-                        String maNV = "NV001"; // Cần lấy từ tài khoản đăng nhập
-
-                        SanPhamDAO sanPhamDAO = new SanPhamDAO();
-                        PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
-
-                        boolean result = sanPhamDAO.capNhatSoLuongSanPham(maSP, soLuongNhap);
-
-                        if (result) {
-                                PhieuNhapDTO phieuNhap = new PhieuNhapDTO();
-                                phieuNhap.setNgayNhap(new Date());
-                                phieuNhap.setMaSanPham(maSP);
-                                phieuNhap.setSoLuongNhap(soLuongNhap);
-                                phieuNhap.setMaNhaCungCap(maNCC);
-                                phieuNhap.setMaNhanVien(maNV);
-
-                                boolean luuLichSu = phieuNhapDAO.themPhieuNhap(phieuNhap);
-                                if (luuLichSu) {
-                                        // Kiểm tra cảnh báo tồn kho thấp sau khi nhập thành công
-                                        boolean canhBao = sanPhamDAO.kiemTraCanhBaoTonKho(maSP);
-                                        if (canhBao) {
-                                                JOptionPane.showMessageDialog(this,
-                                                                "Cảnh báo: Sản phẩm sắp hết hàng, hãy nhập thêm!");
-                                        } else {
-                                                JOptionPane.showMessageDialog(this,
-                                                                "Nhập hàng và lưu lịch sử thành công.");
-                                        }
-                                } else {
-                                        JOptionPane.showMessageDialog(this,
-                                                        "Nhập hàng thành công nhưng lưu lịch sử thất bại.");
-                                }
-
-                        } else {
-                                JOptionPane.showMessageDialog(this, "Cập nhật tồn kho thất bại.");
+                        // Validate dữ liệu đầu vào
+                        if (jTextField10.getText().trim().isEmpty() || jTextField7.getText().trim().isEmpty()) {
+                                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ Số lượng và Đơn giá!");
+                                return;
+                        }
+                        try {
+                                Integer.parseInt(jTextField10.getText());
+                                Double.parseDouble(jTextField7.getText());
+                        } catch (NumberFormatException ex) {
+                                JOptionPane.showMessageDialog(this, "Số lượng và Đơn giá phải là số hợp lệ!");
+                                return;
+                        }
+                        if (jComboBox9.getSelectedItem() == null || jComboBox6.getSelectedItem() == null
+                                        || jComboBox7.getSelectedItem() == null) {
+                                JOptionPane.showMessageDialog(this,
+                                                "Vui lòng chọn đầy đủ Nhà cung cấp, Loại SP, Mã SP!");
+                                return;
                         }
 
-                } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng hợp lệ.");
+                        nhapHangDTO nhapHang = new nhapHangDTO();
+                        // Sinh mã phiếu nhập tăng dần, không bị trùng nếu đã xóa phiếu nhập
+                        List<nhapHangDTO> danhSachPhieuNhap = new NhapHangDAO().getAllNhapHang();
+                        int maxSo = 0;
+                        for (nhapHangDTO pn : danhSachPhieuNhap) {
+                                String ma = pn.getMaPN();
+                                if (ma != null && ma.startsWith("PN")) {
+                                        try {
+                                                int so = Integer.parseInt(ma.substring(2));
+                                                if (so > maxSo)
+                                                        maxSo = so;
+                                        } catch (NumberFormatException ignored) {
+                                        }
+                                }
+                        }
+                        String maPN = String.format("PN%03d", maxSo + 1);
+                        nhapHang.setMaPN(maPN);
+                        String nccValue = jComboBox9.getSelectedItem().toString();
+                        String maNCC = nccValue.split(" - ")[0].trim();
+                        nhapHang.setMaNhaCungCap(maNCC);
+                        nhapHang.setLoaiSP(jComboBox6.getSelectedItem().toString());
+                        nhapHang.setMaSanPham(jComboBox7.getSelectedItem().toString());
+                        nhapHang.setTenSanPham(jTextField1.getText());
+                        nhapHang.setMauSac(jTextField3.getText());
+                        nhapHang.setKichThuoc(jTextField4.getText());
+                        nhapHang.setSoLuong(jTextField10.getText());
+                        nhapHang.setDonGia(jTextField7.getText());
+                        nhapHang.setThanhTien(jTextField9.getText());
+                        nhapHang.setTrangThai("Đã nhập");
+
+                        System.out.println("MaPN: " + nhapHang.getMaPN());
+                        System.out.println("MaNhaCungCap: " + nhapHang.getMaNhaCungCap());
+                        System.out.println("LoaiSP: " + nhapHang.getLoaiSP());
+                        System.out.println("MaSanPham: " + nhapHang.getMaSanPham());
+                        System.out.println("TenSanPham: " + nhapHang.getTenSanPham());
+                        System.out.println("MauSac: " + nhapHang.getMauSac());
+                        System.out.println("KichThuoc: " + nhapHang.getKichThuoc());
+                        System.out.println("SoLuong: " + nhapHang.getSoLuong());
+                        System.out.println("DonGia: " + nhapHang.getDonGia());
+                        System.out.println("ThanhTien: " + nhapHang.getThanhTien());
+                        System.out.println("TrangThai: " + nhapHang.getTrangThai());
+
+                        NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                        if (nhapHangDAO.getNhapHangByMa(nhapHang.getMaPN()) != null) {
+                                JOptionPane.showMessageDialog(this, "Mã phiếu nhập đã tồn tại, vui lòng thử lại!");
+                                return;
+                        }
+                        boolean result = nhapHangDAO.themNhapHang(nhapHang);
+
+                        if (result) {
+                                // Update product quantity in stock
+                                SanPhamDAO sanPhamDAO = new SanPhamDAO();
+                                int soLuongNhap = Integer.parseInt(nhapHang.getSoLuong());
+                                sanPhamDAO.capNhatSoLuongSanPham(nhapHang.getMaSanPham(), soLuongNhap);
+
+                                JOptionPane.showMessageDialog(this, "Nhập hàng thành công!");
+                                loadImportTable();
+                        } else {
+                                JOptionPane.showMessageDialog(this, "Nhập hàng thất bại!");
+                        }
                 } catch (Exception e) {
-                        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra: " + e.getMessage());
+                        e.printStackTrace(); // Để xem lỗi trên console
+                        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thêm nhập hàng: " + e.getMessage());
                 }
         }
 
@@ -552,6 +613,221 @@ public class nhaphang extends javax.swing.JPanel {
         private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField10ActionPerformed
                 // TODO add your handling code here:
         }// GEN-LAST:event_jTextField10ActionPerformed
+
+        private void populateComboBoxes() {
+                SanPhamDAO sanPhamDAO = new SanPhamDAO();
+                NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
+
+                // Loại SP
+                jComboBox6.removeAllItems();
+                for (String type : sanPhamDAO.getAllProductTypes()) {
+                        jComboBox6.addItem(type);
+                }
+
+                // Mã SP
+                jComboBox7.removeAllItems();
+                for (String code : sanPhamDAO.getAllProductCodes()) {
+                        jComboBox7.addItem(code);
+                }
+
+                // Nhà cung cấp
+                jComboBox9.removeAllItems();
+                for (String supplier : nhaCungCapDAO.getAllSuppliers()) {
+                        jComboBox9.addItem(supplier);
+                }
+
+                // Add event listeners for filtering suppliers
+                jComboBox6.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                filterSuppliers();
+                        }
+                });
+
+                jComboBox7.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                filterSuppliers();
+                        }
+                });
+        }
+
+        private void filterSuppliers() {
+                String selectedType = (String) jComboBox6.getSelectedItem();
+                String selectedCode = (String) jComboBox7.getSelectedItem();
+
+                if (selectedType != null && selectedCode != null) {
+                        NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
+                        List<String> filteredSuppliers = nhaCungCapDAO.getSuppliersByProduct(selectedType,
+                                        selectedCode);
+
+                        jComboBox9.removeAllItems();
+                        for (String supplier : filteredSuppliers) {
+                                jComboBox9.addItem(supplier);
+                        }
+                        if (filteredSuppliers.isEmpty()) {
+                                jComboBox9.addItem("Không có nhà cung cấp phù hợp");
+                        }
+                }
+        }
+
+        private void loadImportTable() {
+                NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                List<nhapHangDTO> list = nhapHangDAO.getAllNhapHang();
+
+                javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+                model.setRowCount(0);
+
+                int stt = 1;
+                for (nhapHangDTO nh : list) {
+                        model.addRow(new Object[] {
+                                        stt++,
+                                        nh.getMaPN(),
+                                        nh.getMaNhaCungCap(),
+                                        nh.getLoaiSP(),
+                                        nh.getMaSanPham(),
+                                        nh.getTenSanPham(),
+                                        nh.getMauSac(),
+                                        nh.getKichThuoc(),
+                                        nh.getSoLuong(),
+                                        nh.getDonGia(),
+                                        nh.getThanhTien(),
+                                        nh.getThoiGian(),
+                                        nh.getTrangThai()
+                        });
+                }
+        }
+
+        private void setupAmountCalculation() {
+                javax.swing.event.DocumentListener listener = new javax.swing.event.DocumentListener() {
+                        public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                                calculateAmount();
+                        }
+
+                        public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                                calculateAmount();
+                        }
+
+                        public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                                calculateAmount();
+                        }
+                };
+                jTextField10.getDocument().addDocumentListener(listener); // Số lượng
+                jTextField7.getDocument().addDocumentListener(listener); // Đơn giá
+        }
+
+        private void calculateAmount() {
+                try {
+                        int soLuong = Integer.parseInt(jTextField10.getText());
+                        double donGia = Double.parseDouble(jTextField7.getText());
+                        double thanhTien = soLuong * donGia;
+                        jTextField9.setText(String.valueOf(thanhTien));
+                } catch (NumberFormatException e) {
+                        jTextField9.setText("0");
+                }
+        }
+
+        private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
+                int rowCount = jTable1.getRowCount();
+                if (rowCount == 0) {
+                        JOptionPane.showMessageDialog(this, "Không có phiếu nhập nào để xuất hóa đơn!");
+                        return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(
+                                this,
+                                "Bạn có chắc chắn muốn xác nhận và xuất hóa đơn cho tất cả các phiếu nhập?",
+                                "Xác nhận xuất hóa đơn",
+                                JOptionPane.YES_NO_OPTION);
+
+                if (confirm != JOptionPane.YES_OPTION) {
+                        return;
+                }
+
+                // 1. Ask for payment method
+                String[] paymentMethods = { "Tiền mặt", "Chuyển khoản", "Thẻ" };
+                String hinhThucThanhToan = (String) JOptionPane.showInputDialog(
+                                this,
+                                "Chọn hình thức thanh toán cho tất cả hóa đơn:",
+                                "Hình thức thanh toán",
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                paymentMethods,
+                                paymentMethods[0]);
+                if (hinhThucThanhToan == null) {
+                        // User cancelled
+                        return;
+                }
+
+                NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                HoaDonBUS hoaDonBUS = new HoaDonBUS();
+                boolean allSuccess = true;
+
+                for (int i = 0; i < rowCount; i++) {
+                        String maPN = jTable1.getValueAt(i, 1).toString();
+                        String maSP = jTable1.getValueAt(i, 4).toString();
+                        String tenSP = jTable1.getValueAt(i, 5).toString();
+                        String kichCo = jTable1.getValueAt(i, 7).toString();
+                        String mauSac = jTable1.getValueAt(i, 6).toString();
+                        int soLuong = Integer.parseInt(jTable1.getValueAt(i, 8).toString());
+                        double donGia = Double.parseDouble(jTable1.getValueAt(i, 9).toString());
+                        double thanhTien = Double.parseDouble(jTable1.getValueAt(i, 10).toString());
+                        String maKhachHang = "KH001"; // You may want to select or input this
+                        String tenKhachHang = ""; // You may want to select or input this
+                        String trangThai = "Đã xuất hóa đơn";
+
+                        // Update status in NhapHang
+                        boolean updateResult = nhapHangDAO.capNhatTrangThai(maPN, trangThai);
+
+                        // Create new invoice
+                        String maHoaDon = "HD" + System.currentTimeMillis() + i; // Ensure unique
+                        java.sql.Timestamp thoiGian = new java.sql.Timestamp(System.currentTimeMillis());
+                        hoaDonDTO hoaDon = new hoaDonDTO(
+                                        maHoaDon, maSP, tenSP, kichCo, mauSac, soLuong, maKhachHang, tenKhachHang,
+                                        thanhTien, donGia, hinhThucThanhToan, thoiGian, trangThai);
+                        boolean addResult = hoaDonBUS.addHoaDon(hoaDon);
+
+                        if (!(updateResult && addResult)) {
+                                allSuccess = false;
+                        }
+                }
+
+                if (allSuccess) {
+                        JOptionPane.showMessageDialog(this,
+                                        "Xác nhận và xuất hóa đơn cho tất cả phiếu nhập thành công!");
+                } else {
+                        JOptionPane.showMessageDialog(this,
+                                        "Có một số phiếu nhập xác nhận thất bại! (Có thể hóa đơn đã tồn tại hoặc lỗi dữ liệu)");
+                }
+                loadImportTable();
+
+                // 2. Switch to HoaDonPanel
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                topFrame.setContentPane(new screens.HoaDon.HoaDonPanel());
+                topFrame.revalidate();
+                topFrame.repaint();
+        }
+
+        private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow == -1) {
+                        JOptionPane.showMessageDialog(this, "Vui lòng chọn một phiếu nhập để xóa!");
+                        return;
+                }
+                String maPN = jTable1.getValueAt(selectedRow, 1).toString();
+                NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa phiếu nhập này?",
+                                "Xác nhận xóa",
+                                JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                        boolean result = nhapHangDAO.xoaNhapHang(maPN);
+                        if (result) {
+                                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                                loadImportTable();
+                        } else {
+                                JOptionPane.showMessageDialog(this,
+                                                "Xóa thất bại! Có thể phiếu nhập này đã được sử dụng ở nơi khác.");
+                        }
+                }
+        }
 
         /**
          * @param args the command line arguments

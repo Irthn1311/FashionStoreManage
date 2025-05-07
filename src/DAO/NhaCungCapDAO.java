@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -207,6 +208,22 @@ public class NhaCungCapDAO {
         return null;
     }
 
+
+    public boolean isSupplierActive(String maNhaCungCap) {
+        String sql = "SELECT COUNT(*) FROM NhaCungCap WHERE MaNhaCungCap = ? AND TrangThai = N'Đang hợp tác'";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maNhaCungCap);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public List<String> getAllSuppliers() {
         List<String> suppliers = new ArrayList<>();
         try (Connection conn = ConnectDB.getConnection();
@@ -217,6 +234,64 @@ public class NhaCungCapDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return suppliers;
+    }
+
+    public boolean xoaNhaCungCapVaSanPham(String maNCC) {
+        String sql = "DELETE FROM SanPham WHERE MaNhaCungCap = ?; " +
+                    "DELETE FROM NhaCungCap WHERE MaNhaCungCap = ?";
+        try {
+            Connection conn = ConnectDB.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, maNCC);
+            ps.setString(2, maNCC);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean capNhatSanPhamSangNhaCungCapKhac(String maNCCCu, String maNCCMoi) {
+        String sql = "UPDATE SanPham SET MaNhaCungCap = ? WHERE MaNhaCungCap = ?";
+        try {
+            Connection conn = ConnectDB.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, maNCCMoi);
+            ps.setString(2, maNCCCu);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<String> getSuppliersByProduct(String productType, String productCode) {
+        List<String> suppliers = new ArrayList<>();
+        String sql = "SELECT DISTINCT ncc.MaNhaCungCap, ncc.TenNhaCungCap " +
+                     "FROM NhaCungCap ncc " +
+                     "JOIN NhaCungCap_SanPham nccsp ON ncc.MaNhaCungCap = nccsp.MaNhaCungCap " +
+                     "JOIN SanPham sp ON nccsp.MaSanPham = sp.MaSanPham " +
+                     "WHERE ncc.TrangThai = N'Đang hợp tác' " +
+                     "AND sp.MaSanPham = ? " +
+                     "AND (sp.MaDanhMuc = ? OR ncc.LoaiSP = ?)";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, productCode);
+            ps.setString(2, productType);
+            ps.setString(3, productType);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String maNCC = rs.getString("MaNhaCungCap");
+                    String tenNCC = rs.getString("TenNhaCungCap");
+                    suppliers.add(maNCC + " - " + tenNCC);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy danh sách nhà cung cấp theo sản phẩm: {0}", e.getMessage());
         }
         return suppliers;
     }

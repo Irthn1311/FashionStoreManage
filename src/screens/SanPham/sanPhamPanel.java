@@ -14,6 +14,15 @@ import DTO.sanPhamDTO;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
+import BUS.SanPhamBUS;
+import java.util.Vector;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.ArrayList;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButton;
+import javax.swing.JPanel;
+import javax.swing.JButton;
 
 public class sanPhamPanel extends javax.swing.JPanel {
     private SanPhamDAO sanPhamDAO;
@@ -27,6 +36,10 @@ public class sanPhamPanel extends javax.swing.JPanel {
     }
 
     private void loadSanPhamData() {
+        // Cập nhật trạng thái sản phẩm trước khi tải dữ liệu
+        SanPhamBUS sanPhamBUS = new SanPhamBUS();
+        sanPhamBUS.updateProductStatus();
+        
         List<sanPhamDTO> sanPhamList = sanPhamDAO.getAllSanPham();
         populateTable(sanPhamList);
     }
@@ -207,6 +220,31 @@ public class sanPhamPanel extends javax.swing.JPanel {
         lblMauSac.setText("Màu sắc: " + mauSac);
         lblSize.setText("Kích cỡ: " + size);
 
+        // Kiểm tra và hiển thị thông tin khuyến mãi
+        BUS.KhuyenMaiService khuyenMaiService = new BUS.KhuyenMaiService();
+        DTO.khuyenMaiDTO khuyenMai = khuyenMaiService.getKhuyenMaiByMaSanPham(maSP);
+        
+        if (khuyenMai != null) {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+            String ngayBatDau = khuyenMai.getNgayBatDau() != null ? sdf.format(khuyenMai.getNgayBatDau()) : "";
+            String ngayKetThuc = khuyenMai.getNgayKetThuc() != null ? sdf.format(khuyenMai.getNgayKetThuc()) : "";
+            String khuyenMaiInfo = String.format(
+                "<b>Chương trình:</b> %s<br>" +
+                "Thời gian: %s - %s<br>" +
+                "Giá cũ: %.2f<br>" +
+                "(Giảm %.2f%%) - Giá mới: %.2f",
+                khuyenMai.getTenChuongTrinh(),
+                ngayBatDau,
+                ngayKetThuc,
+                khuyenMai.getGiaCu(),
+                khuyenMai.getGiamGia(),
+                khuyenMai.getGiaMoi()
+            );
+            lblKhuyenMai.setText("<html><div style='width:500px;'>" + khuyenMaiInfo + "</div></html>");
+        } else {
+            lblKhuyenMai.setText("Khuyến mãi: Không có khuyến mãi");
+        }
+
         // Hiển thị hình ảnh sản phẩm
         displayProductImage(imgURL);
     }
@@ -262,6 +300,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
         lblTrangThai = new javax.swing.JLabel();
         lblMauSac = new javax.swing.JLabel();
         lblSize = new javax.swing.JLabel();
+        lblKhuyenMai = new javax.swing.JLabel();
 
         // Panel tìm kiếm
         pnlSearch = new javax.swing.JPanel();
@@ -323,6 +362,43 @@ public class sanPhamPanel extends javax.swing.JPanel {
                 return canEdit[columnIndex];
             }
         });
+
+        // Thêm renderer tùy chỉnh cho bảng
+        sanPhamTable.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                // Lấy số lượng từ cột "Số Lượng" (cột 7)
+                int soLuong = 0;
+                try {
+                    Object soLuongValue = table.getValueAt(row, 7);
+                    if (soLuongValue != null) {
+                        soLuong = Integer.parseInt(soLuongValue.toString());
+                    }
+                } catch (NumberFormatException e) {
+                    // Nếu không thể chuyển đổi thành số, giữ nguyên màu mặc định
+                    return c;
+                }
+
+                // Nếu số lượng <= 10, hiển thị màu đỏ
+                if (soLuong <= 10) {
+                    c.setBackground(java.awt.Color.RED);
+                    c.setForeground(java.awt.Color.WHITE);
+                } else {
+                    if (isSelected) {
+                        c.setBackground(table.getSelectionBackground());
+                        c.setForeground(table.getSelectionForeground());
+                    } else {
+                        c.setBackground(table.getBackground());
+                        c.setForeground(table.getForeground());
+                    }
+                }
+                return c;
+            }
+        });
+
         sanPhamTable.setShowGrid(true);
         jScrollPane1.setViewportView(sanPhamTable);
 
@@ -335,39 +411,44 @@ public class sanPhamPanel extends javax.swing.JPanel {
         lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblImage.setText("Hình ảnh sản phẩm");
         lblImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnlDetail.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 258, 176));
+        pnlDetail.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 258, 150));
 
         lblMaSP.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblMaSP.setText("Mã sản phẩm: ");
-        pnlDetail.add(lblMaSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, 250, 30));
+        pnlDetail.add(lblMaSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 250, 20));
 
         lblTenSP.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblTenSP.setText("Tên sản phẩm: ");
-        pnlDetail.add(lblTenSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 70, 250, 30));
+        pnlDetail.add(lblTenSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 45, 250, 20));
 
         lblSoLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblSoLuong.setText("Số lượng: ");
-        pnlDetail.add(lblSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 110, 250, 30));
+        pnlDetail.add(lblSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 70, 250, 20));
 
         lblDonGia.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblDonGia.setText("Đơn giá: ");
-        pnlDetail.add(lblDonGia, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 150, 250, 30));
+        pnlDetail.add(lblDonGia, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 95, 250, 20));
+
+        lblKhuyenMai = new javax.swing.JLabel();
+        lblKhuyenMai.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        lblKhuyenMai.setText("Khuyến mãi: ");
+        pnlDetail.add(lblKhuyenMai, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 120, 500, 80));
 
         lblImgURL.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblImgURL.setText("Hình ảnh: ");
-        pnlDetail.add(lblImgURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 30, 350, 30));
+        pnlDetail.add(lblImgURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 350, 20));
 
         lblTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblTrangThai.setText("Trạng thái: ");
-        pnlDetail.add(lblTrangThai, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 70, 350, 30));
+        pnlDetail.add(lblTrangThai, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 45, 350, 20));
 
         lblMauSac.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblMauSac.setText("Màu sắc: ");
-        pnlDetail.add(lblMauSac, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 110, 350, 30));
+        pnlDetail.add(lblMauSac, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 70, 350, 20));
 
         lblSize.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblSize.setText("Kích cỡ: ");
-        pnlDetail.add(lblSize, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 150, 350, 30));
+        pnlDetail.add(lblSize, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 95, 350, 20));
 
         // Thiết lập panel tìm kiếm
         pnlSearch.setBackground(new java.awt.Color(107, 163, 190));
@@ -447,6 +528,73 @@ public class sanPhamPanel extends javax.swing.JPanel {
         jButton30.setPreferredSize(new java.awt.Dimension(120, 30));
         pnlSearch.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(832, 40, 120, 30));
 
+        // Thêm panel cho radio buttons
+        JPanel pnlSort = new JPanel();
+        pnlSort.setBackground(new java.awt.Color(107, 163, 190));
+        pnlSort.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        // Tạo nhóm radio buttons
+        ButtonGroup sortGroup = new ButtonGroup();
+        
+        // Radio button sắp xếp giảm dần
+        JRadioButton rdoHighToLow = new JRadioButton("Sắp xếp số lượng từ cao tới thấp");
+        rdoHighToLow.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        rdoHighToLow.setBackground(new java.awt.Color(107, 163, 190));
+        sortGroup.add(rdoHighToLow);
+        pnlSort.add(rdoHighToLow, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 250, 30));
+
+        // Radio button sắp xếp tăng dần
+        JRadioButton rdoLowToHigh = new JRadioButton("Sắp xếp số lượng từ thấp tới cao");
+        rdoLowToHigh.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        rdoLowToHigh.setBackground(new java.awt.Color(107, 163, 190));
+        sortGroup.add(rdoLowToHigh);
+        pnlSort.add(rdoLowToHigh, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, 250, 30));
+
+        // Nút làm mới
+        JButton btnRefresh = new JButton("Làm mới");
+        btnRefresh.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        btnRefresh.setPreferredSize(new java.awt.Dimension(120, 30));
+        btnRefresh.setFocusPainted(false);
+        // Thêm icon cho nút làm mới
+        ImageIcon refreshIcon = new ImageIcon("src/icon_img/refresh.png"); // Đặt icon vào src/icon_img/refresh.png
+        btnRefresh.setIcon(new ImageIcon(refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnRefresh.setHorizontalTextPosition(SwingConstants.RIGHT);
+        pnlSort.add(btnRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 10, 130, 30));
+
+        // Sự kiện làm mới
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                // Reset tìm kiếm
+                jComboBox1.setSelectedIndex(0);
+                jTextField1.setText("");
+                jTextFieldDonGiaTu.setText("");
+                jTextFieldDonGiaDen.setText("");
+                jTextFieldSoLuongTu.setText("");
+                jTextFieldSoLuongDen.setText("");
+                // Reset radio button
+                sortGroup.clearSelection();
+                // Load lại dữ liệu
+                loadSanPhamData();
+            }
+        });
+
+        // Thêm sự kiện cho radio buttons
+        rdoHighToLow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (rdoHighToLow.isSelected()) {
+                    sortTableByQuantity(true);
+                }
+            }
+        });
+
+        rdoLowToHigh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (rdoLowToHigh.isSelected()) {
+                    sortTableByQuantity(false);
+                }
+            }
+        });
+
         // Thiết lập layout cho phần nội dung
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
@@ -460,6 +608,8 @@ public class sanPhamPanel extends javax.swing.JPanel {
                                         .addComponent(pnlDetail, javax.swing.GroupLayout.DEFAULT_SIZE, 962,
                                                 Short.MAX_VALUE)
                                         .addComponent(pnlSearch, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(pnlSort, javax.swing.GroupLayout.DEFAULT_SIZE,
                                                 javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap(20, Short.MAX_VALUE)));
         pnlContentLayout.setVerticalGroup(
@@ -468,12 +618,15 @@ public class sanPhamPanel extends javax.swing.JPanel {
                                 .addContainerGap()
                                 .addComponent(pnlSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 255,
+                                .addGap(7, 7, 7)
+                                .addComponent(pnlSort, javax.swing.GroupLayout.PREFERRED_SIZE, 50,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(7, 7, 7)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31,
                                         Short.MAX_VALUE)
-                                .addComponent(pnlDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 230,
+                                .addComponent(pnlDetail, javax.swing.GroupLayout.PREFERRED_SIZE, 290,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(17, 17, 17)));
 
@@ -481,6 +634,37 @@ public class sanPhamPanel extends javax.swing.JPanel {
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         add(containerPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 700));
+    }
+
+    // Thêm phương thức sắp xếp bảng
+    private void sortTableByQuantity(boolean descending) {
+        DefaultTableModel model = (DefaultTableModel) sanPhamTable.getModel();
+        List<Vector> data = new ArrayList<>();
+        
+        // Lấy dữ liệu từ model
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Vector row = new Vector();
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                row.add(model.getValueAt(i, j));
+            }
+            data.add(row);
+        }
+
+        // Sắp xếp dữ liệu theo số lượng (cột 7)
+        Collections.sort(data, new Comparator<Vector>() {
+            @Override
+            public int compare(Vector o1, Vector o2) {
+                int qty1 = Integer.parseInt(o1.get(7).toString());
+                int qty2 = Integer.parseInt(o2.get(7).toString());
+                return descending ? qty2 - qty1 : qty1 - qty2;
+            }
+        });
+
+        // Xóa dữ liệu cũ và thêm dữ liệu đã sắp xếp
+        model.setRowCount(0);
+        for (Vector row : data) {
+            model.addRow(row);
+        }
     }
 
     // Variables declaration
@@ -503,6 +687,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblTrangThai;
     private javax.swing.JLabel lblMauSac;
     private javax.swing.JLabel lblSize;
+    private javax.swing.JLabel lblKhuyenMai;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JLabel jLabelDonGiaTu;
