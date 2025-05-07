@@ -106,23 +106,23 @@ public class HoaDonPanel extends javax.swing.JPanel {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                "Không thể tải biểu tượng: " + e.getMessage(),
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE);
+                    "Không thể tải biểu tượng: " + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void setupTable() {
-        jTable2.getColumnModel().getColumn(0).setPreferredWidth(50);  // STT
-        jTable2.getColumnModel().getColumn(1).setPreferredWidth(80);  // Mã HĐ
-        jTable2.getColumnModel().getColumn(2).setPreferredWidth(80);  // Mã SP
+        jTable2.getColumnModel().getColumn(0).setPreferredWidth(50); // STT
+        jTable2.getColumnModel().getColumn(1).setPreferredWidth(80); // Mã HĐ
+        jTable2.getColumnModel().getColumn(2).setPreferredWidth(80); // Mã SP
         jTable2.getColumnModel().getColumn(3).setPreferredWidth(120); // Tên SP
-        jTable2.getColumnModel().getColumn(4).setPreferredWidth(80);  // Mã KH
+        jTable2.getColumnModel().getColumn(4).setPreferredWidth(80); // Mã KH
         jTable2.getColumnModel().getColumn(5).setPreferredWidth(120); // Tên KH
-        jTable2.getColumnModel().getColumn(6).setPreferredWidth(60);  // Kích cỡ
-        jTable2.getColumnModel().getColumn(7).setPreferredWidth(60);  // Màu sắc
-        jTable2.getColumnModel().getColumn(8).setPreferredWidth(60);  // Số lượng
-        jTable2.getColumnModel().getColumn(9).setPreferredWidth(80);  // Đơn giá
+        jTable2.getColumnModel().getColumn(6).setPreferredWidth(60); // Kích cỡ
+        jTable2.getColumnModel().getColumn(7).setPreferredWidth(60); // Màu sắc
+        jTable2.getColumnModel().getColumn(8).setPreferredWidth(60); // Số lượng
+        jTable2.getColumnModel().getColumn(9).setPreferredWidth(80); // Đơn giá
         jTable2.getColumnModel().getColumn(10).setPreferredWidth(80); // Thành tiền
         jTable2.getColumnModel().getColumn(11).setPreferredWidth(100); // Thời gian
         jTable2.getColumnModel().getColumn(12).setPreferredWidth(80); // Hình thức TT
@@ -131,15 +131,15 @@ public class HoaDonPanel extends javax.swing.JPanel {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        
-        jTable2.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);  // STT
-        jTable2.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);  // Mã HĐ
-        jTable2.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);  // Mã SP
-        jTable2.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);  // Mã KH
-        jTable2.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);  // Kích cỡ
-        jTable2.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);  // Màu sắc
-        jTable2.getColumnModel().getColumn(8).setCellRenderer(centerRenderer);  // Số lượng
-        jTable2.getColumnModel().getColumn(9).setCellRenderer(centerRenderer);  // Đơn giá
+
+        jTable2.getColumnModel().getColumn(0).setCellRenderer(centerRenderer); // STT
+        jTable2.getColumnModel().getColumn(1).setCellRenderer(centerRenderer); // Mã HĐ
+        jTable2.getColumnModel().getColumn(2).setCellRenderer(centerRenderer); // Mã SP
+        jTable2.getColumnModel().getColumn(4).setCellRenderer(centerRenderer); // Mã KH
+        jTable2.getColumnModel().getColumn(6).setCellRenderer(centerRenderer); // Kích cỡ
+        jTable2.getColumnModel().getColumn(7).setCellRenderer(centerRenderer); // Màu sắc
+        jTable2.getColumnModel().getColumn(8).setCellRenderer(centerRenderer); // Số lượng
+        jTable2.getColumnModel().getColumn(9).setCellRenderer(centerRenderer); // Đơn giá
         jTable2.getColumnModel().getColumn(10).setCellRenderer(centerRenderer); // Thành tiền
         jTable2.getColumnModel().getColumn(13).setCellRenderer(centerRenderer); // Trạng Thái
         jTable2.getColumnModel().getColumn(14).setCellRenderer(centerRenderer); // Chi tiết
@@ -164,9 +164,9 @@ public class HoaDonPanel extends javax.swing.JPanel {
             public void mouseClicked(MouseEvent e) {
                 int row = jTable2.rowAtPoint(e.getPoint());
                 int col = jTable2.columnAtPoint(e.getPoint());
-                
+
                 int lastColumnIndex = jTable2.getColumnCount() - 1;
-                
+
                 if (row >= 0 && col == lastColumnIndex) {
                     showChiTietHoaDon(row);
                 }
@@ -192,9 +192,9 @@ public class HoaDonPanel extends javax.swing.JPanel {
             hoaDonDTO hd = hoaDonDAO.getHoaDonByMa(maHoaDon); // Lấy trực tiếp từ cơ sở dữ liệu
             if (hd == null) {
                 JOptionPane.showMessageDialog(this,
-                    "Hóa đơn không tồn tại!",
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Hóa đơn không tồn tại!",
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -202,9 +202,9 @@ public class HoaDonPanel extends javax.swing.JPanel {
             dialog.setVisible(true);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Có lỗi xảy ra khi hiển thị thông tin chi tiết: " + e.getMessage(),
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE);
+                    "Có lỗi xảy ra khi hiển thị thông tin chi tiết: " + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -219,15 +219,15 @@ public class HoaDonPanel extends javax.swing.JPanel {
             updateTableData(hoaDonList);
             if (hoaDonList.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
-                    "Không có dữ liệu hóa đơn trong cơ sở dữ liệu!",
-                    "Thông báo",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Không có dữ liệu hóa đơn trong cơ sở dữ liệu!",
+                        "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Lỗi khi tải dữ liệu từ cơ sở dữ liệu: " + e.getMessage(),
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE);
+                    "Lỗi khi tải dữ liệu từ cơ sở dữ liệu: " + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -238,22 +238,22 @@ public class HoaDonPanel extends javax.swing.JPanel {
         int stt = 1;
         for (hoaDonDTO hd : hoaDonList) {
             String thoiGianStr = hd.getThoiGian() != null ? dateFormat.format(hd.getThoiGian()) : "";
-            model.addRow(new Object[]{
-                stt++,
-                hd.getMaHoaDon(),
-                hd.getMaSanPham(),
-                hd.getTenSanPham(),
-                hd.getMaKhachHang(),
-                hd.getTenKhachHang(),
-                hd.getKichCo(),
-                hd.getMauSac(),
-                hd.getSoLuong(),
-                decimalFormat.format(hd.getDonGia()),
-                decimalFormat.format(hd.getThanhTien()),
-                thoiGianStr,
-                hd.getHinhThucThanhToan(),
-                hd.getTrangThai(),
-                "Xem chi tiết"
+            model.addRow(new Object[] {
+                    stt++,
+                    hd.getMaHoaDon(),
+                    hd.getMaSanPham(),
+                    hd.getTenSanPham(),
+                    hd.getMaKhachHang(),
+                    hd.getTenKhachHang(),
+                    hd.getKichCo(),
+                    hd.getMauSac(),
+                    hd.getSoLuong(),
+                    decimalFormat.format(hd.getDonGia()),
+                    decimalFormat.format(hd.getThanhTien()),
+                    thoiGianStr,
+                    hd.getHinhThucThanhToan(),
+                    hd.getTrangThai(),
+                    "Xem chi tiết"
             });
         }
     }
@@ -276,7 +276,8 @@ public class HoaDonPanel extends javax.swing.JPanel {
 
         try {
             // Nếu không có điều kiện tìm kiếm, tải lại toàn bộ dữ liệu
-            if (keyword.isEmpty() && soLuongTu.isEmpty() && soLuongDen.isEmpty() && thanhTienTu.isEmpty() && thanhTienDen.isEmpty()) {
+            if (keyword.isEmpty() && soLuongTu.isEmpty() && soLuongDen.isEmpty() && thanhTienTu.isEmpty()
+                    && thanhTienDen.isEmpty()) {
                 loadHoaDonData();
                 return;
             }
@@ -332,15 +333,15 @@ public class HoaDonPanel extends javax.swing.JPanel {
             updateTableData(searchResults);
             if (searchResults.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
-                    "Không tìm thấy hóa đơn nào khớp với tiêu chí tìm kiếm",
-                    "Thông báo",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Không tìm thấy hóa đơn nào khớp với tiêu chí tìm kiếm",
+                        "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Lỗi khi tìm kiếm hóa đơn: " + e.getMessage(),
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE);
+                    "Lỗi khi tìm kiếm hóa đơn: " + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -355,8 +356,8 @@ public class HoaDonPanel extends javax.swing.JPanel {
     }
 
     private void setupSearchComponents() {
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { 
-            "Tất cả", "Mã hóa đơn", "Tên khách hàng", "Mã sản phẩm", "Tên sản phẩm" 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+                "Tất cả", "Mã hóa đơn", "Tên khách hàng", "Mã sản phẩm", "Tên sản phẩm"
         }));
 
         jButton30.addActionListener(e -> searchHoaDon());
@@ -451,14 +452,14 @@ public class HoaDonPanel extends javax.swing.JPanel {
                 }
 
                 JOptionPane.showMessageDialog(this,
-                    "Xuất file CSV thành công!",
-                    "Thông báo",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Xuất file CSV thành công!",
+                        "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this,
-                    "Lỗi khi xuất file CSV: " + ex.getMessage(),
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Lỗi khi xuất file CSV: " + ex.getMessage(),
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -472,14 +473,14 @@ public class HoaDonPanel extends javax.swing.JPanel {
                 dialog.setTitle("Thêm Hóa Đơn Mới");
                 dialog.setModal(true);
                 dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                
+
                 themHoaDonPanel themPanel = new themHoaDonPanel();
                 dialog.add(themPanel);
-                
+
                 dialog.pack();
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
-                
+
                 loadHoaDonData();
             }
         });
@@ -495,9 +496,9 @@ public class HoaDonPanel extends javax.swing.JPanel {
                         hoaDonDTO hd = hoaDonDAO.getHoaDonByMa(maHoaDon);
                         if (hd == null) {
                             JOptionPane.showMessageDialog(null,
-                                "Hóa đơn không tồn tại!",
-                                "Lỗi",
-                                JOptionPane.ERROR_MESSAGE);
+                                    "Hóa đơn không tồn tại!",
+                                    "Lỗi",
+                                    JOptionPane.ERROR_MESSAGE);
                             return;
                         }
 
@@ -505,26 +506,26 @@ public class HoaDonPanel extends javax.swing.JPanel {
                         dialog.setTitle("Sửa Thông Tin Hóa Đơn");
                         dialog.setModal(true);
                         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                        
+
                         suaHoaDonPanel suaPanel = new suaHoaDonPanel(dialog, hd);
                         dialog.add(suaPanel);
-                        
+
                         dialog.pack();
                         dialog.setLocationRelativeTo(null);
                         dialog.setVisible(true);
-                        
+
                         loadHoaDonData();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null,
-                            "Có lỗi xảy ra khi hiển thị form sửa thông tin: " + ex.getMessage(),
-                            "Lỗi",
-                            JOptionPane.ERROR_MESSAGE);
+                                "Có lỗi xảy ra khi hiển thị form sửa thông tin: " + ex.getMessage(),
+                                "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null,
-                        "Vui lòng chọn hóa đơn cần sửa",
-                        "Thông báo",
-                        JOptionPane.WARNING_MESSAGE);
+                            "Vui lòng chọn hóa đơn cần sửa",
+                            "Thông báo",
+                            JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -543,9 +544,9 @@ public class HoaDonPanel extends javax.swing.JPanel {
                         hoaDonDTO hd = hoaDonDAO.getHoaDonByMa(maHoaDon);
                         if (hd == null) {
                             JOptionPane.showMessageDialog(null,
-                                "Hóa đơn không tồn tại!",
-                                "Lỗi",
-                                JOptionPane.ERROR_MESSAGE);
+                                    "Hóa đơn không tồn tại!",
+                                    "Lỗi",
+                                    JOptionPane.ERROR_MESSAGE);
                             return;
                         }
 
@@ -558,18 +559,18 @@ public class HoaDonPanel extends javax.swing.JPanel {
                         updateTableSTT(); // Cập nhật lại STT
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null,
-                            "Lỗi khi xóa hóa đơn: " + ex.getMessage(),
-                            "Lỗi",
-                            JOptionPane.ERROR_MESSAGE);
+                                "Lỗi khi xóa hóa đơn: " + ex.getMessage(),
+                                "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
                     } finally {
                         // Kích hoạt lại nút Xóa
                         jButton33.setEnabled(true);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null,
-                        "Vui lòng chọn hóa đơn cần xóa",
-                        "Thông báo",
-                        JOptionPane.WARNING_MESSAGE);
+                            "Vui lòng chọn hóa đơn cần xóa",
+                            "Thông báo",
+                            JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -580,46 +581,35 @@ public class HoaDonPanel extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (jTable2.getRowCount() == 0) {
                     JOptionPane.showMessageDialog(null,
-                        "Không có dữ liệu để xuất!",
-                        "Thông báo",
-                        JOptionPane.WARNING_MESSAGE);
+                            "Không có dữ liệu để xuất!",
+                            "Thông báo",
+                            JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 utils.FileUtils.showExportOptions(jTable2, "Danh sách hóa đơn");
             }
         });
 
-        // Add Import button
-        jButton36 = new javax.swing.JButton("Import");
-        ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
-        jButton36.setIcon(new ImageIcon(
-                        importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton36.setPreferredSize(new java.awt.Dimension(100, 34));
-        jButton36.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        utils.FileUtils.importFromFile(jTable2);
-                }
+        // Nút Import
+        jButton36.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                utils.FileUtils.importFromFile(jTable2);
+            }
         });
-        jPanel17.add(jButton36, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 24, 100, 34));
 
-        // Add Print button
-        jButton37 = new javax.swing.JButton("In");
-        ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
-        jButton37.setIcon(new ImageIcon(
-                        printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton37.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton37.setPreferredSize(new java.awt.Dimension(100, 34));
-        jButton37.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        try {
-                                jTable2.print();
-                        } catch (Exception e) {
-                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                        }
+        // Nút In
+        jButton37.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    jTable2.print();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                 }
+            }
         });
-        jPanel17.add(jButton37, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 24, 100, 34));
     }
 
     public javax.swing.JPanel getHoaDonPanel() {
@@ -676,95 +666,120 @@ public class HoaDonPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(383, 383, 383)
-                .addComponent(jLabel5)
-                .addContainerGap(402, Short.MAX_VALUE))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addGap(383, 383, 383)
+                                .addComponent(jLabel5)
+                                .addContainerGap(402, Short.MAX_VALUE)));
         pnlHeaderLayout.setVerticalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addContainerGap(20, Short.MAX_VALUE)
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)));
 
         containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
         pnlContent.setBackground(new java.awt.Color(107, 163, 190));
 
         jPanel33.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm"));
+        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm"));
         jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        jLabel1.setText("Tìm kiếm:");
-        jPanel33.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
+        jLabel1.setText("Tìm kiếm");
+        jPanel33.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 30));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel33.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 25, 140, 30));
-        jPanel33.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 25, 140, 30));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+                "Tất cả", "Mã hóa đơn", "Tên khách hàng", "Mã sản phẩm", "Tên sản phẩm"
+        }));
+        jPanel33.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, 180, 30));
+        jPanel33.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 40, 180, 30));
 
         jLabelThanhTien.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelThanhTien.setText("Thành tiền:");
-        jPanel33.add(jLabelThanhTien, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 65, -1, -1));
+        jPanel33.add(jLabelThanhTien, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 20, 80, 30));
 
-        jLabelThanhTienTu.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        jLabelThanhTienTu.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelThanhTienTu.setText("Từ:");
-        jPanel33.add(jLabelThanhTienTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 65, -1, 30));
-        jPanel33.add(jTextFieldThanhTienTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 65, 60, 30));
+        jPanel33.add(jLabelThanhTienTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, -1, 30));
+        jPanel33.add(jTextFieldThanhTienTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 20, 80, 30));
 
-        jLabelThanhTienDen.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        jLabelThanhTienDen.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelThanhTienDen.setText("Đến:");
-        jPanel33.add(jLabelThanhTienDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 65, -1, 30));
-        jPanel33.add(jTextFieldThanhTienDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 65, 60, 30));
+        jPanel33.add(jLabelThanhTienDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, -1, 30));
+        jPanel33.add(jTextFieldThanhTienDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 20, 80, 30));
 
         jLabelSoLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelSoLuong.setText("Số lượng:");
-        jPanel33.add(jLabelSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 65, -1, -1));
+        jPanel33.add(jLabelSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 60, 80, 30));
 
-        jLabelSoLuongTu.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        jLabelSoLuongTu.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelSoLuongTu.setText("Từ:");
-        jPanel33.add(jLabelSoLuongTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 65, -1, 30));
-        jPanel33.add(jTextFieldSoLuongTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 65, 60, 30));
+        jPanel33.add(jLabelSoLuongTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 60, -1, 30));
+        jPanel33.add(jTextFieldSoLuongTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 60, 80, 30));
 
-        jLabelSoLuongDen.setFont(new java.awt.Font("Segoe UI", 0, 12));
+        jLabelSoLuongDen.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelSoLuongDen.setText("Đến:");
-        jPanel33.add(jLabelSoLuongDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 65, -1, 30));
-        jPanel33.add(jTextFieldSoLuongDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 65, 60, 30));
+        jPanel33.add(jLabelSoLuongDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 60, -1, 30));
+        jPanel33.add(jTextFieldSoLuongDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 60, 80, 30));
 
         jButton30.setText("Tìm kiếm");
-        jPanel33.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 25, 110, 30));
-
-        jButtonReset.setText("Reset");
-        jPanel33.add(jButtonReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 65, 110, 30));
+        ImageIcon searchIcon = new ImageIcon("src/icon_img/search.png");
+        jButton30.setIcon(new ImageIcon(searchIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton30.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton30.setPreferredSize(new java.awt.Dimension(120, 30));
+        jPanel33.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(832, 40, 120, 30));
 
         jPanel17.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
+        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
         jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton31.setText("Thêm ");
-        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, -1, 49));
+        jButton31.setText("Thêm");
+        ImageIcon addIcon = new ImageIcon("src/icon_img/add.png");
+        jButton31.setIcon(new ImageIcon(addIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton31.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton31.setPreferredSize(new java.awt.Dimension(120, 34));
+        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 20, 120, 34));
 
         jButton32.setText("Sửa");
-        jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 20, -1, 49));
+        ImageIcon editIcon = new ImageIcon("src/icon_img/edit.png");
+        jButton32.setIcon(new ImageIcon(editIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton32.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton32.setPreferredSize(new java.awt.Dimension(120, 34));
+        jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 20, 120, 34));
 
         jButton33.setText("Xóa");
-        jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 20, -1, 49));
+        ImageIcon deleteIcon = new ImageIcon("src/icon_img/delete.png");
+        jButton33.setIcon(new ImageIcon(deleteIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton33.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton33.setPreferredSize(new java.awt.Dimension(120, 34));
+        jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 120, 34));
+
+        jButtonReset.setText("Làm mới");
+        ImageIcon resetIcon = new ImageIcon("src/icon_img/refresh.png");
+        jButtonReset
+                .setIcon(new ImageIcon(resetIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButtonReset.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButtonReset.setPreferredSize(new java.awt.Dimension(120, 34));
+        jPanel17.add(jButtonReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 20, 120, 34));
 
         jPanel18.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
+        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
         jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
-            new String [] {
-                "STT", "Mã HD", "Mã SP", "Tên SP", "Mã KH", "Tên KH", "Kích cỡ", "Màu sắc", "Số lượng", "Đơn giá", "Thành tiền", "Thời gian", "Hình thức TT", "Trạng Thái", "Chi tiết"
-            }
-        ) {
+                new Object[][] {},
+                new String[] {
+                        "STT", "Mã HD", "Mã SP", "Tên SP", "Mã KH", "Tên KH", "Kích cỡ", "Màu sắc", "Số lượng",
+                        "Đơn giá", "Thành tiền", "Thời gian", "Hình thức TT", "Trạng Thái", "Chi tiết"
+                }) {
             boolean[] canEdit = new boolean[] {
-                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+                    false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                    false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -777,37 +792,61 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 920, 290));
 
         jButton34.setText("Xuất file xuất hàng");
+        jButton34.setBounds(325, 580, 340, 40);
+        pnlContent.add(jButton34);
+
+        // Di chuyển nút Import và In xuống phần xuất file
+        jButton36.setText("Import dữ liệu");
+        ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
+        jButton36.setIcon(new ImageIcon(importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton36.setBounds(680, 580, 120, 34);
+        pnlContent.add(jButton36);
+
+        jButton37.setText("In hóa đơn");
+        ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
+        jButton37.setIcon(new ImageIcon(printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButton37.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton37.setBounds(810, 580, 120, 34);
+        pnlContent.add(jButton37);
 
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
         pnlContentLayout.setHorizontalGroup(
-            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContentLayout.createSequentialGroup()
-                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 961, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pnlContentLayout.createSequentialGroup()
-                            .addGap(325, 325, 325)
-                            .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(pnlContentLayout.createSequentialGroup()
-                            .addGap(20, 20, 20)
-                            .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 961, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 961, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
-        );
+                                .addGroup(pnlContentLayout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 961,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(pnlContentLayout
+                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(pnlContentLayout.createSequentialGroup()
+                                                        .addGap(325, 325, 325)
+                                                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                340, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(pnlContentLayout.createSequentialGroup()
+                                                        .addGap(20, 20, 20)
+                                                        .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                961, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 961,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(19, Short.MAX_VALUE)));
         pnlContentLayout.setVerticalGroup(
-            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlContentLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10))
-        );
+                pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContentLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 90,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)));
 
         containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
 

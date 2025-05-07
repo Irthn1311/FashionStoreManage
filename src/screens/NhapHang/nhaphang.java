@@ -10,6 +10,14 @@ import DAO.SanPhamDAO;
 import DAO.PhieuNhapDAO;
 import DTO.PhieuNhapDTO;
 import java.util.Date;
+import java.util.List;
+import DAO.NhaCungCapDAO;
+import DAO.NhapHangDAO;
+import DTO.nhapHangDTO;
+import DTO.hoaDonDTO;
+import BUS.HoaDonBUS;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  *
