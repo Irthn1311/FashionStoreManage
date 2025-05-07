@@ -31,6 +31,39 @@ public class xuathang extends javax.swing.JPanel {
                 calculateThanhTien();
             }
         };
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần xóa!");
+                    return;
+                }
+                // Lấy mã phiếu xuất (MaPX) từ dòng được chọn
+                String maPX = jTable1.getValueAt(selectedRow, 0).toString();
+                int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa phiếu xuất này?",
+                        "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    try {
+                        java.sql.Connection conn = DTB.ConnectDB.getConnection();
+                        String sql = "DELETE FROM XuatHang WHERE MaPX = ?";
+                        java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+                        ps.setString(1, maPX);
+                        int result = ps.executeUpdate();
+                        ps.close();
+                        conn.close();
+                        if (result > 0) {
+                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thành công!");
+                            loadXuatHangTable();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thất bại!");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Lỗi khi xóa phiếu xuất: " + e.getMessage());
+                    }
+                }
+            }
+        });
         jTextField10.getDocument().addDocumentListener(docListener);
         jTextField7.getDocument().addDocumentListener(docListener);
         jComboBox7.addActionListener(new java.awt.event.ActionListener() {
@@ -182,6 +215,22 @@ public class xuathang extends javax.swing.JPanel {
         jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(431, 36, 310, 120));
 
         jButton15.setText("Hủy");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                // Reset các trường nhập liệu ở phần Xuất hàng
+                jComboBox6.setSelectedIndex(0);
+                jComboBox7.setSelectedIndex(0);
+                jTextField1.setText("");
+                jTextField3.setText("");
+                jTextField4.setText("");
+                jTextField10.setText("");
+                jTextField7.setText("");
+                jTextField9.setText(""); // Chỉ reset ô tính tiền
+                jTextField14.setText("");
+                jTextField15.setText("");
+                // Không reset jTextField8 (ô mô tả)
+            }
+        });
         jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(791, 72, -1, 60));
 
         jButton18.setText("Thêm");
@@ -474,6 +523,39 @@ public class xuathang extends javax.swing.JPanel {
         jPanel7.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 36, -1, 270));
 
         jButton1.setText("Xóa");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần xóa!");
+                    return;
+                }
+                // Lấy mã phiếu xuất (MaPX) từ dòng được chọn
+                String maPX = jTable1.getValueAt(selectedRow, 0).toString();
+                int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa phiếu xuất này?",
+                        "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    try {
+                        java.sql.Connection conn = DTB.ConnectDB.getConnection();
+                        String sql = "DELETE FROM XuatHang WHERE MaPX = ?";
+                        java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+                        ps.setString(1, maPX);
+                        int result = ps.executeUpdate();
+                        ps.close();
+                        conn.close();
+                        if (result > 0) {
+                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thành công!");
+                            loadXuatHangTable();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thất bại!");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Lỗi khi xóa phiếu xuất: " + e.getMessage());
+                    }
+                }
+            }
+        });
 
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);

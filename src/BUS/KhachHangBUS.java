@@ -6,6 +6,7 @@ import java.util.List;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.regex.Pattern;
+import java.io.File;
 
 public class KhachHangBUS {
     private KhachHangDAO khachHangDAO;
@@ -112,5 +113,25 @@ public class KhachHangBUS {
 
     public khachHangDTO getKhachHangByMa(String maKhachHang) {
         return khachHangDAO.getKhachHangByMa(maKhachHang);
+    }
+
+    public boolean importKhachHang(String filePath) {
+        if (filePath == null || filePath.trim().isEmpty()) {
+            System.err.println("Đường dẫn file không hợp lệ");
+            return false;
+        }
+
+        File file = new File(filePath);
+        if (!file.exists()) {
+            System.err.println("File không tồn tại");
+            return false;
+        }
+
+        if (!filePath.toLowerCase().endsWith(".csv")) {
+            System.err.println("File phải có định dạng CSV");
+            return false;
+        }
+
+        return khachHangDAO.importKhachHang(filePath);
     }
 }
