@@ -132,7 +132,7 @@ CREATE TABLE SanPham (
     TenSanPham NVARCHAR(200),
 	MaNhaCungCap VARCHAR(100),
     MaDanhMuc VARCHAR(100),
-	MauSac VARCHAR(100),
+	MauSac NVARCHAR(100),
 	Size NVARCHAR(50),
     SoLuongTonKho INT,
 	GiaBan DECIMAL(15,2),
@@ -330,20 +330,6 @@ VALUES
 ('SP001', N'Áo sơ mi nam trắng', 60, 15000000),
 ('SP001', N'Áo sơ mi nam trắng', 40, 10000000),
 ('SP001', N'Áo sơ mi nam trắng', 30, 7500000);
-
-
-INSERT INTO KhuyenMai (MaKhuyenMai, TenChuongTrinh, GiamGia, NgayBatDau, NgayKetThuc, TrangThai, GiaMoi, Khac)
-VALUES
-('KM001', N'Ưu đãi mùa hè', 10.00, '2024-06-01', '2024-06-30', N'Hoạt động', 225000, N'Giảm giá mùa hè cho áo sơ mi nam trắng'),
-('KM002', N'Black Friday', 20.00, '2024-11-25', '2024-11-29', N'Chưa bắt đầu', 200000, N'Ưu đãi đặc biệt Black Friday'),
-('KM003', N'Giáng sinh vui vẻ', 15.00, '2024-12-20', '2024-12-26', N'Chưa bắt đầu', 212500, N'Mừng Giáng Sinh, giảm giá áo sơ mi nam'),
-('KM004', N'Tết nguyên đán', 25.00, '2025-01-20', '2025-01-31', N'Chưa bắt đầu', 187500, N'Ưu đãi chào năm mới'),
-('KM005', N'Ngày của cha', 12.50, '2024-06-10', '2024-06-20', N'Hoạt động', 218750, N'Khuyến mãi dành cho ngày của cha'),
-('KM006', N'Khuyến mãi chào hè', 18.00, '2024-05-01', '2024-05-15', N'Kết thúc', 205000, N'Chương trình ưu đãi đặc biệt tháng 5'),
-('KM007', N'Quốc Khánh 2/9', 15.00, '2024-08-28', '2024-09-05', N'Chưa bắt đầu', 212500, N'Ưu đãi ngày Quốc Khánh'),
-('KM008', N'Sinh nhật công ty', 22.00, '2024-07-15', '2024-07-20', N'Chưa bắt đầu', 195000, N'Giảm giá nhân dịp sinh nhật công ty'),
-('KM009', N'Tri ân khách hàng', 17.00, '2024-09-10', '2024-09-20', N'Chưa bắt đầu', 207500, N'Khuyến mãi tri ân khách hàng thân thiết'),
-('KM010', N'Lễ hội mua sắm cuối năm', 30.00, '2024-12-01', '2024-12-10', N'Chưa bắt đầu', 175000, N'Giảm giá lớn dịp cuối năm');
 
 CREATE TABLE PhieuNhap (
     MaPhieuNhap INT PRIMARY KEY IDENTITY(1,1),

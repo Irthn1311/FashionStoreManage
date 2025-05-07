@@ -9,6 +9,7 @@ import java.util.List;
 import DTO.nhapHangDTO;
 import DAO.NhapHangDAO;
 import screens.PhieuNhap.SuaPhieuNhapDialog;
+import screens.PhieuNhap.ThemPhieuNhapDialog;
 
 /**
  *
@@ -93,6 +94,25 @@ public class phieunhap extends javax.swing.JPanel {
 
         jButton31.setText("Thêm ");
         jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 24, -1, 49));
+
+        jButton31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThemPhieuNhapDialog dialog = new ThemPhieuNhapDialog(null);
+                dialog.setVisible(true);
+
+                if (dialog.isSaved()) {
+                    nhapHangDTO newPhieuNhap = dialog.getNewPhieuNhap();
+                    NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                    boolean result = nhapHangDAO.themNhapHang(newPhieuNhap);
+                    if (result) {
+                        javax.swing.JOptionPane.showMessageDialog(null, "Thêm phiếu nhập thành công!");
+                        loadPhieuNhapTable();
+                    } else {
+                        javax.swing.JOptionPane.showMessageDialog(null, "Thêm phiếu nhập thất bại!");
+                    }
+                }
+            }
+        });
 
         jButton32.setText("Sửa");
         jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 24, -1, 49));

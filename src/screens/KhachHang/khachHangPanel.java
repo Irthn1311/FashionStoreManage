@@ -64,7 +64,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         jPanel17 = new javax.swing.JPanel();
         jButton31 = new javax.swing.JButton();
         jButton32 = new javax.swing.JButton();
-        jButton33 = new javax.swing.JButton();
+        btnXoaKhachHang = new javax.swing.JButton();
         jPanel18 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         khachHangTable = new javax.swing.JTable();
@@ -111,8 +111,8 @@ public class khachHangPanel extends javax.swing.JPanel {
         jButton32.setText("Sửa");
         jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 24, -1, 34));
 
-        jButton33.setText("Xóa");
-        jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(646, 24, -1, 34));
+        btnXoaKhachHang.setText("Xóa");
+        jPanel17.add(btnXoaKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(646, 24, -1, 34));
 
         jPanel18.setBackground(new java.awt.Color(107, 163, 190));
         jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
@@ -182,13 +182,13 @@ public class khachHangPanel extends javax.swing.JPanel {
         });
 
         // Add Print button
-        jButton37 = new javax.swing.JButton("In");
+        btnPrinter = new javax.swing.JButton("In");
         ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
-        jButton37.setIcon(new ImageIcon(
+        btnPrinter.setIcon(new ImageIcon(
                         printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton37.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton37.setPreferredSize(new java.awt.Dimension(100, 40));
-        jButton37.addActionListener(new java.awt.event.ActionListener() {
+        btnPrinter.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnPrinter.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnPrinter.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                         try {
                                 khachHangTable.print();
@@ -214,7 +214,7 @@ public class khachHangPanel extends javax.swing.JPanel {
                                                         .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGap(18, 18, 18)
-                                                        .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGap(313, 313, 313))
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout
@@ -254,7 +254,7 @@ public class khachHangPanel extends javax.swing.JPanel {
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(16, 16, 16)));
 
@@ -555,7 +555,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         });
 
         // Nút Xóa
-        jButton33.addActionListener(new ActionListener() {
+        btnXoaKhachHang.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = khachHangTable.getSelectedRow();
@@ -606,7 +606,7 @@ public class khachHangPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton30;
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
-    private javax.swing.JButton jButton33;
+    private javax.swing.JButton btnXoaKhachHang;
     private javax.swing.JButton btnExport;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -620,6 +620,6 @@ public class khachHangPanel extends javax.swing.JPanel {
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JButton jButton36;
-    private javax.swing.JButton jButton37;
+    private javax.swing.JButton btnPrinter;
     // End of variables declaration
 }

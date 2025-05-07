@@ -8,6 +8,9 @@ import java.sql.Date;
 import java.util.List;
 import BUS.KhachHangBUS;
 import DTO.khachHangDTO;
+import java.util.Calendar;
+import java.text.ParseException;
+import javax.swing.SpinnerNumberModel;
 
 public class themKhachHangPanel extends JPanel {
     private JTextField txtHoTen;
@@ -20,6 +23,7 @@ public class themKhachHangPanel extends JPanel {
     private JButton btnThem;
     private JButton btnHuy;
     private KhachHangBUS khachHangBUS;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public themKhachHangPanel() {
         khachHangBUS = new KhachHangBUS();
@@ -91,9 +95,15 @@ public class themKhachHangPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy++;
         mainPanel.add(new JLabel("Ngày sinh (dd/MM/yyyy):"), gbc);
+        JPanel ngaySinhPanel = new JPanel(new BorderLayout());
         txtNgaySinh = new JTextField(20);
+        JButton calendarButton = new JButton("📅");
+        calendarButton.setPreferredSize(new Dimension(30, 20));
+        calendarButton.addActionListener(e -> showDatePicker(txtNgaySinh));
+        ngaySinhPanel.add(txtNgaySinh, BorderLayout.CENTER);
+        ngaySinhPanel.add(calendarButton, BorderLayout.EAST);
         gbc.gridx = 1;
-        mainPanel.add(txtNgaySinh, gbc);
+        mainPanel.add(ngaySinhPanel, gbc);
 
         // Giới tính
         gbc.gridx = 0;
@@ -150,6 +160,65 @@ public class themKhachHangPanel extends JPanel {
 
         // Thêm panel chính vào center
         add(mainPanel, BorderLayout.CENTER);
+    }
+
+    private void showDatePicker(JTextField dateField) {
+        JDialog dateDialog = new JDialog((Window) SwingUtilities.getWindowAncestor(this), "Chọn ngày", Dialog.ModalityType.APPLICATION_MODAL);
+        dateDialog.setLayout(new BorderLayout());
+        dateDialog.setSize(300, 150);
+        dateDialog.setLocationRelativeTo(this);
+
+        Calendar cal = Calendar.getInstance();
+        try {
+            java.util.Date currentDate = dateFormat.parse(dateField.getText());
+            cal.setTime(currentDate);
+        } catch (ParseException e) {
+            // Nếu không parse được, sử dụng ngày hiện tại
+        }
+
+        SpinnerNumberModel dayModel = new SpinnerNumberModel(cal.get(Calendar.DAY_OF_MONTH), 1, 31, 1);
+        SpinnerNumberModel monthModel = new SpinnerNumberModel(cal.get(Calendar.MONTH) + 1, 1, 12, 1);
+        SpinnerNumberModel yearModel = new SpinnerNumberModel(cal.get(Calendar.YEAR), 1900, 2100, 1);
+
+        JSpinner daySpinner = new JSpinner(dayModel);
+        JSpinner monthSpinner = new JSpinner(monthModel);
+        JSpinner yearSpinner = new JSpinner(yearModel);
+
+        JPanel datePanel = new JPanel(new FlowLayout());
+        datePanel.add(new JLabel("Ngày:"));
+        datePanel.add(daySpinner);
+        datePanel.add(new JLabel("Tháng:"));
+        datePanel.add(monthSpinner);
+        datePanel.add(new JLabel("Năm:"));
+        datePanel.add(yearSpinner);
+
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(e -> {
+            int day = (int) daySpinner.getValue();
+            int month = (int) monthSpinner.getValue();
+            int year = (int) yearSpinner.getValue();
+
+            try {
+                cal.set(year, month - 1, day);
+                java.util.Date utilDate = cal.getTime();
+                Date sqlDate = new Date(utilDate.getTime());
+                dateField.setText(dateFormat.format(sqlDate));
+                dateDialog.dispose();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Ngày không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        JButton cancelButton = new JButton("Hủy");
+        cancelButton.addActionListener(e -> dateDialog.dispose());
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+
+        dateDialog.add(datePanel, BorderLayout.CENTER);
+        dateDialog.add(buttonPanel, BorderLayout.SOUTH);
+        dateDialog.setVisible(true);
     }
 
     private void themKhachHang() {

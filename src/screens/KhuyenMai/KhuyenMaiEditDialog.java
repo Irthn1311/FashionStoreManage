@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -21,6 +22,7 @@ public class KhuyenMaiEditDialog extends JDialog {
     private JTable khuyenMaiTable;
     private boolean isEditMode;
     private khuyenMaiPanel parentPanel;
+    private Set<String> existingProductCodes;
 
     private JTextField maKmField;
     private JTextField maSanPhamField;
@@ -317,9 +319,26 @@ public class KhuyenMaiEditDialog extends JDialog {
         cancelButton.addActionListener(e -> dispose());
     }
 
+    public void setExistingProductCodes(Set<String> codes) {
+        this.existingProductCodes = codes;
+    }
+
     private void updateTenSanPham() {
         String maSanPham = maSanPhamField.getText().trim();
         if (!maSanPham.isEmpty()) {
+            // Kiểm tra mã sản phẩm trùng lặp
+            if (existingProductCodes != null && existingProductCodes.contains(maSanPham)) {
+                JOptionPane.showMessageDialog(this,
+                    "Mã sản phẩm này đã tồn tại trong một khuyến mãi khác!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+                maSanPhamField.setText("");
+                tenSanPhamField.setText("");
+                giaCuField.setText("");
+                giaMoiField.setText("");
+                return;
+            }
+
             try {
                 sanPhamDTO sp = khuyenMaiService.getProductByMa(maSanPham);
                 if (sp != null) {
@@ -495,10 +514,20 @@ public class KhuyenMaiEditDialog extends JDialog {
             return;
         }
 
+        // Kiểm tra mã sản phẩm trùng lặp
+        String maSanPham = maSanPhamField.getText().trim();
+        if (existingProductCodes != null && existingProductCodes.contains(maSanPham)) {
+            JOptionPane.showMessageDialog(this,
+                "Mã sản phẩm này đã tồn tại trong một khuyến mãi khác!",
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         try {
             khuyenMaiDTO newKm = new khuyenMaiDTO();
             newKm.setMaKhuyenMai(maKmField.getText().trim());
-            newKm.setMaSanPham(maSanPhamField.getText().trim());
+            newKm.setMaSanPham(maSanPham);
             newKm.setTenSanPham(tenSanPhamField.getText().trim());
             newKm.setTenChuongTrinh(tenChuongTrinhField.getText().trim());
             newKm.setGiamGia(Double.parseDouble(giamGiaField.getText().trim()));

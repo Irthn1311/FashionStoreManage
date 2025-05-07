@@ -159,6 +159,9 @@ public class LoaiSanPhamDAO {
             case "Mã nhà cung cấp":
                 sql.append("AND MaNhaCungCap LIKE ? ");
                 break;
+            case "Loại sản phẩm":
+                sql.append("AND MaDanhMuc LIKE ? ");
+                break;
             case "Màu sắc":
                 sql.append("AND MauSac LIKE ? ");
                 break;
@@ -167,7 +170,7 @@ public class LoaiSanPhamDAO {
                 break;
             default:
                 sql.append(
-                        "AND (MaSanPham LIKE ? OR TenSanPham LIKE ? OR MaNhaCungCap LIKE ? OR MauSac LIKE ? OR Size LIKE ?) ");
+                        "AND (MaSanPham LIKE ? OR TenSanPham LIKE ? OR MaNhaCungCap LIKE ? OR MaDanhMuc LIKE ? OR MauSac LIKE ? OR Size LIKE ?) ");
                 break;
         }
 
@@ -181,7 +184,7 @@ public class LoaiSanPhamDAO {
 
             try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
                 if ("Tất cả".equals(searchType)) {
-                    for (int i = 1; i <= 5; i++) {
+                    for (int i = 1; i <= 6; i++) {
                         ps.setString(i, likePattern);
                     }
                 } else {
@@ -301,11 +304,6 @@ public class LoaiSanPhamDAO {
     }
 
     public boolean xoaLoaiSanPham(String maSanPham) {
-        String sqlDeleteKhuyenMai = "DELETE FROM KhuyenMai WHERE MaSanPham = ?";
-        String sqlDeleteHoaDon = "DELETE FROM HoaDon WHERE MaSanPham = ?";
-        String sqlDeleteNhapHang = "DELETE FROM NhapHang WHERE MaSanPham = ?";
-        String sqlDeleteXuatHang = "DELETE FROM XuatHang WHERE MaSanPham = ?";
-        String sqlDeleteThongKe = "DELETE FROM ThongKe WHERE MaSanPham = ?";
         String sqlDeleteSanPham = "DELETE FROM SanPham WHERE MaSanPham = ?";
 
         Connection conn = null;
@@ -318,60 +316,14 @@ public class LoaiSanPhamDAO {
 
             conn.setAutoCommit(false);
 
-            try (PreparedStatement psDeleteKhuyenMai = conn.prepareStatement(sqlDeleteKhuyenMai)) {
-                psDeleteKhuyenMai.setString(1, maSanPham);
-                int rowsAffected = psDeleteKhuyenMai.executeUpdate();
-                System.out.println("Đã xóa " + rowsAffected + " bản ghi từ KhuyenMai.");
-            } catch (SQLException e) {
-                System.err.println("Lỗi khi xóa bản ghi từ KhuyenMai: " + e.getMessage());
-                throw e;
-            }
-
-            try (PreparedStatement psDeleteHoaDon = conn.prepareStatement(sqlDeleteHoaDon)) {
-                psDeleteHoaDon.setString(1, maSanPham);
-                int rowsAffected = psDeleteHoaDon.executeUpdate();
-                System.out.println("Đã xóa " + rowsAffected + " bản ghi từ HoaDon.");
-            } catch (SQLException e) {
-                System.err.println("Lỗi khi xóa bản ghi từ HoaDon: " + e.getMessage());
-                throw e;
-            }
-
-            try (PreparedStatement psDeleteNhapHang = conn.prepareStatement(sqlDeleteNhapHang)) {
-                psDeleteNhapHang.setString(1, maSanPham);
-                int rowsAffected = psDeleteNhapHang.executeUpdate();
-                System.out.println("Đã xóa " + rowsAffected + " bản ghi từ NhapHang.");
-            } catch (SQLException e) {
-                System.err.println("Lỗi khi xóa bản ghi từ NhapHang: " + e.getMessage());
-                throw e;
-            }
-
-            try (PreparedStatement psDeleteXuatHang = conn.prepareStatement(sqlDeleteXuatHang)) {
-                psDeleteXuatHang.setString(1, maSanPham);
-                int rowsAffected = psDeleteXuatHang.executeUpdate();
-                System.out.println("Đã xóa " + rowsAffected + " bản ghi từ XuatHang.");
-            } catch (SQLException e) {
-                System.err.println("Lỗi khi xóa bản ghi từ XuatHang: " + e.getMessage());
-                throw e;
-            }
-
-            try (PreparedStatement psDeleteThongKe = conn.prepareStatement(sqlDeleteThongKe)) {
-                psDeleteThongKe.setString(1, maSanPham);
-                int rowsAffected = psDeleteThongKe.executeUpdate();
-                System.out.println("Đã xóa " + rowsAffected + " bản ghi từ ThongKe.");
-            } catch (SQLException e) {
-                System.err.println("Lỗi khi xóa bản ghi từ ThongKe: " + e.getMessage());
-                throw e;
-            }
-
             try (PreparedStatement psDeleteSanPham = conn.prepareStatement(sqlDeleteSanPham)) {
                 psDeleteSanPham.setString(1, maSanPham);
                 int rowsAffected = psDeleteSanPham.executeUpdate();
-                System.out.println("Đã xóa " + rowsAffected + " bản ghi từ SanPham.");
+                
                 if (rowsAffected > 0) {
                     conn.commit();
                     return true;
                 } else {
-                    System.err.println("Không tìm thấy sản phẩm với mã: " + maSanPham);
                     conn.rollback();
                     return false;
                 }
@@ -382,10 +334,9 @@ public class LoaiSanPhamDAO {
             try {
                 if (conn != null) {
                     conn.rollback();
-                    System.out.println("Transaction đã được rollback.");
                 }
             } catch (SQLException rollbackEx) {
-                System.err.println("Lỗi khi rollback transaction " + rollbackEx.getMessage());
+                System.err.println("Lỗi khi rollback transaction: " + rollbackEx.getMessage());
                 rollbackEx.printStackTrace();
             }
             return false;
