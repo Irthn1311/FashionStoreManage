@@ -88,4 +88,22 @@ public class NhaCungCapBUS {
         }
         return nhaCungCapDAO.getNhaCungCapByMa(maNCC);
     }
+
+    public boolean xoaNhaCungCapVaSanPham(String maNCC) {
+        try {
+            return nhaCungCapDAO.xoaNhaCungCapVaSanPham(maNCC);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean capNhatSanPhamSangNhaCungCapKhac(String maNCCCu, String maNCCMoi) {
+        try {
+            return nhaCungCapDAO.capNhatSanPhamSangNhaCungCapKhac(maNCCCu, maNCCMoi);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

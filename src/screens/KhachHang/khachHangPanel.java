@@ -24,6 +24,8 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import utils.FileUtils;
+import javax.swing.JFileChooser;
+import java.io.File;
 
 public class khachHangPanel extends javax.swing.JPanel {
     private KhachHangBUS khachHangBUS;
@@ -59,26 +61,26 @@ public class khachHangPanel extends javax.swing.JPanel {
         containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pnlHeader = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lblTittle = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
-        jPanel17 = new javax.swing.JPanel();
-        jButton31 = new javax.swing.JButton();
-        jButton32 = new javax.swing.JButton();
-        btnXoaKhachHang = new javax.swing.JButton();
-        jPanel18 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        pnlBoxChinhSua = new javax.swing.JPanel();
+        btnThem = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
+        btnXoa = new javax.swing.JButton();
+        pnlBoxTable = new javax.swing.JPanel();
+        scTable = new javax.swing.JScrollPane();
         khachHangTable = new javax.swing.JTable();
         btnExport = new javax.swing.JButton();
-        jPanel33 = new javax.swing.JPanel();
-        jButton30 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
+        pnlBoxTimKiem = new javax.swing.JPanel();
+        btnTimKiem = new javax.swing.JButton();
+        lblTimKiem = new javax.swing.JLabel();
+        cboTimKiem = new javax.swing.JComboBox<>();
+        textTimKiem = new javax.swing.JTextField();
 
         pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setText("Quản lý khách hàng");
+        lblTittle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblTittle.setText("Quản lý khách hàng");
 
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
@@ -86,13 +88,13 @@ public class khachHangPanel extends javax.swing.JPanel {
                 pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHeaderLayout.createSequentialGroup()
                                 .addContainerGap(404, Short.MAX_VALUE)
-                                .addComponent(jLabel1)
+                                .addComponent(lblTittle)
                                 .addGap(386, 386, 386)));
         pnlHeaderLayout.setVerticalGroup(
                 pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pnlHeaderLayout.createSequentialGroup()
                                 .addGap(14, 14, 14)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
+                                .addComponent(lblTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(14, Short.MAX_VALUE)));
 
@@ -100,24 +102,24 @@ public class khachHangPanel extends javax.swing.JPanel {
 
         pnlContent.setBackground(new java.awt.Color(107, 163, 190));
 
-        jPanel17.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(
+        pnlBoxChinhSua.setBackground(new java.awt.Color(107, 163, 190));
+        pnlBoxChinhSua.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
-        jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlBoxChinhSua.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton31.setText("Thêm ");
-        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 24, -1, 34));
+        btnThem.setText("Thêm ");
+        pnlBoxChinhSua.add(btnThem, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 24, -1, 34));
 
-        jButton32.setText("Sửa");
-        jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 24, -1, 34));
+        btnSua.setText("Sửa");
+        pnlBoxChinhSua.add(btnSua, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 24, -1, 34));
 
-        btnXoaKhachHang.setText("Xóa");
-        jPanel17.add(btnXoaKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(646, 24, -1, 34));
+        btnXoa.setText("Xóa");
+        pnlBoxChinhSua.add(btnXoa, new org.netbeans.lib.awtextra.AbsoluteConstraints(646, 24, -1, 34));
 
-        jPanel18.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
+        pnlBoxTable.setBackground(new java.awt.Color(107, 163, 190));
+        pnlBoxTable.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
-        jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlBoxTable.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         khachHangTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][] {
@@ -134,9 +136,9 @@ public class khachHangPanel extends javax.swing.JPanel {
             }
         });
         khachHangTable.setShowGrid(true);
-        jScrollPane2.setViewportView(khachHangTable);
+        scTable.setViewportView(khachHangTable);
 
-        jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 910, 270));
+        pnlBoxTable.add(scTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 910, 270));
 
         btnExport.setText("Xuất file");
         ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
@@ -147,38 +149,39 @@ public class khachHangPanel extends javax.swing.JPanel {
         btnExport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                utils.FileUtils.showExportOptions(khachHangTable, "Danh sách khách hàng");
+                utils.FileUtils.exportToCSV(khachHangTable, "Danh sách khách hàng");
             }
         });
 
-        jPanel33.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(
+        pnlBoxTimKiem.setBackground(new java.awt.Color(107, 163, 190));
+        pnlBoxTimKiem.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
-        jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlBoxTimKiem.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton30.setText("Tìm kiếm");
-        jPanel33.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, 90, 36));
+        btnTimKiem.setText("Tìm kiếm");
+        pnlBoxTimKiem.add(btnTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, 90, 36));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel2.setText("Tìm kiếm");
-        jPanel33.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
+        lblTimKiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblTimKiem.setText("Tìm kiếm");
+        pnlBoxTimKiem.add(lblTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
-        jComboBox1.setModel(
+        cboTimKiem.setModel(
                 new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel33.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 300, 30));
-        jPanel33.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 320, 30));
+        pnlBoxTimKiem.add(cboTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 300, 30));
+        pnlBoxTimKiem.add(textTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 320, 30));
 
         // Add Import button
-        jButton36 = new javax.swing.JButton("Import");
+        btnImport = new javax.swing.JButton("Import");
         ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
-        jButton36.setIcon(new ImageIcon(
+        btnImport.setIcon(new ImageIcon(
                         importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
-        jButton36.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        utils.FileUtils.importFromFile(khachHangTable);
-                }
+        btnImport.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnImport.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnImport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                utils.FileUtils.importFromCSV(khachHangTable);
+                loadKhachHangData(); // Refresh the table after import
+            }
         });
 
         // Add Print button
@@ -208,7 +211,7 @@ public class khachHangPanel extends javax.swing.JPanel {
                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
                                                 pnlContentLayout.createSequentialGroup()
-                                                        .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGap(18, 18, 18)
                                                         .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE,
@@ -221,17 +224,17 @@ public class khachHangPanel extends javax.swing.JPanel {
                                                 .createSequentialGroup()
                                                 .addGroup(pnlContentLayout
                                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        .addComponent(pnlBoxTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                 961, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(pnlContentLayout
                                                                 .createParallelGroup(
                                                                         javax.swing.GroupLayout.Alignment.TRAILING,
                                                                         false)
-                                                                .addComponent(jPanel17,
+                                                                .addComponent(pnlBoxChinhSua,
                                                                         javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                         javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                         Short.MAX_VALUE)
-                                                                .addComponent(jPanel18,
+                                                                .addComponent(pnlBoxTable,
                                                                         javax.swing.GroupLayout.DEFAULT_SIZE, 958,
                                                                         Short.MAX_VALUE)))
                                                 .addGap(17, 17, 17)))));
@@ -239,18 +242,18 @@ public class khachHangPanel extends javax.swing.JPanel {
                 pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pnlContentLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
+                                .addComponent(pnlBoxTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(4, 4, 4)
-                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 80,
+                                .addComponent(pnlBoxChinhSua, javax.swing.GroupLayout.PREFERRED_SIZE, 80,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(4, 4, 4)
-                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 342,
+                                .addComponent(pnlBoxTable, javax.swing.GroupLayout.PREFERRED_SIZE, 342,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28,
                                         Short.MAX_VALUE)
                                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                        .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -266,9 +269,9 @@ public class khachHangPanel extends javax.swing.JPanel {
 
     private void setupUI() {
         // Điều chỉnh kích thước các panel con trong pnlContent
-        jPanel33.setPreferredSize(new java.awt.Dimension(960, 110));
-        jPanel17.setPreferredSize(new java.awt.Dimension(960, 80));
-        jPanel18.setPreferredSize(new java.awt.Dimension(960, 342));
+        pnlBoxTimKiem.setPreferredSize(new java.awt.Dimension(960, 110));
+        pnlBoxChinhSua.setPreferredSize(new java.awt.Dimension(960, 80));
+        pnlBoxTable.setPreferredSize(new java.awt.Dimension(960, 342));
     }
     
     private void setupTable() {
@@ -416,8 +419,8 @@ public class khachHangPanel extends javax.swing.JPanel {
     }
 
     private void searchKhachHang() {
-        String keyword = jTextField1.getText().trim();
-        String searchType = jComboBox1.getSelectedItem().toString();
+        String keyword = textTimKiem.getText().trim();
+        String searchType = cboTimKiem.getSelectedItem().toString();
         
         if (keyword.isEmpty()) {
             loadKhachHangData(); // Nếu từ khóa trống, load lại tất cả dữ liệu
@@ -436,15 +439,15 @@ public class khachHangPanel extends javax.swing.JPanel {
 
     private void setupSearchComponents() {
         // Thiết lập combobox tìm kiếm
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+        cboTimKiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
             "Tất cả", "Mã khách hàng", "Tên khách hàng", "Email", "Số điện thoại"
         }));
 
         // Thêm action listener cho nút tìm kiếm
-        jButton30.addActionListener(e -> searchKhachHang());
+        btnTimKiem.addActionListener(e -> searchKhachHang());
 
         // Thêm action listener cho textfield để tìm kiếm khi nhấn Enter
-        jTextField1.addKeyListener(new KeyAdapter() {
+        textTimKiem.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -456,7 +459,7 @@ public class khachHangPanel extends javax.swing.JPanel {
 
     private void setupListeners() {
         // Nút Thêm
-        jButton31.addActionListener(new ActionListener() {
+        btnThem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog dialog = new JDialog();
@@ -476,7 +479,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         });
 
         // Nút Sửa
-        jButton32.addActionListener(new ActionListener() {
+        btnSua.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = khachHangTable.getSelectedRow();
@@ -555,7 +558,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         });
 
         // Nút Xóa
-        btnXoaKhachHang.addActionListener(new ActionListener() {
+        btnXoa.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = khachHangTable.getSelectedRow();
@@ -603,23 +606,23 @@ public class khachHangPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify
     private javax.swing.JPanel containerPanel;
-    private javax.swing.JButton jButton30;
-    private javax.swing.JButton jButton31;
-    private javax.swing.JButton jButton32;
-    private javax.swing.JButton btnXoaKhachHang;
+    private javax.swing.JButton btnTimKiem;
+    private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnXoa;
     private javax.swing.JButton btnExport;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
-    private javax.swing.JPanel jPanel33;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JComboBox<String> cboTimKiem;
+    private javax.swing.JLabel lblTittle;
+    private javax.swing.JLabel lblTimKiem;
+    private javax.swing.JPanel pnlBoxChinhSua;
+    private javax.swing.JPanel pnlBoxTable;
+    private javax.swing.JPanel pnlBoxTimKiem;
+    private javax.swing.JScrollPane scTable;
     private javax.swing.JTable khachHangTable;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField textTimKiem;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
-    private javax.swing.JButton jButton36;
+    private javax.swing.JButton btnImport;
     private javax.swing.JButton btnPrinter;
     // End of variables declaration
 }

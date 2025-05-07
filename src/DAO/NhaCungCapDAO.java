@@ -208,19 +208,6 @@ public class NhaCungCapDAO {
         return null;
     }
 
-    public List<String> getAllSuppliers() {
-        List<String> suppliers = new ArrayList<>();
-        try (Connection conn = ConnectDB.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT MaNhaCungCap FROM NhaCungCap")) {
-            while (rs.next()) {
-                suppliers.add(rs.getString("MaNhaCungCap"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return suppliers;
-    }
 
     public boolean isSupplierActive(String maNhaCungCap) {
         String sql = "SELECT COUNT(*) FROM NhaCungCap WHERE MaNhaCungCap = ? AND TrangThai = N'Đang hợp tác'";
@@ -249,5 +236,34 @@ public class NhaCungCapDAO {
             e.printStackTrace();
         }
         return suppliers;
+    }
+
+    public boolean xoaNhaCungCapVaSanPham(String maNCC) {
+        String sql = "DELETE FROM SanPham WHERE MaNhaCungCap = ?; " +
+                    "DELETE FROM NhaCungCap WHERE MaNhaCungCap = ?";
+        try {
+            Connection conn = ConnectDB.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, maNCC);
+            ps.setString(2, maNCC);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean capNhatSanPhamSangNhaCungCapKhac(String maNCCCu, String maNCCMoi) {
+        String sql = "UPDATE SanPham SET MaNhaCungCap = ? WHERE MaNhaCungCap = ?";
+        try {
+            Connection conn = ConnectDB.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, maNCCMoi);
+            ps.setString(2, maNCCCu);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

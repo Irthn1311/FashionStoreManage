@@ -240,15 +240,33 @@ public class SanPhamDAO {
 
     // Xóa sản phẩm
     public boolean deleteSanPham(String maSanPham) {
-        String sql = "DELETE FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection()) {
+            conn.setAutoCommit(false); // Tắt tự động commit để thực hiện transaction
+            
+            try {
+                // Xóa các bản ghi liên quan trong bảng NhaCungCap_SanPham
+                String sqlDeleteRef = "DELETE FROM NhaCungCap_SanPham WHERE MaSanPham = ?";
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteRef)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
 
-        try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+                // Xóa sản phẩm
+                String sqlDeleteProduct = "DELETE FROM SanPham WHERE MaSanPham = ?";
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteProduct)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
 
-            ps.setString(1, maSanPham);
-
-            return ps.executeUpdate() > 0;
-
+                conn.commit(); // Commit transaction nếu mọi thứ OK
+                return true;
+            } catch (SQLException e) {
+                conn.rollback(); // Rollback nếu có lỗi
+                e.printStackTrace();
+                return false;
+            } finally {
+                conn.setAutoCommit(true); // Bật lại tự động commit
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -384,5 +402,15 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void updateProductStatus() {
+        String sql = "UPDATE SanPham SET TrangThai = CASE WHEN SoLuongTonKho <= 0 THEN 'Hết hàng' ELSE 'Còn hàng' END";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
