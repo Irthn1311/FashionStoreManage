@@ -30,6 +30,9 @@ import BUS.NhapHangBUS;
  */
 public class nhaphang extends javax.swing.JPanel {
 
+        private javax.swing.JLabel lblMaNCC;
+        private javax.swing.JLabel lblTenNCC;
+
         /**
          * Creates new form phieunhap
          */
@@ -67,7 +70,8 @@ public class nhaphang extends javax.swing.JPanel {
                 jPanel7 = new javax.swing.JPanel();
                 jPanel5 = new javax.swing.JPanel();
                 lblNhaCungCap = new javax.swing.JTextField();
-                jComboBox9 = new javax.swing.JComboBox<>();
+                cbMaNCC = new javax.swing.JComboBox<>();
+                cbTenNCC = new javax.swing.JComboBox<>();
                 lblNCC = new javax.swing.JTextField();
                 pnlBoxSanPhamSoLuong = new javax.swing.JPanel();
                 cbMaSanPham = new javax.swing.JComboBox<>();
@@ -169,56 +173,53 @@ public class nhaphang extends javax.swing.JPanel {
 
                 lblNhaCungCap.setText("Chọn nhà cung cấp ");
 
-                jComboBox9.setModel(
-                                new javax.swing.DefaultComboBoxModel<>(
-                                                new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+                lblMaNCC = new javax.swing.JLabel("Mã NCC");
+                lblTenNCC = new javax.swing.JLabel("Tên NCC");
 
-                lblNCC.setText("Mã NCC");
-                lblNCC.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                lblNCCActionPerformed(evt);
-                        }
-                });
+                cbMaNCC = new javax.swing.JComboBox<>();
+                cbTenNCC = new javax.swing.JComboBox<>();
 
                 javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
                 jPanel5.setLayout(jPanel5Layout);
                 jPanel5Layout.setHorizontalGroup(
                                 jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout
-                                                                .createSequentialGroup()
+                                                .addGroup(jPanel5Layout.createSequentialGroup()
                                                                 .addContainerGap()
                                                                 .addGroup(jPanel5Layout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addComponent(lblNhaCungCap)
-                                                                                .addGroup(jPanel5Layout
-                                                                                                .createSequentialGroup()
-                                                                                                .addComponent(lblNCC,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                                                                                .addComponent(lblMaNCC)
                                                                                                 .addPreferredGap(
                                                                                                                 javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                                                .addComponent(jComboBox9,
-                                                                                                                0, 222,
+                                                                                                .addComponent(cbMaNCC, 0, 180,
+                                                                                                                Short.MAX_VALUE))
+                                                                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                                                                                .addComponent(lblTenNCC)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                                .addComponent(cbTenNCC, 0, 180,
                                                                                                                 Short.MAX_VALUE)))
                                                                 .addContainerGap()));
                 jPanel5Layout.setVerticalGroup(
                                 jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel5Layout.createSequentialGroup()
                                                                 .addContainerGap()
-                                                                .addComponent(lblNhaCungCap,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                41,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGroup(jPanel5Layout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(lblMaNCC)
+                                                                                .addComponent(cbMaNCC,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addPreferredGap(
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                 .addGroup(jPanel5Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addComponent(jComboBox9,
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(lblTenNCC)
+                                                                                .addComponent(cbTenNCC,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                41,
-                                                                                                Short.MAX_VALUE)
-                                                                                .addComponent(lblNCC))
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addContainerGap()));
 
                 jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 180, 320, -1));
@@ -527,7 +528,7 @@ public class nhaphang extends javax.swing.JPanel {
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {
         try {
             // Validate input
-            if (cbMaSanPham.getSelectedItem() == null || textSoLuong.getText().trim().isEmpty() || jComboBox9.getSelectedItem() == null) {
+            if (cbMaSanPham.getSelectedItem() == null || textSoLuong.getText().trim().isEmpty() || cbMaNCC.getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
                 return;
             }
@@ -536,7 +537,7 @@ public class nhaphang extends javax.swing.JPanel {
             nhapHangDTO nh = new nhapHangDTO();
             nh.setMaPN("PN" + System.currentTimeMillis());
             nh.setMaSanPham((String) cbMaSanPham.getSelectedItem());
-            nh.setMaNhaCungCap((String) jComboBox9.getSelectedItem());
+            nh.setMaNhaCungCap((String) cbMaNCC.getSelectedItem());
             nh.setTenSanPham(textTenSanPham.getText());
             nh.setMauSac(txtMauSac.getText());
             nh.setKichThuoc(txtKichThuoc.getText());
@@ -554,7 +555,8 @@ public class nhaphang extends javax.swing.JPanel {
                 loadImportTable(); // Refresh table
                 // Clear input fields
                 cbMaSanPham.setSelectedIndex(0);
-                jComboBox9.setSelectedIndex(0);
+                cbMaNCC.setSelectedIndex(0);
+                cbTenNCC.setSelectedIndex(0);
                 textTenSanPham.setText("");
                 txtMauSac.setText("");
                 txtKichThuoc.setText("");
@@ -588,26 +590,59 @@ public class nhaphang extends javax.swing.JPanel {
         }
 
         // Nhà cung cấp
-        jComboBox9.removeAllItems();
-        for (String supplier : nhaCungCapDAO.getAllSuppliers()) {
-            jComboBox9.addItem(supplier);
+        cbMaNCC.removeAllItems();
+        cbTenNCC.removeAllItems();
+        List<DTO.nhaCungCapDTO> nccList = nhaCungCapDAO.getAllNhaCungCap();
+        for (DTO.nhaCungCapDTO ncc : nccList) {
+            cbMaNCC.addItem(ncc.getMaNhaCungCap());
+            cbTenNCC.addItem(ncc.getTenNhaCungCap());
         }
+        cbMaNCC.addActionListener(e -> {
+            int idx = cbMaNCC.getSelectedIndex();
+            if (idx >= 0 && idx < cbTenNCC.getItemCount()) cbTenNCC.setSelectedIndex(idx);
+        });
+        cbTenNCC.addActionListener(e -> {
+            int idx = cbTenNCC.getSelectedIndex();
+            if (idx >= 0 && idx < cbMaNCC.getItemCount()) cbMaNCC.setSelectedIndex(idx);
+        });
 
         // Add event listener for MaSP selection
         cbMaSanPham.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 String selectedMaSP = (String) cbMaSanPham.getSelectedItem();
                 if (selectedMaSP != null && !selectedMaSP.isEmpty()) {
+                    // Lấy thông tin sản phẩm
                     sanPhamDTO sp = sanPhamDAO.getSanPhamByMa(selectedMaSP);
                     if (sp != null) {
                         textTenSanPham.setText(sp.getTenSanPham());
                         txtMauSac.setText(sp.getMauSac());
                         txtKichThuoc.setText(sp.getSize());
                         jTextField7.setText(String.valueOf(sp.getGiaBan()));
-                        // Set default quantity to 1
                         textSoLuong.setText("1");
                         calculateAmount();
                     }
+                    // Lọc nhà cung cấp theo mã sản phẩm
+                    NhaCungCapDAO nccDAO = new NhaCungCapDAO();
+                    List<DTO.nhaCungCapDTO> nccList = nccDAO.getNhaCungCapByMaSanPham(selectedMaSP);
+                    cbMaNCC.removeAllItems();
+                    cbTenNCC.removeAllItems();
+                    for (DTO.nhaCungCapDTO ncc : nccList) {
+                        cbMaNCC.addItem(ncc.getMaNhaCungCap());
+                        cbTenNCC.addItem(ncc.getTenNhaCungCap());
+                    }
+                    // Nếu không có NCC nào thì disable 2 combobox
+                    boolean hasNCC = !nccList.isEmpty();
+                    cbMaNCC.setEnabled(hasNCC);
+                    cbTenNCC.setEnabled(hasNCC);
+                    // Đồng bộ 2 combobox
+                    cbMaNCC.addActionListener(e2 -> {
+                        int idx = cbMaNCC.getSelectedIndex();
+                        if (idx >= 0 && idx < cbTenNCC.getItemCount()) cbTenNCC.setSelectedIndex(idx);
+                    });
+                    cbTenNCC.addActionListener(e2 -> {
+                        int idx = cbTenNCC.getSelectedIndex();
+                        if (idx >= 0 && idx < cbMaNCC.getItemCount()) cbMaNCC.setSelectedIndex(idx);
+                    });
                 }
             }
         });
@@ -620,12 +655,15 @@ public class nhaphang extends javax.swing.JPanel {
             NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
             List<String> filteredSuppliers = nhaCungCapDAO.getSuppliersByProduct(selectedType, selectedType);
             
-            jComboBox9.removeAllItems();
+            cbMaNCC.removeAllItems();
+            cbTenNCC.removeAllItems();
             for (String supplier : filteredSuppliers) {
-                jComboBox9.addItem(supplier);
+                cbMaNCC.addItem(supplier);
+                cbTenNCC.addItem(supplier);
             }
             if (filteredSuppliers.isEmpty()) {
-                jComboBox9.addItem("Không có nhà cung cấp phù hợp");
+                cbMaNCC.addItem("Không có nhà cung cấp phù hợp");
+                cbTenNCC.addItem("Không có nhà cung cấp phù hợp");
             }
         }
     }
@@ -767,7 +805,8 @@ public class nhaphang extends javax.swing.JPanel {
         private javax.swing.JButton jButton18;
         private javax.swing.JComboBox<String> cbMaSanPham;
         private javax.swing.JComboBox<String> cbHinhThucThanhToan;
-        private javax.swing.JComboBox<String> jComboBox9;
+        private javax.swing.JComboBox<String> cbMaNCC;
+        private javax.swing.JComboBox<String> cbTenNCC;
         private javax.swing.JLabel jLabel1;
         private javax.swing.JLabel lblLoaiSanPham;
         private javax.swing.JLabel lblMaSanPham;

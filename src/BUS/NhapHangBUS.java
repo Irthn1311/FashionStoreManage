@@ -65,8 +65,12 @@ public class NhapHangBUS {
             return false;
         }
         
-        // Check if product exists
-        if (!sanPhamDAO.isProductExists(nhapHang.getMaSanPham())) {
+        // Sửa đoạn này: kiểm tra mã sản phẩm gốc (cắt hậu tố NCC nếu có)
+        String maSPGoc = nhapHang.getMaSanPham();
+        if (maSPGoc.contains("_")) {
+            maSPGoc = maSPGoc.split("_")[0];
+        }
+        if (!sanPhamDAO.isProductExists(maSPGoc)) {
             return false;
         }
         

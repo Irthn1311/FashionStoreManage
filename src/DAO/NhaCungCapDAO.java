@@ -295,4 +295,32 @@ public class NhaCungCapDAO {
         }
         return suppliers;
     }
+
+    // Lấy danh sách nhà cung cấp theo mã sản phẩm
+    public List<nhaCungCapDTO> getNhaCungCapByMaSanPham(String maSanPham) {
+        List<nhaCungCapDTO> list = new ArrayList<>();
+        String sql = "SELECT ncc.* FROM NhaCungCap ncc " +
+                     "JOIN NhaCungCap_SanPham nccsp ON ncc.MaNhaCungCap = nccsp.MaNhaCungCap " +
+                     "WHERE nccsp.MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new nhaCungCapDTO(
+                    rs.getString("MaNhaCungCap"),
+                    rs.getString("TenNhaCungCap"),
+                    rs.getString("LoaiSP"),
+                    rs.getInt("NamHopTac"),
+                    rs.getString("DiaChi"),
+                    rs.getString("Email"),
+                    rs.getString("SoDienThoai"),
+                    rs.getString("TrangThai")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
