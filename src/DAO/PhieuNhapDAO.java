@@ -25,7 +25,8 @@ public class PhieuNhapDAO {
 
     // Create new PhieuNhap
     public boolean create(PhieuNhapDTO phieuNhap) {
-        String sql = "INSERT INTO PhieuNhap (MaPhieuNhap, MaNhaCungCap, MaSanPham, TenSanPham, SoLuong, ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien) " +
+        String sql = "INSERT INTO PhieuNhap (MaPhieuNhap, MaNhaCungCap, MaSanPham, TenSanPham, SoLuong, " +
+                    "ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             ps = conn.prepareStatement(sql);
@@ -76,7 +77,8 @@ public class PhieuNhapDAO {
     // Update PhieuNhap
     public boolean update(PhieuNhapDTO phieuNhap) {
         String sql = "UPDATE PhieuNhap SET MaNhaCungCap=?, MaSanPham=?, TenSanPham=?, SoLuong=?, " +
-                    "ThoiGian=?, DonGia=?, TrangThai=?, HinhThucThanhToan=?, ThanhTien=? WHERE MaPhieuNhap=?";
+                    "ThoiGian=?, DonGia=?, TrangThai=?, HinhThucThanhToan=?, ThanhTien=? " +
+                    "WHERE MaPhieuNhap=?";
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, phieuNhap.getMaNhaCungCap());
@@ -104,6 +106,9 @@ public class PhieuNhapDAO {
             ps.setString(1, maPhieuNhap);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
+            if (e.getMessage().contains("FK_") || e.getMessage().contains("foreign key constraint")) {
+                throw new RuntimeException("Không thể xóa phiếu nhập này vì đã được sử dụng trong hóa đơn hoặc bảng khác.");
+            }
             e.printStackTrace();
             return false;
         }
@@ -111,29 +116,42 @@ public class PhieuNhapDAO {
 
     // Get all PhieuNhap
     public List<PhieuNhapDTO> getAll() {
-        List<PhieuNhapDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM PhieuNhap";
+        List<PhieuNhapDTO> danhSachPhieuNhap = new ArrayList<>();
         try {
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
+            String sql = "SELECT * FROM PhieuNhap";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                list.add(new PhieuNhapDTO(
+                java.util.Date thoiGian = null;
+                try {
+                    String thoiGianStr = rs.getString("ThoiGian");
+                    if (thoiGianStr != null && !thoiGianStr.trim().isEmpty()) {
+                        thoiGian = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(thoiGianStr);
+                    } else {
+                        thoiGian = new java.util.Date(); // Nếu null thì lấy thời gian hiện tại
+                    }
+                } catch (Exception e) {
+                    thoiGian = new java.util.Date(); // Nếu có lỗi parse thì lấy thời gian hiện tại
+                }
+                
+                PhieuNhapDTO phieuNhap = new PhieuNhapDTO(
                     rs.getString("MaPhieuNhap"),
                     rs.getString("MaNhaCungCap"),
                     rs.getString("MaSanPham"),
                     rs.getString("TenSanPham"),
                     rs.getInt("SoLuong"),
-                    rs.getTimestamp("ThoiGian"),
+                    thoiGian,
                     rs.getDouble("DonGia"),
                     rs.getString("TrangThai"),
                     rs.getString("HinhThucThanhToan"),
                     rs.getDouble("ThanhTien")
-                ));
+                );
+                danhSachPhieuNhap.add(phieuNhap);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return list;
+        return danhSachPhieuNhap;
     }
 
     // Close resources

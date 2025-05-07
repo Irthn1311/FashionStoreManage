@@ -9,9 +9,15 @@ import DTO.sanPhamDTO;
 
 public class SanPhamDAO {
     private Connection conn;
+    private PreparedStatement ps;
+    private ResultSet rs;
 
     public SanPhamDAO() {
-        this.conn = ConnectDB.getConnection();
+        try {
+            conn = ConnectDB.getConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Lấy thông tin sản phẩm theo mã sản phẩm
@@ -185,7 +191,7 @@ public class SanPhamDAO {
     public boolean addSanPham(sanPhamDTO sp) {
         String sql = "INSERT INTO SanPham (MaSanPham, TenSanPham, MaNhaCungCap, MaDanhMuc, MauSac, Size, SoLuongTonKho, GiaBan, ImgURL, TrangThai) "
                 +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectDB.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -412,16 +418,42 @@ public class SanPhamDAO {
         }
     }
 
-    public boolean updateProductQuantity(String maSP, int soLuongThem) {
+    public boolean updateProductQuantity(String maSanPham, int quantity) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, soLuongThem);
-            ps.setString(2, maSP);
+            ps.setInt(1, quantity);
+            ps.setString(2, maSanPham);
             return ps.executeUpdate() > 0;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<sanPhamDTO> getAll() {
+        List<sanPhamDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM SanPham";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                sanPhamDTO sp = new sanPhamDTO();
+                sp.setMaSanPham(rs.getString("MaSanPham"));
+                sp.setTenSanPham(rs.getString("TenSanPham"));
+                sp.setMaNhaCungCap(rs.getString("MaNhaCungCap"));
+                sp.setMaDanhMuc(rs.getString("MaDanhMuc"));
+                sp.setMauSac(rs.getString("MauSac"));
+                sp.setSize(rs.getString("Size"));
+                sp.setSoLuongTonKho(rs.getInt("SoLuongTonKho"));
+                sp.setGiaBan(rs.getDouble("GiaBan"));
+                sp.setImgURL(rs.getString("ImgURL"));
+                sp.setTrangThai(rs.getString("TrangThai"));
+                list.add(sp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

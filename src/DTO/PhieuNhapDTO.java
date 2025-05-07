@@ -10,14 +10,15 @@ public class PhieuNhapDTO {
     private int soLuong;
     private Date thoiGian;
     private double donGia;
+    private String trangThai;
     private String hinhThucThanhToan;
     private double thanhTien;
-    private String trangThai;
 
     public PhieuNhapDTO() {}
 
-    public PhieuNhapDTO(String maPhieuNhap, String maNhaCungCap, String maSanPham, String tenSanPham, 
-                       int soLuong, Date thoiGian, double donGia, String trangThai, String hinhThucThanhToan, double thanhTien) {
+    public PhieuNhapDTO(String maPhieuNhap, String maNhaCungCap, String maSanPham, String tenSanPham,
+                       int soLuong, Date thoiGian, double donGia, String trangThai,
+                       String hinhThucThanhToan, double thanhTien) {
         this.maPhieuNhap = maPhieuNhap;
         this.maNhaCungCap = maNhaCungCap;
         this.maSanPham = maSanPham;
@@ -28,20 +29,6 @@ public class PhieuNhapDTO {
         this.trangThai = trangThai;
         this.hinhThucThanhToan = hinhThucThanhToan;
         this.thanhTien = thanhTien;
-    }
-
-    public PhieuNhapDTO(String maPhieuNhap, String maSanPham, String maNhaCungCap, 
-                       int soLuong, double donGia, double thanhTien, 
-                       Date thoiGian, String trangThai, String hinhThucThanhToan) {
-        this.maPhieuNhap = maPhieuNhap;
-        this.maSanPham = maSanPham;
-        this.maNhaCungCap = maNhaCungCap;
-        this.soLuong = soLuong;
-        this.donGia = donGia;
-        this.thanhTien = thanhTien;
-        this.thoiGian = thoiGian;
-        this.trangThai = trangThai;
-        this.hinhThucThanhToan = hinhThucThanhToan;
     }
 
     // Getters and Setters
@@ -101,6 +88,14 @@ public class PhieuNhapDTO {
         this.donGia = donGia;
     }
 
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+
     public String getHinhThucThanhToan() {
         return hinhThucThanhToan;
     }
@@ -115,13 +110,5 @@ public class PhieuNhapDTO {
 
     public void setThanhTien(double thanhTien) {
         this.thanhTien = thanhTien;
-    }
-
-    public String getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
     }
 } 

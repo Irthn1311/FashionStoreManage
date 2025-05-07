@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 import DAO.NhaCungCap_SanPhamDAO;
 import DTO.NhaCungCap_SanPhamDTO;
 import BUS.NhapHangBUS;
+import BUS.SanPhamBUS;
+import BUS.NhaCungCapBUS;
 
 /**
  *
@@ -30,10 +32,17 @@ import BUS.NhapHangBUS;
  */
 public class nhaphang extends javax.swing.JPanel {
 
+        private NhapHangBUS nhapHangBUS;
+        private SanPhamBUS sanPhamBUS;
+        private NhaCungCapBUS nhaCungCapBUS;
+
         /**
          * Creates new form phieunhap
          */
         public nhaphang() {
+                nhapHangBUS = new NhapHangBUS();
+                sanPhamBUS = new SanPhamBUS();
+                nhaCungCapBUS = new NhaCungCapBUS();
                 initComponents();
                 populateComboBoxes();
                 loadImportTable();
@@ -527,7 +536,8 @@ public class nhaphang extends javax.swing.JPanel {
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {
         try {
             // Validate input
-            if (cbMaSanPham.getSelectedItem() == null || textSoLuong.getText().trim().isEmpty() || jComboBox9.getSelectedItem() == null) {
+            if (cbMaSanPham.getSelectedItem() == null || textSoLuong.getText().trim().isEmpty() || 
+                jComboBox9.getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
                 return;
             }
@@ -547,20 +557,10 @@ public class nhaphang extends javax.swing.JPanel {
             nh.setThoiGian(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
             nh.setHinhThucThanhToan((String) cbHinhThucThanhToan.getSelectedItem());
 
-            // Add to database using BUS
-            NhapHangBUS nhapHangBUS = new NhapHangBUS();
             if (nhapHangBUS.themNhapHang(nh)) {
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
-                loadImportTable(); // Refresh table
-                // Clear input fields
-                cbMaSanPham.setSelectedIndex(0);
-                jComboBox9.setSelectedIndex(0);
-                textTenSanPham.setText("");
-                txtMauSac.setText("");
-                txtKichThuoc.setText("");
-                textSoLuong.setText("");
-                jTextField7.setText("");
-                textThanhTien.setText("");
+                loadImportTable();
+                clearInputFields();
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!");
             }
@@ -578,40 +578,34 @@ public class nhaphang extends javax.swing.JPanel {
     }//GEN-LAST:event_textSoLuongActionPerformed
 
         private void populateComboBoxes() {
-                SanPhamDAO sanPhamDAO = new SanPhamDAO();
-                NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
-
-        // Mã SP
-        cbMaSanPham.removeAllItems();
-        for (String code : sanPhamDAO.getAllProductCodes()) {
-            cbMaSanPham.addItem(code);
-        }
-
-        // Nhà cung cấp
-        jComboBox9.removeAllItems();
-        for (String supplier : nhaCungCapDAO.getAllSuppliers()) {
-            jComboBox9.addItem(supplier);
-        }
-
-        // Add event listener for MaSP selection
-        cbMaSanPham.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                String selectedMaSP = (String) cbMaSanPham.getSelectedItem();
-                if (selectedMaSP != null && !selectedMaSP.isEmpty()) {
-                    sanPhamDTO sp = sanPhamDAO.getSanPhamByMa(selectedMaSP);
-                    if (sp != null) {
-                        textTenSanPham.setText(sp.getTenSanPham());
-                        txtMauSac.setText(sp.getMauSac());
-                        txtKichThuoc.setText(sp.getSize());
-                        jTextField7.setText(String.valueOf(sp.getGiaBan()));
-                        // Set default quantity to 1
-                        textSoLuong.setText("1");
-                        calculateAmount();
-                    }
+                // Mã SP
+                cbMaSanPham.removeAllItems();
+                for (String code : sanPhamBUS.getAllProductCodes()) {
+                    cbMaSanPham.addItem(code);
                 }
-            }
-        });
-    }
+
+                // Nhà cung cấp
+                jComboBox9.removeAllItems();
+                for (String supplier : nhaCungCapBUS.getAllSuppliers()) {
+                    jComboBox9.addItem(supplier);
+                }
+
+                // Add event listener for MaSP selection
+                cbMaSanPham.addActionListener(evt -> {
+                    String selectedMaSP = (String) cbMaSanPham.getSelectedItem();
+                    if (selectedMaSP != null && !selectedMaSP.isEmpty()) {
+                        sanPhamDTO sp = sanPhamBUS.getSanPhamByMa(selectedMaSP);
+                        if (sp != null) {
+                            textTenSanPham.setText(sp.getTenSanPham());
+                            txtMauSac.setText(sp.getMauSac());
+                            txtKichThuoc.setText(sp.getSize());
+                            jTextField7.setText(String.valueOf(sp.getGiaBan()));
+                            textSoLuong.setText("1");
+                            calculateAmount();
+                        }
+                    }
+                });
+        }
 
     private void filterSuppliers() {
         String selectedType = (String) cbMaSanPham.getSelectedItem();
@@ -631,9 +625,7 @@ public class nhaphang extends javax.swing.JPanel {
     }
 
         private void loadImportTable() {
-                NhapHangBUS nhapHangBUS = new NhapHangBUS();
                 List<nhapHangDTO> list = nhapHangBUS.getAllNhapHang();
-
                 javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
                 model.setRowCount(0);
 
@@ -679,10 +671,9 @@ public class nhaphang extends javax.swing.JPanel {
 
         private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                        NhapHangBUS nhapHangBUS = new NhapHangBUS();
                         if (nhapHangBUS.xuLyPhieuNhap()) {
                                 JOptionPane.showMessageDialog(this, "Xử lý phiếu nhập thành công!");
-                                loadImportTable(); // Refresh table
+                                loadImportTable();
                         } else {
                                 JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi xử lý phiếu nhập!");
                         }
@@ -698,20 +689,29 @@ public class nhaphang extends javax.swing.JPanel {
                         return;
                 }
                 String maPN = jTable1.getValueAt(selectedRow, 1).toString();
-                NhapHangBUS nhapHangBUS = new NhapHangBUS();
-                int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa phiếu nhập này?",
-                                "Xác nhận xóa",
-                                JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(this, 
+                    "Bạn có chắc chắn muốn xóa phiếu nhập này?",
+                    "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION);
+            
                 if (confirm == JOptionPane.YES_OPTION) {
-                        boolean result = nhapHangBUS.xoaNhapHang(maPN);
-                        if (result) {
+                        if (nhapHangBUS.xoaNhapHang(maPN)) {
                                 JOptionPane.showMessageDialog(this, "Xóa thành công!");
                                 loadImportTable();
                         } else {
-                                JOptionPane.showMessageDialog(this,
-                                                "Xóa thất bại! Có thể phiếu nhập này đã được sử dụng ở nơi khác.");
+                                JOptionPane.showMessageDialog(this, "Xóa thất bại! Có thể phiếu nhập này đã được sử dụng ở nơi khác.");
                         }
                 }
+        }
+
+        private void clearInputFields() {
+                cbMaSanPham.setSelectedIndex(0);
+                textTenSanPham.setText("");
+                txtMauSac.setText("");
+                txtKichThuoc.setText("");
+                textSoLuong.setText("");
+                jTextField7.setText("");
+                textThanhTien.setText("");
         }
 
         /**

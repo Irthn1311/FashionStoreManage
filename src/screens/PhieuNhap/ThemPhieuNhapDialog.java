@@ -6,9 +6,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ThemPhieuNhapDialog extends JDialog {
-    private JTextField tfMaPN, tfMaNCC, tfMaSP, tfSoLuong, tfDonGia, tfThanhTien, tfThoiGian, tfTrangThai, tfHinhThucThanhToan;
+    private JTextField tfMaPN, tfMaNCC, tfMaSP, tfTenSP, tfSoLuong, tfDonGia, tfThanhTien, tfThoiGian, tfTrangThai, tfHinhThucThanhToan;
     private boolean saved = false;
 
     public ThemPhieuNhapDialog(Frame parent) {
@@ -16,12 +18,13 @@ public class ThemPhieuNhapDialog extends JDialog {
         setLayout(new GridLayout(0,2,10,5));
 
         add(new JLabel("Mã PN:")); tfMaPN = new JTextField(); add(tfMaPN);
-        add(new JLabel("Mã SP:")); tfMaSP = new JTextField(); add(tfMaSP);
         add(new JLabel("Mã NCC:")); tfMaNCC = new JTextField(); add(tfMaNCC);
+        add(new JLabel("Mã SP:")); tfMaSP = new JTextField(); add(tfMaSP);
+        add(new JLabel("Tên SP:")); tfTenSP = new JTextField(); add(tfTenSP);
         add(new JLabel("Số lượng:")); tfSoLuong = new JTextField(); add(tfSoLuong);
         add(new JLabel("Đơn giá:")); tfDonGia = new JTextField(); add(tfDonGia);
         add(new JLabel("Thành tiền:")); tfThanhTien = new JTextField(); tfThanhTien.setEditable(false); add(tfThanhTien);
-        add(new JLabel("Thời gian:")); tfThoiGian = new JTextField(); add(tfThoiGian);
+        add(new JLabel("Thời gian:")); tfThoiGian = new JTextField(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); add(tfThoiGian);
         add(new JLabel("Trạng thái:")); tfTrangThai = new JTextField(); add(tfTrangThai);
         add(new JLabel("Hình thức thanh toán:")); tfHinhThucThanhToan = new JTextField(); add(tfHinhThucThanhToan);
 
@@ -35,7 +38,7 @@ public class ThemPhieuNhapDialog extends JDialog {
             public void removeUpdate(DocumentEvent e) { calculateTotal(); }
             public void insertUpdate(DocumentEvent e) { calculateTotal(); }
         });
-        
+
         tfDonGia.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) { calculateTotal(); }
             public void removeUpdate(DocumentEvent e) { calculateTotal(); }
@@ -48,7 +51,7 @@ public class ThemPhieuNhapDialog extends JDialog {
                 setVisible(false);
             }
         });
-        
+
         btnHuy.addActionListener(e -> setVisible(false));
 
         pack();
@@ -60,8 +63,8 @@ public class ThemPhieuNhapDialog extends JDialog {
             int soLuong = Integer.parseInt(tfSoLuong.getText());
             double donGia = Double.parseDouble(tfDonGia.getText());
             tfThanhTien.setText(String.valueOf(soLuong * donGia));
-        } catch (Exception ex) {
-            tfThanhTien.setText("");
+        } catch (NumberFormatException ex) {
+            tfThanhTien.setText("0");
         }
     }
 
@@ -69,6 +72,7 @@ public class ThemPhieuNhapDialog extends JDialog {
         if (tfMaPN.getText().trim().isEmpty() ||
             tfMaNCC.getText().trim().isEmpty() ||
             tfMaSP.getText().trim().isEmpty() ||
+            tfTenSP.getText().trim().isEmpty() ||
             tfSoLuong.getText().trim().isEmpty() ||
             tfDonGia.getText().trim().isEmpty() ||
             tfThoiGian.getText().trim().isEmpty() ||
@@ -96,16 +100,22 @@ public class ThemPhieuNhapDialog extends JDialog {
     public boolean isSaved() { return saved; }
 
     public PhieuNhapDTO getNewPhieuNhap() {
-        return new PhieuNhapDTO(
-            tfMaPN.getText(),
-            tfMaSP.getText(),
-            tfMaNCC.getText(),
-            Integer.parseInt(tfSoLuong.getText()),
-            Double.parseDouble(tfDonGia.getText()),
-            Double.parseDouble(tfThanhTien.getText()),
-            new java.util.Date(tfThoiGian.getText()),
-            tfTrangThai.getText(),
-            tfHinhThucThanhToan.getText()
-        );
+        try {
+            return new PhieuNhapDTO(
+                tfMaPN.getText(),
+                tfMaNCC.getText(),
+                tfMaSP.getText(),
+                tfTenSP.getText(),
+                Integer.parseInt(tfSoLuong.getText()),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tfThoiGian.getText()),
+                Double.parseDouble(tfDonGia.getText()),
+                tfTrangThai.getText(),
+                tfHinhThucThanhToan.getText(),
+                Double.parseDouble(tfThanhTien.getText())
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 } 

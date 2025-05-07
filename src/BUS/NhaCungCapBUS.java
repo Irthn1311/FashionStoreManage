@@ -3,6 +3,7 @@ package BUS;
 import DAO.NhaCungCapDAO;
 import DTO.nhaCungCapDTO;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NhaCungCapBUS {
     private NhaCungCapDAO nhaCungCapDAO;
@@ -105,5 +106,16 @@ public class NhaCungCapBUS {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<String> getAllSuppliers() {
+        List<nhaCungCapDTO> suppliers = nhaCungCapDAO.getAll();
+        return suppliers.stream()
+            .map(nhaCungCapDTO::getMaNhaCungCap)
+            .collect(Collectors.toList());
+    }
+
+    public boolean isSupplierActive(String maNhaCungCap) {
+        return nhaCungCapDAO.isSupplierActive(maNhaCungCap);
     }
 }
