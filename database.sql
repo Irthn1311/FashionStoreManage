@@ -162,7 +162,7 @@ CREATE TABLE SanPham (
 INSERT INTO SanPham (MaSanPham, TenSanPham, MaNhaCungCap, MaDanhMuc, MauSac, Size, SoLuongTonKho, GiaBan, ImgURL, TrangThai)
 VALUES
 ('SP001', N'Áo sơ mi nam trắng', 'NCC001', N'Áo', N'Trắng', 'L', 120, 299000, 'img_product\aobongro.jpg', N'Còn hàng'),
-('SP002', N'Áo thun thế chữ', 'NCC002', N'Áo', N'Xanh', 'M', 80, 459000, 'img_product\anthuntheuchu.webp', N'Còn hàng'),
+('SP002', N'Quần Sort Nam', 'NCC002', N'Quần', N'Xanh', 'M', 80, 459000, 'img_product\quanshortnam.jpg', N'Còn hàng'),
 ('SP003', N'Áo form rộng', 'NCC003', N'Áo', N'Đen', 'S', 60, 499000, 'img_product\aoformrong.jpg', N'Còn hàng'),
 ('SP004', N'Áo khoác gió', 'NCC004', N'Áo', N'Hồng', 'M', 75, 399000, 'img_product\aokhoacgio.jpg', N'Còn hàng'),
 ('SP005', N'Áo khoác nam nữ', 'NCC005', N'Áo', N'Trắng', '42', 50, 750000, 'img_product\aokhoacnamnu.jpg', N'Còn hàng'),
@@ -227,59 +227,42 @@ INSERT INTO NhaCungCap_SanPham (MaNhaCungCap, MaSanPham) VALUES
 ('NCC009', 'SP009'),
 ('NCC010', 'SP010');
 
--- Tạo bảng HoaDon
+-- Tạo bảng HoaDon (đã chỉnh sửa theo yêu cầu)
 CREATE TABLE HoaDon (
-    MaHoaDon NVARCHAR(100) PRIMARY KEY,
-    MaSanPham NVARCHAR(100),
-    MaHoaDon NVARCHAR(100) PRIMARY KEY,
-    MaSanPham NVARCHAR(100),
+    MaHoaDon VARCHAR(100) PRIMARY KEY,
+    MaSanPham VARCHAR(100),
     TenSanPham NVARCHAR(200),
     KichCo NVARCHAR(50),
     MauSac NVARCHAR(50),
     SoLuong INT,
-    MaKhachHang NVARCHAR(100),
-    MaKhachHang NVARCHAR(100),
+    MaKhachHang VARCHAR(100),
     ThanhTien DECIMAL(15,2),
     DonGia DECIMAL(15,2),
     HinhThucThanhToan NVARCHAR(100),
-    GioXuatHang NVARCHAR(50),
-    GioXuatHang NVARCHAR(50),
-    ThoiGian TIMESTAMP,
+    ThoiGian DATETIME DEFAULT GETDATE(),
     TrangThai NVARCHAR(50),
+    TenKhachHang NVARCHAR(200),
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham),
     FOREIGN KEY (MaKhachHang) REFERENCES KhachHang(MaKhachHang)
 );
 
+
+
+-- Thêm dữ liệu mẫu cho bảng HoaDon 
 INSERT INTO HoaDon (
     MaHoaDon, MaSanPham, TenSanPham, KichCo, MauSac, SoLuong, MaKhachHang,
-    ThanhTien, DonGia, HinhThucThanhToan, GioXuatHang, TrangThai
+    ThanhTien, DonGia, HinhThucThanhToan, ThoiGian, TrangThai, TenKhachHang
 ) VALUES
-('HD001', 'SP001', N'Áo Thun Nam', N'L', N'Đen', 2, 'KH001', 500000, 250000, N'Tiền mặt', '14:00', N'Hoàn thành'),
-('HD002', 'SP002', N'Quần Jeans', N'M', N'Xanh', 1, 'KH002', 400000, 400000, N'Chuyển khoản', '10:30', N'Chờ giao'),
-('HD003', 'SP003', N'Giày Sneaker', N'42', N'Trắng', 1, 'KH003', 1200000, 1200000, N'Tiền mặt', '15:45', N'Đang xử lý'),
-('HD004', 'SP004', N'Áo Khoác Hoodie', N'XL', N'Xám', 1, 'KH001', 650000, 650000, N'Chuyển khoản', '09:15', N'Hoàn thành'),
-('HD005', 'SP005', N'Mũ Lưỡi Trai', N'Free Size', N'Đỏ', 3, 'KH004', 450000, 150000, N'Tiền mặt', '13:20', N'Đã hủy'),
-('HD006', 'SP006', N'Balo Thể Thao', N'M', N'Đen', 1, 'KH005', 700000, 700000, N'Chuyển khoản', '16:10', N'Hoàn thành'),
-('HD007', 'SP007', N'Áo Sơ Mi Nam', N'L', N'Trắng', 2, 'KH002', 600000, 300000, N'Tiền mặt', '11:40', N'Chờ giao'),
-('HD008', 'SP008', N'Vớ Nam', N'Free Size', N'Xám', 5, 'KH006', 250000, 50000, N'Chuyển khoản', '17:05', N'Hoàn thành'),
-('HD009', 'SP009', N'Kính Mát', N'M', N'Đen', 1, 'KH007', 950000, 950000, N'Tiền mặt', '12:25', N'Đang xử lý'),
-('HD010', 'SP010', N'Túi Đeo Chéo', N'S', N'Nâu', 1, 'KH008', 850000, 850000, N'Chuyển khoản', '08:55', N'Hoàn thành');
-
-INSERT INTO HoaDon (
-    MaHoaDon, MaSanPham, TenSanPham, KichCo, MauSac, SoLuong, MaKhachHang,
-    ThanhTien, DonGia, HinhThucThanhToan, GioXuatHang, TrangThai
-) VALUES
-('HD001', 'SP001', N'Áo Thun Nam', N'L', N'Đen', 2, 'KH001', 500000, 250000, N'Tiền mặt', '14:00', N'Hoàn thành'),
-('HD002', 'SP002', N'Quần Jeans', N'M', N'Xanh', 1, 'KH002', 400000, 400000, N'Chuyển khoản', '10:30', N'Chờ giao'),
-('HD003', 'SP003', N'Giày Sneaker', N'42', N'Trắng', 1, 'KH003', 1200000, 1200000, N'Tiền mặt', '15:45', N'Đang xử lý'),
-('HD004', 'SP004', N'Áo Khoác Hoodie', N'XL', N'Xám', 1, 'KH001', 650000, 650000, N'Chuyển khoản', '09:15', N'Hoàn thành'),
-('HD005', 'SP005', N'Mũ Lưỡi Trai', N'Free Size', N'Đỏ', 3, 'KH004', 450000, 150000, N'Tiền mặt', '13:20', N'Đã hủy'),
-('HD006', 'SP006', N'Balo Thể Thao', N'M', N'Đen', 1, 'KH005', 700000, 700000, N'Chuyển khoản', '16:10', N'Hoàn thành'),
-('HD007', 'SP007', N'Áo Sơ Mi Nam', N'L', N'Trắng', 2, 'KH002', 600000, 300000, N'Tiền mặt', '11:40', N'Chờ giao'),
-('HD008', 'SP008', N'Vớ Nam', N'Free Size', N'Xám', 5, 'KH006', 250000, 50000, N'Chuyển khoản', '17:05', N'Hoàn thành'),
-('HD009', 'SP009', N'Kính Mát', N'M', N'Đen', 1, 'KH007', 950000, 950000, N'Tiền mặt', '12:25', N'Đang xử lý'),
-('HD010', 'SP010', N'Túi Đeo Chéo', N'S', N'Nâu', 1, 'KH008', 850000, 850000, N'Chuyển khoản', '08:55', N'Hoàn thành');
-
+('HD001', 'SP001', N'Áo Thun Nam', N'L', N'Đen', 2, 'KH001', 500000.00, 250000.00, N'Tiền mặt', '04/01/2025 10:30:00', N'Hoàn thành', N'Lê Thị Lan'),
+('HD002', 'SP002', N'Quần Jeans', N'M', N'Xanh', 1, 'KH002', 400000.00, 400000.00, N'Chuyển khoản', '04/02/2025 14:15:00', N'Chờ giao', N'Nguyễn Văn Mạnh'),
+('HD003', 'SP003', N'Giày Sneaker', N'42', N'Trắng', 1, 'KH003', 1200000.00, 1200000.00, N'Tiền mặt', '04/03/2025 09:45:00', N'Đang xử lý', N'Trần Thị Huyền'),
+('HD004', 'SP004', N'Áo Khoác Hoodie', N'XL', N'Xám', 1, 'KH001', 650000.00, 650000.00, N'Chuyển khoản', '04/04/2025 16:20:00', N'Hoàn thành', N'Lê Thị Lan'),
+('HD005', 'SP005', N'Mũ Lưỡi Trai', N'Free Size', N'Đỏ', 3, 'KH004', 450000.00, 150000.00, N'Tiền mặt', '04/05/2025 11:10:00', N'Đã hủy', N'Phạm Văn An'),
+('HD006', 'SP006', N'Balo Thể Thao', N'M', N'Đen', 1, 'KH005', 700000.00, 700000.00, N'Chuyển khoản', '04/06/2025 13:50:00', N'Hoàn thành', N'Đỗ Thị Thảo'),
+('HD007', 'SP007', N'Áo Sơ Mi Nam', N'L', N'Trắng', 2, 'KH002', 600000.00, 300000.00, N'Tiền mặt', '04/07/2025 15:30:00', N'Chờ giao', N'Nguyễn Văn Mạnh'),
+('HD008', 'SP008', N'Vớ Nam', N'Free Size', N'Xám', 5, 'KH006', 250000.00, 50000.00, N'Chuyển khoản', '04/08/2025 08:40:00', N'Hoàn thành', N'Ngô Văn Khải'),
+('HD009', 'SP009', N'Kính Mát', N'M', N'Đen', 1, 'KH007', 950000.00, 950000.00, N'Tiền mặt', '04/09/2025 17:25:00', N'Đang xử lý', N'Bùi Thị Hạnh'),
+('HD010', 'SP010', N'Túi Đeo Chéo', N'S', N'Nâu', 1, 'KH008', 850000.00, 850000.00, N'Chuyển khoản', '04/10/2025 12:00:00', N'Hoàn thành', N'Lý Văn Minh');
 -- Tạo bảng NhapHang
 CREATE TABLE NhapHang (
     MaPN NVARCHAR(100) PRIMARY KEY,
