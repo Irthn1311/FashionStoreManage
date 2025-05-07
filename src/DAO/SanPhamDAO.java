@@ -411,4 +411,17 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
     }
+
+    public boolean updateProductQuantity(String maSP, int soLuongThem) {
+        String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, soLuongThem);
+            ps.setString(2, maSP);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

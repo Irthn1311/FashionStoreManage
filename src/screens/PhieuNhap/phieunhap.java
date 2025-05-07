@@ -6,10 +6,12 @@ package screens.PhieuNhap;
 
 import javax.swing.UIManager;
 import java.util.List;
-import DTO.nhapHangDTO;
-import DAO.NhapHangDAO;
+import DTO.PhieuNhapDTO;
+import DAO.PhieuNhapDAO;
 import screens.PhieuNhap.SuaPhieuNhapDialog;
 import screens.PhieuNhap.ThemPhieuNhapDialog;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -101,9 +103,9 @@ public class phieunhap extends javax.swing.JPanel {
                 dialog.setVisible(true);
 
                 if (dialog.isSaved()) {
-                    nhapHangDTO newPhieuNhap = dialog.getNewPhieuNhap();
-                    NhapHangDAO nhapHangDAO = new NhapHangDAO();
-                    boolean result = nhapHangDAO.themNhapHang(newPhieuNhap);
+                    PhieuNhapDTO newPhieuNhap = dialog.getNewPhieuNhap();
+                    PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
+                    boolean result = phieuNhapDAO.create(newPhieuNhap);
                     if (result) {
                         javax.swing.JOptionPane.showMessageDialog(null, "Thêm phiếu nhập thành công!");
                         loadPhieuNhapTable();
@@ -130,8 +132,8 @@ public class phieunhap extends javax.swing.JPanel {
                 String maPN = jTable2.getValueAt(selectedRow, 1).toString(); // Cột 1 là Mã PN
                 int confirm = javax.swing.JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa phiếu nhập này?", "Xác nhận xóa", javax.swing.JOptionPane.YES_NO_OPTION);
                 if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-                    NhapHangDAO nhapHangDAO = new NhapHangDAO();
-                    boolean result = nhapHangDAO.xoaNhapHang(maPN);
+                    PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
+                    boolean result = phieuNhapDAO.delete(maPN);
                     if (result) {
                         javax.swing.JOptionPane.showMessageDialog(null, "Xóa thành công!");
                         loadPhieuNhapTable();
@@ -150,28 +152,25 @@ public class phieunhap extends javax.swing.JPanel {
                     return;
                 }
                 // Lấy dữ liệu hiện tại từ bảng
-                nhapHangDTO nh = new nhapHangDTO(
+                PhieuNhapDTO phieuNhap = new PhieuNhapDTO(
                     jTable2.getValueAt(selectedRow, 1).toString(), // MaPN
-                    jTable2.getValueAt(selectedRow, 2).toString(), // MaNhaCungCap
-                    jTable2.getValueAt(selectedRow, 3).toString(), // MaSanPham
-                    jTable2.getValueAt(selectedRow, 5).toString(), // TenSanPham
-                    jTable2.getValueAt(selectedRow, 6).toString(), // MauSac
-                    jTable2.getValueAt(selectedRow, 7).toString(), // KichThuoc
-                    jTable2.getValueAt(selectedRow, 8).toString(), // SoLuong
-                    jTable2.getValueAt(selectedRow, 10).toString(), // DonGia
-                    jTable2.getValueAt(selectedRow, 11).toString(), // ThanhTien
-                    jTable2.getValueAt(selectedRow, 9).toString(), // ThoiGian
-                    jTable2.getValueAt(selectedRow, 12).toString(), // TrangThai
-                    jTable2.getValueAt(selectedRow, 10).toString()  // HinhThucThanhToan
+                    jTable2.getValueAt(selectedRow, 2).toString(), // MaSanPham
+                    jTable2.getValueAt(selectedRow, 3).toString(), // MaNhaCungCap
+                    Integer.parseInt(jTable2.getValueAt(selectedRow, 4).toString()), // SoLuong
+                    Double.parseDouble(jTable2.getValueAt(selectedRow, 5).toString()), // DonGia
+                    Double.parseDouble(jTable2.getValueAt(selectedRow, 6).toString()), // ThanhTien
+                    parseDate(jTable2.getValueAt(selectedRow, 7).toString()), // ThoiGian
+                    jTable2.getValueAt(selectedRow, 8).toString(), // TrangThai
+                    jTable2.getValueAt(selectedRow, 9).toString()  // HinhThucThanhToan
                 );
 
-                SuaPhieuNhapDialog dialog = new SuaPhieuNhapDialog(null, nh);
+                SuaPhieuNhapDialog dialog = new SuaPhieuNhapDialog(null, phieuNhap);
                 dialog.setVisible(true);
 
                 if (dialog.isSaved()) {
-                    nhapHangDTO updated = dialog.getUpdatedPhieuNhap();
-                    NhapHangDAO nhapHangDAO = new NhapHangDAO();
-                    boolean result = nhapHangDAO.capNhatNhapHang(updated);
+                    PhieuNhapDTO updated = dialog.getUpdatedPhieuNhap();
+                    PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
+                    boolean result = phieuNhapDAO.update(updated);
                     if (result) {
                         javax.swing.JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
                         loadPhieuNhapTable();
@@ -187,22 +186,14 @@ public class phieunhap extends javax.swing.JPanel {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Mã PN", "Mã NCC", "Mã SP", "Tên SP", "Màu sắc", "Kích thước", "Số lượng", "Thời gian", "Đơn giá", "Thành tiền", "Trạng Thái", "Chi tiết"
+                "STT", "Mã PN", "Mã SP", "Mã NCC", "Số lượng", "Đơn giá", "Thành tiền", "Thời gian", "Trạng thái", "Hình thức thanh toán", "Chi tiết"
             }
         ));
         jTable2.setShowGrid(true);
@@ -276,30 +267,41 @@ public class phieunhap extends javax.swing.JPanel {
     }
 
     private void loadPhieuNhapTable() {
-        NhapHangDAO nhapHangDAO = new NhapHangDAO();
-        List<nhapHangDTO> list = nhapHangDAO.getAllNhapHang();
-
+        PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
+        List<PhieuNhapDTO> danhSachPhieuNhap = phieuNhapDAO.getAll();
+        
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable2.getModel();
-        model.setRowCount(0); // Xóa dữ liệu cũ
-
+        model.setRowCount(0);
+        
         int stt = 1;
-        for (nhapHangDTO nh : list) {
+        for (PhieuNhapDTO phieuNhap : danhSachPhieuNhap) {
             model.addRow(new Object[]{
                 stt++,
-                nh.getMaPN(),
-                nh.getMaNhaCungCap(),
-                nh.getMaSanPham(),
-                nh.getTenSanPham(),
-                nh.getMauSac(),
-                nh.getKichThuoc(),
-                nh.getSoLuong(),
-                nh.getThoiGian(),
-                nh.getDonGia(),
-                nh.getThanhTien(),
-                nh.getTrangThai(),
-                nh.getHinhThucThanhToan(),
-                "" // Cột chi tiết nếu có
+                phieuNhap.getMaPhieuNhap(),
+                phieuNhap.getMaSanPham(),
+                phieuNhap.getMaNhaCungCap(),
+                phieuNhap.getSoLuong(),
+                phieuNhap.getDonGia(),
+                phieuNhap.getThanhTien(),
+                phieuNhap.getThoiGian(),
+                phieuNhap.getTrangThai(),
+                phieuNhap.getHinhThucThanhToan(),
+                "Xem chi tiết"
             });
+        }
+    }
+
+    private Date parseDate(String dateStr) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return sdf.parse(dateStr);
+        } catch (Exception e) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                return sdf.parse(dateStr);
+            } catch (Exception ex) {
+                return new Date(); // Return current date if parsing fails
+            }
         }
     }
 

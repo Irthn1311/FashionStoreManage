@@ -112,4 +112,20 @@ public class NhaCungCap_SanPhamDAO {
         
         return list;
     }
+    
+    public boolean isSupplierActive(String maNhaCungCap) {
+        String sql = "SELECT TrangThai FROM NhaCungCap WHERE MaNhaCungCap = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, maNhaCungCap);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return "Hoạt động".equals(rs.getString("TrangThai"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 } 

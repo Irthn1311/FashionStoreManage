@@ -3,62 +3,54 @@ package DTO;
 import java.util.Date;
 
 public class PhieuNhapDTO {
-    private int maPhieuNhap;
-    private Date ngayNhap;
-    private String maSanPham;
-    private int soLuongNhap;
+    private String maPhieuNhap;
     private String maNhaCungCap;
-    private String maNhanVien;
-    private String loaiSP;
+    private String maSanPham;
     private String tenSanPham;
-    private String mauSac;
-    private String kichThuoc;
+    private int soLuong;
+    private Date thoiGian;
     private double donGia;
+    private String hinhThucThanhToan;
     private double thanhTien;
     private String trangThai;
 
     public PhieuNhapDTO() {}
 
-    public PhieuNhapDTO(int maPhieuNhap, Date ngayNhap, String maSanPham, int soLuongNhap, String maNhaCungCap, String maNhanVien) {
+    public PhieuNhapDTO(String maPhieuNhap, String maNhaCungCap, String maSanPham, String tenSanPham, 
+                       int soLuong, Date thoiGian, double donGia, String trangThai, String hinhThucThanhToan, double thanhTien) {
         this.maPhieuNhap = maPhieuNhap;
-        this.ngayNhap = ngayNhap;
-        this.maSanPham = maSanPham;
-        this.soLuongNhap = soLuongNhap;
         this.maNhaCungCap = maNhaCungCap;
-        this.maNhanVien = maNhanVien;
+        this.maSanPham = maSanPham;
+        this.tenSanPham = tenSanPham;
+        this.soLuong = soLuong;
+        this.thoiGian = thoiGian;
+        this.donGia = donGia;
+        this.trangThai = trangThai;
+        this.hinhThucThanhToan = hinhThucThanhToan;
+        this.thanhTien = thanhTien;
     }
 
-    // Getter and Setter methods
-    public int getMaPhieuNhap() {
+    public PhieuNhapDTO(String maPhieuNhap, String maSanPham, String maNhaCungCap, 
+                       int soLuong, double donGia, double thanhTien, 
+                       Date thoiGian, String trangThai, String hinhThucThanhToan) {
+        this.maPhieuNhap = maPhieuNhap;
+        this.maSanPham = maSanPham;
+        this.maNhaCungCap = maNhaCungCap;
+        this.soLuong = soLuong;
+        this.donGia = donGia;
+        this.thanhTien = thanhTien;
+        this.thoiGian = thoiGian;
+        this.trangThai = trangThai;
+        this.hinhThucThanhToan = hinhThucThanhToan;
+    }
+
+    // Getters and Setters
+    public String getMaPhieuNhap() {
         return maPhieuNhap;
     }
 
-    public void setMaPhieuNhap(int maPhieuNhap) {
+    public void setMaPhieuNhap(String maPhieuNhap) {
         this.maPhieuNhap = maPhieuNhap;
-    }
-
-    public Date getNgayNhap() {
-        return ngayNhap;
-    }
-
-    public void setNgayNhap(Date ngayNhap) {
-        this.ngayNhap = ngayNhap;
-    }
-
-    public String getMaSanPham() {
-        return maSanPham;
-    }
-
-    public void setMaSanPham(String maSanPham) {
-        this.maSanPham = maSanPham;
-    }
-
-    public int getSoLuongNhap() {
-        return soLuongNhap;
-    }
-
-    public void setSoLuongNhap(int soLuongNhap) {
-        this.soLuongNhap = soLuongNhap;
     }
 
     public String getMaNhaCungCap() {
@@ -69,20 +61,12 @@ public class PhieuNhapDTO {
         this.maNhaCungCap = maNhaCungCap;
     }
 
-    public String getMaNhanVien() {
-        return maNhanVien;
+    public String getMaSanPham() {
+        return maSanPham;
     }
 
-    public void setMaNhanVien(String maNhanVien) {
-        this.maNhanVien = maNhanVien;
-    }
-
-    public String getLoaiSP() {
-        return loaiSP;
-    }
-
-    public void setLoaiSP(String loaiSP) {
-        this.loaiSP = loaiSP;
+    public void setMaSanPham(String maSanPham) {
+        this.maSanPham = maSanPham;
     }
 
     public String getTenSanPham() {
@@ -93,20 +77,20 @@ public class PhieuNhapDTO {
         this.tenSanPham = tenSanPham;
     }
 
-    public String getMauSac() {
-        return mauSac;
+    public int getSoLuong() {
+        return soLuong;
     }
 
-    public void setMauSac(String mauSac) {
-        this.mauSac = mauSac;
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
     }
 
-    public String getKichThuoc() {
-        return kichThuoc;
+    public Date getThoiGian() {
+        return thoiGian;
     }
 
-    public void setKichThuoc(String kichThuoc) {
-        this.kichThuoc = kichThuoc;
+    public void setThoiGian(Date thoiGian) {
+        this.thoiGian = thoiGian;
     }
 
     public double getDonGia() {
@@ -115,6 +99,14 @@ public class PhieuNhapDTO {
 
     public void setDonGia(double donGia) {
         this.donGia = donGia;
+    }
+
+    public String getHinhThucThanhToan() {
+        return hinhThucThanhToan;
+    }
+
+    public void setHinhThucThanhToan(String hinhThucThanhToan) {
+        this.hinhThucThanhToan = hinhThucThanhToan;
     }
 
     public double getThanhTien() {
