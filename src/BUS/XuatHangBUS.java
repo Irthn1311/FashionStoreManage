@@ -125,4 +125,13 @@ public class XuatHangBUS {
     public List<xuatHangDTO> searchXuatHang(String keyword, String searchType) {
         return xuatHangDAO.searchXuatHang(keyword, searchType);
     }
+    
+    public String generateNextMaPX() {
+        String maxMaPX = xuatHangDAO.getMaxMaPX();
+        if (maxMaPX == null || !maxMaPX.matches("PX\\d+")) {
+            return "PX001";
+        }
+        int num = Integer.parseInt(maxMaPX.substring(2));
+        return String.format("PX%03d", num + 1);
+    }
 } 

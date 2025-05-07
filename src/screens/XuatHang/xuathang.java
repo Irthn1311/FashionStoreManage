@@ -18,6 +18,7 @@ public class xuathang extends javax.swing.JPanel {
         initComponents();
         loadComboBoxData();
         loadXuatHangTable();
+        loadKhachHangComboBox();
         javax.swing.event.DocumentListener docListener = new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 calculateThanhTien();
@@ -35,7 +36,6 @@ public class xuathang extends javax.swing.JPanel {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 int selectedRow = jTable1.getSelectedRow();
                 if (selectedRow == -1) {
-                    JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần xóa!");
                     return;
                 }
                 // Lấy mã phiếu xuất (MaPX) từ dòng được chọn
@@ -73,10 +73,89 @@ public class xuathang extends javax.swing.JPanel {
                     DAO.SanPhamDAO dao = new DAO.SanPhamDAO();
                     DTO.sanPhamDTO sp = dao.getSanPhamByMa(maSP);
                     if (sp != null) {
+                        jTextField1.setText(sp.getTenSanPham());
+                        jTextField3.setText(sp.getMauSac());
+                        jTextField4.setText(sp.getSize());
                         jTextField7.setText(String.valueOf(sp.getGiaBan()));
+                        // Tính lại thành tiền nếu có số lượng
+                        calculateThanhTien();
                     } else {
+                        // Xóa các trường nếu không tìm thấy sản phẩm
+                        jTextField1.setText("");
+                        jTextField3.setText("");
+                        jTextField4.setText("");
                         jTextField7.setText("");
+                        jTextField9.setText("");
                     }
+                }
+            }
+        });
+        cbMaKhachHang.addActionListener(e -> {
+            int idx = cbMaKhachHang.getSelectedIndex();
+            if (idx >= 0 && idx < cbTenKhachHang.getItemCount()) {
+                cbTenKhachHang.setSelectedIndex(idx);
+            }
+        });
+        cbTenKhachHang.addActionListener(e -> {
+            int idx = cbTenKhachHang.getSelectedIndex();
+            if (idx >= 0 && idx < cbMaKhachHang.getItemCount()) {
+                cbMaKhachHang.setSelectedIndex(idx);
+            }
+        });
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    // 1. Lấy tất cả phiếu xuất đang xử lý
+                    java.sql.Connection conn = DTB.ConnectDB.getConnection();
+                    String sql = "SELECT * FROM XuatHang WHERE TrangThai = 'Đang xử lý'";
+                    java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+                    java.sql.ResultSet rs = ps.executeQuery();
+
+                    BUS.HoaDonBUS hoaDonBUS = new BUS.HoaDonBUS();
+
+                    // 2. Chuyển từng dòng sang bảng HoaDon
+                    while (rs.next()) {
+                        DTO.hoaDonDTO hd = new DTO.hoaDonDTO();
+                        hd.setMaHoaDon("HD" + System.currentTimeMillis() + (int)(Math.random()*1000)); // Sinh mã hóa đơn
+                        hd.setMaSanPham(rs.getString("MaSanPham"));
+                        hd.setTenSanPham(rs.getString("TenSanPham"));
+                        hd.setKichCo(rs.getString("KichThuoc"));
+                        hd.setMauSac(rs.getString("MauSac"));
+                        hd.setSoLuong(rs.getInt("SoLuong"));
+                        hd.setMaKhachHang(rs.getString("MaKhachHang"));
+                        hd.setTenKhachHang(rs.getString("HoTen"));
+                        hd.setThanhTien(rs.getDouble("ThanhTien"));
+                        hd.setDonGia(rs.getDouble("DonGia"));
+                        hd.setHinhThucThanhToan(rs.getString("HinhThucThanhToan"));
+                        hd.setThoiGian(new java.sql.Timestamp(System.currentTimeMillis()));
+                        hd.setTrangThai("Hoàn thành");
+                        hoaDonBUS.addHoaDon(hd);
+
+                        // === GIẢM TỒN KHO SẢN PHẨM ===
+                        String maSP = rs.getString("MaSanPham");
+                        int soLuong = rs.getInt("SoLuong");
+                        DAO.SanPhamDAO sanPhamDAO = new DAO.SanPhamDAO();
+                        sanPhamDAO.giamSoLuongTonKho(maSP, soLuong);
+                    }
+                    rs.close();
+                    ps.close();
+
+                    // 3. Xóa tất cả phiếu xuất đang xử lý khỏi bảng XuatHang
+                    String deleteSql = "DELETE FROM XuatHang WHERE TrangThai = 'Đang xử lý'";
+                    java.sql.PreparedStatement psDelete = conn.prepareStatement(deleteSql);
+                    psDelete.executeUpdate();
+                    psDelete.close();
+                    conn.close();
+
+                    // 4. Refresh lại bảng xuất hàng
+                    loadXuatHangTable();
+
+                    // 5. Thông báo thành công
+                    JOptionPane.showMessageDialog(null, "Xác nhận xuất hàng thành công! Dữ liệu đã chuyển sang hóa đơn.");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Lỗi khi xác nhận xuất hàng: " + e.getMessage());
                 }
             }
         });
@@ -130,6 +209,8 @@ public class xuathang extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         lblHinhThucThanhToan = new javax.swing.JLabel();
         cbHinhThucThanhToan = new javax.swing.JComboBox<>();
+        cbMaKhachHang = new javax.swing.JComboBox<>();
+        cbTenKhachHang = new javax.swing.JComboBox<>();
         
 
         pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
@@ -157,7 +238,7 @@ public class xuathang extends javax.swing.JPanel {
 
         pnlContent.setBackground(new java.awt.Color(107, 163, 190));
 
-        jButton17.setText("Xác nhận và Xuất hóa đơn ");
+        jButton17.setText("Xác nhận");
 
         jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -194,8 +275,8 @@ public class xuathang extends javax.swing.JPanel {
             }
         });
         jPanel5.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 71, -1, 41));
-        jPanel5.add(jTextField14, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 24, 183, 41));
-        jPanel5.add(jTextField15, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 71, 183, 41));
+        jPanel5.add(cbMaKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 24, 183, 41));
+        jPanel5.add(cbTenKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 71, 183, 41));
 
         jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 180, 320, 120));
 
@@ -237,22 +318,39 @@ public class xuathang extends javax.swing.JPanel {
         jButton18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
+                    // Validate dữ liệu
+                    if (cbMaSanPham.getSelectedItem() == null || jTextField10.getText().trim().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm và nhập số lượng!");
+                        return;
+                    }
+
+                    String maSP = cbMaSanPham.getSelectedItem().toString();
+                    int soLuong = Integer.parseInt(jTextField10.getText().trim());
                     
-                    // Get data from form
-                    String maPX = "PX" + System.currentTimeMillis(); // Or use your own ID generation logic
-                    String maKH = jTextField14.getText().trim();
-                    String tenKH = jTextField15.getText().trim();
-                    String maSP = (String) cbMaSanPham.getSelectedItem();
+                    // Kiểm tra tồn kho
+                    SanPhamDAO sanPhamDAO = new SanPhamDAO();
+                    if (!sanPhamDAO.kiemTraTonKho(maSP, soLuong)) {
+                        JOptionPane.showMessageDialog(null, "Không đủ số lượng trong kho!");
+                        return;
+                    }
+
+                    // Thêm vào bảng XuatHang
+                    BUS.XuatHangBUS xuatHangBUS = new BUS.XuatHangBUS();
+                    String maPX = xuatHangBUS.generateNextMaPX();
+                    String maKH = (String) cbMaKhachHang.getSelectedItem();
+                    String tenKH = (String) cbTenKhachHang.getSelectedItem();
                     String tenSP = jTextField1.getText().trim();
                     String kichThuoc = jTextField4.getText().trim();
                     String mauSac = jTextField3.getText().trim();
-                    int soLuong = Integer.parseInt(jTextField10.getText().trim());
                     double donGia = Double.parseDouble(jTextField7.getText().trim());
                     double thanhTien = Double.parseDouble(jTextField9.getText().trim());
-                    String trangThai = "Đang xử lý"; // Trạng thái mặc định khi thêm mới        
-                    // Insert into database
+                    String hinhThucTT = cbHinhThucThanhToan.getSelectedItem().toString();
+
                     java.sql.Connection conn = DTB.ConnectDB.getConnection();
-                    String sql = "INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    String sql = "INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, " +
+                            "KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Đang xử lý')";
+                    
                     java.sql.PreparedStatement ps = conn.prepareStatement(sql);
                     ps.setString(1, maPX);
                     ps.setString(2, maKH);
@@ -264,21 +362,27 @@ public class xuathang extends javax.swing.JPanel {
                     ps.setInt(8, soLuong);
                     ps.setDouble(9, donGia);
                     ps.setDouble(10, thanhTien);
-                    ps.setString(11, trangThai);
-        
+                    ps.setString(11, hinhThucTT);
+
                     int result = ps.executeUpdate();
                     ps.close();
                     conn.close();
 
                     if (result > 0) {
-                        JOptionPane.showMessageDialog(null, "Thêm phiếu xuất hàng thành công!");
-                        loadXuatHangTable(); // Refresh table
+                        JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào phiếu xuất thành công!");
+                        loadXuatHangTable();
+                        
+                        // Xóa các trường nhập liệu
+                        jTextField10.setText("");
+                        jTextField9.setText("");
+                        cbMaSanPham.setSelectedIndex(0);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Thêm phiếu xuất hàng thất bại!");
+                        JOptionPane.showMessageDialog(null, "Thêm sản phẩm thất bại!");
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Lỗi khi thêm phiếu xuất hàng: " + e.getMessage());
+                    JOptionPane.showMessageDialog(null, "Lỗi khi thêm sản phẩm: " + e.getMessage());
                 }
             }
         });
@@ -387,7 +491,6 @@ public class xuathang extends javax.swing.JPanel {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 int selectedRow = jTable1.getSelectedRow();
                 if (selectedRow == -1) {
-                    JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng cần xóa!");
                     return;
                 }
                 // Lấy mã phiếu xuất (MaPX) từ dòng được chọn
@@ -587,6 +690,17 @@ public class xuathang extends javax.swing.JPanel {
         }
     }
 
+    private void loadKhachHangComboBox() {
+        BUS.KhachHangBUS khachHangBUS = new BUS.KhachHangBUS();
+        java.util.List<DTO.khachHangDTO> list = khachHangBUS.getAllKhachHang();
+        cbMaKhachHang.removeAllItems();
+        cbTenKhachHang.removeAllItems();
+        for (DTO.khachHangDTO kh : list) {
+            cbMaKhachHang.addItem(kh.getMaKhachHang());
+            cbTenKhachHang.addItem(kh.getHoTen());
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -664,5 +778,7 @@ public class xuathang extends javax.swing.JPanel {
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JLabel lblHinhThucThanhToan;
     private javax.swing.JComboBox<String> cbHinhThucThanhToan;
+    private javax.swing.JComboBox<String> cbMaKhachHang;
+    private javax.swing.JComboBox<String> cbTenKhachHang;
     // End of variables declaration//GEN-END:variables
 }
