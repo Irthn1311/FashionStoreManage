@@ -2,15 +2,18 @@ package BUS;
 
 import DAO.NhapHangDAO;
 import DAO.SanPhamDAO;
-import DAO.NhaCungCapDAO;
+import DAO.NhaCungCap_SanPhamDAO;
 import DTO.nhapHangDTO;
+import DTO.sanPhamDTO;
+import DTO.NhaCungCap_SanPhamDTO;
 import java.util.List;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class NhapHangBUS {
     private NhapHangDAO nhapHangDAO;
     private SanPhamDAO sanPhamDAO;
-    private NhaCungCapDAO nhaCungCapDAO;
+    private NhaCungCap_SanPhamDAO nccspDAO;
     
     // Business rules constants
     private static final int MIN_IMPORT_QUANTITY = 5;
@@ -19,7 +22,7 @@ public class NhapHangBUS {
     public NhapHangBUS() {
         nhapHangDAO = new NhapHangDAO();
         sanPhamDAO = new SanPhamDAO();
-        nhaCungCapDAO = new NhaCungCapDAO();
+        nccspDAO = new NhaCungCap_SanPhamDAO();
     }
     
     /**
@@ -58,7 +61,7 @@ public class NhapHangBUS {
         }
         
         // Check if supplier exists and is active
-        if (!nhaCungCapDAO.isSupplierActive(nhapHang.getMaNhaCungCap())) {
+        if (!nccspDAO.isSupplierActive(nhapHang.getMaNhaCungCap())) {
             return false;
         }
         
@@ -76,26 +79,55 @@ public class NhapHangBUS {
      * @return true if successful, false otherwise
      */
     public boolean themNhapHang(nhapHangDTO nhapHang) {
-        if (!validateImportData(nhapHang)) {
-            return false;
-        }
-        
-        // Generate unique import ID
-        nhapHang.setMaPN("PN" + System.currentTimeMillis());
-        
-        // Set default status
-        nhapHang.setTrangThai("Chưa nhập");
-        
-        // Calculate total amount
         try {
-            double donGia = Double.parseDouble(nhapHang.getDonGia());
-            int soLuong = Integer.parseInt(nhapHang.getSoLuong());
-            nhapHang.setThanhTien(String.valueOf(donGia * soLuong));
-        } catch (NumberFormatException e) {
+            // Kiểm tra và thêm mối quan hệ nhà cung cấp-sản phẩm
+            List<NhaCungCap_SanPhamDTO> existingRelations = nccspDAO.getNhaCungCapBySanPham(nhapHang.getMaSanPham());
+            boolean relationExists = existingRelations.stream()
+                .anyMatch(rel -> rel.getMaNhaCungCap().equals(nhapHang.getMaNhaCungCap()));
+
+            if (!relationExists) {
+                NhaCungCap_SanPhamDTO newRelation = new NhaCungCap_SanPhamDTO(nhapHang.getMaNhaCungCap(), nhapHang.getMaSanPham());
+                if (!nccspDAO.themNhaCungCap_SanPham(newRelation)) {
+                    return false;
+                }
+            }
+
+            // Tạo mã sản phẩm mới cho nhà cung cấp này
+            String newMaSP = nhapHang.getMaSanPham() + "_" + nhapHang.getMaNhaCungCap();
+            
+            // Kiểm tra xem sản phẩm với mã mới đã tồn tại chưa
+            if (!sanPhamDAO.isProductExists(newMaSP)) {
+                // Lấy thông tin sản phẩm gốc
+                sanPhamDTO originalProduct = sanPhamDAO.getSanPhamByMa(nhapHang.getMaSanPham());
+                if (originalProduct != null) {
+                    // Tạo sản phẩm mới với mã mới
+                    sanPhamDTO newProduct = new sanPhamDTO();
+                    newProduct.setMaSanPham(newMaSP);
+                    newProduct.setTenSanPham(originalProduct.getTenSanPham());
+                    newProduct.setMaNhaCungCap(nhapHang.getMaNhaCungCap());
+                    newProduct.setMaDanhMuc(originalProduct.getMaDanhMuc());
+                    newProduct.setMauSac(originalProduct.getMauSac());
+                    newProduct.setSize(originalProduct.getSize());
+                    newProduct.setSoLuongTonKho(0);
+                    newProduct.setGiaBan(originalProduct.getGiaBan());
+                    newProduct.setImgURL(originalProduct.getImgURL());
+                    newProduct.setTrangThai("Còn hàng");
+
+                    if (!sanPhamDAO.addSanPham(newProduct)) {
+                        return false;
+                    }
+                }
+            }
+
+            // Cập nhật mã sản phẩm trong phiếu nhập
+            nhapHang.setMaSanPham(newMaSP);
+
+            // Thêm phiếu nhập
+            return nhapHangDAO.themNhapHang(nhapHang);
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        
-        return nhapHangDAO.themNhapHang(nhapHang);
     }
     
     /**
@@ -173,5 +205,34 @@ public class NhapHangBUS {
             return null;
         }
         return nhapHangDAO.searchNhapHang(keyword, searchType);
+    }
+
+    public boolean xuLyPhieuNhap() {
+        try {
+            boolean success = true;
+            List<nhapHangDTO> processingItems = nhapHangDAO.getAllNhapHang().stream()
+                .filter(item -> "Đang xử lý".equals(item.getTrangThai()))
+                .collect(Collectors.toList());
+
+            for (nhapHangDTO item : processingItems) {
+                // Cập nhật số lượng sản phẩm
+                if (!sanPhamDAO.updateProductQuantity(item.getMaSanPham(), 
+                    Integer.parseInt(item.getSoLuong()))) {
+                    success = false;
+                    break;
+                }
+
+                // Cập nhật trạng thái phiếu nhập
+                if (!nhapHangDAO.capNhatTrangThai(item.getMaPN(), "Đã xử lý")) {
+                    success = false;
+                    break;
+                }
+            }
+
+            return success;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

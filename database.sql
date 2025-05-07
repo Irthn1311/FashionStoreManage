@@ -339,6 +339,7 @@ CREATE TABLE PhieuNhap (
     SoLuong INT,
     ThoiGian DATETIME DEFAULT GETDATE(),
     DonGia DECIMAL(15,2),
+    TrangThai NVARCHAR(50),
     HinhThucThanhToan NVARCHAR(50),
     ThanhTien DECIMAL(15,2),
     FOREIGN KEY (MaNhaCungCap) REFERENCES NhaCungCap(MaNhaCungCap),
@@ -346,15 +347,15 @@ CREATE TABLE PhieuNhap (
 );
 
 -- Thêm dữ liệu mẫu cho bảng PhieuNhap
-INSERT INTO PhieuNhap (MaPhieuNhap, MaNhaCungCap, MaSanPham, TenSanPham, SoLuong, ThoiGian, DonGia, HinhThucThanhToan, ThanhTien)
+INSERT INTO PhieuNhap (MaPhieuNhap, MaNhaCungCap, MaSanPham, TenSanPham, SoLuong, ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien)
 VALUES
-('PN001', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', 50, '2025-03-01 10:30:00', 250000, N'Chuyển khoản', 12500000),
-('PN002', 'NCC001', 'SP0002', N'Áo thun thế chữ', 40, '2025-03-05 14:15:00', 400000, N'Tiền mặt', 16000000),
-('PN003', 'NCC001', 'SP0003', N'Áo form rộng', 30, '2025-03-10 09:45:00', 450000, N'Chuyển khoản', 13500000),
-('PN004', 'NCC004', 'SP0004', N'Áo khoác gió', 25, '2025-03-15 16:20:00', 350000, N'Tiền mặt', 8750000),
-('PN005', 'NCC004', 'SP0005', N'Áo khoác nam nữ', 35, '2025-03-20 11:05:00', 650000, N'Chuyển khoản', 22750000),
-('PN006', 'NCC001', 'SP0006', N'Áo nữ tay dài', 20, '2025-03-25 13:30:00', 500000, N'Tiền mặt', 10000000),
-('PN007', 'NCC001', 'SP0007', N'Áo thun big size', 45, '2025-04-01 10:00:00', 120000, N'Chuyển khoản', 5400000),
-('PN008', 'NCC001', 'SP0009', N'Áo thun cotton', 30, '2025-04-05 15:45:00', 250000, N'Tiền mặt', 7500000),
-('PN009', 'NCC001', 'SP0011', N'Áo thun Mikey', 25, '2025-04-10 09:30:00', 180000, N'Chuyển khoản', 4500000),
-('PN010', 'NCC003', 'SP0014', N'Giày Air', 40, '2025-04-15 14:00:00', 260000, N'Tiền mặt', 10400000);
+('PN001', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', 50, '2025-03-01 10:30:00', 250000, N'Đã xử lý', N'Chuyển khoản', 12500000),
+('PN002', 'NCC001', 'SP0002', N'Áo thun thế chữ', 40, '2025-03-05 14:15:00', 400000, N'Đã xử lý', N'Tiền mặt', 16000000),
+('PN003', 'NCC001', 'SP0003', N'Áo form rộng', 30, '2025-03-10 09:45:00', 450000, N'Đã xử lý', N'Chuyển khoản', 13500000),
+('PN004', 'NCC004', 'SP0004', N'Áo khoác gió', 25, '2025-03-15 16:20:00', 350000, N'Đã xử lý', N'Tiền mặt', 8750000),
+('PN005', 'NCC004', 'SP0005', N'Áo khoác nam nữ', 35, '2025-03-20 11:05:00', 650000, N'Đã xử lý', N'Chuyển khoản', 22750000),
+('PN006', 'NCC001', 'SP0006', N'Áo nữ tay dài', 20, '2025-03-25 13:30:00', 500000, N'Đã xử lý', N'Tiền mặt', 10000000),
+('PN007', 'NCC001', 'SP0007', N'Áo thun big size', 45, '2025-04-01 10:00:00', 120000, N'Đã xử lý', N'Chuyển khoản', 5400000),
+('PN008', 'NCC001', 'SP0009', N'Áo thun cotton', 30, '2025-04-05 15:45:00', 250000, N'Đã xử lý', N'Tiền mặt', 7500000),
+('PN009', 'NCC001', 'SP0011', N'Áo thun Mikey', 25, '2025-04-10 09:30:00', 180000, N'Đã xử lý', N'Chuyển khoản', 4500000),
+('PN010', 'NCC003', 'SP0014', N'Giày Air', 40, '2025-04-15 14:00:00', 260000, N'Đã xử lý', N'Tiền mặt', 10400000);
