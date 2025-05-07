@@ -436,7 +436,7 @@ public class nhaphang extends javax.swing.JPanel {
                 jButton16.addActionListener(evt -> jButton16ActionPerformed(evt));
                 jPanel7.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 340, -1, 60));
 
-                jButton17.setText("Xác nhận và Xuất hóa đơn ");
+                jButton17.setText("Xác nhận và Xuất Phiếu Nhập ");
                 jButton17.addActionListener(evt -> jButton17ActionPerformed(evt));
                 jPanel7.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, -1, 60));
 
