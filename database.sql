@@ -1,7 +1,10 @@
 -- Tạo bảng NhanVien
 CREATE TABLE NhanVien (
     MaNhanVien NVARCHAR(100) PRIMARY KEY,
+    MaNhanVien NVARCHAR(100) PRIMARY KEY,
     HoTen NVARCHAR(100),
+    Email NVARCHAR(100),
+    SoDienThoai NVARCHAR(15),
     Email NVARCHAR(100),
     SoDienThoai NVARCHAR(15),
     DiaChi NVARCHAR(255),
@@ -11,6 +14,7 @@ CREATE TABLE NhanVien (
     MucLuong DECIMAL(15, 2),
     ChucVu NVARCHAR(50),
     TrangThai NVARCHAR(50),
+    MaQuanLy NVARCHAR(100),
     MaQuanLy NVARCHAR(100),
     FOREIGN KEY (MaQuanLy) REFERENCES NhanVien(MaNhanVien)
 );
@@ -23,19 +27,24 @@ VALUES
 ('NV004', N'Le Hoang Nam', 'nam.le@abc.com', '0912345681', N'321 Nguyen Du, TP.HCM', '1988-06-14', N'Nam', '2022-02-20', 11000000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV002'),
 ('NV005', N'Hoang Minh Tam', 'tam.hoang@abc.com', '0912345682', N'654 Tran Hung Dao, TP.HCM', '1995-07-30', N'Nam', '2023-03-18', 13000000.00, N'Nhân viên kho', N'Đang làm', 'NV003'),
 ('NV006', N'Nguyen Thi Bich', 'bich.nguyen@abc.com', '0912345683', N'987 Ham Nghi, TP.HCM', '1989-09-05', N'Nữ', '2021-06-10', 10500000.00, N'Quản lý kho', N'Đang làm', 'NV002'),
-('NV007', N'Phan Minh Khoa', 'khoa.phan@abc.com', '0912345684', N'654 Le Van Sy, TP.HCM', '1993-12-25', N'Nam', '2020-09-10', 11500000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV001'),
+('NV007', N'Phan Minh Khoa', 'khoa.phan@abc.com', '0912345684', N'654 Le Van Sy, TP.HCM', '1993-12-25', N'Nam', '2020-09-10', ceding11500000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV001'),
 ('NV008', N'Le Thi Bao', 'bao.le@abc.com', '0912345685', N'123 Cong Hoa, TP.HCM', '1991-02-17', N'Nữ', '2019-11-25', 9800000.00, N'Nhân viên kho', N'Đang làm', 'NV003'),
 ('NV009', N'Vu Thi Lan', 'lan.vu@abc.com', '0912345686', N'246 Trieu Quang Phuc, TP.HCM', '1990-04-11', N'Nữ', '2022-07-05', 10000000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV004'),
 ('NV010', N'Doan Minh Tuan', 'tuan.doan@abc.com', '0912345687', N'258 Hai Ba Trung, TP.HCM', '1994-01-19', N'Nam', '2020-04-18', 10800000.00, N'Quản lý kho', N'Đang làm', 'NV001');
 
 -- Tạo bảng TaiKhoan
+-- Tạo bảng TaiKhoan
 CREATE TABLE TaiKhoan (
+    MaTaiKhoan NVARCHAR(100) PRIMARY KEY,
+    TenDangNhap NVARCHAR(50) UNIQUE,
+    MatKhau NVARCHAR(100),
     MaTaiKhoan NVARCHAR(100) PRIMARY KEY,
     TenDangNhap NVARCHAR(50) UNIQUE,
     MatKhau NVARCHAR(100),
     VaiTro NVARCHAR(50) CHECK (VaiTro IN (N'Quản trị', N'Quản lý kho', N'Quản lý nhân viên', N'Nhân viên')),
     TrangThai INT DEFAULT 1,
     NgayTao DATETIME DEFAULT GETDATE(),
+    MaNhanVien NVARCHAR(100) UNIQUE,
     MaNhanVien NVARCHAR(100) UNIQUE,
     FOREIGN KEY (MaNhanVien) REFERENCES NhanVien(MaNhanVien)
 );
@@ -55,8 +64,11 @@ INSERT INTO TaiKhoan VALUES
 -- Tạo bảng KhachHang
 CREATE TABLE KhachHang (
     MaKhachHang NVARCHAR(100) PRIMARY KEY,
+    MaKhachHang NVARCHAR(100) PRIMARY KEY,
     HoTen NVARCHAR(100),
     GioiTinh NVARCHAR(10),
+    SoDienThoai NVARCHAR(20),
+    Email NVARCHAR(100),
     SoDienThoai NVARCHAR(20),
     Email NVARCHAR(100),
     DiaChi NVARCHAR(200),
@@ -78,9 +90,11 @@ INSERT INTO KhachHang (MaKhachHang, HoTen, GioiTinh, SoDienThoai, Email, DiaChi,
 -- Tạo bảng KhoHang
 CREATE TABLE KhoHang (
     MaKhoHang NVARCHAR(100) PRIMARY KEY,
+    MaKhoHang NVARCHAR(100) PRIMARY KEY,
     TenKho NVARCHAR(200),
     DiaChi NVARCHAR(200),
     SoLuong INT,
+    MaQuanLy BIGINT
     MaQuanLy BIGINT
 );
 
@@ -99,10 +113,13 @@ INSERT INTO KhoHang (MaKhoHang, TenKho, DiaChi, SoLuong, MaQuanLy) VALUES
 -- Tạo bảng NhaCungCap
 CREATE TABLE NhaCungCap (
     MaNhaCungCap NVARCHAR(100) PRIMARY KEY,
+    MaNhaCungCap NVARCHAR(100) PRIMARY KEY,
     TenNhaCungCap NVARCHAR(200),
     LoaiSP NVARCHAR(100),
     NamHopTac INT,
     DiaChi NVARCHAR(200),
+    Email NVARCHAR(100),
+    SoDienThoai NVARCHAR(20),
     Email NVARCHAR(100),
     SoDienThoai NVARCHAR(20),
     TrangThai NVARCHAR(50)
@@ -123,12 +140,19 @@ INSERT INTO NhaCungCap (MaNhaCungCap, TenNhaCungCap, LoaiSP, NamHopTac, DiaChi, 
 -- Tạo bảng SanPham
 CREATE TABLE SanPham (
     MaSanPham NVARCHAR(100) PRIMARY KEY,
+    MaSanPham NVARCHAR(100) PRIMARY KEY,
     TenSanPham NVARCHAR(200),
     MaNhaCungCap NVARCHAR(100),
     MaDanhMuc NVARCHAR(100),
     MauSac NVARCHAR(100),
     Size NVARCHAR(50),
+    MaNhaCungCap NVARCHAR(100),
+    MaDanhMuc NVARCHAR(100),
+    MauSac NVARCHAR(100),
+    Size NVARCHAR(50),
     SoLuongTonKho INT,
+    GiaBan DECIMAL(15,2),
+    ImgURL NVARCHAR(500),
     GiaBan DECIMAL(15,2),
     ImgURL NVARCHAR(500),
     TrangThai NVARCHAR(50),
@@ -152,9 +176,27 @@ VALUES
 ('SP013', N'Áo thun phi hành gia', 'NCC003', N'Áo', N'Đỏ', 'XL', 20, 499000, 'img_product\aothunphihanhgia.jpg', N'Hết hàng'),
 ('SP014', N'Giày Air', 'NCC004', N'Giày', N'Hồng', 'S', 40, 299000, 'img_product\giayair.jpg', N'Còn hàng'),
 ('SP015', N'Giày Lucky', 'NCC001', N'Giày', N'Trắng', 'M', 60, 259000, 'img_product\giaylucky.jpg', N'Còn hàng');
+('SP001', N'Áo sơ mi nam trắng', 'NCC001', N'Áo', N'Trắng', 'L', 120, 299000, 'img_product\aobongro.jpg', N'Còn hàng'),
+('SP002', N'Áo thun thế chữ', 'NCC002', N'Áo', N'Xanh', 'M', 80, 459000, 'img_product\anthuntheuchu.webp', N'Còn hàng'),
+('SP003', N'Áo form rộng', 'NCC003', N'Áo', N'Đen', 'S', 60, 499000, 'img_product\aoformrong.jpg', N'Còn hàng'),
+('SP004', N'Áo khoác gió', 'NCC004', N'Áo', N'Hồng', 'M', 75, 399000, 'img_product\aokhoacgio.jpg', N'Còn hàng'),
+('SP005', N'Áo khoác nam nữ', 'NCC005', N'Áo', N'Trắng', '42', 50, 750000, 'img_product\aokhoacnamnu.jpg', N'Còn hàng'),
+('SP006', N'Áo nữ tay dài', 'NCC006', N'Áo', N'Nâu', 'Free size', 40, 550000, 'img_product\aonutaydai.jpg', N'Còn hàng'),
+('SP007', N'Áo thun big size', 'NCC007', N'Áo', N'Đen', 'Free size', 200, 150000, 'img_product\aothunbigsize.jpg', N'Còn hàng'),
+('SP008', N'Áo thun cổ trắng', 'NCC008', N'Áo', N'Bạc', 'Free size', 30, 1200000, 'img_product\aothuncotrang.jpg', N'Còn hàng'),
+('SP009', N'Áo thun cotton', 'NCC009', N'Áo', N'Nâu', 'Free size', 100, 299000, 'img_product\aothuncotton.jpg', N'Còn hàng'),
+('SP010', N'Áo thun hình mèo', 'NCC010', N'Áo', N'Đen', 'S', 90, 199000, 'img_product\aothunhinhmeo.jpg', N'Còn hàng'),
+('SP011', N'Áo thun Mikey', 'NCC001', N'Áo', N'Đen', 'L', 50, 199009, 'img_product\aothunmikey.jpg', N'Còn hàng'),
+('SP012', N'Áo thun thể thao', 'NCC002', N'Áo', N'Xanh', 'M', 30, 399000, 'img_product\aothunthethao.jpg', N'Còn hàng'),
+('SP013', N'Áo thun phi hành gia', 'NCC003', N'Áo', N'Đỏ', 'XL', 20, 499000, 'img_product\aothunphihanhgia.jpg', N'Hết hàng'),
+('SP014', N'Giày Air', 'NCC004', N'Giày', N'Hồng', 'S', 40, 299000, 'img_product\giayair.jpg', N'Còn hàng'),
+('SP015', N'Giày Lucky', 'NCC001', N'Giày', N'Trắng', 'M', 60, 259000, 'img_product\giaylucky.jpg', N'Còn hàng');
 
 -- Tạo bảng NhaCungCap_SanPham
+-- Tạo bảng NhaCungCap_SanPham
 CREATE TABLE NhaCungCap_SanPham (
+    MaNhaCungCap NVARCHAR(100),
+    MaSanPham NVARCHAR(100),
     MaNhaCungCap NVARCHAR(100),
     MaSanPham NVARCHAR(100),
     PRIMARY KEY (MaNhaCungCap, MaSanPham),
@@ -162,7 +204,18 @@ CREATE TABLE NhaCungCap_SanPham (
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
 );
 
+
 INSERT INTO NhaCungCap_SanPham (MaNhaCungCap, MaSanPham) VALUES
+('NCC001', 'SP001'),
+('NCC002', 'SP002'),
+('NCC003', 'SP005'),
+('NCC004', 'SP003'),
+('NCC005', 'SP007'),
+('NCC006', 'SP006'),
+('NCC007', 'SP001'),
+('NCC008', 'SP008'),
+('NCC009', 'SP009'),
+('NCC010', 'SP010');
 ('NCC001', 'SP001'),
 ('NCC002', 'SP002'),
 ('NCC003', 'SP005'),
@@ -178,14 +231,18 @@ INSERT INTO NhaCungCap_SanPham (MaNhaCungCap, MaSanPham) VALUES
 CREATE TABLE HoaDon (
     MaHoaDon NVARCHAR(100) PRIMARY KEY,
     MaSanPham NVARCHAR(100),
+    MaHoaDon NVARCHAR(100) PRIMARY KEY,
+    MaSanPham NVARCHAR(100),
     TenSanPham NVARCHAR(200),
     KichCo NVARCHAR(50),
     MauSac NVARCHAR(50),
     SoLuong INT,
     MaKhachHang NVARCHAR(100),
+    MaKhachHang NVARCHAR(100),
     ThanhTien DECIMAL(15,2),
     DonGia DECIMAL(15,2),
     HinhThucThanhToan NVARCHAR(100),
+    GioXuatHang NVARCHAR(50),
     GioXuatHang NVARCHAR(50),
     ThoiGian TIMESTAMP,
     TrangThai NVARCHAR(50),
@@ -208,8 +265,26 @@ INSERT INTO HoaDon (
 ('HD009', 'SP009', N'Kính Mát', N'M', N'Đen', 1, 'KH007', 950000, 950000, N'Tiền mặt', '12:25', N'Đang xử lý'),
 ('HD010', 'SP010', N'Túi Đeo Chéo', N'S', N'Nâu', 1, 'KH008', 850000, 850000, N'Chuyển khoản', '08:55', N'Hoàn thành');
 
+INSERT INTO HoaDon (
+    MaHoaDon, MaSanPham, TenSanPham, KichCo, MauSac, SoLuong, MaKhachHang,
+    ThanhTien, DonGia, HinhThucThanhToan, GioXuatHang, TrangThai
+) VALUES
+('HD001', 'SP001', N'Áo Thun Nam', N'L', N'Đen', 2, 'KH001', 500000, 250000, N'Tiền mặt', '14:00', N'Hoàn thành'),
+('HD002', 'SP002', N'Quần Jeans', N'M', N'Xanh', 1, 'KH002', 400000, 400000, N'Chuyển khoản', '10:30', N'Chờ giao'),
+('HD003', 'SP003', N'Giày Sneaker', N'42', N'Trắng', 1, 'KH003', 1200000, 1200000, N'Tiền mặt', '15:45', N'Đang xử lý'),
+('HD004', 'SP004', N'Áo Khoác Hoodie', N'XL', N'Xám', 1, 'KH001', 650000, 650000, N'Chuyển khoản', '09:15', N'Hoàn thành'),
+('HD005', 'SP005', N'Mũ Lưỡi Trai', N'Free Size', N'Đỏ', 3, 'KH004', 450000, 150000, N'Tiền mặt', '13:20', N'Đã hủy'),
+('HD006', 'SP006', N'Balo Thể Thao', N'M', N'Đen', 1, 'KH005', 700000, 700000, N'Chuyển khoản', '16:10', N'Hoàn thành'),
+('HD007', 'SP007', N'Áo Sơ Mi Nam', N'L', N'Trắng', 2, 'KH002', 600000, 300000, N'Tiền mặt', '11:40', N'Chờ giao'),
+('HD008', 'SP008', N'Vớ Nam', N'Free Size', N'Xám', 5, 'KH006', 250000, 50000, N'Chuyển khoản', '17:05', N'Hoàn thành'),
+('HD009', 'SP009', N'Kính Mát', N'M', N'Đen', 1, 'KH007', 950000, 950000, N'Tiền mặt', '12:25', N'Đang xử lý'),
+('HD010', 'SP010', N'Túi Đeo Chéo', N'S', N'Nâu', 1, 'KH008', 850000, 850000, N'Chuyển khoản', '08:55', N'Hoàn thành');
+
 -- Tạo bảng NhapHang
 CREATE TABLE NhapHang (
+    MaPN NVARCHAR(100) PRIMARY KEY,
+    MaNhaCungCap NVARCHAR(100),
+    MaSanPham NVARCHAR(100),
     MaPN NVARCHAR(100) PRIMARY KEY,
     MaNhaCungCap NVARCHAR(100),
     MaSanPham NVARCHAR(100),
@@ -219,6 +294,7 @@ CREATE TABLE NhapHang (
     SoLuong INT,
     DonGia DECIMAL(15,2),
     ThanhTien DECIMAL(15,2),
+    HinhThucThanhToan NVARCHAR(100),
     HinhThucThanhToan NVARCHAR(100),
     ThoiGian DATETIME DEFAULT GETDATE(),
     TrangThai NVARCHAR(50),
@@ -242,11 +318,30 @@ VALUES
 
 -- Tස
 
+-- Thêm dữ liệu mẫu cho bảng NhapHang
+INSERT INTO NhapHang (MaPN, MaNhaCungCap, MaSanPham, TenSanPham, MauSac, KichThuoc, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai)
+VALUES
+('PN001', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Trắng', N'L', 50, 250000, 12500000, N'Chuyển khoản', N'Đã nhập'),
+('PN002', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Trắng', N'M', 30, 250000, 7500000, N'Tiền mặt', N'Đã nhập'),
+('PN003', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Trắng', N'S', 40, 250000, 10000000, N'Chuyển khoản', N'Đã nhập'),
+('PN004', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Trắng', N'XL', 25, 250000, 6250000, N'Tiền mặt', N'Chưa nhập'),
+('PN005', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Trắng', N'XXL', 15, 250000, 3750000, N'Chuyển khoản', N'Chưa nhập'),
+('PN006', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Xanh nhạt', N'L', 35, 260000, 9100000, N'Tiền mặt', N'Đã nhập'),
+('PN007', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Xanh nhạt', N'M', 45, 260000, 11700000, N'Chuyển khoản', N'Đã nhập'),
+('PN008', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Xanh nhạt', N'S', 20, 260000, 5200000, N'Tiền mặt', N'Chưa nhập'),
+('PN009', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Xanh nhạt', N'XL', 10, 260000, 2600000, N'Chuyển khoản', N'Chưa nhập'),
+('PN010', 'NCC001', 'SP001', N'Áo sơ mi nam trắng', N'Xanh nhạt', N'XXL', 5, 260000, 1300000, N'Tiền mặt', N'Đã nhập');
+
+-- Tස
+
 -- Tạo bảng XuatHang
 CREATE TABLE XuatHang (
     MaPX NVARCHAR(100) PRIMARY KEY,
     MaKhachHang NVARCHAR(100),
+    MaPX NVARCHAR(100) PRIMARY KEY,
+    MaKhachHang NVARCHAR(100),
     HoTen NVARCHAR(100),
+    MaSanPham NVARCHAR(100),
     MaSanPham NVARCHAR(100),
     TenSanPham NVARCHAR(200),
     KichThuoc NVARCHAR(50),
@@ -254,6 +349,8 @@ CREATE TABLE XuatHang (
     SoLuong INT,
     DonGia DECIMAL(15,2),
     ThanhTien DECIMAL(15,2),
+    HinhThucThanhToan NVARCHAR(100),
+    ThoiGian DATETIME DEFAULT GETDATE(),
     HinhThucThanhToan NVARCHAR(100),
     ThoiGian DATETIME DEFAULT GETDATE(),
     TrangThai NVARCHAR(50),
@@ -278,7 +375,28 @@ INSERT INTO XuatHang (
 ('PX010', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'M', N'Trắng', 2, 300000, 600000, N'Tiền mặt', N'Đã giao');
 
 -- Tạo bảng KhuyenMai
+-- Thêm dữ liệu mẫu cho bảng XuatHang
+INSERT INTO XuatHang (
+    MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, KichThuoc, MauSac,
+    SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai
+) VALUES
+('PX001', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'M', N'Trắng', 2, 300000, 600000, N'Chuyển khoản', N'Hoàn thành'),
+('PX002', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'L', N'Trắng', 1, 300000, 300000, N'Tiền mặt', N'Đã xuất'),
+('PX003', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'S', N'Trắng', 3, 300000, 900000, N'Chuyển khoản', N'Đang xử lý'),
+('PX004', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'XL', N'Trắng', 2, 300000, 600000, N'Tiền mặt', N'Chờ xác nhận'),
+('PX005', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'M', N'Trắng', 4, 300000, 1200000, N'Chuyển khoản', N'Đang giao'),
+('PX006', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'L', N'Trắng', 1, 300000, 300000, N'Tiền mặt', N'Hoàn thành'),
+('PX007', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'L', N'Trắng', 2, 300000, 600000, N'Chuyển khoản', N'Hoàn thành'),
+('PX008', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'M', N'Trắng', 1, 300000, 300000, N'Tiền mặt', N'Đã xuất'),
+('PX009', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'L', N'Trắng', 1, 300000, 300000, N'Chuyển khoản', N'Đang xử lý'),
+('PX010', 'KH001', N'Nguyễn Văn An', 'SP001', N'Áo sơ mi nam trắng', N'M', N'Trắng', 2, 300000, 600000, N'Tiền mặt', N'Đã giao');
+
+-- Tạo bảng KhuyenMai
 CREATE TABLE KhuyenMai (
+    MaKhuyenMai NVARCHAR(50) PRIMARY KEY,
+    MaSanPham NVARCHAR(50) NOT NULL,
+    TenSanPham NVARCHAR(100) NOT NULL,
+    TenChuongTrinh NVARCHAR(100) NOT NULL,
     MaKhuyenMai NVARCHAR(50) PRIMARY KEY,
     MaSanPham NVARCHAR(50) NOT NULL,
     TenSanPham NVARCHAR(100) NOT NULL,
@@ -286,6 +404,9 @@ CREATE TABLE KhuyenMai (
     GiamGia DECIMAL(5, 2) NOT NULL,
     NgayBatDau DATE NOT NULL,
     NgayKetThuc DATE NOT NULL,
+    GiaCu DECIMAL(10, 2) NOT NULL,
+    GiaMoi DECIMAL(10, 2) NOT NULL,
+    TrangThai NVARCHAR(50) NOT NULL
     GiaCu DECIMAL(10, 2) NOT NULL,
     GiaMoi DECIMAL(10, 2) NOT NULL,
     TrangThai NVARCHAR(50) NOT NULL
@@ -298,9 +419,15 @@ VALUES
 ('KM003', 'SP013', N'Giày thể thao', N'Mùa lễ hội', 25.0, '2025-04-01', '2025-04-30', 500000.0, 375000.0, N'Chưa bắt đầu'),
 ('KM004', 'SP014', N'Balo du lịch', N'Khuyến mãi hè', 15.0, '2025-05-01', '2025-06-30', 400000.0, 340000.0, N'Chưa bắt đầu'),
 ('KM005', 'SP015', N'Mũ lưỡi trai', N'Khuyến mãi nhỏ', 10.0, '2025-02-01', '2025-02-28', 100000.0, 90000.0, N'Hết hạn');
+('KM001', 'SP011', N'Áo thun nam', N'Quý 1 năm nay', 30.0, '2025-01-01', '2025-03-31', 150000.0, 105000.0, N'Hoạt động'),
+('KM002', 'SP012', N'Quần jeans nữ', N'Khuyến mãi đầu năm', 20.0, '2025-01-15', '2025-02-15', 300000.0, 240000.0, N'Hết hạn'),
+('KM003', 'SP013', N'Giày thể thao', N'Mùa lễ hội', 25.0, '2025-04-01', '2025-04-30', 500000.0, 375000.0, N'Chưa bắt đầu'),
+('KM004', 'SP014', N'Balo du lịch', N'Khuyến mãi hè', 15.0, '2025-05-01', '2025-06-30', 400000.0, 340000.0, N'Chưa bắt đầu'),
+('KM005', 'SP015', N'Mũ lưỡi trai', N'Khuyến mãi nhỏ', 10.0, '2025-02-01', '2025-02-28', 100000.0, 90000.0, N'Hết hạn');
 
 -- Tạo bảng ThongKe
 CREATE TABLE ThongKe (
+    MaSanPham NVARCHAR(100),
     MaSanPham NVARCHAR(100),
     TenSanPham NVARCHAR(200),
     SoSPBanRa INT,
@@ -316,11 +443,15 @@ VALUES
 ('SP001', N'Áo sơ mi nam trắng', 30, 7500000);
 
 -- Tạo bảng PhieuNhap
+-- Tạo bảng PhieuNhap
 CREATE TABLE PhieuNhap (
     MaPhieuNhap INT PRIMARY KEY IDENTITY(1,1),
     NgayNhap DATETIME DEFAULT GETDATE(),
     MaSanPham NVARCHAR(100),
+    MaSanPham NVARCHAR(100),
     SoLuongNhap INT,
+    MaNhaCungCap NVARCHAR(100),
+    MaNhanVien NVARCHAR(100),
     MaNhaCungCap NVARCHAR(100),
     MaNhanVien NVARCHAR(100),
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham),

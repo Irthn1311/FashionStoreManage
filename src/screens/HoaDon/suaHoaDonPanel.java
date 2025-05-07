@@ -203,7 +203,7 @@ public class suaHoaDonPanel extends JPanel {
                 if (sp != null) {
                     txtTenSP.setText(sp.getTenSanPham());
                     txtKichCo.setText(sp.getSize());
-                    txtMauSac.setText(""); // Sản phẩm không có thuộc tính màu sắc
+                    txtMauSac.setText(sp.getMauSac()); // Sản phẩm không có thuộc tính màu sắc
                     txtDonGia.setText(String.format("%.0f", sp.getGiaBan()));
                     calculateThanhTien();
                 }

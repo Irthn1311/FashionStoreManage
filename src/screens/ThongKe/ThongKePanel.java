@@ -6,9 +6,21 @@ import DAO.ThongKeDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.Calendar;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.List;
+import java.util.Calendar;
+import java.io.File;
+import java.io.FileOutputStream;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.BorderStyle;
 
 public class ThongKePanel extends JPanel {
     private final ThongKeDAO thongKeDAO = new ThongKeDAO();
@@ -32,6 +44,7 @@ public class ThongKePanel extends JPanel {
         setupComboBoxes();
         setupTable();
         setupListeners();
+        loadAllData(); // Thêm phương thức tải tất cả dữ liệu
     }
 
     private void setupComboBoxes() {
@@ -127,8 +140,103 @@ public class ThongKePanel extends JPanel {
             }
         });
 
-        btnXuatExcel.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Chức năng xuất file Excel đang được phát triển!", "Thông báo", JOptionPane.INFORMATION_MESSAGE));
+        btnXuatExcel.addActionListener(e -> {
+            if (table.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Không có dữ liệu để xuất!",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn nơi lưu file");
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel files", "xlsx"));
+            fileChooser.setSelectedFile(new File("ThongKe.xlsx"));
+
+            int userSelection = fileChooser.showSaveDialog(this);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                String filePath = fileToSave.getAbsolutePath();
+                if (!filePath.toLowerCase().endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+
+                try {
+                    // Tạo workbook mới
+                    XSSFWorkbook workbook = new XSSFWorkbook();
+                    XSSFSheet sheet = workbook.createSheet("Thống kê");
+
+                    // Tạo style cho header
+                    XSSFCellStyle headerStyle = workbook.createCellStyle();
+                    headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+                    headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                    headerStyle.setBorderBottom(BorderStyle.THIN);
+                    headerStyle.setBorderTop(BorderStyle.THIN);
+                    headerStyle.setBorderLeft(BorderStyle.THIN);
+                    headerStyle.setBorderRight(BorderStyle.THIN);
+
+                    // Tạo font cho header
+                    XSSFFont headerFont = workbook.createFont();
+                    headerFont.setBold(true);
+                    headerStyle.setFont(headerFont);
+
+                    // Tạo style cho dữ liệu
+                    XSSFCellStyle dataStyle = workbook.createCellStyle();
+                    dataStyle.setBorderBottom(BorderStyle.THIN);
+                    dataStyle.setBorderTop(BorderStyle.THIN);
+                    dataStyle.setBorderLeft(BorderStyle.THIN);
+                    dataStyle.setBorderRight(BorderStyle.THIN);
+
+                    // Ghi tiêu đề cột
+                    Row headerRow = sheet.createRow(0);
+                    for (int i = 0; i < table.getColumnCount(); i++) {
+                        Cell cell = headerRow.createCell(i);
+                        cell.setCellValue(table.getColumnName(i));
+                        cell.setCellStyle(headerStyle);
+                    }
+
+                    // Ghi dữ liệu
+                    for (int i = 0; i < table.getRowCount(); i++) {
+                        Row row = sheet.createRow(i + 1);
+                        for (int j = 0; j < table.getColumnCount(); j++) {
+                            Cell cell = row.createCell(j);
+                            Object value = table.getValueAt(i, j);
+                            if (value != null) {
+                                if (value instanceof Number) {
+                                    cell.setCellValue(((Number) value).doubleValue());
+                                } else {
+                                    cell.setCellValue(value.toString());
+                                }
+                            }
+                            cell.setCellStyle(dataStyle);
+                        }
+                    }
+
+                    // Tự động điều chỉnh độ rộng cột
+                    for (int i = 0; i < table.getColumnCount(); i++) {
+                        sheet.autoSizeColumn(i);
+                    }
+
+                    // Ghi file
+                    try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                        workbook.write(fileOut);
+                    }
+                    workbook.close();
+
+                    JOptionPane.showMessageDialog(this,
+                            "Xuất file Excel thành công!",
+                            "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "Lỗi khi xuất file Excel: " + ex.getMessage(),
+                            "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 
     private String getLastDayOfMonth(int nam, int thang) {
@@ -166,6 +274,28 @@ public class ThongKePanel extends JPanel {
                     String.format("%.2f", kh.getTongDoanhThu()),
                     kh.getLastTransactionDate() != null ? kh.getLastTransactionDate() : "N/A"
             });
+        }
+    }
+
+    private void loadAllData() {
+        try {
+            // Tải tất cả dữ liệu thống kê sản phẩm từ cơ sở dữ liệu
+            String tuNgay = "2000-01-01"; // Ngày bắt đầu rất xa để lấy tất cả
+            String denNgay = "2100-12-31"; // Ngày kết thúc rất xa
+            List<sanPhamThongKeDTO> sanPhams = thongKeDAO.getSanPhamThongKe(tuNgay, denNgay);
+            updateTableSanPham(sanPhams);
+
+            // Đặt radio button "Sản phẩm bán chạy" làm mặc định
+            rbSanPhamBanChay.setSelected(true);
+
+            // Nếu không có dữ liệu, hiển thị thông báo
+            if (sanPhams.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có dữ liệu thống kê trong cơ sở dữ liệu!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu: " + ex.getMessage(), "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
