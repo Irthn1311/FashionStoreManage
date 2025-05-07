@@ -138,4 +138,27 @@ public class NhapHangDAO {
         }
         return list;
     }
+
+    public boolean capNhatNhapHang(nhapHangDTO nhapHang) {
+        String sql = "UPDATE NhapHang SET MaNhaCungCap=?, LoaiSP=?, MaSanPham=?, TenSanPham=?, MauSac=?, KichThuoc=?, SoLuong=?, DonGia=?, ThanhTien=?, ThoiGian=?, TrangThai=? WHERE MaPN=?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nhapHang.getMaNhaCungCap());
+            ps.setString(2, nhapHang.getLoaiSP());
+            ps.setString(3, nhapHang.getMaSanPham());
+            ps.setString(4, nhapHang.getTenSanPham());
+            ps.setString(5, nhapHang.getMauSac());
+            ps.setString(6, nhapHang.getKichThuoc());
+            ps.setInt(7, Integer.parseInt(nhapHang.getSoLuong()));
+            ps.setDouble(8, Double.parseDouble(nhapHang.getDonGia()));
+            ps.setDouble(9, Double.parseDouble(nhapHang.getThanhTien()));
+            ps.setString(10, nhapHang.getThoiGian());
+            ps.setString(11, nhapHang.getTrangThai());
+            ps.setString(12, nhapHang.getMaPN());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

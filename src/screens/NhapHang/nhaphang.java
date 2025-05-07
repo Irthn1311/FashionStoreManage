@@ -407,8 +407,22 @@ public class nhaphang extends javax.swing.JPanel {
 
                 jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 40, 310, -1));
 
-                jButton15.setText("Hủy");
-                jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, -1, 60));
+        jButton15.setText("Hủy");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                // Reset các trường nhập liệu ở phần Đặt hàng
+                jComboBox6.setSelectedIndex(0);
+                jComboBox7.setSelectedIndex(0);
+                jTextField1.setText("");
+                jTextField3.setText("");
+                jTextField4.setText("");
+                jTextField10.setText("");
+                jTextField7.setText("");
+                jTextField9.setText("");
+                // Không reset jTextField8 (ô mô tả)
+            }
+        });
+        jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, -1, 60));
 
                 jButton18.setText("Thêm");
                 jButton18.addActionListener(new java.awt.event.ActionListener() {
@@ -507,9 +521,41 @@ public class nhaphang extends javax.swing.JPanel {
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {
         try {
+            // Validate dữ liệu đầu vào
+            if (jTextField10.getText().trim().isEmpty() || jTextField7.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ Số lượng và Đơn giá!");
+                return;
+            }
+            try {
+                Integer.parseInt(jTextField10.getText());
+                Double.parseDouble(jTextField7.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Số lượng và Đơn giá phải là số hợp lệ!");
+                return;
+            }
+            if (jComboBox9.getSelectedItem() == null || jComboBox6.getSelectedItem() == null || jComboBox7.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn đầy đủ Nhà cung cấp, Loại SP, Mã SP!");
+                return;
+            }
+
             nhapHangDTO nhapHang = new nhapHangDTO();
-            nhapHang.setMaPN("PN" + System.currentTimeMillis()); // Unique code
-            nhapHang.setMaNhaCungCap(jComboBox9.getSelectedItem().toString());
+            // Sinh mã phiếu nhập tăng dần, không bị trùng nếu đã xóa phiếu nhập
+            List<nhapHangDTO> danhSachPhieuNhap = new NhapHangDAO().getAllNhapHang();
+            int maxSo = 0;
+            for (nhapHangDTO pn : danhSachPhieuNhap) {
+                String ma = pn.getMaPN();
+                if (ma != null && ma.startsWith("PN")) {
+                    try {
+                        int so = Integer.parseInt(ma.substring(2));
+                        if (so > maxSo) maxSo = so;
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+            String maPN = String.format("PN%03d", maxSo + 1);
+            nhapHang.setMaPN(maPN);
+            String nccValue = jComboBox9.getSelectedItem().toString();
+            String maNCC = nccValue.split(" - ")[0].trim();
+            nhapHang.setMaNhaCungCap(maNCC);
             nhapHang.setLoaiSP(jComboBox6.getSelectedItem().toString());
             nhapHang.setMaSanPham(jComboBox7.getSelectedItem().toString());
             nhapHang.setTenSanPham(jTextField1.getText());
@@ -533,6 +579,10 @@ public class nhaphang extends javax.swing.JPanel {
             System.out.println("TrangThai: " + nhapHang.getTrangThai());
 
             NhapHangDAO nhapHangDAO = new NhapHangDAO();
+            if (nhapHangDAO.getNhapHangByMa(nhapHang.getMaPN()) != null) {
+                JOptionPane.showMessageDialog(this, "Mã phiếu nhập đã tồn tại, vui lòng thử lại!");
+                return;
+            }
             boolean result = nhapHangDAO.themNhapHang(nhapHang);
 
             if (result) {
@@ -547,7 +597,8 @@ public class nhaphang extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, "Nhập hàng thất bại!");
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra: " + e.getMessage());
+            e.printStackTrace(); // Để xem lỗi trên console
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thêm nhập hàng: " + e.getMessage());
         }
     }
 
@@ -579,6 +630,37 @@ public class nhaphang extends javax.swing.JPanel {
         jComboBox9.removeAllItems();
         for (String supplier : nhaCungCapDAO.getAllSuppliers()) {
             jComboBox9.addItem(supplier);
+        }
+
+        // Add event listeners for filtering suppliers
+        jComboBox6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterSuppliers();
+            }
+        });
+
+        jComboBox7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterSuppliers();
+            }
+        });
+    }
+
+    private void filterSuppliers() {
+        String selectedType = (String) jComboBox6.getSelectedItem();
+        String selectedCode = (String) jComboBox7.getSelectedItem();
+        
+        if (selectedType != null && selectedCode != null) {
+            NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
+            List<String> filteredSuppliers = nhaCungCapDAO.getSuppliersByProduct(selectedType, selectedCode);
+            
+            jComboBox9.removeAllItems();
+            for (String supplier : filteredSuppliers) {
+                jComboBox9.addItem(supplier);
+            }
+            if (filteredSuppliers.isEmpty()) {
+                jComboBox9.addItem("Không có nhà cung cấp phù hợp");
+            }
         }
     }
 

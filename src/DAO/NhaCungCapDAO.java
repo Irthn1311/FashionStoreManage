@@ -266,4 +266,33 @@ public class NhaCungCapDAO {
             return false;
         }
     }
+
+    public List<String> getSuppliersByProduct(String productType, String productCode) {
+        List<String> suppliers = new ArrayList<>();
+        String sql = "SELECT DISTINCT ncc.MaNhaCungCap, ncc.TenNhaCungCap " +
+                     "FROM NhaCungCap ncc " +
+                     "JOIN NhaCungCap_SanPham nccsp ON ncc.MaNhaCungCap = nccsp.MaNhaCungCap " +
+                     "JOIN SanPham sp ON nccsp.MaSanPham = sp.MaSanPham " +
+                     "WHERE ncc.TrangThai = N'Đang hợp tác' " +
+                     "AND sp.MaSanPham = ? " +
+                     "AND (sp.MaDanhMuc = ? OR ncc.LoaiSP = ?)";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, productCode);
+            ps.setString(2, productType);
+            ps.setString(3, productType);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String maNCC = rs.getString("MaNhaCungCap");
+                    String tenNCC = rs.getString("TenNhaCungCap");
+                    suppliers.add(maNCC + " - " + tenNCC);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy danh sách nhà cung cấp theo sản phẩm: {0}", e.getMessage());
+        }
+        return suppliers;
+    }
 }
