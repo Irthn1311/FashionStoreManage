@@ -226,6 +226,7 @@ public class xuathang extends javax.swing.JPanel {
         jButton18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
+                    
                     // Get data from form
                     String maPX = "PX" + System.currentTimeMillis(); // Or use your own ID generation logic
                     String maKH = jTextField14.getText().trim();
@@ -238,8 +239,7 @@ public class xuathang extends javax.swing.JPanel {
                     int soLuong = Integer.parseInt(jTextField10.getText().trim());
                     double donGia = Double.parseDouble(jTextField7.getText().trim());
                     double thanhTien = Double.parseDouble(jTextField9.getText().trim());
-                    String trangThai = "Hoàn thành"; // Or get from a combo box if you have one
-        
+                    String trangThai = "Đang xử lý"; // Trạng thái mặc định khi thêm mới        
                     // Insert into database
                     java.sql.Connection conn = DTB.ConnectDB.getConnection();
                     String sql = "INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, LoaiSP, KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
