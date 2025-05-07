@@ -16,7 +16,7 @@ import screens.NhanVien.nhanVienPanel;
 import screens.NhapHang.nhaphang;
 import screens.PhieuNhap.phieunhap;
 import screens.SanPham.sanPhamPanel;
-import screens.ThongKe.ThongKePanel; // Thêm import mới
+import screens.ThongKe.ThongKePanel;
 import screens.XuatHang.xuathang;
 import javax.swing.JOptionPane;
 
@@ -39,9 +39,20 @@ public class trangchu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        ImageIcon checkIcon = new ImageIcon(getClass().getResource("/icon_img/box.png"));
-        Image checkImg = checkIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        btnLogin.setIcon(new ImageIcon(checkImg));
+        // Add icons to buttons with error handling
+        setButtonIcon(btnLogin, "/icon_img/box.png");
+        setButtonIcon(btnNhapHang, "/icon_img/import.png");
+        setButtonIcon(btnXuatHang, "/icon_img/export.png");
+        setButtonIcon(btnSanPham, "/icon_img/product.png");
+        setButtonIcon(btnLoaiSanPham, "/icon_img/category.png");
+        setButtonIcon(btnHoaDon, "/icon_img/invoice.png");
+        setButtonIcon(btnPhieuNhap, "/icon_img/receipt.png");
+        setButtonIcon(btnKhuyenMai, "/icon_img/discount.png");
+        setButtonIcon(btnNhanVien, "/icon_img/employee.png");
+        setButtonIcon(btnKhachHang, "/icon_img/customer.png");
+        setButtonIcon(btnNhaCungCap, "/icon_img/supplier.png");
+        setButtonIcon(btnTaiKhoan, "/icon_img/statistics.png");
+        setButtonIcon(btnSetting, "/icon_img/setting.png");
 
         // Khởi tạo các panel
         jPanel3 = new javax.swing.JPanel();
@@ -74,15 +85,6 @@ public class trangchu extends javax.swing.JFrame {
             btnTaiKhoan.setEnabled(false);
             btnTaiKhoan.setToolTipText("Chỉ Quản trị viên mới có quyền truy cập");
         }
-
-        /*
-         * // Them action listener cho btnSetting
-         * btnSetting.addActionListener(new java.awt.event.ActionListener() {
-         * public void actionPerformed(java.awt.event.ActionEvent evt) {
-         * btnSettingActionPerformed(evt);
-         * }
-         * });
-         */
 
         // Them action listener cho btnNhapHang
         btnNhapHang.addActionListener(new java.awt.event.ActionListener() {
@@ -157,6 +159,21 @@ public class trangchu extends javax.swing.JFrame {
                 btnTaiKhoanActionPerformed(evt);
             }
         });
+    }
+
+    // Helper method to safely load and set button icons
+    private void setButtonIcon(javax.swing.JButton button, String iconPath) {
+        try {
+            ImageIcon icon = new ImageIcon(getClass().getResource(iconPath));
+            if (icon.getImage() != null) {
+                Image scaledImage = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                button.setIcon(new ImageIcon(scaledImage));
+            } else {
+                System.err.println("Warning: Icon image is null for path: " + iconPath);
+            }
+        } catch (Exception e) {
+            System.err.println("Warning: Failed to load icon at path: " + iconPath + " - " + e.getMessage());
+        }
     }
 
     private void switchPanel(javax.swing.JPanel panel) {
@@ -307,7 +324,7 @@ public class trangchu extends javax.swing.JFrame {
         jSeparator4.setForeground(new java.awt.Color(0, 0, 0));
         jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 614, 200, 10));
 
-        btnTaiKhoan.setText("Thống kê ");
+        btnTaiKhoan.setText("Thống kê");
         jPanel1.add(btnTaiKhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 630, 188, 36));
 
         jPanel4.setBackground(new java.awt.Color(107, 163, 190));
@@ -355,14 +372,13 @@ public class trangchu extends javax.swing.JFrame {
                 .addGap(171, 171, 171))
         );
         jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            jPanel4Layout.createSequentialGroup()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(170, 170, 170)
                 .addComponent(jLabel3)
                 .addGap(102, 102, 102)
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

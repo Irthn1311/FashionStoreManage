@@ -198,4 +198,18 @@ public class XuatHangDAO {
         // Add each row to the list
         return list;
     }
+
+    public String getMaxMaPX() {
+        String sql = "SELECT MAX(MaPX) AS MaxMaPX FROM XuatHang";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getString("MaxMaPX");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 } 

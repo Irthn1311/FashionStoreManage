@@ -25,15 +25,20 @@ public class PhieuNhapDAO {
 
     // Create new PhieuNhap
     public boolean create(PhieuNhapDTO phieuNhap) {
-        String sql = "INSERT INTO PhieuNhap (NgayNhap, MaSanPham, SoLuongNhap, MaNhaCungCap, MaNhanVien) " +
-                    "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PhieuNhap (MaPhieuNhap, MaNhaCungCap, MaSanPham, TenSanPham, SoLuong, ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             ps = conn.prepareStatement(sql);
-            ps.setTimestamp(1, new java.sql.Timestamp(phieuNhap.getNgayNhap().getTime()));
-            ps.setString(2, phieuNhap.getMaSanPham());
-            ps.setInt(3, phieuNhap.getSoLuongNhap());
-            ps.setString(4, phieuNhap.getMaNhaCungCap());
-            ps.setString(5, phieuNhap.getMaNhanVien());
+            ps.setString(1, phieuNhap.getMaPhieuNhap());
+            ps.setString(2, phieuNhap.getMaNhaCungCap());
+            ps.setString(3, phieuNhap.getMaSanPham());
+            ps.setString(4, phieuNhap.getTenSanPham());
+            ps.setInt(5, phieuNhap.getSoLuong());
+            ps.setTimestamp(6, new java.sql.Timestamp(phieuNhap.getThoiGian().getTime()));
+            ps.setDouble(7, phieuNhap.getDonGia());
+            ps.setString(8, phieuNhap.getTrangThai());
+            ps.setString(9, phieuNhap.getHinhThucThanhToan());
+            ps.setDouble(10, phieuNhap.getThanhTien());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -42,20 +47,24 @@ public class PhieuNhapDAO {
     }
 
     // Read PhieuNhap by ID
-    public PhieuNhapDTO read(int maPhieuNhap) {
+    public PhieuNhapDTO read(String maPhieuNhap) {
         String sql = "SELECT * FROM PhieuNhap WHERE MaPhieuNhap = ?";
         try {
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, maPhieuNhap);
+            ps.setString(1, maPhieuNhap);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return new PhieuNhapDTO(
-                    rs.getInt("MaPhieuNhap"),
-                    rs.getTimestamp("NgayNhap"),
-                    rs.getString("MaSanPham"),
-                    rs.getInt("SoLuongNhap"),
+                    rs.getString("MaPhieuNhap"),
                     rs.getString("MaNhaCungCap"),
-                    rs.getString("MaNhanVien")
+                    rs.getString("MaSanPham"),
+                    rs.getString("TenSanPham"),
+                    rs.getInt("SoLuong"),
+                    rs.getTimestamp("ThoiGian"),
+                    rs.getDouble("DonGia"),
+                    rs.getString("TrangThai"),
+                    rs.getString("HinhThucThanhToan"),
+                    rs.getDouble("ThanhTien")
                 );
             }
         } catch (SQLException e) {
@@ -66,16 +75,20 @@ public class PhieuNhapDAO {
 
     // Update PhieuNhap
     public boolean update(PhieuNhapDTO phieuNhap) {
-        String sql = "UPDATE PhieuNhap SET NgayNhap = ?, MaSanPham = ?, SoLuongNhap = ?, " +
-                    "MaNhaCungCap = ?, MaNhanVien = ? WHERE MaPhieuNhap = ?";
+        String sql = "UPDATE PhieuNhap SET MaNhaCungCap=?, MaSanPham=?, TenSanPham=?, SoLuong=?, " +
+                    "ThoiGian=?, DonGia=?, TrangThai=?, HinhThucThanhToan=?, ThanhTien=? WHERE MaPhieuNhap=?";
         try {
             ps = conn.prepareStatement(sql);
-            ps.setTimestamp(1, new java.sql.Timestamp(phieuNhap.getNgayNhap().getTime()));
+            ps.setString(1, phieuNhap.getMaNhaCungCap());
             ps.setString(2, phieuNhap.getMaSanPham());
-            ps.setInt(3, phieuNhap.getSoLuongNhap());
-            ps.setString(4, phieuNhap.getMaNhaCungCap());
-            ps.setString(5, phieuNhap.getMaNhanVien());
-            ps.setInt(6, phieuNhap.getMaPhieuNhap());
+            ps.setString(3, phieuNhap.getTenSanPham());
+            ps.setInt(4, phieuNhap.getSoLuong());
+            ps.setTimestamp(5, new java.sql.Timestamp(phieuNhap.getThoiGian().getTime()));
+            ps.setDouble(6, phieuNhap.getDonGia());
+            ps.setString(7, phieuNhap.getTrangThai());
+            ps.setString(8, phieuNhap.getHinhThucThanhToan());
+            ps.setDouble(9, phieuNhap.getThanhTien());
+            ps.setString(10, phieuNhap.getMaPhieuNhap());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -84,11 +97,11 @@ public class PhieuNhapDAO {
     }
 
     // Delete PhieuNhap
-    public boolean delete(int maPhieuNhap) {
+    public boolean delete(String maPhieuNhap) {
         String sql = "DELETE FROM PhieuNhap WHERE MaPhieuNhap = ?";
         try {
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, maPhieuNhap);
+            ps.setString(1, maPhieuNhap);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,12 +118,16 @@ public class PhieuNhapDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new PhieuNhapDTO(
-                    rs.getInt("MaPhieuNhap"),
-                    rs.getTimestamp("NgayNhap"),
-                    rs.getString("MaSanPham"),
-                    rs.getInt("SoLuongNhap"),
+                    rs.getString("MaPhieuNhap"),
                     rs.getString("MaNhaCungCap"),
-                    rs.getString("MaNhanVien")
+                    rs.getString("MaSanPham"),
+                    rs.getString("TenSanPham"),
+                    rs.getInt("SoLuong"),
+                    rs.getTimestamp("ThoiGian"),
+                    rs.getDouble("DonGia"),
+                    rs.getString("TrangThai"),
+                    rs.getString("HinhThucThanhToan"),
+                    rs.getDouble("ThanhTien")
                 ));
             }
         } catch (SQLException e) {

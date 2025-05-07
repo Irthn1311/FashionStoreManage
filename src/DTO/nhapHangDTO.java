@@ -13,7 +13,6 @@ import java.sql.Timestamp;
 public class nhapHangDTO {
     private String maPN;
     private String maNhaCungCap;
-    private String loaiSP;
     private String maSanPham;
     private String tenSanPham;
     private String mauSac;
@@ -23,16 +22,17 @@ public class nhapHangDTO {
     private String thanhTien;
     private String thoiGian;
     private String trangThai;
+    private String hinhThucThanhToan;
 
     public nhapHangDTO() {
     }
 
-    public nhapHangDTO(String maPN, String maNhaCungCap, String loaiSP, String maSanPham, 
+    public nhapHangDTO(String maPN, String maNhaCungCap, String maSanPham, 
                       String tenSanPham, String mauSac, String kichThuoc, String soLuong, 
-                      String donGia, String thanhTien, String thoiGian, String trangThai) {
+                      String donGia, String thanhTien, String thoiGian, String trangThai,
+                      String hinhThucThanhToan) {
         this.maPN = maPN;
         this.maNhaCungCap = maNhaCungCap;
-        this.loaiSP = loaiSP;
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
         this.mauSac = mauSac;
@@ -42,6 +42,7 @@ public class nhapHangDTO {
         this.thanhTien = thanhTien;
         this.thoiGian = thoiGian;
         this.trangThai = trangThai;
+        this.hinhThucThanhToan = hinhThucThanhToan;
     }
 
     public String getMaPN() {
@@ -58,14 +59,6 @@ public class nhapHangDTO {
 
     public void setMaNhaCungCap(String maNhaCungCap) {
         this.maNhaCungCap = maNhaCungCap;
-    }
-
-    public String getLoaiSP() {
-        return loaiSP;
-    }
-
-    public void setLoaiSP(String loaiSP) {
-        this.loaiSP = loaiSP;
     }
 
     public String getMaSanPham() {
@@ -140,12 +133,19 @@ public class nhapHangDTO {
         this.trangThai = trangThai;
     }
 
+    public String getHinhThucThanhToan() {
+        return hinhThucThanhToan;
+    }
+
+    public void setHinhThucThanhToan(String hinhThucThanhToan) {
+        this.hinhThucThanhToan = hinhThucThanhToan;
+    }
+
     @Override
     public String toString() {
         return "NhapHangDTO{" +
                 "maPN='" + maPN + '\'' +
                 ", maNhaCungCap='" + maNhaCungCap + '\'' +
-                ", loaiSP='" + loaiSP + '\'' +
                 ", maSanPham='" + maSanPham + '\'' +
                 ", tenSanPham='" + tenSanPham + '\'' +
                 ", mauSac='" + mauSac + '\'' +
@@ -155,6 +155,7 @@ public class nhapHangDTO {
                 ", thanhTien='" + thanhTien + '\'' +
                 ", thoiGian='" + thoiGian + '\'' +
                 ", trangThai='" + trangThai + '\'' +
+                ", hinhThucThanhToan='" + hinhThucThanhToan + '\'' +
                 '}';
     }
 }
