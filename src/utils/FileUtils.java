@@ -31,7 +31,7 @@ public class FileUtils {
 
             try (Workbook workbook = new XSSFWorkbook()) {
                 Sheet sheet = workbook.createSheet(title);
-                
+
                 // Create header row
                 Row headerRow = sheet.createRow(0);
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -59,10 +59,12 @@ public class FileUtils {
 
                 try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
                     workbook.write(fileOut);
-                    JOptionPane.showMessageDialog(null, "Xuất file Excel thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Xuất file Excel thành công!", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Lỗi khi xuất file Excel: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Lỗi khi xuất file Excel: " + e.getMessage(), "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -113,10 +115,12 @@ public class FileUtils {
 
                 try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
                     document.write(fileOut);
-                    JOptionPane.showMessageDialog(null, "Xuất file Word thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Xuất file Word thành công!", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Lỗi khi xuất file Word: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Lỗi khi xuất file Word: " + e.getMessage(), "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -138,7 +142,7 @@ public class FileUtils {
 
             try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8")) {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
-                
+
                 // Ghi BOM để Excel nhận diện UTF-8
                 writer.write("\uFEFF");
 
@@ -165,10 +169,12 @@ public class FileUtils {
                     }
                     writer.write("\n");
                 }
-                
-                JOptionPane.showMessageDialog(null, "Xuất file CSV thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+                JOptionPane.showMessageDialog(null, "Xuất file CSV thành công!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Lỗi khi xuất file CSV: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Lỗi khi xuất file CSV: " + e.getMessage(), "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -192,7 +198,7 @@ public class FileUtils {
                     Row row = sheet.getRow(i);
                     if (row != null) {
                         Object[] rowData = new Object[model.getColumnCount()];
-                        for (int j = 0; j < model.getColumnCount(); j++) {
+                        for (int j = 0; j < model.getColumnCount() - 1; j++) {
                             Cell cell = row.getCell(j);
                             if (cell != null) {
                                 switch (cell.getCellType()) {
@@ -207,12 +213,16 @@ public class FileUtils {
                                 }
                             }
                         }
+                        // Add "Xem chi tiết" to the last column
+                        rowData[model.getColumnCount() - 1] = "Xem chi tiết";
                         model.addRow(rowData);
                     }
                 }
-                JOptionPane.showMessageDialog(null, "Import dữ liệu thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Import dữ liệu thành công!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Lỗi khi import dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Lỗi khi import dữ liệu: " + e.getMessage(), "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -228,7 +238,7 @@ public class FileUtils {
             File selectedFile = fileChooser.getSelectedFile();
             try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
-                
+
                 // Đọc header
                 String headerLine = reader.readLine();
                 if (headerLine == null) {
@@ -257,7 +267,8 @@ public class FileUtils {
                             String diaChi = values[6];
                             String ngaySinhStr = values[7];
                             java.sql.Date ngaySinh = null;
-                            if (ngaySinhStr != null && !ngaySinhStr.trim().isEmpty() && !ngaySinhStr.equals("Chưa cập nhật")) {
+                            if (ngaySinhStr != null && !ngaySinhStr.trim().isEmpty()
+                                    && !ngaySinhStr.equals("Chưa cập nhật")) {
                                 try {
                                     java.util.Date utilDate = sdf.parse(ngaySinhStr);
                                     ngaySinh = new java.sql.Date(utilDate.getTime());
@@ -271,8 +282,7 @@ public class FileUtils {
                                 continue;
                             }
                             khachHangDTO kh = new khachHangDTO(
-                                maKH, hoTen, gioiTinh, soDienThoai, email, diaChi, ngaySinh
-                            );
+                                    maKH, hoTen, gioiTinh, soDienThoai, email, diaChi, ngaySinh);
                             if (khachHangBUS.themKhachHang(kh)) {
                                 successCount++;
                                 existingMaKHs.add(maKH); // cập nhật danh sách đã tồn tại
@@ -292,9 +302,10 @@ public class FileUtils {
                 }
 
                 // Hiển thị kết quả import
-                String message = String.format("Import hoàn tất!\nSố bản ghi thành công: %d\nSố bản ghi bị bỏ qua/trùng/lỗi: %d", 
-                    successCount, failCount);
-                
+                String message = String.format(
+                        "Import hoàn tất!\nSố bản ghi thành công: %d\nSố bản ghi bị bỏ qua/trùng/lỗi: %d",
+                        successCount, failCount);
+
                 if (failCount > 0) {
                     message += "\n\nChi tiết lỗi:\n" + errorMessages.toString();
                     JOptionPane.showMessageDialog(null, message, "Kết quả import", JOptionPane.WARNING_MESSAGE);
@@ -306,20 +317,23 @@ public class FileUtils {
                 model.setRowCount(0);
                 List<DTO.khachHangDTO> danhSachKhachHang = khachHangBUS.getAllKhachHang();
                 for (DTO.khachHangDTO kh : danhSachKhachHang) {
-                    model.addRow(new Object[]{
-                        model.getRowCount() + 1,
-                        kh.getMaKhachHang(),
-                        kh.getHoTen(),
-                        kh.getGioiTinh(),
-                        kh.getSoDienThoai(),
-                        kh.getEmail(),
-                        kh.getDiaChi(),
-                        kh.getNgaySinh() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(kh.getNgaySinh()) : "Chưa cập nhật",
-                        "Xem chi tiết"
+                    model.addRow(new Object[] {
+                            model.getRowCount() + 1,
+                            kh.getMaKhachHang(),
+                            kh.getHoTen(),
+                            kh.getGioiTinh(),
+                            kh.getSoDienThoai(),
+                            kh.getEmail(),
+                            kh.getDiaChi(),
+                            kh.getNgaySinh() != null
+                                    ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(kh.getNgaySinh())
+                                    : "Chưa cập nhật",
+                            "Xem chi tiết"
                     });
                 }
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Lỗi khi import dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Lỗi khi import dữ liệu: " + e.getMessage(), "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -328,7 +342,7 @@ public class FileUtils {
         List<String> values = new java.util.ArrayList<>();
         StringBuilder currentValue = new StringBuilder();
         boolean inQuotes = false;
-        
+
         for (int i = 0; i < line.length(); i++) {
             char c = line.charAt(i);
             if (c == '"') {
@@ -347,12 +361,12 @@ public class FileUtils {
             }
         }
         values.add(currentValue.toString());
-        
+
         return values.toArray(new String[0]);
     }
 
     public static void showExportOptions(JTable table, String title) {
-        String[] options = {"Excel", "Word", "CSV"};
+        String[] options = { "Excel", "Word", "CSV" };
         int choice = JOptionPane.showOptionDialog(null,
                 "Chọn định dạng file xuất",
                 "Xuất file",
@@ -370,4 +384,4 @@ public class FileUtils {
             exportToCSV(table, title);
         }
     }
-} 
+}

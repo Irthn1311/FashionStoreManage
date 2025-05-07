@@ -140,12 +140,6 @@ INSERT INTO NhaCungCap (MaNhaCungCap, TenNhaCungCap, LoaiSP, NamHopTac, DiaChi, 
 -- Tạo bảng SanPham
 CREATE TABLE SanPham (
     MaSanPham NVARCHAR(100) PRIMARY KEY,
-    MaSanPham NVARCHAR(100) PRIMARY KEY,
-    TenSanPham NVARCHAR(200),
-    MaNhaCungCap NVARCHAR(100),
-    MaDanhMuc NVARCHAR(100),
-    MauSac NVARCHAR(100),
-    Size NVARCHAR(50),
     MaNhaCungCap NVARCHAR(100),
     MaDanhMuc NVARCHAR(100),
     MauSac NVARCHAR(100),
