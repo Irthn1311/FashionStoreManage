@@ -51,7 +51,7 @@ public class themHoaDonPanel extends JPanel {
 
     private void loadMaSanPham() {
         try {
-            List<String> maSanPhamList = sanPhamBUS.getAllMaSanPham();
+            List<String> maSanPhamList = sanPhamBUS.getAllProductCodes();
             cboMaSP.removeAllItems();
             cboMaSP.addItem(""); // Thêm tùy chọn trống
             for (String maSanPham : maSanPhamList) {

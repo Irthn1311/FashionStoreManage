@@ -199,7 +199,8 @@ public class loaisanpham extends javax.swing.JPanel {
                 jPanel15.add(searchLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 30));
 
                 searchComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
-                                "Tất cả", "Mã sản phẩm", "Tên sản phẩm", "Mã nhà cung cấp", "Loại sản phẩm", "Màu sắc", "Size"
+                                "Tất cả", "Mã sản phẩm", "Tên sản phẩm", "Mã nhà cung cấp", "Loại sản phẩm", "Màu sắc",
+                                "Size"
                 }));
                 jPanel15.add(searchComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, 180, 30));
 
@@ -388,7 +389,8 @@ public class loaisanpham extends javax.swing.JPanel {
                                 try {
                                         jTable2.print();
                                 } catch (Exception e) {
-                                        JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                                        JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi",
+                                                        JOptionPane.ERROR_MESSAGE);
                                 }
                         }
                 });
@@ -400,57 +402,85 @@ public class loaisanpham extends javax.swing.JPanel {
                                                 .addGroup(pnlContentLayout.createSequentialGroup()
                                                                 .addContainerGap(22, Short.MAX_VALUE)
                                                                 .addGroup(pnlContentLayout
-                                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                        pnlContentLayout.createSequentialGroup()
-                                                                                                .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                        100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addGap(18, 18, 18)
-                                                                                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                        340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addGap(18, 18, 18)
-                                                                                                .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                        100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addGap(313, 313, 313))
-                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout
-                                                                        .createSequentialGroup()
-                                                                        .addGroup(pnlContentLayout
-                                                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                        .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                961, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGroup(pnlContentLayout
-                                                                                                .createParallelGroup(
-                                                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                        false)
-                                                                                                .addComponent(jPanel17,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                        Short.MAX_VALUE)
-                                                                                                .addComponent(jPanel18,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, 958,
-                                                                                                        Short.MAX_VALUE)))
-                                                                .addGap(17, 17, 17)))));
+                                                                                .createParallelGroup(
+                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                pnlContentLayout.createSequentialGroup()
+                                                                                                                .addComponent(jButton36,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                100,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(18, 18, 18)
+                                                                                                                .addComponent(jButton34,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                340,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(18, 18, 18)
+                                                                                                                .addComponent(jButton37,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                100,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(313, 313,
+                                                                                                                                313))
+                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                pnlContentLayout
+                                                                                                                .createSequentialGroup()
+                                                                                                                .addGroup(pnlContentLayout
+                                                                                                                                .createParallelGroup(
+                                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                .addComponent(jPanel15,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                961,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                .addGroup(pnlContentLayout
+                                                                                                                                                .createParallelGroup(
+                                                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                                                                                false)
+                                                                                                                                                .addComponent(jPanel17,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                Short.MAX_VALUE)
+                                                                                                                                                .addComponent(jPanel18,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                958,
+                                                                                                                                                                Short.MAX_VALUE)))
+                                                                                                                .addGap(17, 17, 17)))));
                 pnlContentLayout.setVerticalGroup(
                                 pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(pnlContentLayout.createSequentialGroup()
                                                                 .addContainerGap()
-                                                                .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(4, 4, 4)
-                                                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 80,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(4, 4, 4)
-                                                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 342,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28,
-                                                                        Short.MAX_VALUE)
-                                                                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                        .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                                .addComponent(jPanel15,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                110,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGap(4, 4, 4)
+                                                                .addComponent(jPanel17,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                80,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(4, 4, 4)
+                                                                .addComponent(jPanel18,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                342,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                                28,
+                                                                                Short.MAX_VALUE)
+                                                                .addGroup(pnlContentLayout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(jButton36,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(jButton34,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(jButton37,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addGap(16, 16, 16)));
 
                 containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
