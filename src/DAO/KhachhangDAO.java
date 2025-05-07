@@ -15,6 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -152,16 +157,60 @@ public class KhachHangDAO {
     }
 
     public boolean xoaKhachHang(String maKhachHang) {
-        String sql = "DELETE FROM KhachHang WHERE MaKhachHang = ?";
+        String sqlDeleteHoaDon = "DELETE FROM HoaDon WHERE MaKhachHang = ?";
+        String sqlDeleteKhachHang = "DELETE FROM KhachHang WHERE MaKhachHang = ?";
 
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setString(1, maKhachHang);
-            return ps.executeUpdate() > 0;
+        Connection conn = null;
+        try {
+            conn = ConnectDB.getConnection();
+            if (conn == null) {
+                System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
+                return false;
+            }
+
+            conn.setAutoCommit(false);
+
+            // Xóa các bản ghi liên quan trong bảng HoaDon
+            try (PreparedStatement psDeleteHoaDon = conn.prepareStatement(sqlDeleteHoaDon)) {
+                psDeleteHoaDon.setString(1, maKhachHang);
+                psDeleteHoaDon.executeUpdate();
+            }
+
+            // Xóa khách hàng
+            try (PreparedStatement psDeleteKhachHang = conn.prepareStatement(sqlDeleteKhachHang)) {
+                psDeleteKhachHang.setString(1, maKhachHang);
+                int rowsAffected = psDeleteKhachHang.executeUpdate();
+                
+                if (rowsAffected > 0) {
+                    conn.commit();
+                    return true;
+                } else {
+                    conn.rollback();
+                    return false;
+                }
+            }
         } catch (SQLException e) {
+            System.err.println("Lỗi khi xóa khách hàng: " + e.getMessage());
             e.printStackTrace();
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException rollbackEx) {
+                System.err.println("Lỗi khi rollback transaction: " + rollbackEx.getMessage());
+                rollbackEx.printStackTrace();
+            }
             return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException closeEx) {
+                System.err.println("Lỗi khi đóng kết nối: " + closeEx.getMessage());
+                closeEx.printStackTrace();
+            }
         }
     }
 
@@ -243,5 +292,96 @@ public class KhachHangDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean importKhachHang(String filePath) {
+        String sql = "INSERT INTO KhachHang (MaKhachHang, HoTen, GioiTinh, SoDienThoai, Email, DiaChi, NgaySinh) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        Connection conn = null;
+        try {
+            conn = ConnectDB.getConnection();
+            if (conn == null) {
+                System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
+                return false;
+            }
+
+            conn.setAutoCommit(false);
+            int successCount = 0;
+            int failCount = 0;
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                // Bỏ qua dòng header nếu có
+                reader.readLine();
+
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (data.length >= 7) {
+                        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                            ps.setString(1, data[0].trim()); // MaKhachHang
+                            ps.setString(2, data[1].trim()); // HoTen
+                            ps.setString(3, data[2].trim()); // GioiTinh
+                            ps.setString(4, data[3].trim()); // SoDienThoai
+                            ps.setString(5, data[4].trim()); // Email
+                            ps.setString(6, data[5].trim()); // DiaChi
+                            
+                            // Xử lý ngày sinh
+                            try {
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                java.util.Date date = dateFormat.parse(data[6].trim());
+                                ps.setDate(7, new java.sql.Date(date.getTime()));
+                            } catch (ParseException e) {
+                                System.err.println("Lỗi định dạng ngày: " + data[6]);
+                                ps.setDate(7, null);
+                            }
+
+                            if (ps.executeUpdate() > 0) {
+                                successCount++;
+                            } else {
+                                failCount++;
+                            }
+                        }
+                    } else {
+                        failCount++;
+                        System.err.println("Dữ liệu không hợp lệ: " + line);
+                    }
+                }
+            }
+
+            if (successCount > 0) {
+                conn.commit();
+                System.out.println("Import thành công: " + successCount + " bản ghi");
+                System.out.println("Import thất bại: " + failCount + " bản ghi");
+                return true;
+            } else {
+                conn.rollback();
+                System.out.println("Không có bản ghi nào được import thành công");
+                return false;
+            }
+
+        } catch (SQLException | IOException e) {
+            System.err.println("Lỗi khi import dữ liệu: " + e.getMessage());
+            e.printStackTrace();
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException rollbackEx) {
+                System.err.println("Lỗi khi rollback transaction: " + rollbackEx.getMessage());
+                rollbackEx.printStackTrace();
+            }
+            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException closeEx) {
+                System.err.println("Lỗi khi đóng kết nối: " + closeEx.getMessage());
+                closeEx.printStackTrace();
+            }
+        }
     }
 }

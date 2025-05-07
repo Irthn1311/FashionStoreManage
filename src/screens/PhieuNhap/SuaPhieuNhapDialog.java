@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class SuaPhieuNhapDialog extends JDialog {
-    private JTextField tfMaPN, tfMaNCC, tfMaSP, tfLoaiSP, tfTenSP, tfMauSac, tfKichThuoc, tfSoLuong, tfDonGia, tfThanhTien, tfThoiGian, tfTrangThai;
+    private JTextField tfMaPN, tfMaNCC, tfMaSP, tfTenSP, tfMauSac, tfKichThuoc, tfSoLuong, tfDonGia, tfThanhTien, tfThoiGian, tfTrangThai, tfHinhThucThanhToan;
     private boolean saved = false;
 
     public SuaPhieuNhapDialog(Frame parent, nhapHangDTO nh) {
@@ -16,7 +16,6 @@ public class SuaPhieuNhapDialog extends JDialog {
         add(new JLabel("Mã PN:")); tfMaPN = new JTextField(nh.getMaPN()); tfMaPN.setEditable(false); add(tfMaPN);
         add(new JLabel("Mã NCC:")); tfMaNCC = new JTextField(nh.getMaNhaCungCap()); add(tfMaNCC);
         add(new JLabel("Mã SP:")); tfMaSP = new JTextField(nh.getMaSanPham()); add(tfMaSP);
-        add(new JLabel("Loại SP:")); tfLoaiSP = new JTextField(nh.getLoaiSP()); add(tfLoaiSP);
         add(new JLabel("Tên SP:")); tfTenSP = new JTextField(nh.getTenSanPham()); add(tfTenSP);
         add(new JLabel("Màu sắc:")); tfMauSac = new JTextField(nh.getMauSac()); add(tfMauSac);
         add(new JLabel("Kích thước:")); tfKichThuoc = new JTextField(nh.getKichThuoc()); add(tfKichThuoc);
@@ -25,6 +24,7 @@ public class SuaPhieuNhapDialog extends JDialog {
         add(new JLabel("Thành tiền:")); tfThanhTien = new JTextField(nh.getThanhTien()); tfThanhTien.setEditable(false); add(tfThanhTien);
         add(new JLabel("Thời gian:")); tfThoiGian = new JTextField(nh.getThoiGian()); add(tfThoiGian);
         add(new JLabel("Trạng thái:")); tfTrangThai = new JTextField(nh.getTrangThai()); add(tfTrangThai);
+        add(new JLabel("Hình thức thanh toán:")); tfHinhThucThanhToan = new JTextField(nh.getHinhThucThanhToan()); add(tfHinhThucThanhToan);
 
         JButton btnLuu = new JButton("Lưu");
         JButton btnHuy = new JButton("Hủy");
@@ -55,7 +55,6 @@ public class SuaPhieuNhapDialog extends JDialog {
         return new nhapHangDTO(
             tfMaPN.getText(),
             tfMaNCC.getText(),
-            tfLoaiSP.getText(),
             tfMaSP.getText(),
             tfTenSP.getText(),
             tfMauSac.getText(),
@@ -64,7 +63,8 @@ public class SuaPhieuNhapDialog extends JDialog {
             tfDonGia.getText(),
             tfThanhTien.getText(),
             tfThoiGian.getText(),
-            tfTrangThai.getText()
+            tfTrangThai.getText(),
+            tfHinhThucThanhToan.getText()
         );
     }
 }

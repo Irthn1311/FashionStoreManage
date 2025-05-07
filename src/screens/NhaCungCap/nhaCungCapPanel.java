@@ -19,6 +19,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Cursor;
 import javax.swing.ListSelectionModel;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import utils.FileUtils;
 
 /**
  *
@@ -30,7 +33,6 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField txtSearch;
-    private JButton btnThem, btnSua, btnXoa, btnChiTiet;
 
     /**
      * Creates new form ncc
@@ -43,7 +45,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         nhaCungCapBUS = new NhaCungCapBUS();
         
         // Thiết lập combobox tìm kiếm
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+        cboTimKiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
                 "Tất cả", "Mã NCC", "Tên NCC", "Email", "Số điện thoại"
         }));
 
@@ -54,35 +56,58 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         setupTable();
         
         // Thêm action listener cho nút tìm kiếm
-        jButton30.addActionListener(new java.awt.event.ActionListener() {
+        btnTimKiem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchNhaCungCap();
             }
         });
 
         // Thêm action listener cho nút thêm
-        jButton31.addActionListener(new java.awt.event.ActionListener() {
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showThemNhaCungCapDialog();
             }
         });
 
         // Thêm action listener cho nút sửa
-        jButton32.addActionListener(new java.awt.event.ActionListener() {
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showSuaNhaCungCapDialog();
             }
         });
 
         // Thêm action listener cho nút xóa
-        jButton33.addActionListener(new java.awt.event.ActionListener() {
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 xoaNhaCungCap();
             }
         });
 
-        // Thêm action listener cho nút chi tiết
-        // Đã xóa ListSelectionListener để khắc phục lỗi tự động hiển thị panel chi tiết khi chỉ chọn dòng
+        // Thêm action listener cho nút export
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                utils.FileUtils.exportToCSV(nhaCungCapTable, "Danh sách nhà cung cấp");
+            }
+        });
+
+        // Thêm action listener cho nút import
+        btnImport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                utils.FileUtils.importFromCSV(nhaCungCapTable);
+                loadData(); // Refresh the table after import
+            }
+        });
+
+        // Thêm action listener cho nút print
+        btnPrinter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    nhaCungCapTable.print();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 
     public javax.swing.JPanel getNhaCungCapPanel() {
@@ -103,22 +128,24 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
         // Khởi tạo các components
         pnlHeader = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
         pnlContent1 = new javax.swing.JPanel();
-        jButton34 = new javax.swing.JButton();
-        jPanel17 = new javax.swing.JPanel();
-        jButton31 = new javax.swing.JButton();
-        jButton32 = new javax.swing.JButton();
-        jButton33 = new javax.swing.JButton();
-        jPanel18 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        btnExport = new javax.swing.JButton();
+        pnlBoxChinhSua = new javax.swing.JPanel();
+        btnThem = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
+        btnXoa = new javax.swing.JButton();
+        pnlBoxTable = new javax.swing.JPanel();
+        scTable = new javax.swing.JScrollPane();
         nhaCungCapTable = new javax.swing.JTable();
-        jPanel33 = new javax.swing.JPanel();
-        jButton30 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        pnlBoxTimKiem = new javax.swing.JPanel();
+        btnTimKiem = new javax.swing.JButton();
+        lblTimKiem = new javax.swing.JLabel();
+        cboTimKiem = new javax.swing.JComboBox<>();
         jTextField1 = new javax.swing.JTextField();
+        btnImport = new javax.swing.JButton("Import");
+        btnPrinter = new javax.swing.JButton("In");
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -127,8 +154,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
         pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setText("Quản lý nhà cung cấp");
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblTitle.setText("Quản lý nhà cung cấp");
 
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
@@ -136,13 +163,13 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                 pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pnlHeaderLayout.createSequentialGroup()
                                 .addGap(383, 383, 383)
-                                .addComponent(jLabel1)
+                                .addComponent(lblTitle)
                                 .addContainerGap(387, Short.MAX_VALUE)));
         pnlHeaderLayout.setVerticalGroup(
                 pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pnlHeaderLayout.createSequentialGroup()
                                 .addGap(14, 14, 14)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
+                                .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(14, Short.MAX_VALUE)));
 
@@ -153,26 +180,48 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
         pnlContent1.setBackground(new java.awt.Color(107, 163, 190));
 
-        jButton34.setText("Lưu và xuất file");
+        // Setup Export button
+        btnExport.setText("Xuất file");
+        ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
+        btnExport.setIcon(new ImageIcon(
+                        exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnExport.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnExport.setPreferredSize(new java.awt.Dimension(340, 40));
 
-        jPanel17.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(
+        // Setup Import button
+        btnImport = new javax.swing.JButton("Import");
+        ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
+        btnImport.setIcon(new ImageIcon(
+                        importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnImport.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnImport.setPreferredSize(new java.awt.Dimension(100, 40));
+
+        // Setup Print button
+        btnPrinter = new javax.swing.JButton("In");
+        ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
+        btnPrinter.setIcon(new ImageIcon(
+                        printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnPrinter.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnPrinter.setPreferredSize(new java.awt.Dimension(100, 40));
+
+        pnlBoxChinhSua.setBackground(new java.awt.Color(107, 163, 190));
+        pnlBoxChinhSua.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
-        jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlBoxChinhSua.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton31.setText("Thêm ");
-        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 24, -1, 34));
+        btnThem.setText("Thêm ");
+        pnlBoxChinhSua.add(btnThem, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 24, -1, 34));
 
-        jButton32.setText("Sửa");
-        jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(435, 24, -1, 34));
+        btnSua.setText("Sửa");
+        pnlBoxChinhSua.add(btnSua, new org.netbeans.lib.awtextra.AbsoluteConstraints(435, 24, -1, 34));
 
-        jButton33.setText("Xóa");
-        jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(705, 24, -1, 34));
+        btnXoa.setText("Xóa");
+        pnlBoxChinhSua.add(btnXoa, new org.netbeans.lib.awtextra.AbsoluteConstraints(705, 24, -1, 34));
 
-        jPanel18.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
+        pnlBoxTable.setBackground(new java.awt.Color(107, 163, 190));
+        pnlBoxTable.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
-        jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlBoxTable.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         nhaCungCapTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -190,31 +239,31 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
             }
         });
         nhaCungCapTable.setShowGrid(true);
-        jScrollPane2.setViewportView(nhaCungCapTable);
+        scTable.setViewportView(nhaCungCapTable);
 
-        jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 920, 310));
+        pnlBoxTable.add(scTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 920, 310));
 
-        jPanel33.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(
+        pnlBoxTimKiem.setBackground(new java.awt.Color(107, 163, 190));
+        pnlBoxTimKiem.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
-        jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlBoxTimKiem.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton30.setText("Tìm kiếm");
-        jButton30.addActionListener(new java.awt.event.ActionListener() {
+        btnTimKiem.setText("Tìm kiếm");
+        btnTimKiem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchNhaCungCap();
             }
         });
-        jPanel33.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, 90, 36));
+        pnlBoxTimKiem.add(btnTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, 90, 36));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel2.setText("Tìm kiếm");
-        jPanel33.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
+        lblTimKiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblTimKiem.setText("Tìm kiếm");
+        pnlBoxTimKiem.add(lblTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
-        jComboBox1.setModel(
+        cboTimKiem.setModel(
                 new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel33.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 300, 30));
-        jPanel33.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 320, 30));
+        pnlBoxTimKiem.add(cboTimKiem, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 300, 30));
+        pnlBoxTimKiem.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 50, 320, 30));
 
         javax.swing.GroupLayout pnlContent1Layout = new javax.swing.GroupLayout(pnlContent1);
         pnlContent1.setLayout(pnlContent1Layout);
@@ -225,38 +274,49 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(pnlContent1Layout.createSequentialGroup()
                                                 .addGap(325, 325, 325)
-                                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340,
-                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        100, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(pnlContent1Layout.createSequentialGroup()
                                                 .addGap(21, 21, 21)
                                                 .addGroup(pnlContent1Layout
                                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        .addComponent(pnlBoxTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                 961, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(pnlContent1Layout
                                                                 .createParallelGroup(
                                                                         javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                .addComponent(jPanel18,
+                                                                .addComponent(pnlBoxTable,
                                                                         javax.swing.GroupLayout.PREFERRED_SIZE, 956,
                                                                         javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(jPanel17,
+                                                                .addComponent(pnlBoxChinhSua,
                                                                         javax.swing.GroupLayout.PREFERRED_SIZE, 956,
                                                                         javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                 .addContainerGap(18, Short.MAX_VALUE)));
         pnlContent1Layout.setVerticalGroup(
                 pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pnlContent1Layout.createSequentialGroup()
-                                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
+                                .addComponent(pnlBoxTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(10, 10, 10)
-                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 70,
+                                .addComponent(pnlBoxChinhSua, javax.swing.GroupLayout.PREFERRED_SIZE, 70,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 348,
+                                .addComponent(pnlBoxTable, javax.swing.GroupLayout.PREFERRED_SIZE, 348,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(10, 10, 10)));
 
         pnlContent.add(pnlContent1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 600));
@@ -288,7 +348,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
     private void searchNhaCungCap() {
         String keyword = jTextField1.getText().trim();
-        String searchType = (String) jComboBox1.getSelectedItem();
+        String searchType = (String) cboTimKiem.getSelectedItem();
         
         DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
         model.setRowCount(0);
@@ -360,17 +420,112 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         }
 
         String maNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 1);
+        String tenNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 2);
+        
         int choice = JOptionPane.showConfirmDialog(this,
-                "Bạn có chắc chắn muốn xóa nhà cung cấp này?",
+                "Bạn có chắc chắn muốn xóa nhà cung cấp " + tenNCC + "?",
                 "Xác nhận xóa",
                 JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
-            if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
-                JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thành công!");
-                loadData();
-            } else {
-                JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thất bại!");
+            try {
+                if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
+                    JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thành công!");
+                    loadData();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thất bại!");
+                }
+            } catch (Exception e) {
+                if (e.getMessage().contains("REFERENCE constraint")) {
+                    // Hiển thị dialog với các tùy chọn
+                    String[] options = {
+                        "Xóa tất cả sản phẩm liên kết",
+                        "Cập nhật sản phẩm sang nhà cung cấp khác",
+                        "Hủy"
+                    };
+                    
+                    int option = JOptionPane.showOptionDialog(this,
+                        "Nhà cung cấp này đang có sản phẩm liên kết.\n" +
+                        "Bạn muốn xử lý như thế nào?",
+                        "Xử lý sản phẩm liên kết",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[2]);
+
+                    if (option == 0) { // Xóa tất cả sản phẩm
+                        int confirm = JOptionPane.showConfirmDialog(this,
+                            "Bạn có chắc chắn muốn xóa tất cả sản phẩm liên kết với nhà cung cấp này?\n" +
+                            "Hành động này không thể hoàn tác!",
+                            "Xác nhận xóa sản phẩm",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                            
+                        if (confirm == JOptionPane.YES_OPTION) {
+                            try {
+                                if (nhaCungCapBUS.xoaNhaCungCapVaSanPham(maNCC)) {
+                                    JOptionPane.showMessageDialog(this, "Đã xóa nhà cung cấp và các sản phẩm liên kết!");
+                                    loadData();
+                                }
+                            } catch (Exception ex) {
+                                JOptionPane.showMessageDialog(this,
+                                    "Có lỗi xảy ra khi xóa: " + ex.getMessage(),
+                                    "Lỗi",
+                                    JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    } else if (option == 1) { // Cập nhật sang nhà cung cấp khác
+                        // Lấy danh sách nhà cung cấp khác
+                        List<nhaCungCapDTO> otherSuppliers = nhaCungCapBUS.getAllNhaCungCap();
+                        otherSuppliers.removeIf(ncc -> ncc.getMaNhaCungCap().equals(maNCC));
+                        
+                        if (otherSuppliers.isEmpty()) {
+                            JOptionPane.showMessageDialog(this,
+                                "Không có nhà cung cấp khác để chuyển sản phẩm sang!",
+                                "Không thể cập nhật",
+                                JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+
+                        // Tạo combobox chọn nhà cung cấp mới
+                        JComboBox<String> supplierCombo = new JComboBox<>();
+                        for (nhaCungCapDTO ncc : otherSuppliers) {
+                            supplierCombo.addItem(ncc.getMaNhaCungCap() + " - " + ncc.getTenNhaCungCap());
+                        }
+
+                        int result = JOptionPane.showConfirmDialog(this,
+                            supplierCombo,
+                            "Chọn nhà cung cấp mới",
+                            JOptionPane.OK_CANCEL_OPTION);
+
+                        if (result == JOptionPane.OK_OPTION) {
+                            String selectedSupplier = (String) supplierCombo.getSelectedItem();
+                            String newMaNCC = selectedSupplier.split(" - ")[0];
+                            
+                            try {
+                                if (nhaCungCapBUS.capNhatSanPhamSangNhaCungCapKhac(maNCC, newMaNCC)) {
+                                    // Sau khi cập nhật thành công, xóa nhà cung cấp cũ
+                                    if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
+                                        JOptionPane.showMessageDialog(this, 
+                                            "Đã cập nhật sản phẩm sang nhà cung cấp mới và xóa nhà cung cấp cũ!");
+                                        loadData();
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                JOptionPane.showMessageDialog(this,
+                                    "Có lỗi xảy ra khi cập nhật: " + ex.getMessage(),
+                                    "Lỗi",
+                                    JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                        "Có lỗi xảy ra khi xóa nhà cung cấp: " + e.getMessage(),
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
@@ -551,22 +706,24 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel containerPanel;
-    private javax.swing.JButton jButton30;
-    private javax.swing.JButton jButton31;
-    private javax.swing.JButton jButton32;
-    private javax.swing.JButton jButton33;
-    private javax.swing.JButton jButton34;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
-    private javax.swing.JPanel jPanel33;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton btnTimKiem;
+    private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnXoa;
+    private javax.swing.JButton btnExport;
+    private javax.swing.JComboBox<String> cboTimKiem;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JLabel lblTimKiem;
+    private javax.swing.JPanel pnlBoxChinhSua;
+    private javax.swing.JPanel pnlBoxTable;
+    private javax.swing.JPanel pnlBoxTimKiem;
+    private javax.swing.JScrollPane scTable;
     private javax.swing.JTable nhaCungCapTable;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlContent1;
     private javax.swing.JPanel pnlHeader;
+    private javax.swing.JButton btnImport;
+    private javax.swing.JButton btnPrinter;
     // End of variables declaration//GEN-END:variables
 }

@@ -8,19 +8,19 @@ import DTO.nhapHangDTO;
 
 public class NhapHangDAO {
     public boolean themNhapHang(nhapHangDTO nhapHang) {
-        String sql = "INSERT INTO NhapHang (MaPN, MaNhaCungCap, LoaiSP, MaSanPham, TenSanPham, MauSac, KichThuoc, SoLuong, DonGia, ThanhTien, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO NhapHang (MaPN, MaNhaCungCap, MaSanPham, TenSanPham, MauSac, KichThuoc, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, nhapHang.getMaPN());
             ps.setString(2, nhapHang.getMaNhaCungCap());
-            ps.setString(3, nhapHang.getLoaiSP());
-            ps.setString(4, nhapHang.getMaSanPham());
-            ps.setString(5, nhapHang.getTenSanPham());
-            ps.setString(6, nhapHang.getMauSac());
-            ps.setString(7, nhapHang.getKichThuoc());
-            ps.setInt(8, Integer.parseInt(nhapHang.getSoLuong()));
-            ps.setDouble(9, Double.parseDouble(nhapHang.getDonGia()));
-            ps.setDouble(10, Double.parseDouble(nhapHang.getThanhTien()));
+            ps.setString(3, nhapHang.getMaSanPham());
+            ps.setString(4, nhapHang.getTenSanPham());
+            ps.setString(5, nhapHang.getMauSac());
+            ps.setString(6, nhapHang.getKichThuoc());
+            ps.setInt(7, Integer.parseInt(nhapHang.getSoLuong()));
+            ps.setDouble(8, Double.parseDouble(nhapHang.getDonGia()));
+            ps.setDouble(9, Double.parseDouble(nhapHang.getThanhTien()));
+            ps.setString(10, nhapHang.getHinhThucThanhToan());
             ps.setString(11, nhapHang.getTrangThai());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -39,7 +39,6 @@ public class NhapHangDAO {
                 nhapHangDTO nh = new nhapHangDTO();
                 nh.setMaPN(rs.getString("MaPN"));
                 nh.setMaNhaCungCap(rs.getString("MaNhaCungCap"));
-                nh.setLoaiSP(rs.getString("LoaiSP"));
                 nh.setMaSanPham(rs.getString("MaSanPham"));
                 nh.setTenSanPham(rs.getString("TenSanPham"));
                 nh.setMauSac(rs.getString("MauSac"));
@@ -49,6 +48,7 @@ public class NhapHangDAO {
                 nh.setThanhTien(String.valueOf(rs.getDouble("ThanhTien")));
                 nh.setThoiGian(rs.getString("ThoiGian"));
                 nh.setTrangThai(rs.getString("TrangThai"));
+                nh.setHinhThucThanhToan(rs.getString("HinhThucThanhToan"));
                 list.add(nh);
             }
         } catch (Exception e) {
@@ -80,7 +80,6 @@ public class NhapHangDAO {
                 nhapHangDTO nh = new nhapHangDTO();
                 nh.setMaPN(rs.getString("MaPN"));
                 nh.setMaNhaCungCap(rs.getString("MaNhaCungCap"));
-                nh.setLoaiSP(rs.getString("LoaiSP"));
                 nh.setMaSanPham(rs.getString("MaSanPham"));
                 nh.setTenSanPham(rs.getString("TenSanPham"));
                 nh.setMauSac(rs.getString("MauSac"));
@@ -90,6 +89,7 @@ public class NhapHangDAO {
                 nh.setThanhTien(String.valueOf(rs.getDouble("ThanhTien")));
                 nh.setThoiGian(rs.getString("ThoiGian"));
                 nh.setTrangThai(rs.getString("TrangThai"));
+                nh.setHinhThucThanhToan(rs.getString("HinhThucThanhToan"));
                 return nh;
             }
         } catch (Exception e) {
@@ -121,7 +121,6 @@ public class NhapHangDAO {
                 nhapHangDTO nh = new nhapHangDTO();
                 nh.setMaPN(rs.getString("MaPN"));
                 nh.setMaNhaCungCap(rs.getString("MaNhaCungCap"));
-                nh.setLoaiSP(rs.getString("LoaiSP"));
                 nh.setMaSanPham(rs.getString("MaSanPham"));
                 nh.setTenSanPham(rs.getString("TenSanPham"));
                 nh.setMauSac(rs.getString("MauSac"));
@@ -131,6 +130,7 @@ public class NhapHangDAO {
                 nh.setThanhTien(String.valueOf(rs.getDouble("ThanhTien")));
                 nh.setThoiGian(rs.getString("ThoiGian"));
                 nh.setTrangThai(rs.getString("TrangThai"));
+                nh.setHinhThucThanhToan(rs.getString("HinhThucThanhToan"));
                 list.add(nh);
             }
         } catch (Exception e) {
@@ -140,20 +140,20 @@ public class NhapHangDAO {
     }
 
     public boolean capNhatNhapHang(nhapHangDTO nhapHang) {
-        String sql = "UPDATE NhapHang SET MaNhaCungCap=?, LoaiSP=?, MaSanPham=?, TenSanPham=?, MauSac=?, KichThuoc=?, SoLuong=?, DonGia=?, ThanhTien=?, ThoiGian=?, TrangThai=? WHERE MaPN=?";
+        String sql = "UPDATE NhapHang SET MaNhaCungCap=?, MaSanPham=?, TenSanPham=?, MauSac=?, KichThuoc=?, SoLuong=?, DonGia=?, ThanhTien=?, ThoiGian=?, TrangThai=?, HinhThucThanhToan=? WHERE MaPN=?";
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, nhapHang.getMaNhaCungCap());
-            ps.setString(2, nhapHang.getLoaiSP());
-            ps.setString(3, nhapHang.getMaSanPham());
-            ps.setString(4, nhapHang.getTenSanPham());
-            ps.setString(5, nhapHang.getMauSac());
-            ps.setString(6, nhapHang.getKichThuoc());
-            ps.setInt(7, Integer.parseInt(nhapHang.getSoLuong()));
-            ps.setDouble(8, Double.parseDouble(nhapHang.getDonGia()));
-            ps.setDouble(9, Double.parseDouble(nhapHang.getThanhTien()));
-            ps.setString(10, nhapHang.getThoiGian());
-            ps.setString(11, nhapHang.getTrangThai());
+            ps.setString(2, nhapHang.getMaSanPham());
+            ps.setString(3, nhapHang.getTenSanPham());
+            ps.setString(4, nhapHang.getMauSac());
+            ps.setString(5, nhapHang.getKichThuoc());
+            ps.setInt(6, Integer.parseInt(nhapHang.getSoLuong()));
+            ps.setDouble(7, Double.parseDouble(nhapHang.getDonGia()));
+            ps.setDouble(8, Double.parseDouble(nhapHang.getThanhTien()));
+            ps.setString(9, nhapHang.getThoiGian());
+            ps.setString(10, nhapHang.getTrangThai());
+            ps.setString(11, nhapHang.getHinhThucThanhToan());
             ps.setString(12, nhapHang.getMaPN());
             return ps.executeUpdate() > 0;
         } catch (Exception e) {

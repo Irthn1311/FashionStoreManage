@@ -237,7 +237,7 @@ public class themHoaDonPanel extends JPanel {
                 if (sp != null) {
                     txtTenSP.setText(sp.getTenSanPham());
                     txtKichCo.setText(sp.getSize());
-                    txtMauSac.setText(""); // Cần thêm thuộc tính màu sắc vào DTO nếu cần
+                    txtMauSac.setText(sp.getMauSac());
                     txtDonGia.setText(String.valueOf(sp.getGiaBan()));
                     calculateThanhTien();
                 }

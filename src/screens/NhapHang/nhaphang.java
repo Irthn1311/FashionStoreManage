@@ -25,19 +25,19 @@ import javax.swing.SwingUtilities;
  */
 public class nhaphang extends javax.swing.JPanel {
 
-    /**
-     * Creates new form phieunhap
-     */
-    public nhaphang() {
-        initComponents();
-        populateComboBoxes();
-        loadImportTable();
-        setupAmountCalculation();
-    }
-    
-    public javax.swing.JPanel getNhapHangPanel() {
-        return containerPanel;
-    }
+        /**
+         * Creates new form phieunhap
+         */
+        public nhaphang() {
+                initComponents();
+                populateComboBoxes();
+                loadImportTable();
+                setupAmountCalculation();
+        }
+
+        public javax.swing.JPanel getNhapHangPanel() {
+                return containerPanel;
+        }
 
         /**
          * This method is called from within the constructor to initialize the form.
@@ -61,27 +61,28 @@ public class nhaphang extends javax.swing.JPanel {
                 jTable1 = new javax.swing.JTable();
                 jPanel7 = new javax.swing.JPanel();
                 jPanel5 = new javax.swing.JPanel();
-                jTextField6 = new javax.swing.JTextField();
+                lblNhaCungCap = new javax.swing.JTextField();
                 jComboBox9 = new javax.swing.JComboBox<>();
-                jTextField2 = new javax.swing.JTextField();
-                jPanel8 = new javax.swing.JPanel();
-                jComboBox6 = new javax.swing.JComboBox<>();
-                jComboBox7 = new javax.swing.JComboBox<>();
+                lblNCC = new javax.swing.JTextField();
+                pnlBoxSanPhamSoLuong = new javax.swing.JPanel();
+                cbMaSanPham = new javax.swing.JComboBox<>();
+                cbHinhThucThanhToan = new javax.swing.JComboBox<>();
                 jTextField7 = new javax.swing.JTextField();
-                jLabel2 = new javax.swing.JLabel();
-                jLabel3 = new javax.swing.JLabel();
-                jLabel4 = new javax.swing.JLabel();
-                jLabel5 = new javax.swing.JLabel();
-                jLabel6 = new javax.swing.JLabel();
-                jLabel7 = new javax.swing.JLabel();
-                jLabel8 = new javax.swing.JLabel();
-                jTextField1 = new javax.swing.JTextField();
-                jTextField3 = new javax.swing.JTextField();
-                jTextField4 = new javax.swing.JTextField();
-                jTextField10 = new javax.swing.JTextField();
+                lblLoaiSanPham = new javax.swing.JLabel();
+                lblMaSanPham = new javax.swing.JLabel();
+                lblTenSanPham = new javax.swing.JLabel();
+                lblMauSac = new javax.swing.JLabel();
+                lblKichThuoc = new javax.swing.JLabel();
+                lblSoLuong = new javax.swing.JLabel();
+                lblDonGia = new javax.swing.JLabel();
+                lblHinhThucThanhToan = new javax.swing.JLabel();
+                textTenSanPham = new javax.swing.JTextField();
+                txtMauSac = new javax.swing.JTextField();
+                txtKichThuoc = new javax.swing.JTextField();
+                textSoLuong = new javax.swing.JTextField();
                 jPanel9 = new javax.swing.JPanel();
-                jTextField8 = new javax.swing.JTextField();
-                jTextField9 = new javax.swing.JTextField();
+                lblThanhTien = new javax.swing.JTextField();
+                textThanhTien = new javax.swing.JTextField();
                 jButton15 = new javax.swing.JButton();
                 jButton18 = new javax.swing.JButton();
                 jButton16 = new javax.swing.JButton();
@@ -127,26 +128,26 @@ public class nhaphang extends javax.swing.JPanel {
                 jTable1.setModel(new javax.swing.table.DefaultTableModel(
                                 new Object[][] {
                                                 { null, null, null, null, null, null, null, null, null, null, null,
-                                                                null, null },
+                                                                null },
                                                 { null, null, null, null, null, null, null, null, null, null, null,
-                                                                null, null },
+                                                                null },
                                                 { null, null, null, null, null, null, null, null, null, null, null,
-                                                                null, null },
+                                                                null },
                                                 { null, null, null, null, null, null, null, null, null, null, null,
-                                                                null, null },
+                                                                null },
                                                 { null, null, null, null, null, null, null, null, null, null, null,
-                                                                null, null },
+                                                                null },
                                                 { null, null, null, null, null, null, null, null, null, null, null,
-                                                                null, null },
+                                                                null },
                                                 { null, null, null, null, null, null, null, null, null, null, null,
-                                                                null, null },
+                                                                null },
                                                 { null, null, null, null, null, null, null, null, null, null, null,
-                                                                null, null }
+                                                                null }
                                 },
                                 new String[] {
-                                                "STT", "Ma PN", "Mã NCC", "Loại SP", "Mã SP", "Tên SP", "Màu sắc",
+                                                "STT", "Ma PN", "Mã NCC", "Mã SP", "Tên SP", "Màu sắc",
                                                 "Kích thước", "Số Lượng",
-                                                "Đơn giá", "Thành tiền", "Thời gian", "Trạng thái"
+                                                "Đơn giá", "Thành tiền", "Hình thức thanh toán", "Trạng thái"
                                 }));
                 jTable1.setShowGrid(true);
                 jScrollPane1.setViewportView(jTable1);
@@ -161,16 +162,16 @@ public class nhaphang extends javax.swing.JPanel {
                                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)),
                                 "Nhà cung cấp"));
 
-                jTextField6.setText("Chọn nhà cung cấp ");
+                lblNhaCungCap.setText("Chọn nhà cung cấp ");
 
                 jComboBox9.setModel(
                                 new javax.swing.DefaultComboBoxModel<>(
                                                 new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-                jTextField2.setText("Mã NCC");
-                jTextField2.addActionListener(new java.awt.event.ActionListener() {
+                lblNCC.setText("Mã NCC");
+                lblNCC.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jTextField2ActionPerformed(evt);
+                                lblNCCActionPerformed(evt);
                         }
                 });
 
@@ -183,10 +184,10 @@ public class nhaphang extends javax.swing.JPanel {
                                                                 .addContainerGap()
                                                                 .addGroup(jPanel5Layout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addComponent(jTextField6)
+                                                                                .addComponent(lblNhaCungCap)
                                                                                 .addGroup(jPanel5Layout
                                                                                                 .createSequentialGroup()
-                                                                                                .addComponent(jTextField2,
+                                                                                                .addComponent(lblNCC,
                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -200,7 +201,7 @@ public class nhaphang extends javax.swing.JPanel {
                                 jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel5Layout.createSequentialGroup()
                                                                 .addContainerGap()
-                                                                .addComponent(jTextField6,
+                                                                .addComponent(lblNhaCungCap,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                 41,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -212,166 +213,166 @@ public class nhaphang extends javax.swing.JPanel {
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 41,
                                                                                                 Short.MAX_VALUE)
-                                                                                .addComponent(jTextField2))
+                                                                                .addComponent(lblNCC))
                                                                 .addContainerGap()));
 
                 jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 180, 320, -1));
 
-                jPanel8.setBackground(new java.awt.Color(107, 163, 190));
-                jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                pnlBoxSanPhamSoLuong.setBackground(new java.awt.Color(107, 163, 190));
+                pnlBoxSanPhamSoLuong.setBorder(javax.swing.BorderFactory.createTitledBorder(
                                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)),
                                 "Sản phẩm & Số lượng"));
 
-                jComboBox6.setModel(
+                cbMaSanPham.setModel(
                                 new javax.swing.DefaultComboBoxModel<>(
                                                 new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-                jComboBox7.setModel(
+                lblMaSanPham.setText("Mã SP");
+
+                lblTenSanPham.setText("Tên SP");
+
+                lblMauSac.setText("Màu sắc");
+
+                lblKichThuoc.setText("Kích thước");
+
+                lblSoLuong.setText("Số lượng");
+
+                lblDonGia.setText("Đơn giá");
+
+                lblHinhThucThanhToan.setText("Hình thức thanh toán");
+
+                cbHinhThucThanhToan.setModel(
                                 new javax.swing.DefaultComboBoxModel<>(
-                                                new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+                                                new String[] { "Tiền mặt", "Chuyển khoản", "Thẻ" }));
 
-                jLabel2.setText("Loại SP");
-
-                jLabel3.setText("Mã SP");
-
-                jLabel4.setText("Tên SP");
-
-                jLabel5.setText("Màu sắc");
-
-                jLabel6.setText("Kích thước");
-
-                jLabel7.setText("Số lượng");
-
-                jLabel8.setText("Đơn giá");
-
-                jTextField4.addActionListener(new java.awt.event.ActionListener() {
+                txtKichThuoc.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jTextField4ActionPerformed(evt);
+                                txtKichThuocActionPerformed(evt);
                         }
                 });
 
-                jTextField10.addActionListener(new java.awt.event.ActionListener() {
+                textSoLuong.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jTextField10ActionPerformed(evt);
+                                textSoLuongActionPerformed(evt);
                         }
                 });
 
-                javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-                jPanel8.setLayout(jPanel8Layout);
-                jPanel8Layout.setHorizontalGroup(
-                                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(jPanel8Layout.createSequentialGroup()
+                javax.swing.GroupLayout pnlBoxSanPhamSoLuongLayout = new javax.swing.GroupLayout(pnlBoxSanPhamSoLuong);
+                pnlBoxSanPhamSoLuong.setLayout(pnlBoxSanPhamSoLuongLayout);
+                pnlBoxSanPhamSoLuongLayout.setHorizontalGroup(
+                                pnlBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createSequentialGroup()
                                                                 .addGap(28, 28, 28)
-                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addGroup(jPanel8Layout
+                                                                                .addGroup(pnlBoxSanPhamSoLuongLayout
                                                                                                 .createParallelGroup(
                                                                                                                 javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                                                .addComponent(jLabel5)
-                                                                                                .addGroup(jPanel8Layout
+                                                                                                .addComponent(lblMauSac)
+                                                                                                .addGroup(pnlBoxSanPhamSoLuongLayout
                                                                                                                 .createParallelGroup(
                                                                                                                                 javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                                .addComponent(jLabel3)
-                                                                                                                .addComponent(jLabel2)
-                                                                                                                .addComponent(jLabel4))
-                                                                                                .addComponent(jLabel8))
-                                                                                .addComponent(jLabel6)
-                                                                                .addGroup(jPanel8Layout
+                                                                                                                .addComponent(lblMaSanPham)
+                                                                                                                .addComponent(lblTenSanPham))
+                                                                                                .addComponent(lblDonGia))
+                                                                                .addComponent(lblKichThuoc)
+                                                                                .addGroup(pnlBoxSanPhamSoLuongLayout
                                                                                                 .createSequentialGroup()
                                                                                                 .addGap(1, 1, 1)
-                                                                                                .addComponent(jLabel7)))
+                                                                                                .addComponent(lblSoLuong))
+                                                                                .addComponent(lblHinhThucThanhToan))
                                                                 .addGap(50, 50, 50)
-                                                                .addGroup(jPanel8Layout
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout
                                                                                 .createParallelGroup(
                                                                                                 javax.swing.GroupLayout.Alignment.LEADING,
                                                                                                 false)
-                                                                                .addComponent(jComboBox6, 0, 172,
-                                                                                                Short.MAX_VALUE)
-                                                                                .addComponent(jComboBox7, 0,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                .addComponent(cbMaSanPham, 0, 172,
                                                                                                 Short.MAX_VALUE)
                                                                                 .addComponent(jTextField7)
-                                                                                .addComponent(jTextField1)
-                                                                                .addComponent(jTextField3)
-                                                                                .addComponent(jTextField4)
-                                                                                .addComponent(jTextField10))
+                                                                                .addComponent(textTenSanPham)
+                                                                                .addComponent(txtMauSac)
+                                                                                .addComponent(txtKichThuoc)
+                                                                                .addComponent(textSoLuong)
+                                                                                .addComponent(cbHinhThucThanhToan, 0,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                Short.MAX_VALUE))
                                                                 .addContainerGap(22, Short.MAX_VALUE)));
-                jPanel8Layout.setVerticalGroup(
-                                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(jPanel8Layout.createSequentialGroup()
+                pnlBoxSanPhamSoLuongLayout.setVerticalGroup(
+                                pnlBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createSequentialGroup()
                                                                 .addContainerGap()
-                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jComboBox6,
+                                                                                .addComponent(cbMaSanPham,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jLabel2))
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                .addGroup(jPanel8Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jComboBox7,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jLabel3))
+                                                                                .addComponent(lblMaSanPham))
                                                                 .addGap(18, 18, 18)
-                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jTextField1,
+                                                                                .addComponent(textTenSanPham,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jLabel4))
+                                                                                .addComponent(lblTenSanPham))
                                                                 .addGap(18, 18, 18)
-                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jTextField3,
+                                                                                .addComponent(txtMauSac,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jLabel5))
+                                                                                .addComponent(lblMauSac))
                                                                 .addGap(18, 18, 18)
-                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jTextField4,
+                                                                                .addComponent(txtKichThuoc,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jLabel6))
+                                                                                .addComponent(lblKichThuoc))
                                                                 .addPreferredGap(
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED,
                                                                                 18,
                                                                                 Short.MAX_VALUE)
-                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jTextField10,
+                                                                                .addComponent(textSoLuong,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jLabel7))
+                                                                                .addComponent(lblSoLuong))
                                                                 .addPreferredGap(
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                .addGroup(jPanel8Layout.createParallelGroup(
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                 .addComponent(jTextField7,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jLabel8))
+                                                                                .addComponent(lblDonGia))
+                                                                .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(cbHinhThucThanhToan,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(lblHinhThucThanhToan))
                                                                 .addGap(9, 9, 9)));
 
-                jPanel7.add(jPanel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 36, -1, 270));
+                jPanel7.add(pnlBoxSanPhamSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 36, -1, 270));
 
                 jPanel9.setBackground(new java.awt.Color(107, 163, 190));
                 jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(
                                 javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chi phí"));
 
-                jTextField8.setText("Thành tiền");
-                jTextField8.addActionListener(new java.awt.event.ActionListener() {
+                lblThanhTien.setText("Thành tiền");
+                lblThanhTien.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jTextField8ActionPerformed(evt);
+                                lblThanhTienActionPerformed(evt);
                         }
                 });
 
@@ -384,8 +385,8 @@ public class nhaphang extends javax.swing.JPanel {
                                                                 .addContainerGap()
                                                                 .addGroup(jPanel9Layout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                                .addComponent(jTextField9)
-                                                                                .addComponent(jTextField8,
+                                                                                .addComponent(textThanhTien)
+                                                                                .addComponent(lblThanhTien,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 288,
                                                                                                 Short.MAX_VALUE))
@@ -394,13 +395,13 @@ public class nhaphang extends javax.swing.JPanel {
                                 jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel9Layout.createSequentialGroup()
                                                                 .addContainerGap()
-                                                                .addComponent(jTextField8,
+                                                                .addComponent(lblThanhTien,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                 42,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addPreferredGap(
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(jTextField9,
+                                                                .addComponent(textThanhTien,
                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                 40, Short.MAX_VALUE)
                                                                 .addContainerGap()));
@@ -408,6 +409,19 @@ public class nhaphang extends javax.swing.JPanel {
                 jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 40, 310, -1));
 
         jButton15.setText("Hủy");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                // Reset các trường nhập liệu ở phần Đặt hàng
+                cbMaSanPham.setSelectedIndex(0);
+                textTenSanPham.setText("");
+                txtMauSac.setText("");
+                txtKichThuoc.setText("");
+                textSoLuong.setText("");
+                jTextField7.setText("");
+                textThanhTien.setText("");
+                // Không reset lblThanhTien (ô mô tả)
+            }
+        });
         jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, -1, 60));
 
                 jButton18.setText("Thêm");
@@ -418,13 +432,13 @@ public class nhaphang extends javax.swing.JPanel {
                 });
                 jPanel7.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 220, -1, 64));
 
-        jButton16.setText("Xóa");
-        jButton16.addActionListener(evt -> jButton16ActionPerformed(evt));
-        jPanel7.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 340, -1, 60));
+                jButton16.setText("Xóa");
+                jButton16.addActionListener(evt -> jButton16ActionPerformed(evt));
+                jPanel7.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 340, -1, 60));
 
-        jButton17.setText("Xác nhận và Xuất hóa đơn ");
-        jButton17.addActionListener(evt -> jButton17ActionPerformed(evt));
-        jPanel7.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, -1, 60));
+                jButton17.setText("Xác nhận và Xuất Phiếu Nhập ");
+                jButton17.addActionListener(evt -> jButton17ActionPerformed(evt));
+                jPanel7.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, -1, 60));
 
                 javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
                 pnlContent.setLayout(pnlContentLayout);
@@ -491,9 +505,9 @@ public class nhaphang extends javax.swing.JPanel {
                 setupUI();
         } // </editor-fold>//GEN-END:initComponents
 
-        private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField8ActionPerformed
+        private void lblThanhTienActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_lblThanhTienActionPerformed
                 // TODO add your handling code here:
-        }// GEN-LAST:event_jTextField8ActionPerformed
+        }// GEN-LAST:event_lblThanhTienActionPerformed
 
         private void setupUI() {
                 // Điều chỉnh kích thước các panel con trong pnlContent
@@ -501,26 +515,26 @@ public class nhaphang extends javax.swing.JPanel {
                 jScrollPane1.setPreferredSize(new java.awt.Dimension(960, 190));
         }
 
-        private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField2ActionPerformed
+        private void lblNCCActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_lblNCCActionPerformed
                 // TODO add your handling code here:
-        }// GEN-LAST:event_jTextField2ActionPerformed
+        }// GEN-LAST:event_lblNCCActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {
         try {
             // Validate dữ liệu đầu vào
-            if (jTextField10.getText().trim().isEmpty() || jTextField7.getText().trim().isEmpty()) {
+            if (textSoLuong.getText().trim().isEmpty() || jTextField7.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ Số lượng và Đơn giá!");
                 return;
             }
             try {
-                Integer.parseInt(jTextField10.getText());
+                Integer.parseInt(textSoLuong.getText());
                 Double.parseDouble(jTextField7.getText());
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Số lượng và Đơn giá phải là số hợp lệ!");
                 return;
             }
-            if (jComboBox9.getSelectedItem() == null || jComboBox6.getSelectedItem() == null || jComboBox7.getSelectedItem() == null) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn đầy đủ Nhà cung cấp, Loại SP, Mã SP!");
+            if (jComboBox9.getSelectedItem() == null || cbMaSanPham.getSelectedItem() == null || cbHinhThucThanhToan.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn đầy đủ Nhà cung cấp, Mã SP, Hình thức thanh toán!");
                 return;
             }
 
@@ -542,19 +556,18 @@ public class nhaphang extends javax.swing.JPanel {
             String nccValue = jComboBox9.getSelectedItem().toString();
             String maNCC = nccValue.split(" - ")[0].trim();
             nhapHang.setMaNhaCungCap(maNCC);
-            nhapHang.setLoaiSP(jComboBox6.getSelectedItem().toString());
-            nhapHang.setMaSanPham(jComboBox7.getSelectedItem().toString());
-            nhapHang.setTenSanPham(jTextField1.getText());
-            nhapHang.setMauSac(jTextField3.getText());
-            nhapHang.setKichThuoc(jTextField4.getText());
-            nhapHang.setSoLuong(jTextField10.getText());
+            nhapHang.setMaSanPham(cbMaSanPham.getSelectedItem().toString());
+            nhapHang.setTenSanPham(textTenSanPham.getText());
+            nhapHang.setMauSac(txtMauSac.getText());
+            nhapHang.setKichThuoc(txtKichThuoc.getText());
+            nhapHang.setSoLuong(textSoLuong.getText());
             nhapHang.setDonGia(jTextField7.getText());
-            nhapHang.setThanhTien(jTextField9.getText());
+            nhapHang.setThanhTien(textThanhTien.getText());
+            nhapHang.setHinhThucThanhToan(cbHinhThucThanhToan.getSelectedItem().toString());
             nhapHang.setTrangThai("Đã nhập");
 
             System.out.println("MaPN: " + nhapHang.getMaPN());
             System.out.println("MaNhaCungCap: " + nhapHang.getMaNhaCungCap());
-            System.out.println("LoaiSP: " + nhapHang.getLoaiSP());
             System.out.println("MaSanPham: " + nhapHang.getMaSanPham());
             System.out.println("TenSanPham: " + nhapHang.getTenSanPham());
             System.out.println("MauSac: " + nhapHang.getMauSac());
@@ -563,69 +576,64 @@ public class nhaphang extends javax.swing.JPanel {
             System.out.println("DonGia: " + nhapHang.getDonGia());
             System.out.println("ThanhTien: " + nhapHang.getThanhTien());
             System.out.println("TrangThai: " + nhapHang.getTrangThai());
+            System.out.println("HinhThucThanhToan: " + nhapHang.getHinhThucThanhToan());
 
-            NhapHangDAO nhapHangDAO = new NhapHangDAO();
-            if (nhapHangDAO.getNhapHangByMa(nhapHang.getMaPN()) != null) {
-                JOptionPane.showMessageDialog(this, "Mã phiếu nhập đã tồn tại, vui lòng thử lại!");
-                return;
-            }
-            boolean result = nhapHangDAO.themNhapHang(nhapHang);
+                        NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                        if (nhapHangDAO.getNhapHangByMa(nhapHang.getMaPN()) != null) {
+                                JOptionPane.showMessageDialog(this, "Mã phiếu nhập đã tồn tại, vui lòng thử lại!");
+                                return;
+                        }
+                        boolean result = nhapHangDAO.themNhapHang(nhapHang);
 
-            if (result) {
-                // Update product quantity in stock
-                SanPhamDAO sanPhamDAO = new SanPhamDAO();
-                int soLuongNhap = Integer.parseInt(nhapHang.getSoLuong());
-                sanPhamDAO.capNhatSoLuongSanPham(nhapHang.getMaSanPham(), soLuongNhap);
+                        if (result) {
+                                // Update product quantity in stock
+                                SanPhamDAO sanPhamDAO = new SanPhamDAO();
+                                int soLuongNhap = Integer.parseInt(nhapHang.getSoLuong());
+                                sanPhamDAO.capNhatSoLuongSanPham(nhapHang.getMaSanPham(), soLuongNhap);
 
-                JOptionPane.showMessageDialog(this, "Nhập hàng thành công!");
-                loadImportTable();
-            } else {
-                JOptionPane.showMessageDialog(this, "Nhập hàng thất bại!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // Để xem lỗi trên console
-            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thêm nhập hàng: " + e.getMessage());
+                                JOptionPane.showMessageDialog(this, "Nhập hàng thành công!");
+                                loadImportTable();
+                        } else {
+                                JOptionPane.showMessageDialog(this, "Nhập hàng thất bại!");
+                        }
+                } catch (Exception e) {
+                        e.printStackTrace(); // Để xem lỗi trên console
+                        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thêm nhập hàng: " + e.getMessage());
+                }
         }
-    }
 
-        private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField4ActionPerformed
+        private void txtKichThuocActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_txtKichThuocActionPerformed
                 // TODO add your handling code here:
-        }// GEN-LAST:event_jTextField4ActionPerformed
+        }// GEN-LAST:event_txtKichThuocActionPerformed
 
-    private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
+    private void textSoLuongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSoLuongActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField10ActionPerformed
+    }//GEN-LAST:event_textSoLuongActionPerformed
 
-    private void populateComboBoxes() {
-        SanPhamDAO sanPhamDAO = new SanPhamDAO();
-        NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
+        private void populateComboBoxes() {
+                SanPhamDAO sanPhamDAO = new SanPhamDAO();
+                NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
 
         // Loại SP
-        jComboBox6.removeAllItems();
+        cbMaSanPham.removeAllItems();
         for (String type : sanPhamDAO.getAllProductTypes()) {
-            jComboBox6.addItem(type);
+            cbMaSanPham.addItem(type);
         }
 
         // Mã SP
-        jComboBox7.removeAllItems();
+        cbMaSanPham.removeAllItems();
         for (String code : sanPhamDAO.getAllProductCodes()) {
-            jComboBox7.addItem(code);
+            cbMaSanPham.addItem(code);
         }
 
-        // Nhà cung cấp
-        jComboBox9.removeAllItems();
-        for (String supplier : nhaCungCapDAO.getAllSuppliers()) {
-            jComboBox9.addItem(supplier);
-        }
+                // Nhà cung cấp
+                jComboBox9.removeAllItems();
+                for (String supplier : nhaCungCapDAO.getAllSuppliers()) {
+                        jComboBox9.addItem(supplier);
+                }
 
         // Add event listeners for filtering suppliers
-        jComboBox6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                filterSuppliers();
-            }
-        });
-
-        jComboBox7.addActionListener(new java.awt.event.ActionListener() {
+        cbMaSanPham.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filterSuppliers();
             }
@@ -633,12 +641,11 @@ public class nhaphang extends javax.swing.JPanel {
     }
 
     private void filterSuppliers() {
-        String selectedType = (String) jComboBox6.getSelectedItem();
-        String selectedCode = (String) jComboBox7.getSelectedItem();
+        String selectedType = (String) cbMaSanPham.getSelectedItem();
         
-        if (selectedType != null && selectedCode != null) {
+        if (selectedType != null) {
             NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
-            List<String> filteredSuppliers = nhaCungCapDAO.getSuppliersByProduct(selectedType, selectedCode);
+            List<String> filteredSuppliers = nhaCungCapDAO.getSuppliersByProduct(selectedType, selectedType);
             
             jComboBox9.removeAllItems();
             for (String supplier : filteredSuppliers) {
@@ -650,12 +657,12 @@ public class nhaphang extends javax.swing.JPanel {
         }
     }
 
-    private void loadImportTable() {
-        NhapHangDAO nhapHangDAO = new NhapHangDAO();
-        List<nhapHangDTO> list = nhapHangDAO.getAllNhapHang();
+        private void loadImportTable() {
+                NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                List<nhapHangDTO> list = nhapHangDAO.getAllNhapHang();
 
-        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
+                javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+                model.setRowCount(0);
 
         int stt = 1;
         for (nhapHangDTO nh : list) {
@@ -663,7 +670,6 @@ public class nhaphang extends javax.swing.JPanel {
                 stt++,
                 nh.getMaPN(),
                 nh.getMaNhaCungCap(),
-                nh.getLoaiSP(),
                 nh.getMaSanPham(),
                 nh.getTenSanPham(),
                 nh.getMauSac(),
@@ -671,7 +677,7 @@ public class nhaphang extends javax.swing.JPanel {
                 nh.getSoLuong(),
                 nh.getDonGia(),
                 nh.getThanhTien(),
-                nh.getThoiGian(),
+                nh.getHinhThucThanhToan(),
                 nh.getTrangThai()
             });
         }
@@ -683,122 +689,124 @@ public class nhaphang extends javax.swing.JPanel {
             public void removeUpdate(javax.swing.event.DocumentEvent e) { calculateAmount(); }
             public void insertUpdate(javax.swing.event.DocumentEvent e) { calculateAmount(); }
         };
-        jTextField10.getDocument().addDocumentListener(listener); // Số lượng
+        textSoLuong.getDocument().addDocumentListener(listener); // Số lượng
         jTextField7.getDocument().addDocumentListener(listener);  // Đơn giá
     }
 
     private void calculateAmount() {
         try {
-            int soLuong = Integer.parseInt(jTextField10.getText());
+            int soLuong = Integer.parseInt(textSoLuong.getText());
             double donGia = Double.parseDouble(jTextField7.getText());
             double thanhTien = soLuong * donGia;
-            jTextField9.setText(String.valueOf(thanhTien));
+            textThanhTien.setText(String.valueOf(thanhTien));
         } catch (NumberFormatException e) {
-            jTextField9.setText("0");
+            textThanhTien.setText("0");
         }
     }
 
-    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
-        int rowCount = jTable1.getRowCount();
-        if (rowCount == 0) {
-            JOptionPane.showMessageDialog(this, "Không có phiếu nhập nào để xuất hóa đơn!");
-            return;
-        }
+        private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
+                int rowCount = jTable1.getRowCount();
+                if (rowCount == 0) {
+                        JOptionPane.showMessageDialog(this, "Không có phiếu nhập nào để xuất hóa đơn!");
+                        return;
+                }
 
-        int confirm = JOptionPane.showConfirmDialog(
-            this,
-            "Bạn có chắc chắn muốn xác nhận và xuất hóa đơn cho tất cả các phiếu nhập?",
-            "Xác nhận xuất hóa đơn",
-            JOptionPane.YES_NO_OPTION
-        );
+                int confirm = JOptionPane.showConfirmDialog(
+                                this,
+                                "Bạn có chắc chắn muốn xác nhận và xuất hóa đơn cho tất cả các phiếu nhập?",
+                                "Xác nhận xuất hóa đơn",
+                                JOptionPane.YES_NO_OPTION);
 
-        if (confirm != JOptionPane.YES_OPTION) {
-            return;
-        }
+                if (confirm != JOptionPane.YES_OPTION) {
+                        return;
+                }
 
-        // 1. Ask for payment method
-        String[] paymentMethods = {"Tiền mặt", "Chuyển khoản", "Thẻ"};
-        String hinhThucThanhToan = (String) JOptionPane.showInputDialog(
-            this,
-            "Chọn hình thức thanh toán cho tất cả hóa đơn:",
-            "Hình thức thanh toán",
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            paymentMethods,
-            paymentMethods[0]
-        );
-        if (hinhThucThanhToan == null) {
-            // User cancelled
-            return;
-        }
+                // 1. Ask for payment method
+                String[] paymentMethods = { "Tiền mặt", "Chuyển khoản", "Thẻ" };
+                String hinhThucThanhToan = (String) JOptionPane.showInputDialog(
+                                this,
+                                "Chọn hình thức thanh toán cho tất cả hóa đơn:",
+                                "Hình thức thanh toán",
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                paymentMethods,
+                                paymentMethods[0]);
+                if (hinhThucThanhToan == null) {
+                        // User cancelled
+                        return;
+                }
 
-        NhapHangDAO nhapHangDAO = new NhapHangDAO();
-        HoaDonBUS hoaDonBUS = new HoaDonBUS();
-        boolean allSuccess = true;
+                NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                HoaDonBUS hoaDonBUS = new HoaDonBUS();
+                boolean allSuccess = true;
 
-        for (int i = 0; i < rowCount; i++) {
-            String maPN = jTable1.getValueAt(i, 1).toString();
-            String maSP = jTable1.getValueAt(i, 4).toString();
-            String tenSP = jTable1.getValueAt(i, 5).toString();
-            String kichCo = jTable1.getValueAt(i, 7).toString();
-            String mauSac = jTable1.getValueAt(i, 6).toString();
-            int soLuong = Integer.parseInt(jTable1.getValueAt(i, 8).toString());
-            double donGia = Double.parseDouble(jTable1.getValueAt(i, 9).toString());
-            double thanhTien = Double.parseDouble(jTable1.getValueAt(i, 10).toString());
-            String maKhachHang = "KH001"; // You may want to select or input this
-            String tenKhachHang = ""; // You may want to select or input this
-            String trangThai = "Đã xuất hóa đơn";
+                for (int i = 0; i < rowCount; i++) {
+                        String maPN = jTable1.getValueAt(i, 1).toString();
+                        String maSP = jTable1.getValueAt(i, 4).toString();
+                        String tenSP = jTable1.getValueAt(i, 5).toString();
+                        String kichCo = jTable1.getValueAt(i, 7).toString();
+                        String mauSac = jTable1.getValueAt(i, 6).toString();
+                        int soLuong = Integer.parseInt(jTable1.getValueAt(i, 8).toString());
+                        double donGia = Double.parseDouble(jTable1.getValueAt(i, 9).toString());
+                        double thanhTien = Double.parseDouble(jTable1.getValueAt(i, 10).toString());
+                        String maKhachHang = "KH001"; // You may want to select or input this
+                        String tenKhachHang = ""; // You may want to select or input this
+                        String trangThai = "Đã xuất hóa đơn";
 
-            // Update status in NhapHang
-            boolean updateResult = nhapHangDAO.capNhatTrangThai(maPN, trangThai);
+                        // Update status in NhapHang
+                        boolean updateResult = nhapHangDAO.capNhatTrangThai(maPN, trangThai);
 
-            // Create new invoice
-            String maHoaDon = "HD" + System.currentTimeMillis() + i; // Ensure unique
-            java.sql.Timestamp thoiGian = new java.sql.Timestamp(System.currentTimeMillis());
-            hoaDonDTO hoaDon = new hoaDonDTO(
-                maHoaDon, maSP, tenSP, kichCo, mauSac, soLuong, maKhachHang, tenKhachHang,
-                thanhTien, donGia, hinhThucThanhToan, thoiGian, trangThai
-            );
-            boolean addResult = hoaDonBUS.addHoaDon(hoaDon);
+                        // Create new invoice
+                        String maHoaDon = "HD" + System.currentTimeMillis() + i; // Ensure unique
+                        java.sql.Timestamp thoiGian = new java.sql.Timestamp(System.currentTimeMillis());
+                        hoaDonDTO hoaDon = new hoaDonDTO(
+                                        maHoaDon, maSP, tenSP, kichCo, mauSac, soLuong, maKhachHang, tenKhachHang,
+                                        thanhTien, donGia, hinhThucThanhToan, thoiGian, trangThai);
+                        boolean addResult = hoaDonBUS.addHoaDon(hoaDon);
 
-            if (!(updateResult && addResult)) {
-                allSuccess = false;
-            }
-        }
+                        if (!(updateResult && addResult)) {
+                                allSuccess = false;
+                        }
+                }
 
-        if (allSuccess) {
-            JOptionPane.showMessageDialog(this, "Xác nhận và xuất hóa đơn cho tất cả phiếu nhập thành công!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Có một số phiếu nhập xác nhận thất bại! (Có thể hóa đơn đã tồn tại hoặc lỗi dữ liệu)");
-        }
-        loadImportTable();
-
-        // 2. Switch to HoaDonPanel
-        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        topFrame.setContentPane(new screens.HoaDon.HoaDonPanel());
-        topFrame.revalidate();
-        topFrame.repaint();
-    }
-
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {
-        int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một phiếu nhập để xóa!");
-            return;
-        }
-        String maPN = jTable1.getValueAt(selectedRow, 1).toString();
-        NhapHangDAO nhapHangDAO = new NhapHangDAO();
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa phiếu nhập này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean result = nhapHangDAO.xoaNhapHang(maPN);
-            if (result) {
-                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                if (allSuccess) {
+                        JOptionPane.showMessageDialog(this,
+                                        "Xác nhận và xuất hóa đơn cho tất cả phiếu nhập thành công!");
+                } else {
+                        JOptionPane.showMessageDialog(this,
+                                        "Có một số phiếu nhập xác nhận thất bại! (Có thể hóa đơn đã tồn tại hoặc lỗi dữ liệu)");
+                }
                 loadImportTable();
-            } else {
-                JOptionPane.showMessageDialog(this, "Xóa thất bại! Có thể phiếu nhập này đã được sử dụng ở nơi khác.");
-            }
+
+                // 2. Switch to HoaDonPanel
+                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                topFrame.setContentPane(new screens.HoaDon.HoaDonPanel());
+                topFrame.revalidate();
+                topFrame.repaint();
         }
-    }
+
+        private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow == -1) {
+                        JOptionPane.showMessageDialog(this, "Vui lòng chọn một phiếu nhập để xóa!");
+                        return;
+                }
+                String maPN = jTable1.getValueAt(selectedRow, 1).toString();
+                NhapHangDAO nhapHangDAO = new NhapHangDAO();
+                int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa phiếu nhập này?",
+                                "Xác nhận xóa",
+                                JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                        boolean result = nhapHangDAO.xoaNhapHang(maPN);
+                        if (result) {
+                                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                                loadImportTable();
+                        } else {
+                                JOptionPane.showMessageDialog(this,
+                                                "Xóa thất bại! Có thể phiếu nhập này đã được sử dụng ở nơi khác.");
+                        }
+                }
+        }
 
         /**
          * @param args the command line arguments
@@ -851,34 +859,35 @@ public class nhaphang extends javax.swing.JPanel {
         private javax.swing.JButton jButton16;
         private javax.swing.JButton jButton17;
         private javax.swing.JButton jButton18;
-        private javax.swing.JComboBox<String> jComboBox6;
-        private javax.swing.JComboBox<String> jComboBox7;
+        private javax.swing.JComboBox<String> cbMaSanPham;
+        private javax.swing.JComboBox<String> cbHinhThucThanhToan;
         private javax.swing.JComboBox<String> jComboBox9;
         private javax.swing.JLabel jLabel1;
-        private javax.swing.JLabel jLabel2;
-        private javax.swing.JLabel jLabel3;
-        private javax.swing.JLabel jLabel4;
-        private javax.swing.JLabel jLabel5;
-        private javax.swing.JLabel jLabel6;
-        private javax.swing.JLabel jLabel7;
-        private javax.swing.JLabel jLabel8;
+        private javax.swing.JLabel lblLoaiSanPham;
+        private javax.swing.JLabel lblMaSanPham;
+        private javax.swing.JLabel lblTenSanPham;
+        private javax.swing.JLabel lblMauSac;
+        private javax.swing.JLabel lblKichThuoc;
+        private javax.swing.JLabel lblSoLuong;
+        private javax.swing.JLabel lblDonGia;
+        private javax.swing.JLabel lblHinhThucThanhToan;
         private javax.swing.JPanel jPanel1;
         private javax.swing.JPanel jPanel5;
         private javax.swing.JPanel jPanel7;
-        private javax.swing.JPanel jPanel8;
+        private javax.swing.JPanel pnlBoxSanPhamSoLuong;
         private javax.swing.JPanel jPanel9;
         private javax.swing.JScrollPane jScrollPane1;
         private javax.swing.JSeparator jSeparator6;
         private javax.swing.JTable jTable1;
-        private javax.swing.JTextField jTextField1;
-        private javax.swing.JTextField jTextField10;
-        private javax.swing.JTextField jTextField2;
-        private javax.swing.JTextField jTextField3;
-        private javax.swing.JTextField jTextField4;
-        private javax.swing.JTextField jTextField6;
+        private javax.swing.JTextField textTenSanPham;
+        private javax.swing.JTextField textSoLuong;
+        private javax.swing.JTextField lblNCC;
+        private javax.swing.JTextField txtMauSac;
+        private javax.swing.JTextField txtKichThuoc;
+        private javax.swing.JTextField lblNhaCungCap;
         private javax.swing.JTextField jTextField7;
-        private javax.swing.JTextField jTextField8;
-        private javax.swing.JTextField jTextField9;
+        private javax.swing.JTextField lblThanhTien;
+        private javax.swing.JTextField textThanhTien;
         private javax.swing.JPanel pnlContent;
         private javax.swing.JPanel pnlHeader;
         // End of variables declaration//GEN-END:variables

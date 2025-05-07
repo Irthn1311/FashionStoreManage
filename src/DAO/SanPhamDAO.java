@@ -19,7 +19,7 @@ public class SanPhamDAO {
         String sql = "SELECT * FROM SanPham WHERE MaSanPham = ?";
 
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, maSanPham);
 
@@ -35,8 +35,7 @@ public class SanPhamDAO {
                             rs.getInt("SoLuongTonKho"),
                             rs.getDouble("GiaBan"),
                             rs.getString("ImgURL"),
-                            rs.getString("TrangThai")
-                    );
+                            rs.getString("TrangThai"));
                 }
             }
 
@@ -213,7 +212,7 @@ public class SanPhamDAO {
     // Cập nhật thông tin sản phẩm
     public boolean updateSanPham(sanPhamDTO sp) {
         String sql = "UPDATE SanPham SET TenSanPham = ?, MaNhaCungCap = ?, MaDanhMuc = ?, MauSac = ?, Size = ?, " +
-                "SoLuongTonKho = ?, GiaBan = ?, ImgURL = ?, TrangThai = ?, MaKhoHang = ? WHERE MaSanPham = ?";
+                "SoLuongTonKho = ?, GiaBan = ?, ImgURL = ?, TrangThai = ? WHERE MaSanPham = ?";
 
         try (Connection conn = ConnectDB.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -227,8 +226,7 @@ public class SanPhamDAO {
             ps.setDouble(7, sp.getGiaBan());
             ps.setString(8, sp.getImgURL());
             ps.setString(9, sp.getTrangThai());
-
-            ps.setString(11, sp.getMaSanPham());
+            ps.setString(10, sp.getMaSanPham());
 
             return ps.executeUpdate() > 0;
 
@@ -240,15 +238,33 @@ public class SanPhamDAO {
 
     // Xóa sản phẩm
     public boolean deleteSanPham(String maSanPham) {
-        String sql = "DELETE FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection()) {
+            conn.setAutoCommit(false); // Tắt tự động commit để thực hiện transaction
+            
+            try {
+                // Xóa các bản ghi liên quan trong bảng NhaCungCap_SanPham
+                String sqlDeleteRef = "DELETE FROM NhaCungCap_SanPham WHERE MaSanPham = ?";
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteRef)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
 
-        try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+                // Xóa sản phẩm
+                String sqlDeleteProduct = "DELETE FROM SanPham WHERE MaSanPham = ?";
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteProduct)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
 
-            ps.setString(1, maSanPham);
-
-            return ps.executeUpdate() > 0;
-
+                conn.commit(); // Commit transaction nếu mọi thứ OK
+                return true;
+            } catch (SQLException e) {
+                conn.rollback(); // Rollback nếu có lỗi
+                e.printStackTrace();
+                return false;
+            } finally {
+                conn.setAutoCommit(true); // Bật lại tự động commit
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -273,7 +289,7 @@ public class SanPhamDAO {
     public boolean kiemTraTonKho(String maSanPham, int soLuongCanXuat) {
         String sql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, maSanPham);
             ResultSet rs = ps.executeQuery();
@@ -292,7 +308,7 @@ public class SanPhamDAO {
     public boolean giamSoLuongTonKho(String maSanPham, int soLuongXuat) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho - ? WHERE MaSanPham = ? AND SoLuongTonKho >= ?";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, soLuongXuat);
             ps.setString(2, maSanPham);
@@ -309,7 +325,7 @@ public class SanPhamDAO {
     public boolean kiemTraCanhBaoTonKho(String maSanPham) {
         String sql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, maSanPham);
             ResultSet rs = ps.executeQuery();
@@ -344,8 +360,8 @@ public class SanPhamDAO {
         List<String> types = new ArrayList<>();
         String sql = "SELECT DISTINCT MaDanhMuc FROM SanPham";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 types.add(rs.getString("MaDanhMuc"));
             }
@@ -360,8 +376,8 @@ public class SanPhamDAO {
         List<String> codes = new ArrayList<>();
         String sql = "SELECT MaSanPham FROM SanPham";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 codes.add(rs.getString("MaSanPham"));
             }
@@ -384,5 +400,15 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void updateProductStatus() {
+        String sql = "UPDATE SanPham SET TrangThai = CASE WHEN SoLuongTonKho <= 0 THEN 'Hết hàng' ELSE 'Còn hàng' END";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

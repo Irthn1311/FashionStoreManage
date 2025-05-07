@@ -304,6 +304,8 @@ public class LoaiSanPhamDAO {
     }
 
     public boolean xoaLoaiSanPham(String maSanPham) {
+        String sqlDeleteHoaDon = "DELETE FROM HoaDon WHERE MaSanPham = ?";
+        String sqlDeleteRef = "DELETE FROM NhaCungCap_SanPham WHERE MaSanPham = ?";
         String sqlDeleteSanPham = "DELETE FROM SanPham WHERE MaSanPham = ?";
 
         Connection conn = null;
@@ -316,6 +318,19 @@ public class LoaiSanPhamDAO {
 
             conn.setAutoCommit(false);
 
+            // Xóa các bản ghi liên quan trong bảng HoaDon
+            try (PreparedStatement psDeleteHoaDon = conn.prepareStatement(sqlDeleteHoaDon)) {
+                psDeleteHoaDon.setString(1, maSanPham);
+                psDeleteHoaDon.executeUpdate();
+            }
+
+            // Xóa các bản ghi liên quan trong bảng NhaCungCap_SanPham
+            try (PreparedStatement psDeleteRef = conn.prepareStatement(sqlDeleteRef)) {
+                psDeleteRef.setString(1, maSanPham);
+                psDeleteRef.executeUpdate();
+            }
+
+            // Xóa sản phẩm
             try (PreparedStatement psDeleteSanPham = conn.prepareStatement(sqlDeleteSanPham)) {
                 psDeleteSanPham.setString(1, maSanPham);
                 int rowsAffected = psDeleteSanPham.executeUpdate();
