@@ -131,18 +131,18 @@ public class phieunhap extends javax.swing.JPanel {
                 }
                 // Lấy dữ liệu hiện tại từ bảng
                 nhapHangDTO nh = new nhapHangDTO(
-                    jTable2.getValueAt(selectedRow, 1).toString(),
-                    jTable2.getValueAt(selectedRow, 2).toString(),
-                    jTable2.getValueAt(selectedRow, 4).toString(),
-                    jTable2.getValueAt(selectedRow, 3).toString(),
-                    jTable2.getValueAt(selectedRow, 5).toString(),
-                    jTable2.getValueAt(selectedRow, 6).toString(),
-                    jTable2.getValueAt(selectedRow, 7).toString(),
-                    jTable2.getValueAt(selectedRow, 8).toString(),
-                    jTable2.getValueAt(selectedRow, 10).toString(),
-                    jTable2.getValueAt(selectedRow, 11).toString(),
-                    jTable2.getValueAt(selectedRow, 9).toString(),
-                    jTable2.getValueAt(selectedRow, 12).toString()
+                    jTable2.getValueAt(selectedRow, 1).toString(), // MaPN
+                    jTable2.getValueAt(selectedRow, 2).toString(), // MaNhaCungCap
+                    jTable2.getValueAt(selectedRow, 3).toString(), // MaSanPham
+                    jTable2.getValueAt(selectedRow, 5).toString(), // TenSanPham
+                    jTable2.getValueAt(selectedRow, 6).toString(), // MauSac
+                    jTable2.getValueAt(selectedRow, 7).toString(), // KichThuoc
+                    jTable2.getValueAt(selectedRow, 8).toString(), // SoLuong
+                    jTable2.getValueAt(selectedRow, 10).toString(), // DonGia
+                    jTable2.getValueAt(selectedRow, 11).toString(), // ThanhTien
+                    jTable2.getValueAt(selectedRow, 9).toString(), // ThoiGian
+                    jTable2.getValueAt(selectedRow, 12).toString(), // TrangThai
+                    jTable2.getValueAt(selectedRow, 10).toString()  // HinhThucThanhToan
                 );
 
                 SuaPhieuNhapDialog dialog = new SuaPhieuNhapDialog(null, nh);
@@ -182,7 +182,7 @@ public class phieunhap extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "STT", "Mã PN", "Mã NCC", "Mã SP", "Loại SP", "Tên SP", "Màu sắc", "Kích thước", "Số lượng", "Thời gian", "Đơn giá", "Thành tiền", "Trạng Thái", "Chi tiết"
+                "STT", "Mã PN", "Mã NCC", "Mã SP", "Tên SP", "Màu sắc", "Kích thước", "Số lượng", "Thời gian", "Đơn giá", "Thành tiền", "Trạng Thái", "Chi tiết"
             }
         ));
         jTable2.setShowGrid(true);
@@ -269,7 +269,6 @@ public class phieunhap extends javax.swing.JPanel {
                 nh.getMaPN(),
                 nh.getMaNhaCungCap(),
                 nh.getMaSanPham(),
-                nh.getLoaiSP(),
                 nh.getTenSanPham(),
                 nh.getMauSac(),
                 nh.getKichThuoc(),
@@ -278,6 +277,7 @@ public class phieunhap extends javax.swing.JPanel {
                 nh.getDonGia(),
                 nh.getThanhTien(),
                 nh.getTrangThai(),
+                nh.getHinhThucThanhToan(),
                 "" // Cột chi tiết nếu có
             });
         }
