@@ -21,6 +21,11 @@ import org.apache.poi.xssf.usermodel.*;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 public class ThongKePanel extends JPanel {
     private final ThongKeDAO thongKeDAO = new ThongKeDAO();
@@ -29,13 +34,14 @@ public class ThongKePanel extends JPanel {
 
     // UI Components
     private JButton btnTimKiem, btnTinhToan, btnXuatExcel;
-    private JComboBox<String> cbTuThang, cbDenThang, cbNam, cbDanhGiaTuThang, cbDanhGiaDenThang;
+    private JComboBox<String> cbTuThang, cbDenThang, cbNam, cbDanhGiaTuThang, cbDanhGiaDenThang, cbDanhGiaNam;
     private JLabel lblTongDoanhThu, lblTongSanPham, lblTongKhachHang, lblDoanhThuNam, lblTieuDe;
     private JPanel panelTieuDe, panelTimKiem, panelThoiGian, panelBang, panelThongKe, panelDanhGia;
     private JRadioButton rbSanPhamBanChay, rbKhachHangHangDau;
     private JScrollPane scrollPane;
     private JTable table;
     private JTextField txtTongDoanhThu, txtTongSanPham, txtTongKhachHang, txtDoanhThuNam;
+    private ChartPanel chartPanel; // Thêm ChartPanel để chứa biểu đồ
 
     public ThongKePanel() {
         setBackground(new Color(107, 163, 190));
@@ -44,7 +50,7 @@ public class ThongKePanel extends JPanel {
         setupComboBoxes();
         setupTable();
         setupListeners();
-        loadAllData(); // Thêm phương thức tải tất cả dữ liệu
+        loadAllData();
     }
 
     private void setupComboBoxes() {
@@ -56,10 +62,11 @@ public class ThongKePanel extends JPanel {
         cbDanhGiaTuThang.setModel(new DefaultComboBoxModel<>(months));
         cbDanhGiaDenThang.setModel(new DefaultComboBoxModel<>(months));
         cbNam.setModel(new DefaultComboBoxModel<>(years));
+        cbDanhGiaNam.setModel(new DefaultComboBoxModel<>(years));
 
         Font comboFont = new Font("Segoe UI", Font.PLAIN, 14);
         for (JComboBox<?> cb : new JComboBox<?>[] { cbTuThang, cbDenThang, cbNam, cbDanhGiaTuThang,
-                cbDanhGiaDenThang }) {
+                cbDanhGiaDenThang, cbDanhGiaNam }) {
             cb.setFont(comboFont);
             cb.setPreferredSize(new Dimension(100, 30));
         }
@@ -115,7 +122,7 @@ public class ThongKePanel extends JPanel {
             try {
                 String tuThang = cbDanhGiaTuThang.getSelectedItem().toString();
                 String denThang = cbDanhGiaDenThang.getSelectedItem().toString();
-                int nam = Integer.parseInt(cbNam.getSelectedItem().toString());
+                int nam = Integer.parseInt(cbDanhGiaNam.getSelectedItem().toString());
                 String ngayCuoi = getLastDayOfMonth(nam, Integer.parseInt(denThang));
                 String tuNgay = nam + "-" + tuThang + "-01";
                 String denNgay = nam + "-" + denThang + "-" + ngayCuoi;
@@ -134,6 +141,9 @@ public class ThongKePanel extends JPanel {
                 txtTongSanPham.setText(String.valueOf(tongSanPham));
                 txtTongKhachHang.setText(String.valueOf(tongKhachHang));
                 txtDoanhThuNam.setText(String.format("%.2f", doanhThuNam));
+
+                // Cập nhật biểu đồ
+                updateRevenueChart(nam);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Lỗi khi tính toán: " + ex.getMessage(), "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
@@ -164,11 +174,9 @@ public class ThongKePanel extends JPanel {
                 }
 
                 try {
-                    // Tạo workbook mới
                     XSSFWorkbook workbook = new XSSFWorkbook();
                     XSSFSheet sheet = workbook.createSheet("Thống kê");
 
-                    // Tạo style cho header
                     XSSFCellStyle headerStyle = workbook.createCellStyle();
                     headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
                     headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -177,19 +185,16 @@ public class ThongKePanel extends JPanel {
                     headerStyle.setBorderLeft(BorderStyle.THIN);
                     headerStyle.setBorderRight(BorderStyle.THIN);
 
-                    // Tạo font cho header
                     XSSFFont headerFont = workbook.createFont();
                     headerFont.setBold(true);
                     headerStyle.setFont(headerFont);
 
-                    // Tạo style cho dữ liệu
                     XSSFCellStyle dataStyle = workbook.createCellStyle();
                     dataStyle.setBorderBottom(BorderStyle.THIN);
                     dataStyle.setBorderTop(BorderStyle.THIN);
                     dataStyle.setBorderLeft(BorderStyle.THIN);
                     dataStyle.setBorderRight(BorderStyle.THIN);
 
-                    // Ghi tiêu đề cột
                     Row headerRow = sheet.createRow(0);
                     for (int i = 0; i < table.getColumnCount(); i++) {
                         Cell cell = headerRow.createCell(i);
@@ -197,7 +202,6 @@ public class ThongKePanel extends JPanel {
                         cell.setCellStyle(headerStyle);
                     }
 
-                    // Ghi dữ liệu
                     for (int i = 0; i < table.getRowCount(); i++) {
                         Row row = sheet.createRow(i + 1);
                         for (int j = 0; j < table.getColumnCount(); j++) {
@@ -214,12 +218,10 @@ public class ThongKePanel extends JPanel {
                         }
                     }
 
-                    // Tự động điều chỉnh độ rộng cột
                     for (int i = 0; i < table.getColumnCount(); i++) {
                         sheet.autoSizeColumn(i);
                     }
 
-                    // Ghi file
                     try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
                         workbook.write(fileOut);
                     }
@@ -279,22 +281,51 @@ public class ThongKePanel extends JPanel {
 
     private void loadAllData() {
         try {
-            // Tải tất cả dữ liệu thống kê sản phẩm từ cơ sở dữ liệu
-            String tuNgay = "2000-01-01"; // Ngày bắt đầu rất xa để lấy tất cả
-            String denNgay = "2100-12-31"; // Ngày kết thúc rất xa
+            String tuNgay = "2000-01-01";
+            String denNgay = "2100-12-31";
             List<sanPhamThongKeDTO> sanPhams = thongKeDAO.getSanPhamThongKe(tuNgay, denNgay);
             updateTableSanPham(sanPhams);
 
-            // Đặt radio button "Sản phẩm bán chạy" làm mặc định
             rbSanPhamBanChay.setSelected(true);
 
-            // Nếu không có dữ liệu, hiển thị thông báo
             if (sanPhams.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Không có dữ liệu thống kê trong cơ sở dữ liệu!", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
             }
+
+            // Hiển thị biểu đồ mặc định cho năm hiện tại
+            updateRevenueChart(Calendar.getInstance().get(Calendar.YEAR));
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu: " + ex.getMessage(), "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void updateRevenueChart(int year) {
+        try {
+            // Tạo dataset cho biểu đồ
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            for (int month = 1; month <= 12; month++) {
+                double doanhThu = thongKeDAO.getDoanhThuTheoThang(year, month);
+                dataset.addValue(doanhThu, "Doanh thu", String.format("%02d", month));
+            }
+
+            // Tạo biểu đồ
+            JFreeChart chart = ChartFactory.createLineChart(
+                    "Xu hướng doanh thu năm " + year,
+                    "Tháng",
+                    "Doanh thu",
+                    dataset,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    true,
+                    false
+            );
+
+            // Cập nhật ChartPanel
+            chartPanel.setChart(chart);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tạo biểu đồ: " + ex.getMessage(), "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -325,7 +356,7 @@ public class ThongKePanel extends JPanel {
 
         panelThoiGian = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         panelThoiGian.setBackground(new Color(107, 163, 190));
-        panelThoiGian.setBorder(null); // Remove border for inline alignment
+        panelThoiGian.setBorder(null);
 
         cbNam = new JComboBox<>();
         cbTuThang = new JComboBox<>();
@@ -365,7 +396,10 @@ public class ThongKePanel extends JPanel {
         panelChonThoiGian.setBackground(new Color(107, 163, 190));
         cbDanhGiaTuThang = new JComboBox<>();
         cbDanhGiaDenThang = new JComboBox<>();
+        cbDanhGiaNam = new JComboBox<>();
 
+        panelChonThoiGian.add(new JLabel("Năm:"));
+        panelChonThoiGian.add(cbDanhGiaNam);
         panelChonThoiGian.add(new JLabel("Từ tháng:"));
         panelChonThoiGian.add(cbDanhGiaTuThang);
         panelChonThoiGian.add(new JLabel("Đến tháng:"));
@@ -417,9 +451,8 @@ public class ThongKePanel extends JPanel {
         panelDanhGia.setBorder(BorderFactory.createTitledBorder("Đánh giá"));
         panelDanhGia.setPreferredSize(new Dimension(300, 200));
 
-        JLabel chartPlaceholder = new JLabel("Biểu đồ xu hướng doanh thu (Sẽ được triển khai)", SwingConstants.CENTER);
-        chartPlaceholder.setFont(new Font("Segoe UI", Font.ITALIC, 14));
-        panelDanhGia.add(chartPlaceholder, BorderLayout.CENTER);
+        chartPanel = new ChartPanel(null); // Khởi tạo ChartPanel
+        panelDanhGia.add(chartPanel, BorderLayout.CENTER);
 
         btnXuatExcel = new JButton("Xuất Excel");
         btnXuatExcel.setFont(new Font("Segoe UI", Font.BOLD, 14));

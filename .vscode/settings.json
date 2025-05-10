@@ -1,5 +1,5 @@
 {
-    "java.project.referencedLibraries": [
+  "java.project.referencedLibraries": [
       "lib\\AbsoluteLayout.jar",
       "lib\\commons-codec-1.15.jar",
       "lib\\commons-collections4-4.4.jar",
@@ -29,9 +29,8 @@
       "lib\\slf4j-api-1.7.36.jar",
       "lib\\SparseBitSet-1.2.jar",
       "lib\\xmlbeans-5.1.1.jar"
-    ],
-    "java.project.sourcePaths": [
-      "src",
-      "src\\Main\\main"
-    ]
+  ],
+  "java.project.sourcePaths": [
+    "src"
+  ]
 }
