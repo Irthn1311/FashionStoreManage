@@ -33,6 +33,25 @@ public class loaisanpham extends javax.swing.JPanel {
         private javax.swing.JButton jButton36;
         private javax.swing.JButton jButton37;
 
+        private javax.swing.JPanel containerPanel;
+        private javax.swing.JButton jButton30;
+        private javax.swing.JButton jButton31;
+        private javax.swing.JButton jButton32;
+        private javax.swing.JButton jButton33;
+        private javax.swing.JButton jButton34;
+        private javax.swing.JButton jButton35;
+        private javax.swing.JLabel jLabel1;
+        private javax.swing.JPanel jPanel15;
+        private javax.swing.JPanel jPanel17;
+        private javax.swing.JPanel jPanel18;
+        private javax.swing.JScrollPane jScrollPane2;
+        private javax.swing.JTable jTable2;
+        private javax.swing.JPanel pnlContent;
+        private javax.swing.JPanel pnlHeader;
+        private javax.swing.JLabel searchLabel;
+        private javax.swing.JComboBox<String> searchComboBox;
+        private javax.swing.JTextField searchTextField;
+
         public loaisanpham() {
                 productService = new ProductService();
                 initComponents();
@@ -199,7 +218,8 @@ public class loaisanpham extends javax.swing.JPanel {
                 jPanel15.add(searchLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 30));
 
                 searchComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
-                                "Tất cả", "Mã sản phẩm", "Tên sản phẩm", "Mã nhà cung cấp", "Loại sản phẩm", "Màu sắc", "Size"
+                                "Tất cả", "Mã sản phẩm", "Tên sản phẩm", "Mã nhà cung cấp", "Loại sản phẩm", "Màu sắc",
+                                "Size"
                 }));
                 jPanel15.add(searchComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, 180, 30));
 
@@ -359,7 +379,7 @@ public class loaisanpham extends javax.swing.JPanel {
                 jButton34.setPreferredSize(new java.awt.Dimension(340, 40));
                 jButton34.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jButton34ActionPerformed(evt);
+                                utils.FileUtils.showExportOptions(jTable2, "Danh sách sản phẩm");
                         }
                 });
 
@@ -372,7 +392,8 @@ public class loaisanpham extends javax.swing.JPanel {
                 jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
                 jButton36.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                utils.FileUtils.importFromFile(jTable2);
+                                utils.FileUtils.importFromCSVForProduct(jTable2);
+                                loadTableData(); // Refresh the table after import
                         }
                 });
 
@@ -388,7 +409,8 @@ public class loaisanpham extends javax.swing.JPanel {
                                 try {
                                         jTable2.print();
                                 } catch (Exception e) {
-                                        JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                                        JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi",
+                                                        JOptionPane.ERROR_MESSAGE);
                                 }
                         }
                 });
@@ -400,57 +422,85 @@ public class loaisanpham extends javax.swing.JPanel {
                                                 .addGroup(pnlContentLayout.createSequentialGroup()
                                                                 .addContainerGap(22, Short.MAX_VALUE)
                                                                 .addGroup(pnlContentLayout
-                                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                        pnlContentLayout.createSequentialGroup()
-                                                                                                .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                        100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addGap(18, 18, 18)
-                                                                                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                        340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addGap(18, 18, 18)
-                                                                                                .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                        100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addGap(313, 313, 313))
-                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout
-                                                                        .createSequentialGroup()
-                                                                        .addGroup(pnlContentLayout
-                                                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                        .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                961, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGroup(pnlContentLayout
-                                                                                                .createParallelGroup(
-                                                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                        false)
-                                                                                                .addComponent(jPanel17,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                        Short.MAX_VALUE)
-                                                                                                .addComponent(jPanel18,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, 958,
-                                                                                                        Short.MAX_VALUE)))
-                                                                .addGap(17, 17, 17)))));
+                                                                                .createParallelGroup(
+                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                pnlContentLayout.createSequentialGroup()
+                                                                                                                .addComponent(jButton36,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                100,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(18, 18, 18)
+                                                                                                                .addComponent(jButton34,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                340,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(18, 18, 18)
+                                                                                                                .addComponent(jButton37,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                100,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(313, 313,
+                                                                                                                                313))
+                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                pnlContentLayout
+                                                                                                                .createSequentialGroup()
+                                                                                                                .addGroup(pnlContentLayout
+                                                                                                                                .createParallelGroup(
+                                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                .addComponent(jPanel15,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                961,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                .addGroup(pnlContentLayout
+                                                                                                                                                .createParallelGroup(
+                                                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                                                                                false)
+                                                                                                                                                .addComponent(jPanel17,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                Short.MAX_VALUE)
+                                                                                                                                                .addComponent(jPanel18,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                958,
+                                                                                                                                                                Short.MAX_VALUE)))
+                                                                                                                .addGap(17, 17, 17)))));
                 pnlContentLayout.setVerticalGroup(
                                 pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(pnlContentLayout.createSequentialGroup()
                                                                 .addContainerGap()
-                                                                .addComponent(jPanel15, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(4, 4, 4)
-                                                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 80,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(4, 4, 4)
-                                                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 342,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28,
-                                                                        Short.MAX_VALUE)
-                                                                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                        .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                                .addComponent(jPanel15,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                110,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGap(4, 4, 4)
+                                                                .addComponent(jPanel17,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                80,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(4, 4, 4)
+                                                                .addComponent(jPanel18,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                342,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                                28,
+                                                                                Short.MAX_VALUE)
+                                                                .addGroup(pnlContentLayout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(jButton36,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(jButton34,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(jButton37,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addGap(16, 16, 16)));
 
                 containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
@@ -702,23 +752,4 @@ public class loaisanpham extends javax.swing.JPanel {
                         JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
         }
-
-        private javax.swing.JPanel containerPanel;
-        private javax.swing.JButton jButton30;
-        private javax.swing.JButton jButton31;
-        private javax.swing.JButton jButton32;
-        private javax.swing.JButton jButton33;
-        private javax.swing.JButton jButton34;
-        private javax.swing.JButton jButton35;
-        private javax.swing.JLabel jLabel1;
-        private javax.swing.JPanel jPanel15;
-        private javax.swing.JPanel jPanel17;
-        private javax.swing.JPanel jPanel18;
-        private javax.swing.JScrollPane jScrollPane2;
-        private javax.swing.JTable jTable2;
-        private javax.swing.JPanel pnlContent;
-        private javax.swing.JPanel pnlHeader;
-        private javax.swing.JLabel searchLabel;
-        private javax.swing.JComboBox<String> searchComboBox;
-        private javax.swing.JTextField searchTextField;
 }

@@ -39,7 +39,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
         // Cập nhật trạng thái sản phẩm trước khi tải dữ liệu
         SanPhamBUS sanPhamBUS = new SanPhamBUS();
         sanPhamBUS.updateProductStatus();
-        
+
         List<sanPhamDTO> sanPhamList = sanPhamDAO.getAllSanPham();
         populateTable(sanPhamList);
     }
@@ -223,23 +223,22 @@ public class sanPhamPanel extends javax.swing.JPanel {
         // Kiểm tra và hiển thị thông tin khuyến mãi
         BUS.KhuyenMaiService khuyenMaiService = new BUS.KhuyenMaiService();
         DTO.khuyenMaiDTO khuyenMai = khuyenMaiService.getKhuyenMaiByMaSanPham(maSP);
-        
+
         if (khuyenMai != null) {
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
             String ngayBatDau = khuyenMai.getNgayBatDau() != null ? sdf.format(khuyenMai.getNgayBatDau()) : "";
             String ngayKetThuc = khuyenMai.getNgayKetThuc() != null ? sdf.format(khuyenMai.getNgayKetThuc()) : "";
             String khuyenMaiInfo = String.format(
-                "<b>Chương trình:</b> %s<br>" +
-                "Thời gian: %s - %s<br>" +
-                "Giá cũ: %.2f<br>" +
-                "(Giảm %.2f%%) - Giá mới: %.2f",
-                khuyenMai.getTenChuongTrinh(),
-                ngayBatDau,
-                ngayKetThuc,
-                khuyenMai.getGiaCu(),
-                khuyenMai.getGiamGia(),
-                khuyenMai.getGiaMoi()
-            );
+                    "<b>Chương trình:</b> %s<br>" +
+                            "Thời gian: %s - %s<br>" +
+                            "Giá cũ: %.2f<br>" +
+                            "(Giảm %.2f%%) - Giá mới: %.2f",
+                    khuyenMai.getTenChuongTrinh(),
+                    ngayBatDau,
+                    ngayKetThuc,
+                    khuyenMai.getGiaCu(),
+                    khuyenMai.getGiamGia(),
+                    khuyenMai.getGiaMoi());
             lblKhuyenMai.setText("<html><div style='width:500px;'>" + khuyenMaiInfo + "</div></html>");
         } else {
             lblKhuyenMai.setText("Khuyến mãi: Không có khuyến mãi");
@@ -257,7 +256,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
             File file = new File(fullPath);
             if (file.exists()) {
                 ImageIcon imageIcon = new ImageIcon(fullPath);
-                Image image = imageIcon.getImage().getScaledInstance(258, 176, Image.SCALE_SMOOTH);
+                Image image = imageIcon.getImage().getScaledInstance(258, 200, Image.SCALE_SMOOTH);
                 lblImage.setIcon(new ImageIcon(image));
                 lblImage.setText(""); // Xóa text để hiển thị ảnh
             } else {
@@ -368,8 +367,9 @@ public class sanPhamPanel extends javax.swing.JPanel {
             @Override
             public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
-                java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                
+                java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+                        column);
+
                 // Lấy số lượng từ cột "Số Lượng" (cột 7)
                 int soLuong = 0;
                 try {
@@ -411,7 +411,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
         lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblImage.setText("Hình ảnh sản phẩm");
         lblImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        pnlDetail.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 258, 150));
+        pnlDetail.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 258, 220));
 
         lblMaSP.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblMaSP.setText("Mã sản phẩm: ");
@@ -535,7 +535,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
 
         // Tạo nhóm radio buttons
         ButtonGroup sortGroup = new ButtonGroup();
-        
+
         // Radio button sắp xếp giảm dần
         JRadioButton rdoHighToLow = new JRadioButton("Sắp xếp số lượng từ cao tới thấp");
         rdoHighToLow.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -557,7 +557,8 @@ public class sanPhamPanel extends javax.swing.JPanel {
         btnRefresh.setFocusPainted(false);
         // Thêm icon cho nút làm mới
         ImageIcon refreshIcon = new ImageIcon("src/icon_img/refresh.png"); // Đặt icon vào src/icon_img/refresh.png
-        btnRefresh.setIcon(new ImageIcon(refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnRefresh
+                .setIcon(new ImageIcon(refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
         btnRefresh.setHorizontalTextPosition(SwingConstants.RIGHT);
         pnlSort.add(btnRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 10, 130, 30));
 
@@ -640,7 +641,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
     private void sortTableByQuantity(boolean descending) {
         DefaultTableModel model = (DefaultTableModel) sanPhamTable.getModel();
         List<Vector> data = new ArrayList<>();
-        
+
         // Lấy dữ liệu từ model
         for (int i = 0; i < model.getRowCount(); i++) {
             Vector row = new Vector();

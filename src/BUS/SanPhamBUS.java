@@ -3,6 +3,7 @@ package BUS;
 import DAO.SanPhamDAO;
 import DTO.sanPhamDTO;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SanPhamBUS {
     private SanPhamDAO sanPhamDAO;
@@ -11,8 +12,11 @@ public class SanPhamBUS {
         this.sanPhamDAO = new SanPhamDAO();
     }
 
-    public List<String> getAllMaSanPham() {
-        return sanPhamDAO.getAllMaSanPham();
+    public List<String> getAllProductCodes() {
+        List<sanPhamDTO> products = sanPhamDAO.getAll();
+        return products.stream()
+                .map(sanPhamDTO::getMaSanPham)
+                .collect(Collectors.toList());
     }
 
     public sanPhamDTO getSanPhamByMa(String maSanPham) {
@@ -26,4 +30,12 @@ public class SanPhamBUS {
     public void updateProductStatus() {
         sanPhamDAO.updateProductStatus();
     }
-} 
+
+    public boolean isProductExists(String maSanPham) {
+        return sanPhamDAO.isProductExists(maSanPham);
+    }
+
+    public boolean updateProductQuantity(String maSanPham, int quantity) {
+        return sanPhamDAO.updateProductQuantity(maSanPham, quantity);
+    }
+}

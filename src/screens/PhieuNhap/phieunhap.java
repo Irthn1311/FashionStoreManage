@@ -7,7 +7,7 @@ package screens.PhieuNhap;
 import javax.swing.UIManager;
 import java.util.List;
 import DTO.PhieuNhapDTO;
-import DAO.PhieuNhapDAO;
+import BUS.PhieuNhapBUS;
 import screens.PhieuNhap.SuaPhieuNhapDialog;
 import screens.PhieuNhap.ThemPhieuNhapDialog;
 import java.text.SimpleDateFormat;
@@ -18,11 +18,13 @@ import java.util.Date;
  * @author nson9
  */
 public class phieunhap extends javax.swing.JPanel {
+    private PhieuNhapBUS phieuNhapBUS;
 
     /**
      * Creates new form sanpham
      */
     public phieunhap() {
+        phieuNhapBUS = new PhieuNhapBUS();
         initComponents();
         loadPhieuNhapTable();
     }
@@ -97,24 +99,7 @@ public class phieunhap extends javax.swing.JPanel {
         jButton31.setText("Thêm ");
         jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 24, -1, 49));
 
-        jButton31.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ThemPhieuNhapDialog dialog = new ThemPhieuNhapDialog(null);
-                dialog.setVisible(true);
-
-                if (dialog.isSaved()) {
-                    PhieuNhapDTO newPhieuNhap = dialog.getNewPhieuNhap();
-                    PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
-                    boolean result = phieuNhapDAO.create(newPhieuNhap);
-                    if (result) {
-                        javax.swing.JOptionPane.showMessageDialog(null, "Thêm phiếu nhập thành công!");
-                        loadPhieuNhapTable();
-                    } else {
-                        javax.swing.JOptionPane.showMessageDialog(null, "Thêm phiếu nhập thất bại!");
-                    }
-                }
-            }
-        });
+        jButton31.addActionListener(this::jButton31ActionPerformed);
 
         jButton32.setText("Sửa");
         jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(392, 24, -1, 49));
@@ -122,64 +107,7 @@ public class phieunhap extends javax.swing.JPanel {
         jButton33.setText("Xóa");
         jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(638, 24, -1, 49));
 
-        jButton33.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                int selectedRow = jTable2.getSelectedRow();
-                if (selectedRow == -1) {
-                    javax.swing.JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng để xóa!");
-                    return;
-                }
-                String maPN = jTable2.getValueAt(selectedRow, 1).toString(); // Cột 1 là Mã PN
-                int confirm = javax.swing.JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa phiếu nhập này?", "Xác nhận xóa", javax.swing.JOptionPane.YES_NO_OPTION);
-                if (confirm == javax.swing.JOptionPane.YES_OPTION) {
-                    PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
-                    boolean result = phieuNhapDAO.delete(maPN);
-                    if (result) {
-                        javax.swing.JOptionPane.showMessageDialog(null, "Xóa thành công!");
-                        loadPhieuNhapTable();
-                    } else {
-                        javax.swing.JOptionPane.showMessageDialog(null, "Xóa thất bại!");
-                    }
-                }
-            }
-        });
-
-        jButton32.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                int selectedRow = jTable2.getSelectedRow();
-                if (selectedRow == -1) {
-                    javax.swing.JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng để sửa!");
-                    return;
-                }
-                // Lấy dữ liệu hiện tại từ bảng
-                PhieuNhapDTO phieuNhap = new PhieuNhapDTO(
-                    jTable2.getValueAt(selectedRow, 1).toString(), // MaPN
-                    jTable2.getValueAt(selectedRow, 2).toString(), // MaSanPham
-                    jTable2.getValueAt(selectedRow, 3).toString(), // MaNhaCungCap
-                    Integer.parseInt(jTable2.getValueAt(selectedRow, 4).toString()), // SoLuong
-                    Double.parseDouble(jTable2.getValueAt(selectedRow, 5).toString()), // DonGia
-                    Double.parseDouble(jTable2.getValueAt(selectedRow, 6).toString()), // ThanhTien
-                    parseDate(jTable2.getValueAt(selectedRow, 7).toString()), // ThoiGian
-                    jTable2.getValueAt(selectedRow, 8).toString(), // TrangThai
-                    jTable2.getValueAt(selectedRow, 9).toString()  // HinhThucThanhToan
-                );
-
-                SuaPhieuNhapDialog dialog = new SuaPhieuNhapDialog(null, phieuNhap);
-                dialog.setVisible(true);
-
-                if (dialog.isSaved()) {
-                    PhieuNhapDTO updated = dialog.getUpdatedPhieuNhap();
-                    PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
-                    boolean result = phieuNhapDAO.update(updated);
-                    if (result) {
-                        javax.swing.JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
-                        loadPhieuNhapTable();
-                    } else {
-                        javax.swing.JOptionPane.showMessageDialog(null, "Cập nhật thất bại!");
-                    }
-                }
-            }
-        });
+        jButton33.addActionListener(this::jButton33ActionPerformed);
 
         jPanel18.setBackground(new java.awt.Color(107, 163, 190));
         jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
@@ -267,8 +195,7 @@ public class phieunhap extends javax.swing.JPanel {
     }
 
     private void loadPhieuNhapTable() {
-        PhieuNhapDAO phieuNhapDAO = new PhieuNhapDAO();
-        List<PhieuNhapDTO> danhSachPhieuNhap = phieuNhapDAO.getAll();
+        List<PhieuNhapDTO> danhSachPhieuNhap = phieuNhapBUS.getAllPhieuNhap();
         
         javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable2.getModel();
         model.setRowCount(0);
@@ -288,6 +215,71 @@ public class phieunhap extends javax.swing.JPanel {
                 phieuNhap.getHinhThucThanhToan(),
                 "Xem chi tiết"
             });
+        }
+    }
+
+    private void jButton31ActionPerformed(java.awt.event.ActionEvent evt) {
+        ThemPhieuNhapDialog dialog = new ThemPhieuNhapDialog(null);
+        dialog.setVisible(true);
+
+        if (dialog.isSaved()) {
+            PhieuNhapDTO newPhieuNhap = dialog.getNewPhieuNhap();
+            if (phieuNhapBUS.createPhieuNhap(newPhieuNhap)) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Thêm phiếu nhập thành công!");
+                loadPhieuNhapTable();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(null, "Thêm phiếu nhập thất bại!");
+            }
+        }
+    }
+
+    private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = jTable2.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng để sửa!");
+            return;
+        }
+
+        PhieuNhapDTO phieuNhap = phieuNhapBUS.getPhieuNhap(jTable2.getValueAt(selectedRow, 1).toString());
+        if (phieuNhap != null) {
+            SuaPhieuNhapDialog dialog = new SuaPhieuNhapDialog(null, phieuNhap);
+            dialog.setVisible(true);
+
+            if (dialog.isSaved()) {
+                PhieuNhapDTO updated = dialog.getUpdatedPhieuNhap();
+                if (phieuNhapBUS.updatePhieuNhap(updated)) {
+                    javax.swing.JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
+                    loadPhieuNhapTable();
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(null, "Cập nhật thất bại!");
+                }
+            }
+        }
+    }
+
+    private void jButton33ActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = jTable2.getSelectedRow();
+        if (selectedRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng để xóa!");
+            return;
+        }
+        String maPN = jTable2.getValueAt(selectedRow, 1).toString();
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(null, 
+            "Bạn có chắc chắn muốn xóa phiếu nhập này?", 
+            "Xác nhận xóa", 
+            javax.swing.JOptionPane.YES_NO_OPTION);
+            
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+                if (phieuNhapBUS.deletePhieuNhap(maPN)) {
+                    javax.swing.JOptionPane.showMessageDialog(null, "Xóa thành công!");
+                    loadPhieuNhapTable();
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(null, "Xóa thất bại!");
+                }
+            } catch (RuntimeException ex) {
+                javax.swing.JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
         }
     }
 
