@@ -33,6 +33,25 @@ public class loaisanpham extends javax.swing.JPanel {
         private javax.swing.JButton jButton36;
         private javax.swing.JButton jButton37;
 
+        private javax.swing.JPanel containerPanel;
+        private javax.swing.JButton jButton30;
+        private javax.swing.JButton jButton31;
+        private javax.swing.JButton jButton32;
+        private javax.swing.JButton jButton33;
+        private javax.swing.JButton jButton34;
+        private javax.swing.JButton jButton35;
+        private javax.swing.JLabel jLabel1;
+        private javax.swing.JPanel jPanel15;
+        private javax.swing.JPanel jPanel17;
+        private javax.swing.JPanel jPanel18;
+        private javax.swing.JScrollPane jScrollPane2;
+        private javax.swing.JTable jTable2;
+        private javax.swing.JPanel pnlContent;
+        private javax.swing.JPanel pnlHeader;
+        private javax.swing.JLabel searchLabel;
+        private javax.swing.JComboBox<String> searchComboBox;
+        private javax.swing.JTextField searchTextField;
+
         public loaisanpham() {
                 productService = new ProductService();
                 initComponents();
@@ -360,7 +379,7 @@ public class loaisanpham extends javax.swing.JPanel {
                 jButton34.setPreferredSize(new java.awt.Dimension(340, 40));
                 jButton34.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jButton34ActionPerformed(evt);
+                                utils.FileUtils.showExportOptions(jTable2, "Danh sách sản phẩm");
                         }
                 });
 
@@ -373,7 +392,8 @@ public class loaisanpham extends javax.swing.JPanel {
                 jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
                 jButton36.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                utils.FileUtils.importFromFile(jTable2);
+                                utils.FileUtils.importFromCSVForProduct(jTable2);
+                                loadTableData(); // Refresh the table after import
                         }
                 });
 
@@ -732,23 +752,4 @@ public class loaisanpham extends javax.swing.JPanel {
                         JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
         }
-
-        private javax.swing.JPanel containerPanel;
-        private javax.swing.JButton jButton30;
-        private javax.swing.JButton jButton31;
-        private javax.swing.JButton jButton32;
-        private javax.swing.JButton jButton33;
-        private javax.swing.JButton jButton34;
-        private javax.swing.JButton jButton35;
-        private javax.swing.JLabel jLabel1;
-        private javax.swing.JPanel jPanel15;
-        private javax.swing.JPanel jPanel17;
-        private javax.swing.JPanel jPanel18;
-        private javax.swing.JScrollPane jScrollPane2;
-        private javax.swing.JTable jTable2;
-        private javax.swing.JPanel pnlContent;
-        private javax.swing.JPanel pnlHeader;
-        private javax.swing.JLabel searchLabel;
-        private javax.swing.JComboBox<String> searchComboBox;
-        private javax.swing.JTextField searchTextField;
 }

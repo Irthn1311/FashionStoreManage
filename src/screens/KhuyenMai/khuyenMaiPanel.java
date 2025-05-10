@@ -56,11 +56,12 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 jButton31.addActionListener(e -> {
                         List<khuyenMaiDTO> currentList = khuyenMaiService.getAllKhuyenMai();
                         Set<String> existingProductCodes = currentList.stream()
-                                .map(km -> km.getMaSanPham())
-                                .collect(Collectors.toSet());
-                        
+                                        .map(km -> km.getMaSanPham())
+                                        .collect(Collectors.toSet());
+
                         KhuyenMaiEditDialog addDialog = new KhuyenMaiEditDialog(
-                                (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(khuyenMaiPanel.this),
+                                        (java.awt.Frame) javax.swing.SwingUtilities
+                                                        .getWindowAncestor(khuyenMaiPanel.this),
                                         null, khuyenMaiService, dateFormat, khuyenMaiTable, false, khuyenMaiPanel.this);
                         addDialog.setExistingProductCodes(existingProductCodes);
                         addDialog.setVisible(true);
@@ -85,13 +86,15 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                         if (km != null) {
                                 List<khuyenMaiDTO> currentList = khuyenMaiService.getAllKhuyenMai();
                                 Set<String> existingProductCodes = currentList.stream()
-                                        .filter(k -> !k.getMaKhuyenMai().equals(maKhuyenMai))
-                                        .map(k -> k.getMaSanPham())
-                                        .collect(Collectors.toSet());
-                                
+                                                .filter(k -> !k.getMaKhuyenMai().equals(maKhuyenMai))
+                                                .map(k -> k.getMaSanPham())
+                                                .collect(Collectors.toSet());
+
                                 KhuyenMaiEditDialog editDialog = new KhuyenMaiEditDialog(
-                                        (java.awt.Frame) javax.swing.SwingUtilities.getWindowAncestor(khuyenMaiPanel.this),
-                                        km, khuyenMaiService, dateFormat, khuyenMaiTable, true, khuyenMaiPanel.this);
+                                                (java.awt.Frame) javax.swing.SwingUtilities
+                                                                .getWindowAncestor(khuyenMaiPanel.this),
+                                                km, khuyenMaiService, dateFormat, khuyenMaiTable, true,
+                                                khuyenMaiPanel.this);
                                 editDialog.setExistingProductCodes(existingProductCodes);
                                 editDialog.setVisible(true);
                         }
@@ -109,33 +112,34 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
 
                         DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
                         String maKhuyenMai = model.getValueAt(selectedRow, 1).toString();
-                        
+
                         int confirm = JOptionPane.showConfirmDialog(khuyenMaiPanel.this,
                                         "Bạn có chắc chắn muốn xóa chương trình khuyến mãi " + maKhuyenMai + "?",
                                         "Xác nhận xóa",
                                         JOptionPane.YES_NO_OPTION,
                                         JOptionPane.WARNING_MESSAGE);
-                        
+
                         if (confirm == JOptionPane.YES_OPTION) {
                                 try {
                                         boolean success = khuyenMaiService.deleteKhuyenMai(maKhuyenMai);
                                         if (success) {
                                                 JOptionPane.showMessageDialog(khuyenMaiPanel.this,
-                                                        "Xóa khuyến mãi thành công!",
-                                                        "Thông báo",
-                                                        JOptionPane.INFORMATION_MESSAGE);
+                                                                "Xóa khuyến mãi thành công!",
+                                                                "Thông báo",
+                                                                JOptionPane.INFORMATION_MESSAGE);
                                                 loadKhuyenMaiData();
                                         } else {
                                                 JOptionPane.showMessageDialog(khuyenMaiPanel.this,
-                                                        "Xóa khuyến mãi thất bại! Không tìm thấy khuyến mãi với mã " + maKhuyenMai,
-                                                        "Lỗi",
-                                                        JOptionPane.ERROR_MESSAGE);
+                                                                "Xóa khuyến mãi thất bại! Không tìm thấy khuyến mãi với mã "
+                                                                                + maKhuyenMai,
+                                                                "Lỗi",
+                                                                JOptionPane.ERROR_MESSAGE);
                                         }
                                 } catch (Exception ex) {
                                         JOptionPane.showMessageDialog(khuyenMaiPanel.this,
-                                                "Lỗi khi xóa khuyến mãi: " + ex.getMessage(),
-                                                "Lỗi",
-                                                JOptionPane.ERROR_MESSAGE);
+                                                        "Lỗi khi xóa khuyến mãi: " + ex.getMessage(),
+                                                        "Lỗi",
+                                                        JOptionPane.ERROR_MESSAGE);
                                 }
                         }
                 });
@@ -151,84 +155,86 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 });
 
                 jButton34.addActionListener(e -> {
-                Workbook workbook = new HSSFWorkbook();
-                Sheet sheet = workbook.createSheet("Danh sách khuyến mãi");
+                        Workbook workbook = new HSSFWorkbook();
+                        Sheet sheet = workbook.createSheet("Danh sách khuyến mãi");
 
-                // Tạo header
-                Row headerRow = sheet.createRow(0);
-                String[] headers = { "STT", "Mã KM", "Mã sản phẩm", "Tên sản phẩm", "Tên chương trình",
-                                "Ngày bắt đầu", "Ngày kết thúc", "Giảm giá", "Giá cũ", "Giá mới", "Trạng thái" };
-                for (int i = 0; i < headers.length; i++) {
-                        Cell cell = headerRow.createCell(i);
-                        cell.setCellValue(headers[i]);
-                        CellStyle headerStyle = workbook.createCellStyle();
-                        Font font = workbook.createFont();
-                        font.setBold(true);
-                        headerStyle.setFont(font);
-                        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-                        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-                        cell.setCellStyle(headerStyle);
-                }
+                        // Tạo header
+                        Row headerRow = sheet.createRow(0);
+                        String[] headers = { "STT", "Mã KM", "Mã sản phẩm", "Tên sản phẩm", "Tên chương trình",
+                                        "Ngày bắt đầu", "Ngày kết thúc", "Giảm giá", "Giá cũ", "Giá mới",
+                                        "Trạng thái" };
+                        for (int i = 0; i < headers.length; i++) {
+                                Cell cell = headerRow.createCell(i);
+                                cell.setCellValue(headers[i]);
+                                CellStyle headerStyle = workbook.createCellStyle();
+                                Font font = workbook.createFont();
+                                font.setBold(true);
+                                headerStyle.setFont(font);
+                                headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+                                headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                                cell.setCellStyle(headerStyle);
+                        }
 
-                // Thêm dữ liệu từ bảng
-                DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
-                for (int i = 0; i < model.getRowCount(); i++) {
-                        Row row = sheet.createRow(i + 1);
-                        for (int j = 0; j < headers.length; j++) {
-                                Cell cell = row.createCell(j);
-                                Object value = model.getValueAt(i, j);
-                                if (value != null) {
-                                        cell.setCellValue(value.toString());
+                        // Thêm dữ liệu từ bảng
+                        DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
+                        for (int i = 0; i < model.getRowCount(); i++) {
+                                Row row = sheet.createRow(i + 1);
+                                for (int j = 0; j < headers.length; j++) {
+                                        Cell cell = row.createCell(j);
+                                        Object value = model.getValueAt(i, j);
+                                        if (value != null) {
+                                                cell.setCellValue(value.toString());
+                                        }
                                 }
                         }
-                }
 
-                // Tự động điều chỉnh kích thước cột
-                for (int i = 0; i < headers.length; i++) {
-                        sheet.autoSizeColumn(i);
-                }
-
-                // Đặt tên file mặc định
-                String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                String fileName = "DanhSachKhuyenMai_" + timestamp + ".xls";
-
-                // Sử dụng JFileChooser để cho phép người dùng chọn vị trí lưu file
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
-                fileChooser.setSelectedFile(new java.io.File(fileName));
-                fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-                        @Override
-                        public boolean accept(java.io.File f) {
-                                return f.isDirectory() || f.getName().toLowerCase().endsWith(".xls");
+                        // Tự động điều chỉnh kích thước cột
+                        for (int i = 0; i < headers.length; i++) {
+                                sheet.autoSizeColumn(i);
                         }
 
-                        @Override
-                        public String getDescription() {
-                                return "Excel Files (*.xls)";
-                        }
-                });
+                        // Đặt tên file mặc định
+                        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String fileName = "DanhSachKhuyenMai_" + timestamp + ".xls";
 
-                int userSelection = fileChooser.showSaveDialog(this);
-                if (userSelection == JFileChooser.APPROVE_OPTION) {
-                        java.io.File fileToSave = fileChooser.getSelectedFile();
-                        // Đảm bảo đuôi file là .xls
-                        String filePath = fileToSave.getAbsolutePath();
-                        if (!filePath.toLowerCase().endsWith(".xls")) {
-                                filePath += ".xls";
-                                fileToSave = new java.io.File(filePath);
-                        }
+                        // Sử dụng JFileChooser để cho phép người dùng chọn vị trí lưu file
+                        JFileChooser fileChooser = new JFileChooser();
+                        fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+                        fileChooser.setSelectedFile(new java.io.File(fileName));
+                        fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+                                @Override
+                                public boolean accept(java.io.File f) {
+                                        return f.isDirectory() || f.getName().toLowerCase().endsWith(".xls");
+                                }
 
-                        try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
-                                workbook.write(fileOut);
-                                JOptionPane.showMessageDialog(this,
-                                                "Xuất file Excel thành công: " + fileToSave.getAbsolutePath(),
-                                                "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                                @Override
+                                public String getDescription() {
+                                        return "Excel Files (*.xls)";
+                                }
+                        });
+
+                        int userSelection = fileChooser.showSaveDialog(this);
+                        if (userSelection == JFileChooser.APPROVE_OPTION) {
+                                java.io.File fileToSave = fileChooser.getSelectedFile();
+                                // Đảm bảo đuôi file là .xls
+                                String filePath = fileToSave.getAbsolutePath();
+                                if (!filePath.toLowerCase().endsWith(".xls")) {
+                                        filePath += ".xls";
+                                        fileToSave = new java.io.File(filePath);
+                                }
+
+                                try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
+                                        workbook.write(fileOut);
+                                        JOptionPane.showMessageDialog(this,
+                                                        "Xuất file Excel thành công: " + fileToSave.getAbsolutePath(),
+                                                        "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                                 } catch (IOException ex) {
-                                        JOptionPane.showMessageDialog(this, "Lỗi khi xuất file Excel: " + ex.getMessage(), "Lỗi",
-                                                JOptionPane.ERROR_MESSAGE);
-                        } finally {
-                                try {
-                                        workbook.close();
+                                        JOptionPane.showMessageDialog(this,
+                                                        "Lỗi khi xuất file Excel: " + ex.getMessage(), "Lỗi",
+                                                        JOptionPane.ERROR_MESSAGE);
+                                } finally {
+                                        try {
+                                                workbook.close();
                                         } catch (IOException ex) {
                                                 ex.printStackTrace();
                                         }
@@ -243,68 +249,7 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
                 jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
                 jButton36.addActionListener(e -> {
-                        try {
-                                JFileChooser fileChooser = new JFileChooser();
-                                fileChooser.setDialogTitle("Chọn file Excel để nhập");
-                                fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-                                        @Override
-                                        public boolean accept(java.io.File f) {
-                                                return f.isDirectory() || f.getName().toLowerCase().endsWith(".xls");
-                                        }
-
-                                        @Override
-                                        public String getDescription() {
-                                                return "Excel Files (*.xls)";
-                                        }
-                                });
-
-                                int result = fileChooser.showOpenDialog(khuyenMaiPanel.this);
-                                if (result == JFileChooser.APPROVE_OPTION) {
-                                        java.io.File selectedFile = fileChooser.getSelectedFile();
-                                        // Kiểm tra mã sản phẩm trùng lặp trước khi import
-                                        List<khuyenMaiDTO> currentList = khuyenMaiService.getAllKhuyenMai();
-                                        Set<String> existingProductCodes = currentList.stream()
-                                                .map(km -> km.getMaSanPham())
-                                                .collect(Collectors.toSet());
-                                        
-                                        // Đọc file Excel và kiểm tra
-                                        Workbook workbook = WorkbookFactory.create(selectedFile);
-                                        Sheet sheet = workbook.getSheetAt(0);
-                                        Set<String> importProductCodes = new HashSet<>();
-                                        boolean hasDuplicate = false;
-                                        
-                                        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                                                Row row = sheet.getRow(i);
-                                                if (row != null) {
-                                                        String productCode = row.getCell(2).getStringCellValue(); // Cột mã sản phẩm
-                                                        if (existingProductCodes.contains(productCode) || !importProductCodes.add(productCode)) {
-                                                                hasDuplicate = true;
-                                                                break;
-                                                        }
-                                                }
-                                        }
-                                        
-                                        if (hasDuplicate) {
-                                                JOptionPane.showMessageDialog(khuyenMaiPanel.this,
-                                                        "File Excel chứa mã sản phẩm đã tồn tại hoặc trùng lặp!",
-                                                        "Lỗi",
-                                                        JOptionPane.ERROR_MESSAGE);
-                                                return;
-                                        }
-                                        
-                                        utils.FileUtils.importFromFile(khuyenMaiTable);
-                                        loadKhuyenMaiData();
-                                        JOptionPane.showMessageDialog(khuyenMaiPanel.this,
-                                                "Nhập dữ liệu thành công!",
-                                                "Thông báo",
-                                                JOptionPane.INFORMATION_MESSAGE);
-                                }
-                        } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(khuyenMaiPanel.this,
-                                        "Lỗi khi nhập file: " + ex.getMessage(),
-                                        "Lỗi",
-                                        JOptionPane.ERROR_MESSAGE);
-                        }
+                        utils.FileUtils.importFromFileForKhuyenMai(khuyenMaiTable);
                 });
 
                 btnPrinter = new javax.swing.JButton("In");
@@ -317,7 +262,8 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                         try {
                                 khuyenMaiTable.print();
                         } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + ex.getMessage(), "Lỗi",
+                                                JOptionPane.ERROR_MESSAGE);
                         }
                 });
 
@@ -630,7 +576,8 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                         try {
                                 khuyenMaiTable.print();
                         } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + ex.getMessage(), "Lỗi",
+                                                JOptionPane.ERROR_MESSAGE);
                         }
                 });
 
@@ -708,57 +655,85 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                                                 .addGroup(pnlContentLayout.createSequentialGroup()
                                                                 .addContainerGap(22, Short.MAX_VALUE)
                                                                 .addGroup(pnlContentLayout
-                                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                pnlContentLayout.createSequentialGroup()
-                                                                                        .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGap(18, 18, 18)
-                                                                                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGap(18, 18, 18)
-                                                                                        .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                        .addGap(313, 313, 313))
-                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout
-                                                                                                .createSequentialGroup()
-                                                                                .addGroup(pnlContentLayout
-                                                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                        .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                961, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addGroup(pnlContentLayout
-                                                                                                                .createParallelGroup(
-                                                                                                        javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                        false)
-                                                                                                .addComponent(jPanel17,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                        Short.MAX_VALUE)
-                                                                                                                .addComponent(jPanel18,
-                                                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, 958,
-                                                                                                        Short.MAX_VALUE)))
-                                                                        .addGap(17, 17, 17)))));
+                                                                                .createParallelGroup(
+                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                pnlContentLayout.createSequentialGroup()
+                                                                                                                .addComponent(jButton36,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                100,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(18, 18, 18)
+                                                                                                                .addComponent(jButton34,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                340,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(18, 18, 18)
+                                                                                                                .addComponent(btnPrinter,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                100,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                .addGap(313, 313,
+                                                                                                                                313))
+                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                pnlContentLayout
+                                                                                                                .createSequentialGroup()
+                                                                                                                .addGroup(pnlContentLayout
+                                                                                                                                .createParallelGroup(
+                                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                .addComponent(jPanel33,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                961,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                .addGroup(pnlContentLayout
+                                                                                                                                                .createParallelGroup(
+                                                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                                                                                false)
+                                                                                                                                                .addComponent(jPanel17,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                Short.MAX_VALUE)
+                                                                                                                                                .addComponent(jPanel18,
+                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                                                958,
+                                                                                                                                                                Short.MAX_VALUE)))
+                                                                                                                .addGap(17, 17, 17)))));
                 pnlContentLayout.setVerticalGroup(
                                 pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(pnlContentLayout.createSequentialGroup()
                                                                 .addContainerGap()
-                                                                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(4, 4, 4)
-                                                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 80,
+                                                                .addComponent(jPanel33,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                110,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addGap(4, 4, 4)
-                                                                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 342,
+                                                                .addComponent(jPanel17,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                80,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28,
-                                                                        Short.MAX_VALUE)
-                                                                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                        .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
+                                                                .addGap(4, 4, 4)
+                                                                .addComponent(jPanel18,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                342,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                                28,
+                                                                                Short.MAX_VALUE)
+                                                                .addGroup(pnlContentLayout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(jButton36,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(jButton34,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(btnPrinter,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                40,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addGap(16, 16, 16)));
 
                 containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
@@ -792,7 +767,7 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
         private javax.swing.JButton jButton33;
         private javax.swing.JButton jButton34;
         private javax.swing.JButton jButton35;
-       
+
         private javax.swing.JComboBox<String> jComboBox1;
         private javax.swing.JLabel jLabel1;
         private javax.swing.JLabel jLabel2;

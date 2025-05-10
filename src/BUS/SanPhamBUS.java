@@ -26,4 +26,4 @@ public class SanPhamBUS {
     public void updateProductStatus() {
         sanPhamDAO.updateProductStatus();
     }
-} 
+}

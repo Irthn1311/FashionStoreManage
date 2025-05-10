@@ -58,7 +58,11 @@ public class ProductService {
             product.setTrangThai("Còn hàng");
         }
 
-        return loaiSanPhamDAO.themLoaiSanPham(product);
+        boolean success = loaiSanPhamDAO.themLoaiSanPham(product);
+        if (success) {
+            loadTableData();
+        }
+        return success;
     }
 
     public boolean updateProduct(sanPhamDTO product) throws Exception {
@@ -107,7 +111,11 @@ public class ProductService {
             product.setTrangThai("Còn hàng");
         }
 
-        return loaiSanPhamDAO.capNhatLoaiSanPham(product);
+        boolean success = loaiSanPhamDAO.capNhatLoaiSanPham(product);
+        if (success) {
+            loadTableData();
+        }
+        return success;
     }
 
     public boolean deleteProduct(String maSanPham) throws Exception {
@@ -119,7 +127,11 @@ public class ProductService {
             throw new Exception("Sản phẩm với mã " + maSanPham + " không tồn tại.");
         }
 
-        return loaiSanPhamDAO.xoaLoaiSanPham(maSanPham);
+        boolean success = loaiSanPhamDAO.xoaLoaiSanPham(maSanPham);
+        if (success) {
+            loadTableData();
+        }
+        return success;
     }
 
     public List<sanPhamDTO> searchProducts(String keyword, String searchType) {
@@ -153,11 +165,16 @@ public class ProductService {
         if (success) {
             String trangThai = soLuongMoi == 0 ? "Hết hàng" : "Còn hàng";
             loaiSanPhamDAO.capNhatTrangThai(maSanPham, trangThai);
+            loadTableData();
         }
         return success;
     }
 
     public String generateProductCode() {
         return loaiSanPhamDAO.generateMaSanPham();
+    }
+
+    private void loadTableData() {
+        // Implementation of loadTableData method
     }
 }

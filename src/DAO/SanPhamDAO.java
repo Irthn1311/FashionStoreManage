@@ -240,7 +240,7 @@ public class SanPhamDAO {
     public boolean deleteSanPham(String maSanPham) {
         try (Connection conn = ConnectDB.getConnection()) {
             conn.setAutoCommit(false); // Tắt tự động commit để thực hiện transaction
-            
+
             try {
                 // Xóa các bản ghi liên quan trong bảng NhaCungCap_SanPham
                 String sqlDeleteRef = "DELETE FROM NhaCungCap_SanPham WHERE MaSanPham = ?";
@@ -275,7 +275,7 @@ public class SanPhamDAO {
     public boolean capNhatSoLuongSanPham(String maSanPham, int soLuongNhap) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, soLuongNhap);
             ps.setString(2, maSanPham);
             return ps.executeUpdate() > 0;
@@ -390,7 +390,7 @@ public class SanPhamDAO {
     public boolean isProductExists(String maSanPham) {
         String sql = "SELECT COUNT(*) FROM SanPham WHERE MaSanPham = ?";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, maSanPham);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -405,7 +405,7 @@ public class SanPhamDAO {
     public void updateProductStatus() {
         String sql = "UPDATE SanPham SET TrangThai = CASE WHEN SoLuongTonKho <= 0 THEN 'Hết hàng' ELSE 'Còn hàng' END";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -415,7 +415,7 @@ public class SanPhamDAO {
     public boolean updateProductQuantity(String maSP, int soLuongThem) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, soLuongThem);
             ps.setString(2, maSP);
             return ps.executeUpdate() > 0;
