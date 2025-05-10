@@ -16,6 +16,17 @@ import java.util.logging.Logger;
 public class NhaCungCapDAO {
 
     private static final Logger LOGGER = Logger.getLogger(NhaCungCapDAO.class.getName());
+    private Connection conn;
+    private PreparedStatement ps;
+    private ResultSet rs;
+
+    public NhaCungCapDAO() {
+        try {
+            conn = ConnectDB.getConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public List<nhaCungCapDTO> getAllNhaCungCap() {
         List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
@@ -23,10 +34,9 @@ public class NhaCungCapDAO {
                     "ncc.NamHopTac, ncc.DiaChi, ncc.Email, ncc.SoDienThoai, ncc.TrangThai " +
                     "FROM NhaCungCap ncc";
 
-        try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
             while (rs.next()) {
                 nhaCungCapDTO ncc = new nhaCungCapDTO(
                     rs.getString("MaNhaCungCap"),
@@ -81,9 +91,8 @@ public class NhaCungCapDAO {
                   "WHERE ncc." + columnName + " LIKE ?";
         }
 
-        try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try {
+            ps = conn.prepareStatement(sql);
             String searchPattern = "%" + keyword + "%";
             if (searchType.equals("Tất cả")) {
                 for (int i = 1; i <= 4; i++) {
@@ -93,20 +102,19 @@ public class NhaCungCapDAO {
                 ps.setString(1, searchPattern);
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    nhaCungCapDTO ncc = new nhaCungCapDTO(
-                        rs.getString("MaNhaCungCap"),
-                        rs.getString("TenNhaCungCap"),
-                        rs.getString("LoaiSP"),
-                        rs.getInt("NamHopTac"),
-                        rs.getString("DiaChi"),
-                        rs.getString("Email"),
-                        rs.getString("SoDienThoai"),
-                        rs.getString("TrangThai")
-                    );
-                    nhaCungCapList.add(ncc);
-                }
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                nhaCungCapDTO ncc = new nhaCungCapDTO(
+                    rs.getString("MaNhaCungCap"),
+                    rs.getString("TenNhaCungCap"),
+                    rs.getString("LoaiSP"),
+                    rs.getInt("NamHopTac"),
+                    rs.getString("DiaChi"),
+                    rs.getString("Email"),
+                    rs.getString("SoDienThoai"),
+                    rs.getString("TrangThai")
+                );
+                nhaCungCapList.add(ncc);
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm nhà cung cấp với từ khóa {0}: {1}",
@@ -121,9 +129,8 @@ public class NhaCungCapDAO {
                     "NamHopTac, DiaChi, Email, SoDienThoai, TrangThai) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try {
+            ps = conn.prepareStatement(sql);
             ps.setString(1, ncc.getMaNhaCungCap());
             ps.setString(2, ncc.getTenNhaCungCap());
             ps.setString(3, ncc.getLoaiSP());
@@ -145,9 +152,8 @@ public class NhaCungCapDAO {
                     "NamHopTac = ?, DiaChi = ?, Email = ?, SoDienThoai = ?, TrangThai = ? " +
                     "WHERE MaNhaCungCap = ?";
 
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try {
+            ps = conn.prepareStatement(sql);
             ps.setString(1, ncc.getTenNhaCungCap());
             ps.setString(2, ncc.getLoaiSP());
             ps.setInt(3, ncc.getNamHopTac());
@@ -167,9 +173,8 @@ public class NhaCungCapDAO {
     public boolean xoaNhaCungCap(String maNCC) {
         String sql = "DELETE FROM NhaCungCap WHERE MaNhaCungCap = ?";
 
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try {
+            ps = conn.prepareStatement(sql);
             ps.setString(1, maNCC);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -184,23 +189,21 @@ public class NhaCungCapDAO {
                     "FROM NhaCungCap ncc " +
                     "WHERE ncc.MaNhaCungCap = ?";
 
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try {
+            ps = conn.prepareStatement(sql);
             ps.setString(1, maNCC);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new nhaCungCapDTO(
-                        rs.getString("MaNhaCungCap"),
-                        rs.getString("TenNhaCungCap"),
-                        rs.getString("LoaiSP"),
-                        rs.getInt("NamHopTac"),
-                        rs.getString("DiaChi"),
-                        rs.getString("Email"),
-                        rs.getString("SoDienThoai"),
-                        rs.getString("TrangThai")
-                    );
-                }
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return new nhaCungCapDTO(
+                    rs.getString("MaNhaCungCap"),
+                    rs.getString("TenNhaCungCap"),
+                    rs.getString("LoaiSP"),
+                    rs.getInt("NamHopTac"),
+                    rs.getString("DiaChi"),
+                    rs.getString("Email"),
+                    rs.getString("SoDienThoai"),
+                    rs.getString("TrangThai")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -208,17 +211,16 @@ public class NhaCungCapDAO {
         return null;
     }
 
-
     public boolean isSupplierActive(String maNhaCungCap) {
-        String sql = "SELECT COUNT(*) FROM NhaCungCap WHERE MaNhaCungCap = ? AND TrangThai = N'Đang hợp tác'";
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        String sql = "SELECT TrangThai FROM NhaCungCap WHERE MaNhaCungCap = ?";
+        try {
+            ps = conn.prepareStatement(sql);
             ps.setString(1, maNhaCungCap);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0;
+                return "Hoạt động".equals(rs.getString("TrangThai"));
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
@@ -226,8 +228,7 @@ public class NhaCungCapDAO {
 
     public List<String> getAllSuppliers() {
         List<String> suppliers = new ArrayList<>();
-        try (Connection conn = ConnectDB.getConnection();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT MaNhaCungCap FROM NhaCungCap")) {
             while (rs.next()) {
                 suppliers.add(rs.getString("MaNhaCungCap"));
@@ -242,8 +243,7 @@ public class NhaCungCapDAO {
         String sql = "DELETE FROM SanPham WHERE MaNhaCungCap = ?; " +
                     "DELETE FROM NhaCungCap WHERE MaNhaCungCap = ?";
         try {
-            Connection conn = ConnectDB.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.setString(1, maNCC);
             ps.setString(2, maNCC);
             return ps.executeUpdate() > 0;
@@ -256,8 +256,7 @@ public class NhaCungCapDAO {
     public boolean capNhatSanPhamSangNhaCungCapKhac(String maNCCCu, String maNCCMoi) {
         String sql = "UPDATE SanPham SET MaNhaCungCap = ? WHERE MaNhaCungCap = ?";
         try {
-            Connection conn = ConnectDB.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.setString(1, maNCCMoi);
             ps.setString(2, maNCCCu);
             return ps.executeUpdate() > 0;
@@ -277,22 +276,43 @@ public class NhaCungCapDAO {
                      "AND sp.MaSanPham = ? " +
                      "AND (sp.MaDanhMuc = ? OR ncc.LoaiSP = ?)";
 
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try {
+            ps = conn.prepareStatement(sql);
             ps.setString(1, productCode);
             ps.setString(2, productType);
             ps.setString(3, productType);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String maNCC = rs.getString("MaNhaCungCap");
-                    String tenNCC = rs.getString("TenNhaCungCap");
-                    suppliers.add(maNCC + " - " + tenNCC);
-                }
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String maNCC = rs.getString("MaNhaCungCap");
+                String tenNCC = rs.getString("TenNhaCungCap");
+                suppliers.add(maNCC + " - " + tenNCC);
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy danh sách nhà cung cấp theo sản phẩm: {0}", e.getMessage());
         }
         return suppliers;
+    }
+
+    public List<nhaCungCapDTO> getAll() {
+        List<nhaCungCapDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM NhaCungCap";
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                nhaCungCapDTO ncc = new nhaCungCapDTO();
+                ncc.setMaNhaCungCap(rs.getString("MaNhaCungCap"));
+                ncc.setTenNhaCungCap(rs.getString("TenNhaCungCap"));
+                ncc.setDiaChi(rs.getString("DiaChi"));
+                ncc.setSoDienThoai(rs.getString("SoDienThoai"));
+                ncc.setEmail(rs.getString("Email"));
+                ncc.setTrangThai(rs.getString("TrangThai"));
+                list.add(ncc);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
