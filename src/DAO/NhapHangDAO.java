@@ -22,6 +22,15 @@ public class NhapHangDAO {
             ps.setDouble(9, Double.parseDouble(nhapHang.getThanhTien()));
             ps.setString(10, nhapHang.getHinhThucThanhToan());
             ps.setString(11, nhapHang.getTrangThai());
+            
+            // Cập nhật số lượng sản phẩm trong bảng SanPham
+            String updateSql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
+            try (PreparedStatement updatePs = conn.prepareStatement(updateSql)) {
+                updatePs.setInt(1, Integer.parseInt(nhapHang.getSoLuong()));
+                updatePs.setString(2, nhapHang.getMaSanPham());
+                updatePs.executeUpdate();
+            }
+            
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

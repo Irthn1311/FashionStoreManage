@@ -29,7 +29,7 @@ public class ThongKePanel extends JPanel {
 
     // UI Components
     private JButton btnTimKiem, btnTinhToan, btnXuatExcel;
-    private JComboBox<String> cbTuThang, cbDenThang, cbNam, cbDanhGiaTuThang, cbDanhGiaDenThang;
+    private JComboBox<String> cbTuThang, cbDenThang, cbNam, cbDanhGiaTuThang, cbDanhGiaDenThang, cbDanhGiaNam;
     private JLabel lblTongDoanhThu, lblTongSanPham, lblTongKhachHang, lblDoanhThuNam, lblTieuDe;
     private JPanel panelTieuDe, panelTimKiem, panelThoiGian, panelBang, panelThongKe, panelDanhGia;
     private JRadioButton rbSanPhamBanChay, rbKhachHangHangDau;
@@ -38,7 +38,7 @@ public class ThongKePanel extends JPanel {
     private JTextField txtTongDoanhThu, txtTongSanPham, txtTongKhachHang, txtDoanhThuNam;
 
     public ThongKePanel() {
-        setBackground(new Color(107, 163, 190));
+        setBackground(new Color(107, 163,190));
         setLayout(new BorderLayout(10, 10));
         initComponents();
         setupComboBoxes();
@@ -56,10 +56,11 @@ public class ThongKePanel extends JPanel {
         cbDanhGiaTuThang.setModel(new DefaultComboBoxModel<>(months));
         cbDanhGiaDenThang.setModel(new DefaultComboBoxModel<>(months));
         cbNam.setModel(new DefaultComboBoxModel<>(years));
+        cbDanhGiaNam.setModel(new DefaultComboBoxModel<>(years)); // Thêm danh sách năm cho cbDanhGiaNam
 
         Font comboFont = new Font("Segoe UI", Font.PLAIN, 14);
         for (JComboBox<?> cb : new JComboBox<?>[] { cbTuThang, cbDenThang, cbNam, cbDanhGiaTuThang,
-                cbDanhGiaDenThang }) {
+                cbDanhGiaDenThang, cbDanhGiaNam }) { // Thêm cbDanhGiaNam vào vòng lặp
             cb.setFont(comboFont);
             cb.setPreferredSize(new Dimension(100, 30));
         }
@@ -115,7 +116,7 @@ public class ThongKePanel extends JPanel {
             try {
                 String tuThang = cbDanhGiaTuThang.getSelectedItem().toString();
                 String denThang = cbDanhGiaDenThang.getSelectedItem().toString();
-                int nam = Integer.parseInt(cbNam.getSelectedItem().toString());
+                int nam = Integer.parseInt(cbDanhGiaNam.getSelectedItem().toString()); // Sử dụng cbDanhGiaNam thay vì cbNam
                 String ngayCuoi = getLastDayOfMonth(nam, Integer.parseInt(denThang));
                 String tuNgay = nam + "-" + tuThang + "-01";
                 String denNgay = nam + "-" + denThang + "-" + ngayCuoi;
@@ -365,7 +366,10 @@ public class ThongKePanel extends JPanel {
         panelChonThoiGian.setBackground(new Color(107, 163, 190));
         cbDanhGiaTuThang = new JComboBox<>();
         cbDanhGiaDenThang = new JComboBox<>();
+        cbDanhGiaNam = new JComboBox<>(); // Thêm cbDanhGiaNam
 
+        panelChonThoiGian.add(new JLabel("Năm:")); // Thêm nhãn Năm
+        panelChonThoiGian.add(cbDanhGiaNam); // Thêm cbDanhGiaNam
         panelChonThoiGian.add(new JLabel("Từ tháng:"));
         panelChonThoiGian.add(cbDanhGiaTuThang);
         panelChonThoiGian.add(new JLabel("Đến tháng:"));
