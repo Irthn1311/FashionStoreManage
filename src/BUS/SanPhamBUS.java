@@ -38,4 +38,9 @@ public class SanPhamBUS {
     public boolean updateProductQuantity(String maSanPham, int quantity) {
         return sanPhamDAO.updateProductQuantity(maSanPham, quantity);
     }
+
+    public boolean checkProductQuantity(String maSanPham, int soLuong) {
+        SanPhamDAO sanPhamDAO = new SanPhamDAO();
+        return sanPhamDAO.checkProductQuantity(maSanPham, soLuong);
+    }
 } 

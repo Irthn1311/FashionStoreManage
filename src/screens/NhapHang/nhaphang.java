@@ -39,6 +39,11 @@ public class nhaphang extends javax.swing.JPanel {
         private SanPhamBUS sanPhamBUS;
         private NhaCungCapBUS nhaCungCapBUS;
 
+        // Thêm biến giao diện tìm kiếm
+        private javax.swing.JComboBox<String> cbSearchType;
+        private javax.swing.JTextField txtSearchValue;
+        private javax.swing.JButton btnSearch;
+
         /**
          * Creates new form phieunhap
          */
@@ -451,7 +456,7 @@ public class nhaphang extends javax.swing.JPanel {
                 jButton16.addActionListener(evt -> jButton16ActionPerformed(evt));
                 jPanel7.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 340, -1, 60));
 
-                jButton17.setText("Xác nhận và Xuất Phiếu Nhập ");
+                jButton17.setText("Xác nhận");
                 jButton17.addActionListener(evt -> jButton17ActionPerformed(evt));
                 jPanel7.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, -1, 60));
 
@@ -517,6 +522,21 @@ public class nhaphang extends javax.swing.JPanel {
 
                 containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
 
+                // Khởi tạo các thành phần tìm kiếm
+                cbSearchType = new javax.swing.JComboBox<>(new String[] {"Mã PN", "Mã NCC", "Mã SP", "Trạng thái"});
+                txtSearchValue = new javax.swing.JTextField();
+                btnSearch = new javax.swing.JButton("Tìm kiếm");
+                // Thêm vào giao diện (ví dụ đặt trên pnlContent)
+                pnlContent.add(cbSearchType, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 120, 30));
+                pnlContent.add(txtSearchValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, 200, 30));
+                pnlContent.add(btnSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 10, 100, 30));
+                // Thêm sự kiện cho nút tìm kiếm
+                btnSearch.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        performSearch();
+                    }
+                });
+
                 setupUI();
         } // </editor-fold>//GEN-END:initComponents
 
@@ -538,14 +558,14 @@ public class nhaphang extends javax.swing.JPanel {
         try {
             // Validate input
             if (cbMaSanPham.getSelectedItem() == null || textSoLuong.getText().trim().isEmpty() || 
-                jComboBox9.getSelectedItem() == null) {
+                cbMaNCC.getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
                 return;
             }
 
             // Create new import record
             nhapHangDTO nh = new nhapHangDTO();
-            nh.setMaPN("PN" + System.currentTimeMillis());
+            nh.setMaPN(nhapHangBUS.generateNextMaPN());
             nh.setMaSanPham((String) cbMaSanPham.getSelectedItem());
             nh.setMaNhaCungCap((String) cbMaNCC.getSelectedItem());
             nh.setTenSanPham(textTenSanPham.getText());
@@ -597,7 +617,7 @@ public class nhaphang extends javax.swing.JPanel {
         // Nhà cung cấp
         cbMaNCC.removeAllItems();
         cbTenNCC.removeAllItems();
-        List<DTO.nhaCungCapDTO> nccList = nhaCungCapDAO.getAllNhaCungCap();
+        List<DTO.nhaCungCapDTO> nccList = nhaCungCapBUS.getAllNhaCungCap();
         for (DTO.nhaCungCapDTO ncc : nccList) {
             cbMaNCC.addItem(ncc.getMaNhaCungCap());
             cbTenNCC.addItem(ncc.getTenNhaCungCap());
@@ -617,7 +637,7 @@ public class nhaphang extends javax.swing.JPanel {
                 String selectedMaSP = (String) cbMaSanPham.getSelectedItem();
                 if (selectedMaSP != null && !selectedMaSP.isEmpty()) {
                     // Lấy thông tin sản phẩm
-                    sanPhamDTO sp = sanPhamDAO.getSanPhamByMa(selectedMaSP);
+                    sanPhamDTO sp = sanPhamBUS.getSanPhamByMa(selectedMaSP);
                     if (sp != null) {
                         textTenSanPham.setText(sp.getTenSanPham());
                         txtMauSac.setText(sp.getMauSac());
@@ -720,11 +740,11 @@ public class nhaphang extends javax.swing.JPanel {
 
         private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                        if (nhapHangBUS.xuLyPhieuNhap()) {
-                                JOptionPane.showMessageDialog(this, "Xử lý phiếu nhập thành công!");
-                                loadImportTable();
+                        if (nhapHangBUS.chuyenNhapHangSangPhieuNhap()) {
+                                JOptionPane.showMessageDialog(this, "Chuyển phiếu nhập sang bảng Phiếu Nhập thành công!");
+                                loadImportTable(); // Refresh lại bảng NhapHang
                         } else {
-                                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi xử lý phiếu nhập!");
+                                JOptionPane.showMessageDialog(this, "Có lỗi khi chuyển dữ liệu!");
                         }
                 } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
@@ -761,6 +781,46 @@ public class nhaphang extends javax.swing.JPanel {
                 textSoLuong.setText("");
                 jTextField7.setText("");
                 textThanhTien.setText("");
+        }
+
+        // Hàm thực hiện tìm kiếm
+        private void performSearch() {
+            String searchType = cbSearchType.getSelectedItem().toString();
+            String keyword = txtSearchValue.getText().trim();
+            String dbField = "";
+            switch (searchType) {
+                case "Mã PN": dbField = "MaPN"; break;
+                case "Mã NCC": dbField = "MaNhaCungCap"; break;
+                case "Mã SP": dbField = "MaSanPham"; break;
+                case "Trạng thái": dbField = "TrangThai"; break;
+                default: dbField = "MaPN";
+            }
+            List<nhapHangDTO> list;
+            if (keyword.isEmpty()) {
+                list = nhapHangBUS.getAllNhapHang();
+            } else {
+                list = nhapHangBUS.searchNhapHang(keyword, dbField);
+            }
+            // Cập nhật bảng
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+            int stt = 1;
+            for (nhapHangDTO nh : list) {
+                model.addRow(new Object[]{
+                    stt++,
+                    nh.getMaPN(),
+                    nh.getMaNhaCungCap(),
+                    nh.getMaSanPham(),
+                    nh.getTenSanPham(),
+                    nh.getMauSac(),
+                    nh.getKichThuoc(),
+                    nh.getSoLuong(),
+                    nh.getDonGia(),
+                    nh.getThanhTien(),
+                    nh.getHinhThucThanhToan(),
+                    nh.getTrangThai()
+                });
+            }
         }
 
         /**

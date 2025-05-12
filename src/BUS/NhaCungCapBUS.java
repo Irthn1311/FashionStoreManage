@@ -109,7 +109,7 @@ public class NhaCungCapBUS {
     }
 
     public List<String> getAllSuppliers() {
-        List<nhaCungCapDTO> suppliers = nhaCungCapDAO.getAll();
+        List<nhaCungCapDTO> suppliers = nhaCungCapDAO.getAllNhaCungCap();
         return suppliers.stream()
             .map(nhaCungCapDTO::getMaNhaCungCap)
             .collect(Collectors.toList());

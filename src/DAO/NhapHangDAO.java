@@ -161,4 +161,18 @@ public class NhapHangDAO {
             return false;
         }
     }
+
+    public String getMaxMaPN() {
+        String sql = "SELECT MAX(MaPN) AS MaxMaPN FROM NhapHang";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getString("MaxMaPN");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
