@@ -245,16 +245,16 @@ CREATE TABLE NhapHang (
 );
 INSERT INTO NhapHang (MaPN, MaNhaCungCap, MaSanPham, TenSanPham, MauSac, KichThuoc, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai)
 VALUES
-('PN001', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'L', 50, 250000, 12500000, N'Chuyển khoản', N'Đã nhập'),
-('PN002', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'M', 30, 250000, 7500000, N'Tiền mặt', N'Đã nhập'),
-('PN003', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'S', 40, 250000, 10000000, N'Chuyển khoản', N'Đã nhập'),
-('PN004', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'XL', 25, 250000, 6250000, N'Tiền mặt', N'Chưa nhập'),
-('PN005', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'XXL', 15, 250000, 3750000, N'Chuyển khoản', N'Chưa nhập'),
-('PN006', 'NCC001', 'SP0002', N'Áo thun thế chữ', N'Xanh', N'L', 35, 400000, 14000000, N'Tiền mặt', N'Đã nhập'),
-('PN007', 'NCC001', 'SP0003', N'Áo form rộng', N'Đen', N'M', 45, 450000, 20250000, N'Chuyển khoản', N'Đã nhập'),
-('PN008', 'NCC004', 'SP0004', N'Áo khoác gió', N'Hồng', N'S', 20, 350000, 7000000, N'Tiền mặt', N'Chưa nhập'),
-('PN009', 'NCC004', 'SP0005', N'Áo khoác nam nữ', N'Trắng', N'42', 10, 650000, 6500000, N'Chuyển khoản', N'Chưa nhập'),
-('PN010', 'NCC001', 'SP0009', N'Áo thun cotton', N'Nâu', N'Free size', 25, 250000, 6250000, N'Tiền mặt', N'Đã nhập');
+('PN001', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'L', 50, 250000, 12500000, N'Chuyển khoản', N'Đang xử lý'),
+('PN002', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'M', 30, 250000, 7500000, N'Tiền mặt', N'Đang xử lý'),
+('PN003', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'S', 40, 250000, 10000000, N'Chuyển khoản', N'Đang xử lý'),
+('PN004', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'XL', 25, 250000, 6250000, N'Tiền mặt', N'Đang xử lý'),
+('PN005', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', N'XXL', 15, 250000, 3750000, N'Chuyển khoản', N'Đang xử lý'),
+('PN006', 'NCC001', 'SP0002', N'Áo thun thế chữ', N'Xanh', N'L', 35, 400000, 14000000, N'Tiền mặt', N'Đang xử lý'),
+('PN007', 'NCC001', 'SP0003', N'Áo form rộng', N'Đen', N'M', 45, 450000, 20250000, N'Chuyển khoản', N'Đang xử lý'),
+('PN008', 'NCC004', 'SP0004', N'Áo khoác gió', N'Hồng', N'S', 20, 350000, 7000000, N'Tiền mặt', N'Đang xử lý'),
+('PN009', 'NCC004', 'SP0005', N'Áo khoác nam nữ', N'Trắng', N'42', 10, 650000, 6500000, N'Chuyển khoản', N'Đang xử lý'),
+('PN010', 'NCC001', 'SP0009', N'Áo thun cotton', N'Nâu', N'Free size', 25, 250000, 6250000, N'Tiền mặt', N'Đang xử lý');
 
 -- Tạo bảng XuatHang
 CREATE TABLE XuatHang (
@@ -345,17 +345,3 @@ CREATE TABLE PhieuNhap (
     FOREIGN KEY (MaNhaCungCap) REFERENCES NhaCungCap(MaNhaCungCap),
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
 );
-
--- Thêm dữ liệu mẫu cho bảng PhieuNhap
-INSERT INTO PhieuNhap (MaPhieuNhap, MaNhaCungCap, MaSanPham, TenSanPham, SoLuong, ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien)
-VALUES
-('PN001', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', 50, '2025-03-01 10:30:00', 250000, N'Đã xử lý', N'Chuyển khoản', 12500000),
-('PN002', 'NCC001', 'SP0002', N'Áo thun thế chữ', 40, '2025-03-05 14:15:00', 400000, N'Đã xử lý', N'Tiền mặt', 16000000),
-('PN003', 'NCC001', 'SP0003', N'Áo form rộng', 30, '2025-03-10 09:45:00', 450000, N'Đã xử lý', N'Chuyển khoản', 13500000),
-('PN004', 'NCC004', 'SP0004', N'Áo khoác gió', 25, '2025-03-15 16:20:00', 350000, N'Đã xử lý', N'Tiền mặt', 8750000),
-('PN005', 'NCC004', 'SP0005', N'Áo khoác nam nữ', 35, '2025-03-20 11:05:00', 650000, N'Đã xử lý', N'Chuyển khoản', 22750000),
-('PN006', 'NCC001', 'SP0006', N'Áo nữ tay dài', 20, '2025-03-25 13:30:00', 500000, N'Đã xử lý', N'Tiền mặt', 10000000),
-('PN007', 'NCC001', 'SP0007', N'Áo thun big size', 45, '2025-04-01 10:00:00', 120000, N'Đã xử lý', N'Chuyển khoản', 5400000),
-('PN008', 'NCC001', 'SP0009', N'Áo thun cotton', 30, '2025-04-05 15:45:00', 250000, N'Đã xử lý', N'Tiền mặt', 7500000),
-('PN009', 'NCC001', 'SP0011', N'Áo thun Mikey', 25, '2025-04-10 09:30:00', 180000, N'Đã xử lý', N'Chuyển khoản', 4500000),
-('PN010', 'NCC003', 'SP0014', N'Giày Air', 40, '2025-04-15 14:00:00', 260000, N'Đã xử lý', N'Tiền mặt', 10400000);

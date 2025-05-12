@@ -82,4 +82,9 @@ public class PhieuNhapBUS {
     public void close() {
         phieuNhapDAO.close();
     }
+
+    // Get PhieuNhap by ID (bổ sung cho NhapHangBUS)
+    public PhieuNhapDTO getPhieuNhapByMa(String maPhieuNhap) {
+        return phieuNhapDAO.read(maPhieuNhap);
+    }
 } 
