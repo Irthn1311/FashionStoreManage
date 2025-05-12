@@ -407,4 +407,18 @@ public class HoaDonDAO {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getSanPhamBanChayNhat'");
     }
+
+    public int getSoLuongHoaDon() {
+        String sql = "SELECT COUNT(*) FROM HoaDon";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

@@ -157,6 +157,7 @@ public class KhachHangDAO {
     }
 
     public boolean xoaKhachHang(String maKhachHang) {
+        String sqlCheckXuatHang = "SELECT COUNT(*) FROM XuatHang WHERE MaKhachHang = ?";
         String sqlDeleteHoaDon = "DELETE FROM HoaDon WHERE MaKhachHang = ?";
         String sqlDeleteKhachHang = "DELETE FROM KhachHang WHERE MaKhachHang = ?";
 
@@ -166,6 +167,16 @@ public class KhachHangDAO {
             if (conn == null) {
                 System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
                 return false;
+            }
+
+            // Kiểm tra xem khách hàng có dữ liệu trong bảng XuatHang không
+            try (PreparedStatement psCheckXuatHang = conn.prepareStatement(sqlCheckXuatHang)) {
+                psCheckXuatHang.setString(1, maKhachHang);
+                ResultSet rs = psCheckXuatHang.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    System.err.println("Không thể xóa khách hàng vì khách hàng đã có dữ liệu xuất hàng.");
+                    throw new SQLException("Khách hàng có dữ liệu trong bảng XuatHang, không thể xóa. Hãy xóa dữ liệu xuất hàng trước.");
+                }
             }
 
             conn.setAutoCommit(false);
@@ -383,5 +394,19 @@ public class KhachHangDAO {
                 closeEx.printStackTrace();
             }
         }
+    }
+
+    public int getSoLuongKhachHang() {
+        String sql = "SELECT COUNT(*) FROM KhachHang";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

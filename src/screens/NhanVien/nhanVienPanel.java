@@ -28,6 +28,11 @@ import BUS.PhanQuyenBUS;
 import java.util.EnumSet;
 import BUS.NhanVienBUS;
 import DTO.VaiTro;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import utils.FileUtils;
 
 /**
  *
@@ -42,6 +47,8 @@ public class nhanVienPanel extends javax.swing.JPanel {
     private TaiKhoanBUS taiKhoanBUS;
     private JComboBox<String> cboVaiTro;
     private taiKhoanDTO taiKhoan;
+    private javax.swing.JButton btnImport;  // New button for import
+    private javax.swing.JButton btnPrinter; // New button for printing
 
     /**
      * Creates new form nhanvien
@@ -156,7 +163,7 @@ public class nhanVienPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
-        jButton34 = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
         jPanel17 = new javax.swing.JPanel();
         jButton31 = new javax.swing.JButton();
         jButton32 = new javax.swing.JButton();
@@ -201,7 +208,50 @@ public class nhanVienPanel extends javax.swing.JPanel {
 
         jPanel9.setBackground(new java.awt.Color(107, 163, 190));
 
-        jButton34.setText("Lưu và xuất file");
+        btnExport.setText("Lưu và xuất file");
+
+        // Add Import button
+        btnImport = new javax.swing.JButton("Import");
+        ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
+        btnImport.setIcon(new ImageIcon(
+                importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnImport.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnImport.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnImport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                utils.FileUtils.importFromCSV(nhanVienTable);
+                loadNhanVienData(); // Refresh the table after import
+            }
+        });
+
+        // Add Print button
+        btnPrinter = new javax.swing.JButton("In");
+        ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
+        btnPrinter.setIcon(new ImageIcon(
+                printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnPrinter.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnPrinter.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnPrinter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    nhanVienTable.print();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        
+        // Add Export functionality 
+        btnExport.setIcon(new ImageIcon(
+                new ImageIcon("src/icon_img/export_icon.png").getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnExport.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnExport.setPreferredSize(new java.awt.Dimension(340, 40));
+        btnExport.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                utils.FileUtils.exportToCSV(nhanVienTable, "Danh sách nhân viên");
+            }
+        });
 
         jPanel17.setBackground(new java.awt.Color(107, 163, 190));
         jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
@@ -274,7 +324,11 @@ public class nhanVienPanel extends javax.swing.JPanel {
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(320, 320, 320))
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
@@ -294,7 +348,10 @@ public class nhanVienPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -605,7 +662,7 @@ public class nhanVienPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton33;
-    private javax.swing.JButton jButton34;
+    private javax.swing.JButton btnExport;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

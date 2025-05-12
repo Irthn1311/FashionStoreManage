@@ -16,6 +16,10 @@ import DAO.NhaCungCapDAO;
 import java.util.ArrayList;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import javax.swing.JOptionPane;
+import utils.FileUtils;
 
 /**
  *
@@ -61,7 +65,9 @@ public class phieunhap extends javax.swing.JPanel {
         jPanel18 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton34 = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
+        btnImport = new javax.swing.JButton();
+        btnPrinter = new javax.swing.JButton();
         jPanel33 = new javax.swing.JPanel();
         jButton30 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -146,7 +152,44 @@ public class phieunhap extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        jButton34.setText("Xuất file xuất hàng");
+        // Setup buttons for export, import and print
+        btnExport.setText("Xuất file phiếu nhập");
+        ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
+        btnExport.setIcon(new ImageIcon(exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnExport.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnExport.setPreferredSize(new java.awt.Dimension(340, 40));
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                utils.FileUtils.exportToCSV(jTable2, "Danh sách phiếu nhập");
+            }
+        });
+
+        btnImport = new javax.swing.JButton("Import");
+        ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
+        btnImport.setIcon(new ImageIcon(importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnImport.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnImport.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnImport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                utils.FileUtils.importFromCSV(jTable2);
+                loadPhieuNhapTable(); // Refresh the table after import
+            }
+        });
+
+        btnPrinter = new javax.swing.JButton("In");
+        ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
+        btnPrinter.setIcon(new ImageIcon(printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        btnPrinter.setHorizontalTextPosition(SwingConstants.RIGHT);
+        btnPrinter.setPreferredSize(new java.awt.Dimension(100, 40));
+        btnPrinter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    jTable2.print();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
 
         jPanel33.setBackground(new java.awt.Color(107, 163, 190));
         jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm\n"));
@@ -169,7 +212,11 @@ public class phieunhap extends javax.swing.JPanel {
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(323, 323, 323))
             .addGroup(pnlContentLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
@@ -189,7 +236,10 @@ public class phieunhap extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPrinter, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16))
         );
 
@@ -444,7 +494,9 @@ public class phieunhap extends javax.swing.JPanel {
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton33;
-    private javax.swing.JButton jButton34;
+    private javax.swing.JButton btnExport;
+    private javax.swing.JButton btnImport;
+    private javax.swing.JButton btnPrinter;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
