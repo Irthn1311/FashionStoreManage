@@ -30,12 +30,12 @@ import javax.swing.JFileChooser;
 import java.io.File;
 import utils.FileUtils;
 
-public class HoaDonPanel extends javax.swing.JPanel {
+public class hoadon extends javax.swing.JPanel {
     private HoaDonDAO hoaDonDAO;
     private SimpleDateFormat dateFormat;
     private DecimalFormat decimalFormat;
 
-    public HoaDonPanel() {
+    public hoadon() {
         initComponents();
         setupUI();
 
@@ -275,16 +275,6 @@ public class HoaDonPanel extends javax.swing.JPanel {
         String thanhTienDen = jTextFieldThanhTienDen.getText().trim();
 
         try {
-            // Kiểm tra ô nhập liệu trống khi tìm kiếm theo tiêu chí cụ thể
-            if (!searchType.equals("Tất cả") && keyword.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Vui lòng nhập dữ liệu để tìm kiếm",
-                        "Thông báo",
-                        JOptionPane.WARNING_MESSAGE);
-                jTextField1.requestFocus();
-                return;
-            }
-
             // Nếu không có điều kiện tìm kiếm, tải lại toàn bộ dữ liệu
             if (keyword.isEmpty() && soLuongTu.isEmpty() && soLuongDen.isEmpty() && thanhTienTu.isEmpty()
                     && thanhTienDen.isEmpty()) {
@@ -321,7 +311,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
                     // Lọc theo thành tiền
                     if (!thanhTienTu.isEmpty()) {
                         try {
-                            double thanhTienMin = Double.parseDouble(thanhTienTu.replace(",", ""));
+                            double thanhTienMin = Double.parseDouble(thanhTienTu);
                             match = match && hd.getThanhTien() >= thanhTienMin;
                         } catch (NumberFormatException ex) {
                             match = false;
@@ -329,7 +319,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
                     }
                     if (!thanhTienDen.isEmpty()) {
                         try {
-                            double thanhTienMax = Double.parseDouble(thanhTienDen.replace(",", ""));
+                            double thanhTienMax = Double.parseDouble(thanhTienDen);
                             match = match && hd.getThanhTien() <= thanhTienMax;
                         } catch (NumberFormatException ex) {
                             match = false;
@@ -560,22 +550,13 @@ public class HoaDonPanel extends javax.swing.JPanel {
                             return;
                         }
 
-                        // Hiển thị hộp thoại xác nhận
-                        int confirm = JOptionPane.showConfirmDialog(null,
-                                "Bạn có chắc chắn muốn xóa hóa đơn này?",
-                                "Xác nhận xóa",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.WARNING_MESSAGE);
+                        // Gọi xoaHoaDonPanel để xóa
+                        new xoaHoaDonPanel(hd);
 
-                        if (confirm == JOptionPane.YES_OPTION) {
-                            // Gọi xoaHoaDonPanel để xóa
-                            new xoaHoaDonPanel(hd);
-
-                            // Xóa dòng khỏi bảng thay vì tải lại toàn bộ dữ liệu
-                            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                            model.removeRow(selectedRow);
-                            updateTableSTT(); // Cập nhật lại STT
-                        }
+                        // Xóa dòng khỏi bảng thay vì tải lại toàn bộ dữ liệu
+                        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                        model.removeRow(selectedRow);
+                        updateTableSTT(); // Cập nhật lại STT
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null,
                                 "Lỗi khi xóa hóa đơn: " + ex.getMessage(),
@@ -613,7 +594,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jButton36.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                utils.FileUtils.importFromCSVForHoaDon(jTable2);
+                utils.FileUtils.importFromFile(jTable2);
             }
         });
 
