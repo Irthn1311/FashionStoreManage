@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 public class ConnectDB {
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=FashionStore4;encrypt=true;trustServerCertificate=true;useUnicode=true&characterEncoding=UTF-8";
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=FashionStore3;encrypt=true;trustServerCertificate=true;useUnicode=true&characterEncoding=UTF-8";
     private static final String USER = "sa"; // Tài khoản SQL Server của bạn
     private static final String PASSWORD = "12345678"; // vaicaten01Mật khẩu SQL Server của bạn
 

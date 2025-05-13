@@ -238,7 +238,8 @@ public class FileUtils {
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(selectedFile), "UTF-8"))) {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
 
                 // Đọc header
@@ -401,7 +402,8 @@ public class FileUtils {
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(selectedFile), "UTF-8"))) {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
 
                 // Đọc header
@@ -515,7 +517,8 @@ public class FileUtils {
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(selectedFile), "UTF-8"))) {
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
 
                 // Đọc header
