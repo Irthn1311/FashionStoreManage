@@ -12,6 +12,7 @@ import BUS.NhanVienBUS;
 import BUS.TaiKhoanBUS;
 import DTO.nhanVienDTO;
 import DTO.taiKhoanDTO;
+import DTO.VaiTro;
 import java.math.BigDecimal;
 
 public class themNhanVienPanel extends JPanel {
@@ -23,18 +24,22 @@ public class themNhanVienPanel extends JPanel {
     private JComboBox<String> cboGioiTinh;
     private JTextField txtChucVu;
     private JTextField txtMucLuong;
+    private JComboBox<String> cboVaiTro;
     private JTextField txtTenDangNhap;
     private JPasswordField txtMatKhau;
     private JButton btnThem;
     private JButton btnHuy;
     private NhanVienBUS nhanVienBUS;
     private TaiKhoanBUS taiKhoanBUS;
+    private VaiTro currentUserLoginVaiTro;
 
-    public themNhanVienPanel() {
+    public themNhanVienPanel(VaiTro currentUserLoginVaiTro) {
+        this.currentUserLoginVaiTro = currentUserLoginVaiTro;
         nhanVienBUS = new NhanVienBUS();
         taiKhoanBUS = new TaiKhoanBUS();
         initComponents();
         setupListeners();
+        populateVaiTroComboBox();
     }
 
     private String generateNextMaNV() {
@@ -131,6 +136,7 @@ public class themNhanVienPanel extends JPanel {
         gbc.gridy++;
         mainPanel.add(new JLabel("Chức vụ:"), gbc);
         txtChucVu = new JTextField(20);
+        txtChucVu.setEditable(false);
         gbc.gridx = 1;
         mainPanel.add(txtChucVu, gbc);
 
@@ -141,6 +147,14 @@ public class themNhanVienPanel extends JPanel {
         txtMucLuong = new JTextField(20);
         gbc.gridx = 1;
         mainPanel.add(txtMucLuong, gbc);
+
+        // Vai trò tài khoản
+        gbc.gridx = 0;
+        gbc.gridy++;
+        mainPanel.add(new JLabel("Vai trò tài khoản: *"), gbc);
+        cboVaiTro = new JComboBox<>();
+        gbc.gridx = 1;
+        mainPanel.add(cboVaiTro, gbc);
 
         // Tên đăng nhập
         gbc.gridx = 0;
@@ -181,12 +195,57 @@ public class themNhanVienPanel extends JPanel {
         add(mainPanel, BorderLayout.CENTER);
     }
 
+    private void populateVaiTroComboBox() {
+        cboVaiTro.removeAllItems();
+        if (currentUserLoginVaiTro == null) {
+            cboVaiTro.setEnabled(false);
+            return;
+        }
+
+        switch (currentUserLoginVaiTro) {
+            case QUAN_TRI:
+                for (VaiTro vt : VaiTro.values()) {
+                    cboVaiTro.addItem(vt.getDisplayName());
+                }
+                cboVaiTro.setSelectedItem(VaiTro.NHAN_VIEN.getDisplayName());
+                txtChucVu.setText(VaiTro.NHAN_VIEN.getDisplayName());
+                cboVaiTro.setEnabled(true);
+                break;
+            case QUAN_LY_KHO:
+            case QUAN_LY_NHAN_VIEN:
+                cboVaiTro.addItem(VaiTro.NHAN_VIEN.getDisplayName());
+                cboVaiTro.setSelectedItem(VaiTro.NHAN_VIEN.getDisplayName());
+                txtChucVu.setText(VaiTro.NHAN_VIEN.getDisplayName());
+                cboVaiTro.setEnabled(true);
+                break;
+            case NHAN_VIEN:
+                cboVaiTro.addItem(VaiTro.NHAN_VIEN.getDisplayName());
+                cboVaiTro.setSelectedItem(VaiTro.NHAN_VIEN.getDisplayName());
+                txtChucVu.setText(VaiTro.NHAN_VIEN.getDisplayName());
+                cboVaiTro.setEnabled(false);
+                break;
+            default:
+                cboVaiTro.setEnabled(false);
+                break;
+        }
+        if (cboVaiTro.getSelectedItem() != null) {
+            txtChucVu.setText((String) cboVaiTro.getSelectedItem());
+        }
+    }
+
     private void setupListeners() {
         btnThem.addActionListener(e -> themNhanVien());
         btnHuy.addActionListener(e -> {
             Window window = SwingUtilities.getWindowAncestor(this);
             if (window != null) {
                 window.dispose();
+            }
+        });
+
+        cboVaiTro.addActionListener(e -> {
+            String selectedDisplayName = (String) cboVaiTro.getSelectedItem();
+            if (selectedDisplayName != null) {
+                txtChucVu.setText(selectedDisplayName);
             }
         });
     }
@@ -218,6 +277,23 @@ public class themNhanVienPanel extends JPanel {
                 return;
             }
 
+            String selectedVaiTroDisplayName = (String) cboVaiTro.getSelectedItem();
+            if (selectedVaiTroDisplayName == null) {
+                JOptionPane.showMessageDialog(this,
+                    "Vui lòng chọn vai trò tài khoản!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            VaiTro selectedVaiTro = VaiTro.fromString(selectedVaiTroDisplayName);
+            if (selectedVaiTro == null) {
+                JOptionPane.showMessageDialog(this,
+                    "Vai trò tài khoản không hợp lệ!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             // Parse ngày sinh
             Date ngaySinh = null;
             if (!txtNgaySinh.getText().trim().isEmpty()) {
@@ -241,20 +317,20 @@ public class themNhanVienPanel extends JPanel {
                 cboGioiTinh.getSelectedItem().toString(),
                 ngaySinh,
                 new Timestamp(System.currentTimeMillis()),
-                txtChucVu.getText().trim(),
+                selectedVaiTro.getDisplayName(),
                 mucLuong,
-                "QL001", // Mã quản lý mặc định
-                "Đang làm việc" // Trạng thái mặc định
+                "QL001",
+                "Đang làm việc"
             );
 
             // Tạo đối tượng tài khoản
             taiKhoanDTO taiKhoan = new taiKhoanDTO(
-                null, // Mã tài khoản sẽ được tạo trong DAO
+                null,
                 txtTenDangNhap.getText().trim(),
                 new String(txtMatKhau.getPassword()),
-                "Nhân viên", // Vai trò mặc định
-                1, // Trạng thái hoạt động
-                maNV // Mã nhân viên
+                selectedVaiTro.getDisplayName(),
+                1,
+                maNV
             );
 
             // Thêm nhân viên và tài khoản
@@ -290,5 +366,16 @@ public class themNhanVienPanel extends JPanel {
         txtTenDangNhap.setText("");
         txtMatKhau.setText("");
         cboGioiTinh.setSelectedIndex(0);
+        populateVaiTroComboBox();
+        if (cboVaiTro.getItemCount() > 0 && cboVaiTro.isEnabled()) {
+            if (currentUserLoginVaiTro == VaiTro.QUAN_TRI) {
+                 cboVaiTro.setSelectedItem(VaiTro.NHAN_VIEN.getDisplayName());
+            }
+        }
+        if (cboVaiTro.getSelectedItem() != null) {
+            txtChucVu.setText((String) cboVaiTro.getSelectedItem());
+        } else {
+            txtChucVu.setText("");
+        }
     }
 } 

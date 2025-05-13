@@ -12,6 +12,7 @@ import DTO.nhanVienDTO;
 import BUS.NhanVienBUS;
 import BUS.TaiKhoanBUS;
 import DTO.taiKhoanDTO;
+import DTO.VaiTro;
 import java.sql.SQLException;
 
 public class suaNhanVienPanel extends JPanel {
@@ -21,6 +22,7 @@ public class suaNhanVienPanel extends JPanel {
     private SimpleDateFormat dateFormat;
     private JDialog parentDialog;
     private taiKhoanDTO taiKhoan;
+    private VaiTro currentUserLoginVaiTro;
 
     // Components
     private JTextField txtMaNV;
@@ -31,15 +33,17 @@ public class suaNhanVienPanel extends JPanel {
     private JComboBox<String> cboGioiTinh;
     private JTextField txtNgaySinh;
     private JTextField txtChucVu;
+    private JComboBox<String> cboVaiTro;
     private JTextField txtMucLuong;
     private JTextField txtTenDangNhap;
     private JPasswordField txtMatKhau;
     private JButton btnLuu;
     private JButton btnHuy;
 
-    public suaNhanVienPanel(JDialog parent, nhanVienDTO nhanVien) {
+    public suaNhanVienPanel(JDialog parent, nhanVienDTO nhanVien, VaiTro currentUserLoginVaiTro) {
         this.parentDialog = parent;
         this.nhanVien = nhanVien;
+        this.currentUserLoginVaiTro = currentUserLoginVaiTro;
         this.nhanVienBUS = new NhanVienBUS();
         this.taiKhoanBUS = new TaiKhoanBUS();
         this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -85,9 +89,11 @@ public class suaNhanVienPanel extends JPanel {
         txtMucLuong = new JTextField(20);
         txtTenDangNhap = new JTextField(20);
         txtMatKhau = new JPasswordField(20);
+        cboVaiTro = new JComboBox<>();
 
         // Thiết lập các trường không được sửa
         txtMaNV.setEditable(false);
+        txtChucVu.setEditable(false);
 
         // Thêm components vào panel
         gbc.gridx = 0; gbc.gridy = 0;
@@ -131,16 +137,21 @@ public class suaNhanVienPanel extends JPanel {
         mainPanel.add(txtChucVu, gbc);
 
         gbc.gridx = 0; gbc.gridy = 8;
+        mainPanel.add(new JLabel("Vai trò tài khoản:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(cboVaiTro, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 9;
         mainPanel.add(new JLabel("Mức lương:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtMucLuong, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 9;
+        gbc.gridx = 0; gbc.gridy = 10;
         mainPanel.add(new JLabel("Tên đăng nhập:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtTenDangNhap, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 10;
+        gbc.gridx = 0; gbc.gridy = 11;
         mainPanel.add(new JLabel("Mật khẩu (để trống nếu không đổi):"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtMatKhau, gbc);
@@ -161,7 +172,74 @@ public class suaNhanVienPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
 
         // Set size
-        setPreferredSize(new Dimension(400, 500));
+        setPreferredSize(new Dimension(400, 550));
+    }
+
+    private void populateVaiTroComboBox() {
+        cboVaiTro.removeAllItems();
+        String currentNhanVienVaiTroDisplayName = null;
+        if (taiKhoan != null && taiKhoan.getVaiTro() != null) {
+            currentNhanVienVaiTroDisplayName = taiKhoan.getVaiTro().getDisplayName();
+        }
+
+        if (currentUserLoginVaiTro == null) {
+            cboVaiTro.setEnabled(false);
+            if (currentNhanVienVaiTroDisplayName != null) {
+                cboVaiTro.addItem(currentNhanVienVaiTroDisplayName);
+                cboVaiTro.setSelectedItem(currentNhanVienVaiTroDisplayName);
+            }
+            return;
+        }
+
+        switch (currentUserLoginVaiTro) {
+            case QUAN_TRI:
+                for (VaiTro vt : VaiTro.values()) {
+                    cboVaiTro.addItem(vt.getDisplayName());
+                }
+                if (currentNhanVienVaiTroDisplayName != null) {
+                    cboVaiTro.setSelectedItem(currentNhanVienVaiTroDisplayName);
+                } else if (cboVaiTro.getItemCount() > 0) {
+                    cboVaiTro.setSelectedIndex(0);
+                }
+                cboVaiTro.setEnabled(true);
+                break;
+            case QUAN_LY_KHO:
+            case QUAN_LY_NHAN_VIEN:
+                if (currentNhanVienVaiTroDisplayName != null && 
+                    (VaiTro.fromString(currentNhanVienVaiTroDisplayName) == VaiTro.QUAN_LY_KHO || 
+                     VaiTro.fromString(currentNhanVienVaiTroDisplayName) == VaiTro.QUAN_LY_NHAN_VIEN ||
+                     VaiTro.fromString(currentNhanVienVaiTroDisplayName) == VaiTro.QUAN_TRI)) {
+                     cboVaiTro.addItem(currentNhanVienVaiTroDisplayName);
+                     cboVaiTro.setSelectedItem(currentNhanVienVaiTroDisplayName);
+                     cboVaiTro.setEnabled(false);
+                } else {
+                    cboVaiTro.addItem(VaiTro.NHAN_VIEN.getDisplayName());
+                    if (currentNhanVienVaiTroDisplayName != null && VaiTro.fromString(currentNhanVienVaiTroDisplayName) == VaiTro.NHAN_VIEN) {
+                        cboVaiTro.setSelectedItem(VaiTro.NHAN_VIEN.getDisplayName());
+                    } else {
+                        cboVaiTro.setSelectedItem(VaiTro.NHAN_VIEN.getDisplayName());
+                    }
+                    cboVaiTro.setEnabled(true);
+                }
+                break;
+            case NHAN_VIEN:
+                if (currentNhanVienVaiTroDisplayName != null) {
+                    cboVaiTro.addItem(currentNhanVienVaiTroDisplayName);
+                    cboVaiTro.setSelectedItem(currentNhanVienVaiTroDisplayName);
+                }
+                cboVaiTro.setEnabled(false);
+                break;
+            default:
+                if (currentNhanVienVaiTroDisplayName != null) {
+                    cboVaiTro.addItem(currentNhanVienVaiTroDisplayName);
+                    cboVaiTro.setSelectedItem(currentNhanVienVaiTroDisplayName);
+                }
+                cboVaiTro.setEnabled(false);
+                break;
+        }
+        if (cboVaiTro.getSelectedItem() != null) {
+            txtChucVu.setText((String) cboVaiTro.getSelectedItem());
+        }
     }
 
     private void loadNhanVienData() {
@@ -175,18 +253,25 @@ public class suaNhanVienPanel extends JPanel {
             if (nhanVien.getNgaySinh() != null) {
                 txtNgaySinh.setText(dateFormat.format(nhanVien.getNgaySinh()));
             }
-            txtChucVu.setText(nhanVien.getChucVu());
             txtMucLuong.setText(nhanVien.getMucLuong().toString());
         }
 
         if (taiKhoan != null) {
             txtTenDangNhap.setText(taiKhoan.getTenDangNhap());
         }
+        populateVaiTroComboBox();
     }
 
     private void setupListeners() {
         btnLuu.addActionListener(e -> suaNhanVien());
         btnHuy.addActionListener(e -> parentDialog.dispose());
+
+        cboVaiTro.addActionListener(e -> {
+            String selectedDisplayName = (String) cboVaiTro.getSelectedItem();
+            if (selectedDisplayName != null) {
+                txtChucVu.setText(selectedDisplayName);
+            }
+        });
     }
 
     private void suaNhanVien() {
@@ -208,6 +293,23 @@ public class suaNhanVienPanel extends JPanel {
                 return;
             }
 
+            String selectedVaiTroDisplayName = (String) cboVaiTro.getSelectedItem();
+            if (selectedVaiTroDisplayName == null) {
+                JOptionPane.showMessageDialog(this,
+                    "Vui lòng chọn vai trò tài khoản!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            VaiTro selectedVaiTro = VaiTro.fromString(selectedVaiTroDisplayName);
+            if (selectedVaiTro == null) {
+                JOptionPane.showMessageDialog(this,
+                    "Vai trò tài khoản không hợp lệ!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             // Parse ngày sinh
             Date ngaySinh = null;
             if (!txtNgaySinh.getText().trim().isEmpty()) {
@@ -224,32 +326,45 @@ public class suaNhanVienPanel extends JPanel {
             nhanVien.setDiaChi(txtDiaChi.getText().trim());
             nhanVien.setGioiTinh(cboGioiTinh.getSelectedItem().toString());
             nhanVien.setNgaySinh(ngaySinh);
-            nhanVien.setChucVu(txtChucVu.getText().trim());
+            nhanVien.setChucVu(selectedVaiTro.getDisplayName());
             nhanVien.setMucLuong(mucLuong);
 
             // Cập nhật thông tin tài khoản
-            if (taiKhoan != null) {
-                taiKhoan.setTenDangNhap(txtTenDangNhap.getText().trim());
-                if (txtMatKhau.getPassword().length > 0) {
-                    taiKhoan.setMatKhau(new String(txtMatKhau.getPassword()));
-                }
-            } else {
-                // Nếu chưa có tài khoản, tạo mới
+            boolean newAccountCreated = false;
+            if (taiKhoan == null) {
                 taiKhoan = new taiKhoanDTO(
                     null,
                     txtTenDangNhap.getText().trim(),
                     new String(txtMatKhau.getPassword()),
-                    "Nhân viên",
+                    selectedVaiTro.getDisplayName(),
                     1,
                     nhanVien.getMaNhanVien()
                 );
+                if (txtMatKhau.getPassword().length == 0) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu cho tài khoản mới!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                newAccountCreated = true;
+            } else {
+                taiKhoan.setTenDangNhap(txtTenDangNhap.getText().trim());
+                taiKhoan.setVaiTro(selectedVaiTro);
+                if (txtMatKhau.getPassword().length > 0) {
+                    taiKhoan.setMatKhau(new String(txtMatKhau.getPassword()));
+                }
             }
 
             // Gọi phương thức cập nhật từ BUS
-            if (nhanVienBUS.capNhatNhanVien(nhanVien) &&
-                (taiKhoan.getMaTaiKhoan() == null ? 
-                    taiKhoanBUS.themTaiKhoan(taiKhoan) : 
-                    taiKhoanBUS.suaTaiKhoan(taiKhoan))) {
+            boolean nhanVienUpdated = nhanVienBUS.capNhatNhanVien(nhanVien);
+            boolean taiKhoanUpdated = false;
+            if (nhanVienUpdated) {
+                if (newAccountCreated) {
+                    taiKhoanUpdated = taiKhoanBUS.themTaiKhoan(taiKhoan);
+                } else {
+                    taiKhoanUpdated = taiKhoanBUS.suaTaiKhoan(taiKhoan);
+                }
+            }
+
+            if (nhanVienUpdated && taiKhoanUpdated) {
                 JOptionPane.showMessageDialog(this,
                     "Cập nhật thông tin nhân viên và tài khoản thành công!",
                     "Thông báo",

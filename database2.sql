@@ -17,16 +17,16 @@ CREATE TABLE NhanVien (
 
 INSERT INTO NhanVien (MaNhanVien, HoTen, Email, SoDienThoai, DiaChi, NgaySinh, GioiTinh, NgayVaoLam, MucLuong, ChucVu, TrangThai, MaQuanLy)
 VALUES
-('NV001', N'Nguyễn Văn Anh', 'anh.nguyen@shop.com', '0901234567', N'123 Nguyễn Du, Q1, TP.HCM', '1990-05-15', N'Nam', '2020-01-10', 12000000.00, N'Quản lý', N'Đang làm', NULL),
-('NV002', N'Trần Thị Hoa', 'hoa.tran@shop.com', '0912345678', N'45 Lê Lợi, Q1, TP.HCM', '1992-07-20', N'Nữ', '2020-03-15', 10000000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV001'),
+('NV001', N'Nguyễn Hữu Tri', 'nhuutri1311@gmail.com', '0582837353', N'123 Nguyễn Du, Q1, TP.HCM', '2005-01-12', N'Nam', '2020-01-10', 12000000.00, N'Quản lý', N'Đang làm', NULL),
+('NV002', N'Nguyễn Đình Sơn', 'son.nguyen@shop.com', '0912345678', N'45 Lê Lợi, Q1, TP.HCM', '2005-07-20', N'Nam', '2020-03-15', 10000000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV001'),
 ('NV003', N'Lê Minh Tâm', 'tam.le@shop.com', '0923456789', N'67 Hai Bà Trưng, Q3, TP.HCM', '1995-03-10', N'Nam', '2021-01-05', 9500000.00, N'Nhân viên kho', N'Đang làm', 'NV001'),
 ('NV004', N'Phạm Thị Mai', 'mai.pham@shop.com', '0934567890', N'89 Nguyễn Trãi, Q5, TP.HCM', '1991-11-25', N'Nữ', '2021-05-20', 9800000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV001'),
-('NV005', N'Võ Hoàng Nam', 'nam.vo@shop.com', '0945678901', N'12 Điện Biên Phủ, Bình Thạnh, TP.HCM', '1988-09-05', N'Nam', '2021-10-15', 11000000.00, N'Quản lý kho', N'Đang làm', 'NV001'),
+('NV005', N'Võ Thành Tài', 'tai.vo@shop.com', '0945678901', N'12 Điện Biên Phủ, Bình Thạnh, TP.HCM', '1988-09-05', N'Nam', '2021-10-15', 11000000.00, N'Quản lý kho', N'Đang làm', 'NV001'),
 ('NV006', N'Đặng Thị Lan', 'lan.dang@shop.com', '0956789012', N'34 Lý Thường Kiệt, Q10, TP.HCM', '1993-04-18', N'Nữ', '2022-02-10', 9300000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV001'),
 ('NV007', N'Ngô Văn Bình', 'binh.ngo@shop.com', '0967890123', N'56 Cách Mạng Tháng 8, Q3, TP.HCM', '1994-12-30', N'Nam', '2022-06-15', 9500000.00, N'Nhân viên kho', N'Đang làm', 'NV005'),
 ('NV008', N'Bùi Thị Hương', 'huong.bui@shop.com', '0978901234', N'78 Lê Văn Sỹ, Q3, TP.HCM', '1990-02-15', N'Nữ', '2022-09-01', 9700000.00, N'Nhân viên bán hàng', N'Đang làm', 'NV001'),
 ('NV009', N'Trịnh Văn Khải', 'khai.trinh@shop.com', '0989012345', N'90 Nguyễn Đình Chiểu, Q3, TP.HCM', '1992-08-10', N'Nam', '2023-01-10', 9400000.00, N'Nhân viên kho', N'Đang làm', 'NV005'),
-('NV010', N'Lý Thị Thanh', 'thanh.ly@shop.com', '0990123456', N'23 Trần Quang Khải, Q1, TP.HCM', '1989-06-22', N'Nữ', '2023-04-01', 10500000.00, N'Quản lý nhân viên', N'Đang làm', 'NV001');
+('NV010', N'Nguyễn Vĩnh Khang', 'khang.nguyen@shop.com', '0990123456', N'23 Trần Quang Khải, Q1, TP.HCM', '2005-06-22', N'Nam', '2023-04-01', 10500000.00, N'Quản lý nhân viên', N'Đang làm', 'NV001');
 
 
 CREATE TABLE TaiKhoan (
@@ -43,15 +43,15 @@ CREATE TABLE TaiKhoan (
 INSERT INTO TaiKhoan (MaTaiKhoan, TenDangNhap, MatKhau, VaiTro, TrangThai, NgayTao, MaNhanVien)
 VALUES
 ('TK001', 'admin', 'admin123', N'Quản trị', 1, '2020-01-15', 'NV001'),
-('TK002', 'hoatran', 'hoa123', N'Nhân viên', 1, '2020-03-20', 'NV002'),
+('TK002', 'dinhson', 'son123', N'Nhân viên', 1, '2020-03-20', 'NV002'),
 ('TK003', 'tamle', 'tam123', N'Nhân viên', 1, '2021-01-10', 'NV003'),
 ('TK004', 'maipham', 'mai123', N'Nhân viên', 1, '2021-05-25', 'NV004'),
-('TK005', 'namvo', 'nam123', N'Quản lý kho', 1, '2021-10-20', 'NV005'),
+('TK005', 'thanhtai', 'tai123', N'Quản lý kho', 1, '2021-10-20', 'NV005'),
 ('TK006', 'landang', 'lan123', N'Nhân viên', 1, '2022-02-15', 'NV006'),
 ('TK007', 'binhngo', 'binh123', N'Nhân viên', 1, '2022-06-20', 'NV007'),
 ('TK008', 'huongbui', 'huong123', N'Nhân viên', 1, '2022-09-05', 'NV008'),
 ('TK009', 'khaitrinh', 'khai123', N'Nhân viên', 1, '2023-01-15', 'NV009'),
-('TK010', 'thanhly', 'thanh123', N'Quản lý nhân viên', 1, '2023-04-05', 'NV010');
+('TK010', 'vinhkhang', 'khang123', N'Quản lý nhân viên', 1, '2023-04-05', 'NV010');
 
 
 -- Tạo bảng KhachHang
@@ -238,19 +238,6 @@ CREATE TABLE NhapHang (
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
 );
 
-INSERT INTO NhapHang (MaPN, MaNhaCungCap, LoaiSP, MaSanPham, TenSanPham, MauSac, KichThuoc, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai)
-VALUES
-('PN001', 'NCC007', N'Áo sơ mi', 'SP0001', N'Áo sơ mi nam trắng', N'Trắng', 'L', 50, 250000, 12500000, N'Chuyển khoản', N'Hoàn thành'),
-('PN002', 'NCC001', N'Áo thun', 'SP0002', N'Áo thun thế chữ', N'Xanh', 'M', 30, 350000, 10500000, N'Tiền mặt', N'Hoàn thành'),
-('PN003', 'NCC001', N'Áo form rộng', 'SP0003', N'Áo form rộng', N'Đen', 'S', 40, 400000, 16000000, N'Chuyển khoản', N'Hoàn thành'),
-('PN004', 'NCC004', N'Áo khoác', 'SP0004', N'Áo khoác gió', N'Hồng', 'M', 35, 300000, 10500000, N'Tiền mặt', N'Hoàn thành'),
-('PN005', 'NCC004', N'Áo khoác', 'SP0005', N'Áo khoác nam nữ', N'Trắng', '42', 25, 600000, 15000000, N'Chuyển khoản', N'Hoàn thành'),
-('PN006', 'NCC001', N'Áo thun', 'SP0006', N'Áo nữ tay dài', N'Nâu', 'Free size', 20, 450000, 9000000, N'Tiền mặt', N'Đang xử lý'),
-('PN007', 'NCC001', N'Áo thun', 'SP0007', N'Áo thun big size', N'Đen', 'Free size', 40, 120000, 4800000, N'Chuyển khoản', N'Đang xử lý'),
-('PN008', 'NCC001', N'Áo thun', 'SP0008', N'Áo thun cổ trắng', N'Bạc', 'Free size', 15, 950000, 14250000, N'Tiền mặt', N'Đang xử lý'),
-('PN009', 'NCC001', N'Áo thun', 'SP0009', N'Áo thun cotton', N'Nâu', 'Free size', 30, 250000, 7500000, N'Chuyển khoản', N'Đang xử lý'),
-('PN010', 'NCC001', N'Áo thun', 'SP0010', N'Áo thun hình mèo', N'Đen', 'S', 25, 150000, 3750000, N'Tiền mặt', N'Đang xử lý');
-
 
 -- Tạo bảng XuatHang
 CREATE TABLE XuatHang (
@@ -269,19 +256,6 @@ CREATE TABLE XuatHang (
     FOREIGN KEY (MaKhachHang) REFERENCES KhachHang(MaKhachHang),
     FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
 );
-
-INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai)
-VALUES
-('PX001', 'KH001', N'Nguyễn Thị Ngọc', 'SP0001', N'Áo sơ mi nam trắng', 'L', N'Trắng', 2, 299000, 598000, N'Tiền mặt', N'Hoàn thành'),
-('PX002', 'KH002', N'Trần Văn Hùng', 'SP0002', N'Áo thun thế chữ', 'M', N'Xanh', 1, 459000, 459000, N'Chuyển khoản', N'Đã xuất'),
-('PX003', 'KH003', N'Lê Thị Hồng', 'SP0003', N'Áo form rộng', 'S', N'Đen', 3, 499000, 1497000, N'Tiền mặt', N'Hoàn thành'),
-('PX004', 'KH004', N'Phạm Văn Đức', 'SP0004', N'Áo khoác gió', 'M', N'Hồng', 1, 399000, 399000, N'Chuyển khoản', N'Đã xuất'),
-('PX005', 'KH005', N'Hoàng Thị Lan', 'SP0005', N'Áo khoác nam nữ', '42', N'Trắng', 2, 750000, 1500000, N'Tiền mặt', N'Hoàn thành'),
-('PX006', 'KH006', N'Vũ Văn Minh', 'SP0006', N'Áo nữ tay dài', 'Free size', N'Nâu', 1, 550000, 550000, N'Chuyển khoản', N'Đang xử lý'),
-('PX007', 'KH007', N'Đặng Thị Thu', 'SP0007', N'Áo thun big size', 'Free size', N'Đen', 2, 150000, 300000, N'Tiền mặt', N'Đang xử lý'),
-('PX008', 'KH008', N'Ngô Văn Hải', 'SP0008', N'Áo thun cổ trắng', 'Free size', N'Bạc', 1, 1200000, 1200000, N'Chuyển khoản', N'Chờ xác nhận'),
-('PX009', 'KH009', N'Bùi Thị Thảo', 'SP0009', N'Áo thun cotton', 'Free size', N'Nâu', 3, 299000, 897000, N'Tiền mặt', N'Chờ xác nhận'),
-('PX010', 'KH010', N'Trịnh Văn Long', 'SP0010', N'Áo thun hình mèo', 'S', N'Đen', 2, 199000, 398000, N'Chuyển khoản', N'Hoàn thành');
 
 
 
