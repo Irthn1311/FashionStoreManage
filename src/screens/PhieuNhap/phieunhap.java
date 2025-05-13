@@ -223,9 +223,29 @@ public class phieunhap extends javax.swing.JPanel {
                 new String[] {
                         "STT", "Mã PN", "Mã SP", "Mã NCC", "Số lượng", "Đơn giá", "Thành tiền", "Thời gian",
                         "Trạng thái", "Hình thức thanh toán", "Chi tiết"
-                }));
+                }) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Disable edit for all cells
+            }
+        });
         jTable2.setShowGrid(true);
         jScrollPane2.setViewportView(jTable2);
+        // Đặt renderer cho cột "Chi tiết" (cột cuối cùng)
+        jTable2.getColumnModel().getColumn(jTable2.getColumnCount() - 1).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if ("Xem chi tiết".equals(value)) {
+                    c.setForeground(new java.awt.Color(0, 51, 153)); // Xanh đậm
+                    c.setFont(c.getFont().deriveFont(java.awt.Font.BOLD));
+                } else {
+                    c.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+                    c.setFont(c.getFont().deriveFont(java.awt.Font.PLAIN));
+                }
+                return c;
+            }
+        });
 
         javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
         jPanel18.setLayout(jPanel18Layout);

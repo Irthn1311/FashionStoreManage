@@ -233,30 +233,23 @@ public class NhapHangBUS {
             if ("Đang xử lý".equals(nh.getTrangThai())) {
                 // Tạo đối tượng PhieuNhapDTO từ nhapHangDTO
                 PhieuNhapDTO pn = new PhieuNhapDTO();
-                // Kiểm tra mã đã tồn tại trong PhieuNhap chưa
                 String maPhieuNhap = nh.getMaPN();
-                if (phieuNhapDAO.getMaxMaPN() != null && maPhieuNhap.equals(phieuNhapDAO.getMaxMaPN())) {
-                    // Nếu trùng, sinh mã mới
-                    maPhieuNhap = generateNextMaPN();
-                } else if (phieuNhapBUS.getPhieuNhapByMa(maPhieuNhap) != null) {
-                    // Nếu đã tồn tại, sinh mã mới
-                    maPhieuNhap = generateNextMaPN();
+                // Nếu mã đã tồn tại ở bảng Phiếu Nhập thì sinh mã mới dựa trên PhieuNhap
+                if (phieuNhapBUS.getPhieuNhapByMa(maPhieuNhap) != null) {
+                    maPhieuNhap = phieuNhapBUS.getNextMaPhieuNhap();
                 }
                 pn.setMaPhieuNhap(maPhieuNhap);
                 pn.setMaNhaCungCap(nh.getMaNhaCungCap());
                 pn.setMaSanPham(nh.getMaSanPham());
                 pn.setTenSanPham(nh.getTenSanPham());
                 pn.setSoLuong(Integer.parseInt(nh.getSoLuong()));
-                // Sửa đoạn này: kiểm tra null/rỗng cho thoiGian
+                // kiểm tra null/rỗng cho thoiGian
                 if (nh.getThoiGian() == null || nh.getThoiGian().trim().isEmpty()) {
-                    System.out.println("ThoiGian NhapHang null/rong, dung thoi gian hien tai");
                     pn.setThoiGian(new java.util.Date());
                 } else {
                     try {
-                        System.out.println("ThoiGian NhapHang: " + nh.getThoiGian());
                         pn.setThoiGian(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(nh.getThoiGian()));
                     } catch (Exception e) {
-                        System.out.println("Parse thoi gian that bai, dung thoi gian hien tai");
                         pn.setThoiGian(new java.util.Date());
                     }
                 }
