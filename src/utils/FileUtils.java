@@ -637,4 +637,163 @@ public class FileUtils {
             }
         }
     }
+
+    public static void importFromCSVForHoaDon(JTable table) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file CSV để import");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV files", "csv"));
+
+        int userSelection = fileChooser.showOpenDialog(null);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+                // Đọc header
+                String headerLine = reader.readLine();
+                if (headerLine == null) {
+                    throw new IOException("File CSV trống");
+                }
+
+                // Kiểm tra số cột trong header
+                String[] headerColumns = parseCSVLine(headerLine);
+                int expectedColumns = 14; // STT, Mã HD, Mã SP, Tên SP, Mã KH, Tên KH, Kích cỡ, Màu sắc, Số lượng, Đơn
+                                          // giá, Thành tiền, Thời gian, Hình thức TT, Trạng thái
+                if (headerColumns.length < expectedColumns) {
+                    throw new IOException("Sai số lượng cột trong file CSV. Cần " + expectedColumns
+                            + " cột nhưng chỉ có " + headerColumns.length + " cột.");
+                }
+
+                // Đọc dữ liệu và thêm vào bảng
+                String line;
+                int successCount = 0, failCount = 0;
+                StringBuilder errorMessages = new StringBuilder();
+                BUS.HoaDonBUS hoaDonBUS = new BUS.HoaDonBUS();
+                List<DTO.hoaDonDTO> existingHoaDons = hoaDonBUS.getAllHoaDon();
+                List<String> existingMaHDs = existingHoaDons.stream()
+                        .map(DTO.hoaDonDTO::getMaHoaDon)
+                        .collect(java.util.stream.Collectors.toList());
+
+                while ((line = reader.readLine()) != null) {
+                    try {
+                        String[] values = parseCSVLine(line);
+                        if (values.length >= expectedColumns) {
+                            String maHD = values[1]; // Mã hóa đơn ở cột thứ 2
+
+                            // Kiểm tra hóa đơn đã tồn tại chưa
+                            if (existingMaHDs.contains(maHD)) {
+                                failCount++;
+                                errorMessages.append("Bỏ qua hóa đơn trùng mã: ").append(maHD).append("\n");
+                                continue;
+                            }
+
+                            // Tạo đối tượng hoaDonDTO từ dữ liệu CSV
+                            DTO.hoaDonDTO hoaDon = new DTO.hoaDonDTO();
+                            hoaDon.setMaHoaDon(values[1]); // Mã HD
+                            hoaDon.setMaSanPham(values[2]); // Mã SP
+                            hoaDon.setTenSanPham(values[3]); // Tên SP
+                            hoaDon.setMaKhachHang(values[4]); // Mã KH
+                            hoaDon.setTenKhachHang(values[5]); // Tên KH
+                            hoaDon.setKichCo(values[6]); // Kích cỡ
+                            hoaDon.setMauSac(values[7]); // Màu sắc
+
+                            // Xử lý số lượng
+                            try {
+                                hoaDon.setSoLuong(Integer.parseInt(values[8].trim()));
+                            } catch (NumberFormatException e) {
+                                throw new Exception("Sai định dạng số lượng: " + values[8]);
+                            }
+
+                            // Xử lý đơn giá
+                            try {
+                                String donGiaStr = values[9].trim().replace(",", "");
+                                hoaDon.setDonGia(Double.parseDouble(donGiaStr));
+                            } catch (NumberFormatException e) {
+                                throw new Exception("Sai định dạng đơn giá: " + values[9]);
+                            }
+
+                            // Xử lý thành tiền
+                            try {
+                                String thanhTienStr = values[10].trim().replace(",", "");
+                                hoaDon.setThanhTien(Double.parseDouble(thanhTienStr));
+                            } catch (NumberFormatException e) {
+                                throw new Exception("Sai định dạng thành tiền: " + values[10]);
+                            }
+
+                            // Xử lý thời gian
+                            try {
+                                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                                java.util.Date date = sdf.parse(values[11].trim());
+                                hoaDon.setThoiGian(new java.sql.Timestamp(date.getTime()));
+                            } catch (Exception e) {
+                                throw new Exception("Sai định dạng thời gian: " + values[11]);
+                            }
+
+                            hoaDon.setHinhThucThanhToan(values[12]); // Hình thức TT
+                            hoaDon.setTrangThai(values[13]); // Trạng thái
+
+                            // Thêm hóa đơn vào database
+                            if (hoaDonBUS.addHoaDon(hoaDon)) {
+                                successCount++;
+                                existingMaHDs.add(maHD); // Thêm mã HD vào danh sách đã tồn tại
+                            } else {
+                                failCount++;
+                                errorMessages.append("Lỗi khi thêm hóa đơn vào database: ").append(maHD).append("\n");
+                            }
+                        } else {
+                            failCount++;
+                            errorMessages.append("Sai số lượng cột: ").append(line).append("\n");
+                        }
+                    } catch (Exception e) {
+                        failCount++;
+                        errorMessages.append("Lỗi xử lý dòng: ").append(line).append("\n");
+                        errorMessages.append("Chi tiết lỗi: ").append(e.getMessage()).append("\n");
+                    }
+                }
+
+                // Hiển thị kết quả import
+                String message = String.format(
+                        "Import hoàn tất!\nSố bản ghi thành công: %d\nSố bản ghi bị bỏ qua/lỗi: %d",
+                        successCount, failCount);
+
+                if (failCount > 0) {
+                    message += "\n\nChi tiết lỗi:\n" + errorMessages.toString();
+                    JOptionPane.showMessageDialog(null, message, "Kết quả import", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, message, "Kết quả import", JOptionPane.INFORMATION_MESSAGE);
+                }
+
+                // Cập nhật lại bảng hiển thị
+                model.setRowCount(0);
+                List<DTO.hoaDonDTO> danhSachHoaDon = hoaDonBUS.getAllHoaDon();
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                java.text.DecimalFormat df = new java.text.DecimalFormat("#,###.##");
+
+                for (int i = 0; i < danhSachHoaDon.size(); i++) {
+                    DTO.hoaDonDTO hd = danhSachHoaDon.get(i);
+                    model.addRow(new Object[] {
+                            i + 1,
+                            hd.getMaHoaDon(),
+                            hd.getMaSanPham(),
+                            hd.getTenSanPham(),
+                            hd.getMaKhachHang(),
+                            hd.getTenKhachHang(),
+                            hd.getKichCo(),
+                            hd.getMauSac(),
+                            hd.getSoLuong(),
+                            df.format(hd.getDonGia()),
+                            df.format(hd.getThanhTien()),
+                            sdf.format(hd.getThoiGian()),
+                            hd.getHinhThucThanhToan(),
+                            hd.getTrangThai(),
+                            "Xem chi tiết"
+                    });
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Lỗi khi import dữ liệu: " + e.getMessage(), "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 }
