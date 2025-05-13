@@ -583,7 +583,7 @@ public class nhanVienPanel extends javax.swing.JPanel {
 
     private void themNhanVien() {
         JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Thêm Nhân Viên", true);
-        themNhanVienPanel panel = new themNhanVienPanel();
+        themNhanVienPanel panel = new themNhanVienPanel(this.taiKhoan.getVaiTro());
         dialog.add(panel);
         dialog.pack();
         dialog.setLocationRelativeTo(this);
@@ -599,7 +599,7 @@ public class nhanVienPanel extends javax.swing.JPanel {
                 nhanVienDTO nhanVien = nhanVienDAO.getNhanVienByMa(maNV);
                 if (nhanVien != null) {
                     JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Sửa Nhân Viên", true);
-                    suaNhanVienPanel panel = new suaNhanVienPanel(dialog, nhanVien);
+                    suaNhanVienPanel panel = new suaNhanVienPanel(dialog, nhanVien, this.taiKhoan.getVaiTro());
                     dialog.add(panel);
                     dialog.pack();
                     dialog.setLocationRelativeTo(this);

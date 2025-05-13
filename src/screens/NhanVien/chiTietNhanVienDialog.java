@@ -7,6 +7,7 @@ import DTO.nhanVienDTO;
 import DTO.taiKhoanDTO;
 import DAO.NhanVienDAO;
 import java.text.SimpleDateFormat;
+import DTO.VaiTro;
 
 public class chiTietNhanVienDialog extends JDialog {
     private nhanVienDTO nhanVien;
@@ -96,7 +97,7 @@ public class chiTietNhanVienDialog extends JDialog {
             addField("Tên đăng nhập:", taiKhoan.getTenDangNhap(), gbc);
             
             gbc.gridy++;
-            addField("Vai trò:", taiKhoan.getVaiTro().getDisplayName(), gbc);
+            addField("Vai trò:", taiKhoan.getVaiTro() != null ? taiKhoan.getVaiTro().getDisplayName() : "Chưa cập nhật", gbc);
             
             gbc.gridy++;
             addField("Trạng thái:", taiKhoan.getTrangThai() == 1 ? "Hoạt động" : "Không hoạt động", gbc);

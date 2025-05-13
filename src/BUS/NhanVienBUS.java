@@ -52,25 +52,14 @@ public class NhanVienBUS {
      * @return true nếu thêm thành công, false nếu thất bại
      */
     public boolean themNhanVien(nhanVienDTO nhanVien) {
-        try {
-            // Thêm nhân viên
-            if (nhanVienDAO.themNhanVien(nhanVien)) {
-                // Tạo tài khoản mặc định
-                taiKhoanDTO taiKhoan = new taiKhoanDTO();
-                taiKhoan.setTenDangNhap(nhanVien.getSoDienThoai()); // Sử dụng số điện thoại làm tên đăng nhập
-                taiKhoan.setMatKhau("12345678"); // Mật khẩu mặc định
-                taiKhoan.setVaiTro(VaiTro.NHAN_VIEN);
-                taiKhoan.setTrangThai(1); // Hoạt động
-                taiKhoan.setMaNhanVien(nhanVien.getMaNhanVien());
-                
-                // Thêm tài khoản
-                return taiKhoanDAO.themTaiKhoan(taiKhoan);
-            }
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        // Validate NhanVien data before attempting to add
+        if (!validateNhanVienData(nhanVien)) {
+            // Optionally, log an error or throw an exception if data is invalid
+            System.err.println("Invalid NhanVien data provided to NhanVienBUS.themNhanVien.");
             return false;
         }
+        // Simply add the NhanVien. Account creation is handled separately by the calling panel.
+        return nhanVienDAO.themNhanVien(nhanVien);
     }
     
     /**
