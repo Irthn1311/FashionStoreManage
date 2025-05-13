@@ -26,7 +26,7 @@ public class TaiKhoanBUS {
     public boolean themTaiKhoan(taiKhoanDTO taiKhoan) {
         // Kiểm tra mật khẩu mạnh
         if (!isValidPassword(taiKhoan.getMatKhau())) {
-            throw new IllegalArgumentException("Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt!");
+            throw new IllegalArgumentException("Mật khẩu phải có ít nhất 8 ký tự!");
         }
         
         try {
@@ -59,10 +59,8 @@ public class TaiKhoanBUS {
     }
     
     private boolean isValidPassword(String password) {
-        // Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt
-        String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
-        Pattern pattern = Pattern.compile(passwordRegex);
-        return pattern.matcher(password).matches();
+        // Mật khẩu phải có ít nhất 8 ký tự
+        return password != null && password.length() >= 8;
     }
 
     public boolean doiMatKhau(String maTaiKhoan, String matKhauCu, String matKhauMoi) throws SQLException {

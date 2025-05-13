@@ -19,6 +19,16 @@ import screens.SanPham.sanPhamPanel;
 import screens.ThongKe.ThongKePanel;
 import screens.XuatHang.xuathang;
 import javax.swing.JOptionPane;
+import javax.swing.*;
+import java.awt.*;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import DAO.HoaDonDAO;
+import DAO.KhachHangDAO;
+import DAO.SanPhamDAO;
+import DAO.NhanVienDAO;
 
 /**
  *
@@ -79,12 +89,8 @@ public class trangchu extends javax.swing.JFrame {
         PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnNhanVien, vaiTro, "NhanVien");
         PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnKhachHang, vaiTro, "KhachHang");
         PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnNhaCungCap, vaiTro, "NhaCungCap");
+        PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnTaiKhoan, vaiTro, "ThongKe");
 
-        // Chỉ quản trị viên mới có quyền truy cập quản lý tài khoản
-        if (vaiTro != VaiTro.QUAN_TRI) {
-            btnTaiKhoan.setEnabled(false);
-            btnTaiKhoan.setToolTipText("Chỉ Quản trị viên mới có quyền truy cập");
-        }
 
         // Them action listener cho btnNhapHang
         btnNhapHang.addActionListener(new java.awt.event.ActionListener() {
@@ -328,59 +334,131 @@ public class trangchu extends javax.swing.JFrame {
         jPanel1.add(btnTaiKhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 630, 188, 36));
 
         jPanel4.setBackground(new java.awt.Color(107, 163, 190));
+        jPanel4.setLayout(new BorderLayout());
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24));
-        jLabel2.setText("SHOPSTORE CHÚC QUÝ KHÁCH CÓ MỘT NGÀY TỐT LÀNH");
+        // Tạo panel tiêu đề dashboard
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new java.awt.Color(12, 150, 156));
+        headerPanel.setPreferredSize(new Dimension(960, 60));
+        headerPanel.setLayout(new BorderLayout());
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24));
-        jLabel3.setText("SHOPSTORE XIN CHÀO");
+        JLabel titleLabel = new JLabel("DASHBOARD");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        headerPanel.add(titleLabel, BorderLayout.CENTER);
 
-        jPanel6.setBackground(new java.awt.Color(12, 150, 156));
+        // Tạo panel chính cho nội dung dashboard
+        JPanel dashboardContent = new JPanel();
+        dashboardContent.setBackground(new java.awt.Color(107, 163, 190));
+        dashboardContent.setLayout(new BorderLayout());
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24));
-        jLabel5.setText("CHÀO MỪNG QUÝ KHÁCH");
+        // Panel hiển thị thông tin cá nhân và ngày giờ
+        JPanel infoPanel = new JPanel();
+        infoPanel.setBackground(new java.awt.Color(107, 163, 190));
+        infoPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
+        
+        JLabel dateTimeLabel = new JLabel();
+        dateTimeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dateTimeLabel.setText(sdf.format(new Date()));
+        
+        // Cập nhật thời gian mỗi giây
+        Timer timer = new Timer(1000, e -> {
+            dateTimeLabel.setText(sdf.format(new Date()));
+        });
+        timer.start();
+        
+        infoPanel.add(dateTimeLabel);
+        infoPanel.add(Box.createHorizontalStrut(20));
+        infoPanel.add(jLabel3); // Sử dụng label chào mừng đã có sẵn
+        
+        // Panel chứa các thẻ thông tin thống kê
+        JPanel cardPanel = new JPanel();
+        cardPanel.setLayout(new GridLayout(2, 2, 15, 15));
+        cardPanel.setBackground(new java.awt.Color(107, 163, 190));
+        cardPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        // Tạo các thẻ thông tin
+        cardPanel.add(createInfoCard("Tổng sản phẩm", getSanPhamCount(), "product.png", new Color(41, 128, 185)));
+        cardPanel.add(createInfoCard("Tổng đơn hàng", getHoaDonCount(), "invoice.png", new Color(39, 174, 96)));
+        cardPanel.add(createInfoCard("Tổng khách hàng", getKhachHangCount(), "customer.png", new Color(211, 84, 0)));
+        cardPanel.add(createInfoCard("Tổng nhân viên", getNhanVienCount(), "employee.png", new Color(142, 68, 173)));
+        
+        // Tạo panel chứa các nút truy cập nhanh
+        JPanel quickAccessPanel = new JPanel();
+        quickAccessPanel.setBackground(new java.awt.Color(107, 163, 190));
+        quickAccessPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(12, 150, 156), 2),
+            "Truy cập nhanh",
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Segoe UI", Font.BOLD, 14),
+            new Color(12, 150, 156)
+        ));
+        quickAccessPanel.setLayout(new GridLayout(1, 4, 10, 10));
+        quickAccessPanel.setBorder(BorderFactory.createCompoundBorder(
+            quickAccessPanel.getBorder(),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        
+        quickAccessPanel.add(createQuickButton("Hóa đơn", "invoice.png", e -> btnHoaDonActionPerformed(e)));
+        quickAccessPanel.add(createQuickButton("Sản phẩm", "product.png", e -> btnSanPhamActionPerformed(e)));
+        quickAccessPanel.add(createQuickButton("Khách hàng", "customer.png", e -> btnKhachHangActionPerformed(e)));
+        quickAccessPanel.add(createQuickButton("Thống kê", "statistics.png", e -> btnTaiKhoanActionPerformed(e)));
+        
+        // Panel hiển thị thông báo hoặc ghi chú
+        JPanel notePanel = new JPanel();
+        notePanel.setBackground(Color.WHITE);
+        notePanel.setLayout(new BorderLayout());
+        notePanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(12, 150, 156), 2),
+            "Thông báo",
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Segoe UI", Font.BOLD, 14),
+            new Color(12, 150, 156)
+        ));
+        
+        JTextArea noteArea = new JTextArea();
+        noteArea.setText("- Chào mừng bạn đến với hệ thống quản lý cửa hàng thời trang\n"
+                        + "- Vui lòng kiểm tra các chức năng được phân quyền ở menu bên trái\n"
+                        + "- Liên hệ quản trị viên nếu bạn cần thêm quyền truy cập\n"
+                        + "- Bảo mật thông tin đăng nhập của bạn");
+        noteArea.setEditable(false);
+        noteArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        noteArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        notePanel.add(new JScrollPane(noteArea), BorderLayout.CENTER);
+        
+        // Kết hợp tất cả các thành phần vào dashboard
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
+        centerPanel.setBackground(new java.awt.Color(107, 163, 190));
+        centerPanel.add(cardPanel, BorderLayout.NORTH);
+        
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BorderLayout());
+        bottomPanel.setBackground(new java.awt.Color(107, 163, 190));
+        bottomPanel.add(quickAccessPanel, BorderLayout.NORTH);
+        bottomPanel.add(notePanel, BorderLayout.CENTER);
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 20, 20));
+        
+        centerPanel.add(bottomPanel, BorderLayout.CENTER);
+        
+        dashboardContent.add(infoPanel, BorderLayout.NORTH);
+        dashboardContent.add(centerPanel, BorderLayout.CENTER);
+        
+        jPanel4.add(headerPanel, BorderLayout.NORTH);
+        jPanel4.add(dashboardContent, BorderLayout.CENTER);
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(344, 344, 344)
-                .addComponent(jLabel5)
-                .addContainerGap(372, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addGap(16, 16, 16))
-        );
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(359, 359, 359)
-                .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(171, 171, 171))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createSequentialGroup()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(170, 170, 170)
-                .addComponent(jLabel3)
-                .addGap(102, 102, 102)
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
+        // Xóa bỏ layout và component cũ
+        jLabel2 = null;
+        jLabel5 = null;
+        jPanel6 = null;
+        
+        // Thêm lại layout chính
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -395,7 +473,7 @@ public class trangchu extends javax.swing.JFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
+        
         pack();
     }// </editor-fold>
 
@@ -503,4 +581,87 @@ public class trangchu extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     // End of variables declaration
+
+    // Phương thức tạo thẻ thông tin
+    private JPanel createInfoCard(String title, String value, String iconName, Color bgColor) {
+        JPanel card = new JPanel();
+        card.setLayout(new BorderLayout());
+        card.setBackground(bgColor);
+        card.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        titleLabel.setForeground(Color.WHITE);
+        
+        JLabel valueLabel = new JLabel(value);
+        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        valueLabel.setForeground(Color.WHITE);
+        
+        JPanel textPanel = new JPanel();
+        textPanel.setLayout(new BorderLayout());
+        textPanel.setBackground(bgColor);
+        textPanel.add(titleLabel, BorderLayout.NORTH);
+        textPanel.add(valueLabel, BorderLayout.CENTER);
+        
+        card.add(textPanel, BorderLayout.CENTER);
+        
+        return card;
+    }
+    
+    // Phương thức tạo nút truy cập nhanh
+    private JButton createQuickButton(String text, String iconName, java.awt.event.ActionListener listener) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setBackground(new Color(255, 255, 255));
+        button.setForeground(new Color(12, 150, 156));
+        button.setFocusPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        button.addActionListener(listener);
+        return button;
+    }
+    
+    // Phương thức lấy số lượng sản phẩm
+    private String getSanPhamCount() {
+        try {
+            SanPhamDAO sanPhamDAO = new SanPhamDAO();
+            return String.valueOf(sanPhamDAO.getSoLuongSanPham());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+    }
+    
+    // Phương thức lấy số lượng đơn hàng
+    private String getHoaDonCount() {
+        try {
+            HoaDonDAO hoaDonDAO = new HoaDonDAO();
+            return String.valueOf(hoaDonDAO.getSoLuongHoaDon());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+    }
+    
+    // Phương thức lấy số lượng khách hàng
+    private String getKhachHangCount() {
+        try {
+            KhachHangDAO khachHangDAO = new KhachHangDAO();
+            return String.valueOf(khachHangDAO.getSoLuongKhachHang());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+    }
+    
+    // Phương thức lấy số lượng nhân viên
+    private String getNhanVienCount() {
+        try {
+            NhanVienDAO nhanVienDAO = new NhanVienDAO();
+            return String.valueOf(nhanVienDAO.getSoLuongNhanVien());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0";
+        }
+    }
 }

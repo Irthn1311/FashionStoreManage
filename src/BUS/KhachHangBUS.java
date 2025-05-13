@@ -61,12 +61,21 @@ public class KhachHangBUS {
      * Xóa khách hàng
      * @param maKhachHang Mã khách hàng cần xóa
      * @return true nếu xóa thành công, false nếu thất bại
+     * @throws RuntimeException nếu khách hàng có dữ liệu liên quan không thể xóa
      */
     public boolean xoaKhachHang(String maKhachHang) {
         if (maKhachHang == null || maKhachHang.trim().isEmpty()) {
-            return false;
+            throw new RuntimeException("Mã khách hàng không hợp lệ");
         }
-        return khachHangDAO.xoaKhachHang(maKhachHang);
+        
+        boolean result = khachHangDAO.xoaKhachHang(maKhachHang);
+        
+        if (!result) {
+            throw new RuntimeException("Không thể xóa khách hàng vì khách hàng này đã có dữ liệu xuất hàng. " +
+                                    "Vui lòng xóa dữ liệu xuất hàng trước khi xóa khách hàng.");
+        }
+        
+        return true;
     }
     
     /**

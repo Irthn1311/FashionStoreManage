@@ -60,7 +60,7 @@ public class TaiKhoanDAO {
             
             ps.setString(1, maTaiKhoan);
             ps.setString(2, maNhanVien); // Sử dụng mã nhân viên làm tên đăng nhập
-            ps.setString(3, hashPassword("12345678")); // Mật khẩu mặc định
+            ps.setString(3, "12345678"); // Mật khẩu mặc định không hash
             ps.setString(4, maNhanVien);
 
             return ps.executeUpdate() > 0;
@@ -108,20 +108,8 @@ public class TaiKhoanDAO {
     }
 
     private String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes());
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
+        // Không hash mật khẩu nữa, trả về nguyên bản
+        return password;
     }
 
     public String taoTenDangNhap(String hoTen, int ngaySinh, int thangSinh) {
@@ -253,7 +241,7 @@ public class TaiKhoanDAO {
                 // Tạo tài khoản admin nếu chưa tồn tại
                 String maTaiKhoan = "TK001";
                 String tenDangNhap = "admin";
-                String matKhau = "Admin123@"; // Không hash mật khẩu
+                String matKhau = "Admin123@"; // Mật khẩu không hash
                 String vaiTro = "Quản lý";
                 int trangThai = 1;
                 

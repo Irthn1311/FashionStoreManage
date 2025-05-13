@@ -9,6 +9,8 @@ import DTO.NhaCungCap_SanPhamDTO;
 import java.util.List;
 import java.util.Date;
 import java.util.stream.Collectors;
+import BUS.PhieuNhapBUS;
+import DTO.PhieuNhapDTO;
 
 public class NhapHangBUS {
     private NhapHangDAO nhapHangDAO;
@@ -65,8 +67,12 @@ public class NhapHangBUS {
             return false;
         }
         
-        // Check if product exists
-        if (!sanPhamDAO.isProductExists(nhapHang.getMaSanPham())) {
+        // Sửa đoạn này: kiểm tra mã sản phẩm gốc (cắt hậu tố NCC nếu có)
+        String maSPGoc = nhapHang.getMaSanPham();
+        if (maSPGoc.contains("_")) {
+            maSPGoc = maSPGoc.split("_")[0];
+        }
+        if (!sanPhamDAO.isProductExists(maSPGoc)) {
             return false;
         }
         
@@ -92,35 +98,7 @@ public class NhapHangBUS {
                 }
             }
 
-            // Tạo mã sản phẩm mới cho nhà cung cấp này
-            String newMaSP = nhapHang.getMaSanPham() + "_" + nhapHang.getMaNhaCungCap();
             
-            // Kiểm tra xem sản phẩm với mã mới đã tồn tại chưa
-            if (!sanPhamDAO.isProductExists(newMaSP)) {
-                // Lấy thông tin sản phẩm gốc
-                sanPhamDTO originalProduct = sanPhamDAO.getSanPhamByMa(nhapHang.getMaSanPham());
-                if (originalProduct != null) {
-                    // Tạo sản phẩm mới với mã mới
-                    sanPhamDTO newProduct = new sanPhamDTO();
-                    newProduct.setMaSanPham(newMaSP);
-                    newProduct.setTenSanPham(originalProduct.getTenSanPham());
-                    newProduct.setMaNhaCungCap(nhapHang.getMaNhaCungCap());
-                    newProduct.setMaDanhMuc(originalProduct.getMaDanhMuc());
-                    newProduct.setMauSac(originalProduct.getMauSac());
-                    newProduct.setSize(originalProduct.getSize());
-                    newProduct.setSoLuongTonKho(0);
-                    newProduct.setGiaBan(originalProduct.getGiaBan());
-                    newProduct.setImgURL(originalProduct.getImgURL());
-                    newProduct.setTrangThai("Còn hàng");
-
-                    if (!sanPhamDAO.addSanPham(newProduct)) {
-                        return false;
-                    }
-                }
-            }
-
-            // Cập nhật mã sản phẩm trong phiếu nhập
-            nhapHang.setMaSanPham(newMaSP);
 
             // Thêm phiếu nhập
             return nhapHangDAO.themNhapHang(nhapHang);
@@ -149,17 +127,6 @@ public class NhapHangBUS {
             return false;
         }
         
-        // Validate status transition
-        nhapHangDTO nhapHang = getNhapHangByMa(maPN);
-        if (nhapHang == null) {
-            return false;
-        }
-        
-        // Only allow specific status transitions
-        if (nhapHang.getTrangThai().equals("Chưa nhập") && !trangThai.equals("Đã nhập")) {
-            return false;
-        }
-        
         return nhapHangDAO.capNhatTrangThai(maPN, trangThai);
     }
     
@@ -184,13 +151,13 @@ public class NhapHangBUS {
         if (maPN == null || maPN.trim().isEmpty()) {
             return false;
         }
-        
-        // Only allow deletion of records with "Chưa nhập" status
+
+        // Chỉ cho phép xóa khi trạng thái là "Đang xử lý"
         nhapHangDTO nhapHang = getNhapHangByMa(maPN);
-        if (nhapHang == null || !nhapHang.getTrangThai().equals("Chưa nhập")) {
+        if (nhapHang == null || !nhapHang.getTrangThai().equals("Đang xử lý")) {
             return false;
         }
-        
+
         return nhapHangDAO.xoaNhapHang(maPN);
     }
     
@@ -234,5 +201,92 @@ public class NhapHangBUS {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public String generateNextMaPN() {
+        String maxMaPN_NhapHang = nhapHangDAO.getMaxMaPN();
+        DAO.PhieuNhapDAO phieuNhapDAO = new DAO.PhieuNhapDAO();
+        String maxMaPN_PhieuNhap = phieuNhapDAO.getMaxMaPN();
+
+        int maxNum = 0;
+        if (maxMaPN_NhapHang != null && maxMaPN_NhapHang.matches("PN\\d+")) {
+            maxNum = Math.max(maxNum, Integer.parseInt(maxMaPN_NhapHang.substring(2)));
+        }
+        if (maxMaPN_PhieuNhap != null && maxMaPN_PhieuNhap.matches("PN\\d+")) {
+            maxNum = Math.max(maxNum, Integer.parseInt(maxMaPN_PhieuNhap.substring(2)));
+        }
+        return String.format("PN%03d", maxNum + 1);
+    }
+
+    public boolean chuyenNhapHangSangPhieuNhap() {
+        List<nhapHangDTO> list = nhapHangDAO.getAllNhapHang();
+        PhieuNhapBUS phieuNhapBUS = new PhieuNhapBUS();
+        SanPhamDAO sanPhamDAO = new SanPhamDAO();
+        DAO.PhieuNhapDAO phieuNhapDAO = new DAO.PhieuNhapDAO();
+        boolean allSuccess = true;
+
+        for (nhapHangDTO nh : list) {
+            if ("Đang xử lý".equals(nh.getTrangThai())) {
+                // Tạo đối tượng PhieuNhapDTO từ nhapHangDTO
+                PhieuNhapDTO pn = new PhieuNhapDTO();
+                // Kiểm tra mã đã tồn tại trong PhieuNhap chưa
+                String maPhieuNhap = nh.getMaPN();
+                if (phieuNhapDAO.getMaxMaPN() != null && maPhieuNhap.equals(phieuNhapDAO.getMaxMaPN())) {
+                    // Nếu trùng, sinh mã mới
+                    maPhieuNhap = generateNextMaPN();
+                } else if (phieuNhapBUS.getPhieuNhapByMa(maPhieuNhap) != null) {
+                    // Nếu đã tồn tại, sinh mã mới
+                    maPhieuNhap = generateNextMaPN();
+                }
+                pn.setMaPhieuNhap(maPhieuNhap);
+                pn.setMaNhaCungCap(nh.getMaNhaCungCap());
+                pn.setMaSanPham(nh.getMaSanPham());
+                pn.setTenSanPham(nh.getTenSanPham());
+                pn.setSoLuong(Integer.parseInt(nh.getSoLuong()));
+                // Sửa đoạn này: kiểm tra null/rỗng cho thoiGian
+                if (nh.getThoiGian() == null || nh.getThoiGian().trim().isEmpty()) {
+                    System.out.println("ThoiGian NhapHang null/rong, dung thoi gian hien tai");
+                    pn.setThoiGian(new java.util.Date());
+                } else {
+                    try {
+                        System.out.println("ThoiGian NhapHang: " + nh.getThoiGian());
+                        pn.setThoiGian(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(nh.getThoiGian()));
+                    } catch (Exception e) {
+                        System.out.println("Parse thoi gian that bai, dung thoi gian hien tai");
+                        pn.setThoiGian(new java.util.Date());
+                    }
+                }
+                pn.setDonGia(Double.parseDouble(nh.getDonGia()));
+                pn.setTrangThai("Hoàn thành");
+                pn.setHinhThucThanhToan(nh.getHinhThucThanhToan());
+                pn.setThanhTien(Double.parseDouble(nh.getThanhTien()));
+
+                // Thêm vào bảng PhieuNhap
+                boolean ok = phieuNhapBUS.createPhieuNhap(pn);
+                if (ok) {
+                    // Cập nhật số lượng tồn kho
+                    boolean updateOk = sanPhamDAO.updateProductQuantity(
+                        nh.getMaSanPham(), 
+                        Integer.parseInt(nh.getSoLuong())
+                    );
+                    if (!updateOk) {
+                        allSuccess = false;
+                        // Nếu cập nhật số lượng thất bại, xóa phiếu nhập vừa tạo
+                        phieuNhapBUS.deletePhieuNhap(pn.getMaPhieuNhap());
+                    }
+                } else {
+                    allSuccess = false;
+                }
+            }
+        }
+
+        // Xóa sạch bảng NhapHang sau khi chuyển thành công
+        if (allSuccess) {
+            for (nhapHangDTO nh : list) {
+                nhapHangDAO.xoaNhapHang(nh.getMaPN());
+            }
+        }
+
+        return allSuccess;
     }
 }

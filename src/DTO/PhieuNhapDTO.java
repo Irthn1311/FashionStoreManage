@@ -111,4 +111,20 @@ public class PhieuNhapDTO {
     public void setThanhTien(double thanhTien) {
         this.thanhTien = thanhTien;
     }
+
+    @Override
+    public String toString() {
+        return "PhieuNhapDTO{" +
+                "maPhieuNhap='" + maPhieuNhap + '\'' +
+                ", maNhaCungCap='" + maNhaCungCap + '\'' +
+                ", maSanPham='" + maSanPham + '\'' +
+                ", tenSanPham='" + tenSanPham + '\'' +
+                ", soLuong=" + soLuong +
+                ", thoiGian=" + thoiGian +
+                ", donGia=" + donGia +
+                ", trangThai='" + trangThai + '\'' +
+                ", hinhThucThanhToan='" + hinhThucThanhToan + '\'' +
+                ", thanhTien=" + thanhTien +
+                '}';
+    }
 } 

@@ -310,6 +310,24 @@ public class SanPhamDAO {
         return false;
     }
 
+    public static boolean checkProductQuantity(String maSanPham, int soLuong) {
+        String sql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int soLuongHienTai = rs.getInt("SoLuongTonKho");
+                return soLuongHienTai >= soLuong;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // Giảm số lượng tồn kho khi xuất hàng
     public boolean giamSoLuongTonKho(String maSanPham, int soLuongXuat) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho - ? WHERE MaSanPham = ? AND SoLuongTonKho >= ?";
@@ -418,14 +436,14 @@ public class SanPhamDAO {
         }
     }
 
-    public boolean updateProductQuantity(String maSanPham, int quantity) {
+    public boolean updateProductQuantity(String maSanPham, int soLuongNhap) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
         try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, quantity);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, soLuongNhap);
             ps.setString(2, maSanPham);
             return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -455,5 +473,19 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public int getSoLuongSanPham() {
+        String sql = "SELECT COUNT(*) FROM SanPham";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

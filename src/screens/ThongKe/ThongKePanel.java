@@ -35,6 +35,7 @@ public class ThongKePanel extends JPanel {
     // UI Components
     private JButton btnTimKiem, btnTinhToan, btnXuatExcel;
     private JComboBox<String> cbTuThang, cbDenThang, cbNam, cbDanhGiaTuThang, cbDanhGiaDenThang, cbDanhGiaNam;
+    private JComboBox<String> cbTuThang, cbDenThang, cbNam, cbDanhGiaTuThang, cbDanhGiaDenThang, cbDanhGiaNam;
     private JLabel lblTongDoanhThu, lblTongSanPham, lblTongKhachHang, lblDoanhThuNam, lblTieuDe;
     private JPanel panelTieuDe, panelTimKiem, panelThoiGian, panelBang, panelThongKe, panelDanhGia;
     private JRadioButton rbSanPhamBanChay, rbKhachHangHangDau;
@@ -44,7 +45,7 @@ public class ThongKePanel extends JPanel {
     private ChartPanel chartPanel; // Thêm ChartPanel để chứa biểu đồ
 
     public ThongKePanel() {
-        setBackground(new Color(107, 163, 190));
+        setBackground(new Color(107, 163,190));
         setLayout(new BorderLayout(10, 10));
         initComponents();
         setupComboBoxes();

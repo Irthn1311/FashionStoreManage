@@ -29,6 +29,19 @@ public class PhieuNhapDAO {
                     "ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
+            // Kiểm tra số lượng tồn kho trước khi thêm
+            String checkSql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
+            PreparedStatement checkPs = conn.prepareStatement(checkSql);
+            checkPs.setString(1, phieuNhap.getMaSanPham());
+            ResultSet rs = checkPs.executeQuery();
+            
+            if (rs.next()) {
+                int soLuongTonKho = rs.getInt("SoLuongTonKho");
+                if (soLuongTonKho < 0) {
+                    return false; // Không đủ số lượng trong kho
+                }
+            }
+
             ps = conn.prepareStatement(sql);
             ps.setString(1, phieuNhap.getMaPhieuNhap());
             ps.setString(2, phieuNhap.getMaNhaCungCap());
@@ -152,6 +165,20 @@ public class PhieuNhapDAO {
             e.printStackTrace();
         }
         return danhSachPhieuNhap;
+    }
+
+    // Lấy mã phiếu nhập lớn nhất
+    public String getMaxMaPN() {
+        String sql = "SELECT MAX(MaPhieuNhap) AS MaxMaPN FROM PhieuNhap";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getString("MaxMaPN");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Close resources

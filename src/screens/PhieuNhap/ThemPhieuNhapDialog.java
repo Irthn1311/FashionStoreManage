@@ -8,41 +8,125 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.border.TitledBorder;
+import DAO.SanPhamDAO;
+import DTO.sanPhamDTO;
 
 public class ThemPhieuNhapDialog extends JDialog {
-    private JTextField tfMaPN, tfMaNCC, tfMaSP, tfTenSP, tfSoLuong, tfDonGia, tfThanhTien, tfThoiGian, tfTrangThai, tfHinhThucThanhToan;
+    private JTextField tfMaPN, tfTenSP, tfSoLuong, tfDonGia, tfThanhTien, tfThoiGian;
+    private JComboBox<String> cbMaSP, cbMaNCC, cbTrangThai, cbHinhThucThanhToan;
     private boolean saved = false;
+    private SanPhamDAO sanPhamDAO = new SanPhamDAO();
 
     public ThemPhieuNhapDialog(Frame parent) {
         super(parent, "Thêm Phiếu Nhập", true);
-        setLayout(new GridLayout(0,2,10,5));
+        setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(420, 600));
 
-        add(new JLabel("Mã PN:")); tfMaPN = new JTextField(); add(tfMaPN);
-        add(new JLabel("Mã NCC:")); tfMaNCC = new JTextField(); add(tfMaNCC);
-        add(new JLabel("Mã SP:")); tfMaSP = new JTextField(); add(tfMaSP);
-        add(new JLabel("Tên SP:")); tfTenSP = new JTextField(); add(tfTenSP);
-        add(new JLabel("Số lượng:")); tfSoLuong = new JTextField(); add(tfSoLuong);
-        add(new JLabel("Đơn giá:")); tfDonGia = new JTextField(); add(tfDonGia);
-        add(new JLabel("Thành tiền:")); tfThanhTien = new JTextField(); tfThanhTien.setEditable(false); add(tfThanhTien);
-        add(new JLabel("Thời gian:")); tfThoiGian = new JTextField(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())); add(tfThoiGian);
-        add(new JLabel("Trạng thái:")); tfTrangThai = new JTextField(); add(tfTrangThai);
-        add(new JLabel("Hình thức thanh toán:")); tfHinhThucThanhToan = new JTextField(); add(tfHinhThucThanhToan);
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(238, 238, 238));
+        mainPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(Color.BLACK),
+            "Thêm Phiếu Nhập Mới",
+            TitledBorder.CENTER,
+            TitledBorder.TOP,
+            new Font("Segoe UI", Font.BOLD, 14)
+        ));
 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        tfMaPN = new JTextField(20);
+        cbMaSP = new JComboBox<>();
+        for (sanPhamDTO sp : sanPhamDAO.getAllSanPham()) {
+            cbMaSP.addItem(sp.getMaSanPham());
+        }
+        cbMaNCC = new JComboBox<>();
+        tfTenSP = new JTextField(20); tfTenSP.setEditable(false);
+        tfSoLuong = new JTextField(20);
+        tfDonGia = new JTextField(20);
+        tfThanhTien = new JTextField(20); tfThanhTien.setEditable(false); tfThanhTien.setBackground(Color.LIGHT_GRAY);
+        tfThoiGian = new JTextField(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()), 20);
+        cbTrangThai = new JComboBox<>(new String[]{"Hoàn thành", "Chưa hoàn thành", "Đã hủy"});
+        cbHinhThucThanhToan = new JComboBox<>(new String[]{"Tiền mặt", "Chuyển khoản"});
+
+        int row = 0;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Mã phiếu nhập:"), gbc);
+        gbc.gridx = 1; mainPanel.add(tfMaPN, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Mã sản phẩm:"), gbc);
+        gbc.gridx = 1; mainPanel.add(cbMaSP, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Mã nhà cung cấp:"), gbc);
+        gbc.gridx = 1; mainPanel.add(cbMaNCC, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Tên sản phẩm:"), gbc);
+        gbc.gridx = 1; mainPanel.add(tfTenSP, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Số lượng:"), gbc);
+        gbc.gridx = 1; mainPanel.add(tfSoLuong, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Đơn giá:"), gbc);
+        gbc.gridx = 1; mainPanel.add(tfDonGia, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Thành tiền:"), gbc);
+        gbc.gridx = 1; mainPanel.add(tfThanhTien, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Thời gian:"), gbc);
+        gbc.gridx = 1; mainPanel.add(tfThoiGian, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Trạng thái:"), gbc);
+        gbc.gridx = 1; mainPanel.add(cbTrangThai, gbc);
+
+        row++;
+        gbc.gridx = 0; gbc.gridy = row; mainPanel.add(new JLabel("Hình thức thanh toán:"), gbc);
+        gbc.gridx = 1; mainPanel.add(cbHinhThucThanhToan, gbc);
+
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton btnLuu = new JButton("Lưu");
         JButton btnHuy = new JButton("Hủy");
-        add(btnLuu); add(btnHuy);
+        buttonPanel.add(btnLuu);
+        buttonPanel.add(btnHuy);
 
-        // Add listeners for calculating total amount
-        tfSoLuong.getDocument().addDocumentListener(new DocumentListener() {
+        // Sự kiện tự động tính thành tiền
+        DocumentListener calcListener = new DocumentListener() {
             public void changedUpdate(DocumentEvent e) { calculateTotal(); }
             public void removeUpdate(DocumentEvent e) { calculateTotal(); }
             public void insertUpdate(DocumentEvent e) { calculateTotal(); }
-        });
+        };
+        tfSoLuong.getDocument().addDocumentListener(calcListener);
+        tfDonGia.getDocument().addDocumentListener(calcListener);
 
-        tfDonGia.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) { calculateTotal(); }
-            public void removeUpdate(DocumentEvent e) { calculateTotal(); }
-            public void insertUpdate(DocumentEvent e) { calculateTotal(); }
+        // Sự kiện chọn mã SP để tự động điền tên SP (nếu có)
+        cbMaSP.addActionListener(e -> {
+            String maSP = (String) cbMaSP.getSelectedItem();
+            if (maSP != null) {
+                sanPhamDTO sp = sanPhamDAO.getSanPhamByMa(maSP);
+                if (sp != null) {
+                    tfTenSP.setText(sp.getTenSanPham());
+                    cbMaNCC.removeAllItems();
+                    cbMaNCC.addItem(sp.getMaNhaCungCap());
+                    tfDonGia.setText(String.valueOf(sp.getGiaBan()));
+                } else {
+                    tfTenSP.setText("");
+                    cbMaNCC.removeAllItems();
+                    tfDonGia.setText("");
+                }
+            } else {
+                tfTenSP.setText("");
+                cbMaNCC.removeAllItems();
+                tfDonGia.setText("");
+            }
         });
 
         btnLuu.addActionListener(e -> {
@@ -51,8 +135,10 @@ public class ThemPhieuNhapDialog extends JDialog {
                 setVisible(false);
             }
         });
-
         btnHuy.addActionListener(e -> setVisible(false));
+
+        add(mainPanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         pack();
         setLocationRelativeTo(parent);
@@ -62,7 +148,7 @@ public class ThemPhieuNhapDialog extends JDialog {
         try {
             int soLuong = Integer.parseInt(tfSoLuong.getText());
             double donGia = Double.parseDouble(tfDonGia.getText());
-            tfThanhTien.setText(String.valueOf(soLuong * donGia));
+            tfThanhTien.setText(String.format("%.0f", soLuong * donGia));
         } catch (NumberFormatException ex) {
             tfThanhTien.setText("0");
         }
@@ -70,14 +156,14 @@ public class ThemPhieuNhapDialog extends JDialog {
 
     private boolean validateInput() {
         if (tfMaPN.getText().trim().isEmpty() ||
-            tfMaNCC.getText().trim().isEmpty() ||
-            tfMaSP.getText().trim().isEmpty() ||
+            cbMaNCC.getSelectedItem() == null ||
+            cbMaSP.getSelectedItem() == null ||
             tfTenSP.getText().trim().isEmpty() ||
             tfSoLuong.getText().trim().isEmpty() ||
             tfDonGia.getText().trim().isEmpty() ||
             tfThoiGian.getText().trim().isEmpty() ||
-            tfTrangThai.getText().trim().isEmpty() ||
-            tfHinhThucThanhToan.getText().trim().isEmpty()) {
+            cbTrangThai.getSelectedItem() == null ||
+            cbHinhThucThanhToan.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!");
             return false;
         }
@@ -103,14 +189,14 @@ public class ThemPhieuNhapDialog extends JDialog {
         try {
             return new PhieuNhapDTO(
                 tfMaPN.getText(),
-                tfMaNCC.getText(),
-                tfMaSP.getText(),
+                (String) cbMaNCC.getSelectedItem(),
+                (String) cbMaSP.getSelectedItem(),
                 tfTenSP.getText(),
                 Integer.parseInt(tfSoLuong.getText()),
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tfThoiGian.getText()),
+                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(tfThoiGian.getText()),
                 Double.parseDouble(tfDonGia.getText()),
-                tfTrangThai.getText(),
-                tfHinhThucThanhToan.getText(),
+                (String) cbTrangThai.getSelectedItem(),
+                (String) cbHinhThucThanhToan.getSelectedItem(),
                 Double.parseDouble(tfThanhTien.getText())
             );
         } catch (Exception e) {

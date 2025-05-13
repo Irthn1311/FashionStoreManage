@@ -294,23 +294,29 @@ public class NhaCungCapDAO {
         return suppliers;
     }
 
-    public List<nhaCungCapDTO> getAll() {
+    // Lấy danh sách nhà cung cấp theo mã sản phẩm
+    public List<nhaCungCapDTO> getNhaCungCapByMaSanPham(String maSanPham) {
         List<nhaCungCapDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM NhaCungCap";
-        try {
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
+        String sql = "SELECT ncc.* FROM NhaCungCap ncc " +
+                     "JOIN NhaCungCap_SanPham nccsp ON ncc.MaNhaCungCap = nccsp.MaNhaCungCap " +
+                     "WHERE nccsp.MaSanPham = ?";
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maSanPham);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                nhaCungCapDTO ncc = new nhaCungCapDTO();
-                ncc.setMaNhaCungCap(rs.getString("MaNhaCungCap"));
-                ncc.setTenNhaCungCap(rs.getString("TenNhaCungCap"));
-                ncc.setDiaChi(rs.getString("DiaChi"));
-                ncc.setSoDienThoai(rs.getString("SoDienThoai"));
-                ncc.setEmail(rs.getString("Email"));
-                ncc.setTrangThai(rs.getString("TrangThai"));
-                list.add(ncc);
+                list.add(new nhaCungCapDTO(
+                    rs.getString("MaNhaCungCap"),
+                    rs.getString("TenNhaCungCap"),
+                    rs.getString("LoaiSP"),
+                    rs.getInt("NamHopTac"),
+                    rs.getString("DiaChi"),
+                    rs.getString("Email"),
+                    rs.getString("SoDienThoai"),
+                    rs.getString("TrangThai")
+                ));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return list;

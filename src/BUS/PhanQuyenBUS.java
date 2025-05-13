@@ -34,7 +34,9 @@ public class PhanQuyenBUS {
                 return chucNang.equals("KhachHang") ||
                        chucNang.equals("SanPham") ||
                        chucNang.equals("LoaiSanPham") ||
-                       chucNang.equals("HoaDon");
+                       chucNang.equals("HoaDon") ||
+                       chucNang.equals("XuatHang") ||
+                       chucNang.equals("ThongKe");
                        
             default:
                 return false;
