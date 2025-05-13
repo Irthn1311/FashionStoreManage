@@ -307,6 +307,11 @@ public class LoaiSanPhamDAO {
         String sqlDeleteHoaDon = "DELETE FROM HoaDon WHERE MaSanPham = ?";
         String sqlDeleteRef = "DELETE FROM NhaCungCap_SanPham WHERE MaSanPham = ?";
         String sqlDeleteSanPham = "DELETE FROM SanPham WHERE MaSanPham = ?";
+        String sqlDeleteKhuyenMai = "DELETE FROM KhuyenMai WHERE MaSanPham = ?";
+        String sqlDeleteNhapHang = "DELETE FROM NhapHang WHERE MaSanPham = ?";
+        String sqlDeleteXuatHang = "DELETE FROM XuatHang WHERE MaSanPham = ?";
+        String sqlDeleteThongKe = "DELETE FROM ThongKe WHERE MaSanPham = ?";
+        String sqlDeletePhieuNhap = "DELETE FROM PhieuNhap WHERE MaSanPham = ?";
 
         Connection conn = null;
         try {
@@ -316,54 +321,92 @@ public class LoaiSanPhamDAO {
                 return false;
             }
 
-            conn.setAutoCommit(false);
-
-            // Xóa các bản ghi liên quan trong bảng HoaDon
-            try (PreparedStatement psDeleteHoaDon = conn.prepareStatement(sqlDeleteHoaDon)) {
-                psDeleteHoaDon.setString(1, maSanPham);
-                psDeleteHoaDon.executeUpdate();
-            }
-
-            // Xóa các bản ghi liên quan trong bảng NhaCungCap_SanPham
-            try (PreparedStatement psDeleteRef = conn.prepareStatement(sqlDeleteRef)) {
-                psDeleteRef.setString(1, maSanPham);
-                psDeleteRef.executeUpdate();
-            }
-
-            // Xóa sản phẩm
-            try (PreparedStatement psDeleteSanPham = conn.prepareStatement(sqlDeleteSanPham)) {
-                psDeleteSanPham.setString(1, maSanPham);
-                int rowsAffected = psDeleteSanPham.executeUpdate();
-                
-                if (rowsAffected > 0) {
-                    conn.commit();
-                    return true;
-                } else {
-                    conn.rollback();
-                    return false;
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Lỗi khi xóa sản phẩm: " + e.getMessage());
-            e.printStackTrace();
             try {
-                if (conn != null) {
-                    conn.rollback();
-                }
-            } catch (SQLException rollbackEx) {
-                System.err.println("Lỗi khi rollback transaction: " + rollbackEx.getMessage());
-                rollbackEx.printStackTrace();
+                conn.setAutoCommit(false);
+            } catch (SQLException e) {
+                System.err.println("Lỗi khi thiết lập auto commit: " + e.getMessage());
+                return false;
             }
-            return false;
+
+            // Xóa các bản ghi liên quan theo thứ tự
+            try {
+                // Xóa từ bảng HoaDon
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteHoaDon)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
+
+                // Xóa từ bảng KhuyenMai
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteKhuyenMai)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
+
+                // Xóa từ bảng NhapHang
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteNhapHang)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
+
+                // Xóa từ bảng XuatHang
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteXuatHang)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
+
+                // Xóa từ bảng ThongKe
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteThongKe)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
+
+                // Xóa từ bảng PhieuNhap
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeletePhieuNhap)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
+
+                // Xóa từ bảng NhaCungCap_SanPham
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteRef)) {
+                    ps.setString(1, maSanPham);
+                    ps.executeUpdate();
+                }
+
+                // Cuối cùng xóa từ bảng SanPham
+                try (PreparedStatement ps = conn.prepareStatement(sqlDeleteSanPham)) {
+                    ps.setString(1, maSanPham);
+                    int rowsAffected = ps.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        conn.commit();
+                        return true;
+                    } else {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Lỗi khi xóa sản phẩm: " + e.getMessage());
+                e.printStackTrace();
+                if (conn != null) {
+                    try {
+                        conn.rollback();
+                    } catch (SQLException rollbackEx) {
+                        System.err.println("Lỗi khi rollback transaction: " + rollbackEx.getMessage());
+                        rollbackEx.printStackTrace();
+                    }
+                }
+                return false;
+            }
         } finally {
-            try {
-                if (conn != null) {
+            if (conn != null) {
+                try {
                     conn.setAutoCommit(true);
                     conn.close();
+                } catch (SQLException closeEx) {
+                    System.err.println("Lỗi khi đóng kết nối: " + closeEx.getMessage());
+                    closeEx.printStackTrace();
                 }
-            } catch (SQLException closeEx) {
-                System.err.println("Lỗi khi đóng kết nối: " + closeEx.getMessage());
-                closeEx.printStackTrace();
             }
         }
     }

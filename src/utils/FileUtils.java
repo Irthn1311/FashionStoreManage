@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.io.*;
 import java.util.List;
 import java.util.Set;
+import java.util.Date;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.*;
@@ -507,171 +508,100 @@ public class FileUtils {
 
     public static void importFromFileForKhuyenMai(JTable table) {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Chọn file để import");
-        fileChooser.setFileFilter(
-                new javax.swing.filechooser.FileNameExtensionFilter("Excel & CSV files", "xlsx", "xls", "csv"));
+        fileChooser.setDialogTitle("Chọn file CSV để import");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV files", "csv"));
 
         int userSelection = fileChooser.showOpenDialog(null);
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            String filePath = selectedFile.getAbsolutePath().toLowerCase();
+            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
 
-            try {
-                // Lấy danh sách khuyến mãi hiện có
+                // Đọc header
+                String headerLine = reader.readLine();
+                if (headerLine == null) {
+                    throw new IOException("File CSV trống");
+                }
+
+                // Đọc dữ liệu và thêm vào bảng
+                String line;
+                int successCount = 0, failCount = 0;
+                StringBuilder errorMessages = new StringBuilder();
+                int expectedColumns = model.getColumnCount();
                 BUS.KhuyenMaiService khuyenMaiService = new BUS.KhuyenMaiService();
                 List<DTO.khuyenMaiDTO> existingPromotions = khuyenMaiService.getAllKhuyenMai();
-                Set<String> existingMaSPs = existingPromotions.stream()
-                        .map(km -> km.getMaSanPham())
-                        .collect(java.util.stream.Collectors.toSet());
-
-                int successCount = 0;
-                int failCount = 0;
-                StringBuilder errorMessages = new StringBuilder();
+                List<String> existingMaKMs = existingPromotions.stream()
+                        .map(DTO.khuyenMaiDTO::getMaKhuyenMai)
+                        .collect(java.util.stream.Collectors.toList());
                 java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+                Date currentDate = new Date();
 
-                if (filePath.endsWith(".csv")) {
-                    // Xử lý file CSV
-                    try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
-                        // Đọc header
-                        String headerLine = reader.readLine();
-                        if (headerLine == null) {
-                            throw new IOException("File CSV trống");
-                        }
+                while ((line = reader.readLine()) != null) {
+                    try {
+                        String[] values = parseCSVLine(line);
+                        // Bỏ qua cột STT (giả sử cột STT là cột đầu tiên)
+                        if (values.length >= expectedColumns) {
+                            String maKM = values[1]; // Mã khuyến mãi ở cột thứ 2
 
-                        String line;
-                        while ((line = reader.readLine()) != null) {
+                            // Kiểm tra mã khuyến mãi đã tồn tại chưa
+                            if (existingMaKMs.contains(maKM)) {
+                                failCount++;
+                                errorMessages.append("Bỏ qua khuyến mãi trùng mã: ").append(maKM).append("\n");
+                                continue;
+                            }
+
+                            // Tạo đối tượng khuyenMaiDTO từ dữ liệu CSV
+                            DTO.khuyenMaiDTO khuyenMai = new DTO.khuyenMaiDTO();
+                            khuyenMai.setMaKhuyenMai(maKM);
+                            khuyenMai.setMaSanPham(values[2]); // Mã SP
+                            khuyenMai.setTenSanPham(values[3]); // Tên SP
+                            khuyenMai.setTenChuongTrinh(values[4]); // Tên chương trình
+
+                            // Xử lý ngày tháng
                             try {
-                                String[] values = parseCSVLine(line);
-                                if (values.length >= 11) {
-                                    String maSP = values[2]; // Mã sản phẩm ở cột thứ 3
+                                Date ngayBatDau = sdf.parse(values[5]);
+                                Date ngayKetThuc = sdf.parse(values[6]);
+                                khuyenMai.setNgayBatDau(ngayBatDau);
+                                khuyenMai.setNgayKetThuc(ngayKetThuc);
 
-                                    // Kiểm tra sản phẩm đã có khuyến mãi chưa
-                                    if (existingMaSPs.contains(maSP)) {
-                                        failCount++;
-                                        errorMessages.append("Bỏ qua khuyến mãi trùng mã sản phẩm: ").append(maSP)
-                                                .append("\n");
-                                        continue;
-                                    }
-
-                                    // Tạo đối tượng khuyenMaiDTO từ dữ liệu CSV
-                                    DTO.khuyenMaiDTO khuyenMai = new DTO.khuyenMaiDTO();
-                                    khuyenMai.setMaKhuyenMai(values[1]); // Mã KM
-                                    khuyenMai.setMaSanPham(maSP); // Mã SP
-                                    khuyenMai.setTenSanPham(values[3]); // Tên SP
-                                    khuyenMai.setTenChuongTrinh(values[4]); // Tên chương trình
-
-                                    // Xử lý ngày tháng
-                                    try {
-                                        khuyenMai.setNgayBatDau(sdf.parse(values[5])); // Ngày bắt đầu
-                                        khuyenMai.setNgayKetThuc(sdf.parse(values[6])); // Ngày kết thúc
-                                    } catch (Exception e) {
-                                        throw new Exception("Sai định dạng ngày tháng: " + e.getMessage());
-                                    }
-
-                                    // Xử lý các trường số
-                                    try {
-                                        khuyenMai.setGiamGia(Double.parseDouble(values[7].replace("%", ""))); // Giảm
-                                                                                                              // giá
-                                        khuyenMai.setGiaCu(Double.parseDouble(values[8])); // Giá cũ
-                                        khuyenMai.setGiaMoi(Double.parseDouble(values[9])); // Giá mới
-                                    } catch (Exception e) {
-                                        throw new Exception("Sai định dạng số: " + e.getMessage());
-                                    }
-
-                                    khuyenMai.setTrangThai(values[10]); // Trạng thái
-
-                                    // Thêm khuyến mãi vào database
-                                    if (khuyenMaiService.addKhuyenMai(khuyenMai)) {
-                                        successCount++;
-                                        existingMaSPs.add(maSP); // Thêm mã SP vào danh sách đã tồn tại
-                                    } else {
-                                        failCount++;
-                                        errorMessages.append("Lỗi khi thêm khuyến mãi cho sản phẩm: ").append(maSP)
-                                                .append("\n");
-                                    }
+                                // Xác định trạng thái dựa trên ngày tháng
+                                if (currentDate.before(ngayBatDau)) {
+                                    khuyenMai.setTrangThai("Chưa bắt đầu");
+                                } else if (!currentDate.before(ngayBatDau) && !currentDate.after(ngayKetThuc)) {
+                                    khuyenMai.setTrangThai("Hoạt động");
                                 } else {
-                                    failCount++;
-                                    errorMessages.append("Sai số lượng cột: ").append(line).append("\n");
+                                    khuyenMai.setTrangThai("Hết hạn");
                                 }
                             } catch (Exception e) {
+                                throw new Exception("Sai định dạng ngày tháng: " + e.getMessage());
+                            }
+
+                            // Xử lý các trường số
+                            try {
+                                khuyenMai.setGiamGia(Double.parseDouble(values[7].replace("%", ""))); // Giảm giá
+                                khuyenMai.setGiaCu(Double.parseDouble(values[8])); // Giá cũ
+                                khuyenMai.setGiaMoi(Double.parseDouble(values[9])); // Giá mới
+                            } catch (Exception e) {
+                                throw new Exception("Sai định dạng số: " + e.getMessage());
+                            }
+
+                            // Thêm khuyến mãi vào database
+                            if (khuyenMaiService.addKhuyenMai(khuyenMai)) {
+                                successCount++;
+                                existingMaKMs.add(maKM); // Thêm mã KM vào danh sách đã tồn tại
+                            } else {
                                 failCount++;
-                                errorMessages.append("Lỗi xử lý dòng: ").append(line).append("\n");
-                                errorMessages.append("Chi tiết lỗi: ").append(e.getMessage()).append("\n");
+                                errorMessages.append("Lỗi khi thêm khuyến mãi: ").append(maKM).append("\n");
                             }
+                        } else {
+                            failCount++;
+                            errorMessages.append("Sai số lượng cột: ").append(line).append("\n");
                         }
-                    }
-                } else {
-                    // Xử lý file Excel
-                    try (Workbook workbook = WorkbookFactory.create(selectedFile)) {
-                        Sheet sheet = workbook.getSheetAt(0);
-
-                        // Skip header row
-                        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                            Row row = sheet.getRow(i);
-                            if (row != null) {
-                                try {
-                                    String maSP = row.getCell(2).getStringCellValue(); // Cột mã sản phẩm
-
-                                    // Kiểm tra sản phẩm đã có khuyến mãi chưa
-                                    if (existingMaSPs.contains(maSP)) {
-                                        failCount++;
-                                        errorMessages.append("Bỏ qua khuyến mãi trùng mã sản phẩm: ").append(maSP)
-                                                .append("\n");
-                                        continue;
-                                    }
-
-                                    // Tạo đối tượng khuyenMaiDTO từ dữ liệu Excel
-                                    DTO.khuyenMaiDTO khuyenMai = new DTO.khuyenMaiDTO();
-                                    khuyenMai.setMaKhuyenMai(row.getCell(1).getStringCellValue()); // Mã KM
-                                    khuyenMai.setMaSanPham(maSP); // Mã SP
-                                    khuyenMai.setTenSanPham(row.getCell(3).getStringCellValue()); // Tên SP
-                                    khuyenMai.setTenChuongTrinh(row.getCell(4).getStringCellValue()); // Tên chương
-                                                                                                      // trình
-
-                                    // Xử lý ngày tháng
-                                    try {
-                                        khuyenMai.setNgayBatDau(sdf.parse(row.getCell(5).getStringCellValue())); // Ngày
-                                                                                                                 // bắt
-                                                                                                                 // đầu
-                                        khuyenMai.setNgayKetThuc(sdf.parse(row.getCell(6).getStringCellValue())); // Ngày
-                                                                                                                  // kết
-                                                                                                                  // thúc
-                                    } catch (Exception e) {
-                                        throw new Exception("Sai định dạng ngày tháng: " + e.getMessage());
-                                    }
-
-                                    // Xử lý các trường số
-                                    try {
-                                        khuyenMai.setGiamGia(Double
-                                                .parseDouble(row.getCell(7).getStringCellValue().replace("%", ""))); // Giảm
-                                                                                                                     // giá
-                                        khuyenMai.setGiaCu(Double.parseDouble(row.getCell(8).getStringCellValue())); // Giá
-                                                                                                                     // cũ
-                                        khuyenMai.setGiaMoi(Double.parseDouble(row.getCell(9).getStringCellValue())); // Giá
-                                                                                                                      // mới
-                                    } catch (Exception e) {
-                                        throw new Exception("Sai định dạng số: " + e.getMessage());
-                                    }
-
-                                    khuyenMai.setTrangThai(row.getCell(10).getStringCellValue()); // Trạng thái
-
-                                    // Thêm khuyến mãi vào database
-                                    if (khuyenMaiService.addKhuyenMai(khuyenMai)) {
-                                        successCount++;
-                                        existingMaSPs.add(maSP); // Thêm mã SP vào danh sách đã tồn tại
-                                    } else {
-                                        failCount++;
-                                        errorMessages.append("Lỗi khi thêm khuyến mãi cho sản phẩm: ").append(maSP)
-                                                .append("\n");
-                                    }
-                                } catch (Exception e) {
-                                    failCount++;
-                                    errorMessages.append("Lỗi xử lý dòng ").append(i + 1).append(": ")
-                                            .append(e.getMessage()).append("\n");
-                                }
-                            }
-                        }
+                    } catch (Exception e) {
+                        failCount++;
+                        errorMessages.append("Lỗi xử lý dòng: ").append(line).append("\n");
+                        errorMessages.append("Chi tiết lỗi: ").append(e.getMessage()).append("\n");
                     }
                 }
 
@@ -687,26 +617,16 @@ public class FileUtils {
                     JOptionPane.showMessageDialog(null, message, "Kết quả import", JOptionPane.INFORMATION_MESSAGE);
                 }
 
-                // Cập nhật lại bảng hiển thị
-                DefaultTableModel model = (DefaultTableModel) table.getModel();
-                model.setRowCount(0);
-                List<DTO.khuyenMaiDTO> danhSachKhuyenMai = khuyenMaiService.getAllKhuyenMai();
-                for (int i = 0; i < danhSachKhuyenMai.size(); i++) {
-                    DTO.khuyenMaiDTO km = danhSachKhuyenMai.get(i);
-                    model.addRow(new Object[] {
-                            i + 1,
-                            km.getMaKhuyenMai(),
-                            km.getMaSanPham(),
-                            km.getTenSanPham(),
-                            km.getTenChuongTrinh(),
-                            sdf.format(km.getNgayBatDau()),
-                            sdf.format(km.getNgayKetThuc()),
-                            String.format("%.2f%%", km.getGiamGia()),
-                            km.getGiaCu(),
-                            km.getGiaMoi(),
-                            km.getTrangThai(),
-                            "Xem chi tiết"
-                    });
+                // Tìm và gọi phương thức loadKhuyenMaiData() từ khuyenMaiPanel
+                if (table.getParent() != null) {
+                    java.awt.Container parent = table.getParent();
+                    while (parent != null && !(parent instanceof screens.KhuyenMai.khuyenMaiPanel)) {
+                        parent = parent.getParent();
+                    }
+                    if (parent instanceof screens.KhuyenMai.khuyenMaiPanel) {
+                        screens.KhuyenMai.khuyenMaiPanel panel = (screens.KhuyenMai.khuyenMaiPanel) parent;
+                        panel.loadKhuyenMaiData();
+                    }
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Lỗi khi import dữ liệu: " + e.getMessage(), "Lỗi",

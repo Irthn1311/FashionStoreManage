@@ -22,6 +22,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import utils.FileUtils;
+import BUS.NhaCungCap_SanPhamBUS;
+import DTO.NhaCungCap_SanPhamDTO;
 
 /**
  *
@@ -39,11 +41,11 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
      */
     public nhaCungCapPanel() {
         initComponents();
-        
+
         // Khởi tạo DAO và BUS
         nhaCungCapDAO = new NhaCungCapDAO();
         nhaCungCapBUS = new NhaCungCapBUS();
-        
+
         // Thiết lập combobox tìm kiếm
         cboTimKiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
                 "Tất cả", "Mã NCC", "Tên NCC", "Email", "Số điện thoại"
@@ -51,10 +53,10 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
         // Load dữ liệu nhà cung cấp
         loadData();
-        
+
         // Thiết lập bảng
         setupTable();
-        
+
         // Thêm action listener cho nút tìm kiếm
         btnTimKiem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,7 +106,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                 try {
                     nhaCungCapTable.print();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -184,7 +187,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         btnExport.setText("Xuất file");
         ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
         btnExport.setIcon(new ImageIcon(
-                        exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
         btnExport.setHorizontalTextPosition(SwingConstants.RIGHT);
         btnExport.setPreferredSize(new java.awt.Dimension(340, 40));
 
@@ -192,7 +195,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         btnImport = new javax.swing.JButton("Import");
         ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
         btnImport.setIcon(new ImageIcon(
-                        importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
         btnImport.setHorizontalTextPosition(SwingConstants.RIGHT);
         btnImport.setPreferredSize(new java.awt.Dimension(100, 40));
 
@@ -200,7 +203,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         btnPrinter = new javax.swing.JButton("In");
         ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
         btnPrinter.setIcon(new ImageIcon(
-                        printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
         btnPrinter.setHorizontalTextPosition(SwingConstants.RIGHT);
         btnPrinter.setPreferredSize(new java.awt.Dimension(100, 40));
 
@@ -224,14 +227,14 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         pnlBoxTable.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         nhaCungCapTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-            },
-            new String [] {
-                "STT", "Mã NCC", "Tên NCC", "Loại SP", "Năm hợp tác", "Địa chỉ", "Email", "Số điện thoại", "Trạng thái", "Chi tiết"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                new Object[][] {
+                },
+                new String[] {
+                        "STT", "Mã NCC", "Tên NCC", "Loại SP", "Năm hợp tác", "Địa chỉ", "Email", "Số điện thoại",
+                        "Trạng thái", "Chi tiết"
+                }) {
+            boolean[] canEdit = new boolean[] {
+                    false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -286,7 +289,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                                                 .addGap(21, 21, 21)
                                                 .addGroup(pnlContent1Layout
                                                         .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(pnlBoxTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        .addComponent(pnlBoxTimKiem,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                 961, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(pnlContent1Layout
                                                                 .createParallelGroup(
@@ -310,7 +314,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                                 .addComponent(pnlBoxTable, javax.swing.GroupLayout.PREFERRED_SIZE, 348,
                                         javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(pnlContent1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(pnlContent1Layout
+                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
@@ -329,19 +334,19 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     private void loadData() {
         DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
         model.setRowCount(0);
-        
+
         for (nhaCungCapDTO ncc : nhaCungCapBUS.getAllNhaCungCap()) {
-            model.addRow(new Object[]{
-                model.getRowCount() + 1, // STT
-                ncc.getMaNhaCungCap(),
-                ncc.getTenNhaCungCap(),
-                ncc.getLoaiSP(),
-                ncc.getNamHopTac() > 0 ? ncc.getNamHopTac() : "Chưa cập nhật",
-                ncc.getDiaChi(),
-                ncc.getEmail(),
-                ncc.getSoDienThoai(),
-                ncc.getTrangThai(),
-                "Chi tiết"
+            model.addRow(new Object[] {
+                    model.getRowCount() + 1, // STT
+                    ncc.getMaNhaCungCap(),
+                    ncc.getTenNhaCungCap(),
+                    ncc.getLoaiSP(),
+                    ncc.getNamHopTac() > 0 ? ncc.getNamHopTac() : "Chưa cập nhật",
+                    ncc.getDiaChi(),
+                    ncc.getEmail(),
+                    ncc.getSoDienThoai(),
+                    ncc.getTrangThai(),
+                    "Chi tiết"
             });
         }
     }
@@ -349,37 +354,37 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     private void searchNhaCungCap() {
         String keyword = jTextField1.getText().trim();
         String searchType = (String) cboTimKiem.getSelectedItem();
-        
+
         DefaultTableModel model = (DefaultTableModel) nhaCungCapTable.getModel();
         model.setRowCount(0);
-        
+
         for (nhaCungCapDTO ncc : nhaCungCapBUS.searchNhaCungCap(keyword, searchType)) {
-            model.addRow(new Object[]{
-                model.getRowCount() + 1, // STT
-                ncc.getMaNhaCungCap(),
-                ncc.getTenNhaCungCap(),
-                ncc.getLoaiSP(),
-                ncc.getNamHopTac() > 0 ? ncc.getNamHopTac() : "Chưa cập nhật",
-                ncc.getDiaChi(),
-                ncc.getEmail(),
-                ncc.getSoDienThoai(),
-                ncc.getTrangThai(),
-                "Chi tiết"
+            model.addRow(new Object[] {
+                    model.getRowCount() + 1, // STT
+                    ncc.getMaNhaCungCap(),
+                    ncc.getTenNhaCungCap(),
+                    ncc.getLoaiSP(),
+                    ncc.getNamHopTac() > 0 ? ncc.getNamHopTac() : "Chưa cập nhật",
+                    ncc.getDiaChi(),
+                    ncc.getEmail(),
+                    ncc.getSoDienThoai(),
+                    ncc.getTrangThai(),
+                    "Chi tiết"
             });
         }
     }
-    
+
     private void showThemNhaCungCapDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Thêm nhà cung cấp", true);
         dialog.setLayout(new BorderLayout());
-        
+
         themNhaCungCapPanel panel = new themNhaCungCapPanel();
         dialog.add(panel, BorderLayout.CENTER);
-        
+
         dialog.pack();
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-        
+
         // Reload data after dialog is closed
         loadData();
     }
@@ -387,27 +392,29 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     private void showSuaNhaCungCapDialog() {
         int selectedRow = nhaCungCapTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp cần sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp cần sửa!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         String maNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 1);
         nhaCungCapDTO ncc = nhaCungCapBUS.getNhaCungCapByMa(maNCC);
         if (ncc == null) {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin nhà cung cấp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Không tìm thấy thông tin nhà cung cấp!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Sửa nhà cung cấp", true);
         dialog.setLayout(new BorderLayout());
-        
+
         suaNhaCungCapPanel panel = new suaNhaCungCapPanel(dialog, ncc);
         dialog.add(panel, BorderLayout.CENTER);
-        
+
         dialog.pack();
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-        
+
         // Reload data after dialog is closed
         loadData();
     }
@@ -415,13 +422,14 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     private void xoaNhaCungCap() {
         int selectedRow = nhaCungCapTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp cần xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp cần xóa!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         String maNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 1);
         String tenNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 2);
-        
+
         int choice = JOptionPane.showConfirmDialog(this,
                 "Bạn có chắc chắn muốn xóa nhà cung cấp " + tenNCC + "?",
                 "Xác nhận xóa",
@@ -429,62 +437,56 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
         if (choice == JOptionPane.YES_OPTION) {
             try {
-                if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
-                    JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thành công!");
-                    loadData();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thất bại!");
-                }
-            } catch (Exception e) {
-                if (e.getMessage().contains("REFERENCE constraint")) {
-                    // Hiển thị dialog với các tùy chọn
+                // Kiểm tra xem nhà cung cấp có sản phẩm liên kết không
+                NhaCungCap_SanPhamBUS nccspBUS = new NhaCungCap_SanPhamBUS();
+                List<NhaCungCap_SanPhamDTO> linkedProducts = nccspBUS.getSanPhamByNhaCungCap(maNCC);
+
+                if (linkedProducts != null && !linkedProducts.isEmpty()) {
                     String[] options = {
-                        "Xóa tất cả sản phẩm liên kết",
-                        "Cập nhật sản phẩm sang nhà cung cấp khác",
-                        "Hủy"
+                            "Xóa tất cả sản phẩm liên kết",
+                            "Cập nhật sản phẩm sang nhà cung cấp khác",
+                            "Hủy"
                     };
-                    
+
                     int option = JOptionPane.showOptionDialog(this,
-                        "Nhà cung cấp này đang có sản phẩm liên kết.\n" +
-                        "Bạn muốn xử lý như thế nào?",
-                        "Xử lý sản phẩm liên kết",
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        options,
-                        options[2]);
+                            "Nhà cung cấp này đang có " + linkedProducts.size() + " sản phẩm liên kết.\n" +
+                                    "Bạn muốn xử lý như thế nào?",
+                            "Xử lý sản phẩm liên kết",
+                            JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            options,
+                            options[2]);
 
                     if (option == 0) { // Xóa tất cả sản phẩm
                         int confirm = JOptionPane.showConfirmDialog(this,
-                            "Bạn có chắc chắn muốn xóa tất cả sản phẩm liên kết với nhà cung cấp này?\n" +
-                            "Hành động này không thể hoàn tác!",
-                            "Xác nhận xóa sản phẩm",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.WARNING_MESSAGE);
-                            
+                                "Bạn có chắc chắn muốn xóa tất cả sản phẩm liên kết với nhà cung cấp này?\n" +
+                                        "Hành động này không thể hoàn tác!",
+                                "Xác nhận xóa sản phẩm",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+
                         if (confirm == JOptionPane.YES_OPTION) {
-                            try {
-                                if (nhaCungCapBUS.xoaNhaCungCapVaSanPham(maNCC)) {
-                                    JOptionPane.showMessageDialog(this, "Đã xóa nhà cung cấp và các sản phẩm liên kết!");
-                                    loadData();
-                                }
-                            } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(this,
-                                    "Có lỗi xảy ra khi xóa: " + ex.getMessage(),
-                                    "Lỗi",
-                                    JOptionPane.ERROR_MESSAGE);
+                            // Xóa tất cả liên kết sản phẩm trước
+                            for (NhaCungCap_SanPhamDTO nccsp : linkedProducts) {
+                                nccspBUS.xoaNhaCungCap_SanPham(maNCC, nccsp.getMaSanPham());
+                            }
+                            // Sau đó xóa nhà cung cấp
+                            if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
+                                JOptionPane.showMessageDialog(this, "Đã xóa nhà cung cấp và các sản phẩm liên kết!");
+                                loadData();
                             }
                         }
                     } else if (option == 1) { // Cập nhật sang nhà cung cấp khác
                         // Lấy danh sách nhà cung cấp khác
                         List<nhaCungCapDTO> otherSuppliers = nhaCungCapBUS.getAllNhaCungCap();
                         otherSuppliers.removeIf(ncc -> ncc.getMaNhaCungCap().equals(maNCC));
-                        
+
                         if (otherSuppliers.isEmpty()) {
                             JOptionPane.showMessageDialog(this,
-                                "Không có nhà cung cấp khác để chuyển sản phẩm sang!",
-                                "Không thể cập nhật",
-                                JOptionPane.WARNING_MESSAGE);
+                                    "Không có nhà cung cấp khác để chuyển sản phẩm sang!",
+                                    "Không thể cập nhật",
+                                    JOptionPane.WARNING_MESSAGE);
                             return;
                         }
 
@@ -495,37 +497,57 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                         }
 
                         int result = JOptionPane.showConfirmDialog(this,
-                            supplierCombo,
-                            "Chọn nhà cung cấp mới",
-                            JOptionPane.OK_CANCEL_OPTION);
+                                supplierCombo,
+                                "Chọn nhà cung cấp mới",
+                                JOptionPane.OK_CANCEL_OPTION);
 
                         if (result == JOptionPane.OK_OPTION) {
                             String selectedSupplier = (String) supplierCombo.getSelectedItem();
                             String newMaNCC = selectedSupplier.split(" - ")[0];
-                            
-                            try {
-                                if (nhaCungCapBUS.capNhatSanPhamSangNhaCungCapKhac(maNCC, newMaNCC)) {
-                                    // Sau khi cập nhật thành công, xóa nhà cung cấp cũ
-                                    if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
-                                        JOptionPane.showMessageDialog(this, 
-                                            "Đã cập nhật sản phẩm sang nhà cung cấp mới và xóa nhà cung cấp cũ!");
-                                        loadData();
-                                    }
+
+                            // Cập nhật tất cả sản phẩm sang nhà cung cấp mới
+                            boolean success = true;
+                            for (NhaCungCap_SanPhamDTO nccsp : linkedProducts) {
+                                // Xóa liên kết cũ
+                                nccspBUS.xoaNhaCungCap_SanPham(maNCC, nccsp.getMaSanPham());
+                                // Thêm liên kết mới
+                                NhaCungCap_SanPhamDTO newLink = new NhaCungCap_SanPhamDTO(newMaNCC,
+                                        nccsp.getMaSanPham());
+                                if (!nccspBUS.themNhaCungCap_SanPham(newLink)) {
+                                    success = false;
+                                    break;
                                 }
-                            } catch (Exception ex) {
+                            }
+
+                            if (success) {
+                                // Sau khi cập nhật thành công, xóa nhà cung cấp cũ
+                                if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
+                                    JOptionPane.showMessageDialog(this,
+                                            "Đã cập nhật sản phẩm sang nhà cung cấp mới và xóa nhà cung cấp cũ!");
+                                    loadData();
+                                }
+                            } else {
                                 JOptionPane.showMessageDialog(this,
-                                    "Có lỗi xảy ra khi cập nhật: " + ex.getMessage(),
-                                    "Lỗi",
-                                    JOptionPane.ERROR_MESSAGE);
+                                        "Có lỗi xảy ra khi cập nhật sản phẩm sang nhà cung cấp mới!",
+                                        "Lỗi",
+                                        JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this,
+                    // Không có sản phẩm liên kết, xóa trực tiếp
+                    if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
+                        JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thành công!");
+                        loadData();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thất bại!");
+                    }
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this,
                         "Có lỗi xảy ra khi xóa nhà cung cấp: " + e.getMessage(),
                         "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
-                }
             }
         }
     }
@@ -538,7 +560,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
     private void setupTable() {
         // Thiết lập chiều rộng cho các cột
-        nhaCungCapTable.getColumnModel().getColumn(0).setPreferredWidth(50);  // STT
+        nhaCungCapTable.getColumnModel().getColumn(0).setPreferredWidth(50); // STT
         nhaCungCapTable.getColumnModel().getColumn(1).setPreferredWidth(100); // Mã NCC
         nhaCungCapTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên NCC
         nhaCungCapTable.getColumnModel().getColumn(3).setPreferredWidth(100); // Loại SP
@@ -547,17 +569,17 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         nhaCungCapTable.getColumnModel().getColumn(6).setPreferredWidth(150); // Email
         nhaCungCapTable.getColumnModel().getColumn(7).setPreferredWidth(100); // Số điện thoại
         nhaCungCapTable.getColumnModel().getColumn(8).setPreferredWidth(100); // Trạng thái
-        nhaCungCapTable.getColumnModel().getColumn(9).setPreferredWidth(80);  // Chi tiết
+        nhaCungCapTable.getColumnModel().getColumn(9).setPreferredWidth(80); // Chi tiết
 
         // Thiết lập căn giữa cho một số cột
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        
-        nhaCungCapTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);  // STT
-        nhaCungCapTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);  // Mã NCC
-        nhaCungCapTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);  // Năm hợp tác
-        nhaCungCapTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);  // Số điện thoại
-        nhaCungCapTable.getColumnModel().getColumn(9).setCellRenderer(centerRenderer);  // Chi tiết
+
+        nhaCungCapTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer); // STT
+        nhaCungCapTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer); // Mã NCC
+        nhaCungCapTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer); // Năm hợp tác
+        nhaCungCapTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer); // Số điện thoại
+        nhaCungCapTable.getColumnModel().getColumn(9).setCellRenderer(centerRenderer); // Chi tiết
 
         // Thiết lập màu xanh và gạch chân cho cột "Chi tiết"
         nhaCungCapTable.getColumnModel().getColumn(9).setCellRenderer(new DefaultTableCellRenderer() {
@@ -573,17 +595,16 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
         // Thiết lập row height
         nhaCungCapTable.setRowHeight(25);
-        
+
         // Tắt chế độ chọn dòng khi click
         nhaCungCapTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         // Thêm sự kiện click cho cột "Chi tiết"
         nhaCungCapTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = nhaCungCapTable.rowAtPoint(e.getPoint());
                 int col = nhaCungCapTable.columnAtPoint(e.getPoint());
-                
 
                 int lastColumnIndex = nhaCungCapTable.getColumnCount() - 1;
                 // Chỉ xử lý khi click vào cột "Chi tiết" (cột cuối cùng)
@@ -592,7 +613,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                 }
             }
         });
-        
+
         // Thêm cursor hand khi di chuột qua cột Chi Tiết
         nhaCungCapTable.addMouseMotionListener(new MouseAdapter() {
             @Override
@@ -618,7 +639,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
             String email = getTableValueAsString(row, 6);
             String soDienThoai = getTableValueAsString(row, 7);
             String trangThai = getTableValueAsString(row, 8);
-            
+
             // Chuyển đổi năm hợp tác từ chuỗi sang số
             int namHopTac = 0;
             if (namHopTacStr != null && !namHopTacStr.isEmpty() && !namHopTacStr.equals("Chưa cập nhật")) {
@@ -631,15 +652,14 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
             // Tạo đối tượng nhaCungCapDTO
             nhaCungCapDTO ncc = new nhaCungCapDTO(
-                maNCC,
-                tenNCC,
-                loaiSP,
-                namHopTac,
-                diaChi,
-                email,
-                soDienThoai,
-                trangThai
-            );
+                    maNCC,
+                    tenNCC,
+                    loaiSP,
+                    namHopTac,
+                    diaChi,
+                    email,
+                    soDienThoai,
+                    trangThai);
 
             // Hiển thị dialog chi tiết
             Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
@@ -648,9 +668,9 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                "Có lỗi xảy ra khi hiển thị thông tin chi tiết: " + e.getMessage(),
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE);
+                    "Có lỗi xảy ra khi hiển thị thông tin chi tiết: " + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
