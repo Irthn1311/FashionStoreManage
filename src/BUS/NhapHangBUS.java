@@ -44,6 +44,9 @@ public class NhapHangBUS {
         // Check minimum quantity
         try {
             int soLuong = Integer.parseInt(nhapHang.getSoLuong());
+            if (soLuong <= 0) {
+                return false;
+            }
             if (soLuong < MIN_IMPORT_QUANTITY) {
                 return false;
             }
@@ -204,16 +207,17 @@ public class NhapHangBUS {
     }
 
     public String generateNextMaPN() {
-        String maxMaPN_NhapHang = nhapHangDAO.getMaxMaPN();
-        DAO.PhieuNhapDAO phieuNhapDAO = new DAO.PhieuNhapDAO();
-        String maxMaPN_PhieuNhap = phieuNhapDAO.getMaxMaPN();
-
-        int maxNum = 0;
-        if (maxMaPN_NhapHang != null && maxMaPN_NhapHang.matches("PN\\d+")) {
-            maxNum = Math.max(maxNum, Integer.parseInt(maxMaPN_NhapHang.substring(2)));
+        List<nhapHangDTO> list = getAllNhapHang();
+        if (list.isEmpty()) {
+            return "PN001";
         }
-        if (maxMaPN_PhieuNhap != null && maxMaPN_PhieuNhap.matches("PN\\d+")) {
-            maxNum = Math.max(maxNum, Integer.parseInt(maxMaPN_PhieuNhap.substring(2)));
+        int maxNum = 0;
+        for (nhapHangDTO nh : list) {
+            String maPN = nh.getMaPN();
+            if (maPN != null && maPN.matches("PN\\d+")) {
+                int num = Integer.parseInt(maPN.substring(2));
+                if (num > maxNum) maxNum = num;
+            }
         }
         return String.format("PN%03d", maxNum + 1);
     }

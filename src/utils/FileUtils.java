@@ -2174,4 +2174,62 @@ public class FileUtils {
     // public static void importFromCSVForKhuyenMai(JTable table) { ... } -> This was already specific, but used CSV. Now Excel.
     // public static void importFromCSVForHoaDon(JTable table) { ... }
     // public static void importFromCSV(JTable table) { ... } -> KhachHang's old generic CSV import
+
+    public static void importFromCSV(JTable table) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file CSV để import");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV files", "csv"));
+
+        int userSelection = fileChooser.showOpenDialog(null);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(selectedFile), "UTF-8"))) {
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                model.setRowCount(0); // Clear existing data
+                
+                // Skip BOM if present
+                reader.mark(1);
+                if (reader.read() != 0xFEFF) {
+                    reader.reset();
+                }
+                
+                // Read header (skip it)
+                String line = reader.readLine();
+                if (line == null) {
+                    JOptionPane.showMessageDialog(null, "File CSV trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Read data rows
+                int rowNum = 0;
+                while ((line = reader.readLine()) != null) {
+                    String[] fields = parseCSVLine(line);
+                    // Ensure we have enough fields for the model
+                    Object[] rowData = new Object[model.getColumnCount()];
+                    
+                    // Copy available data (up to the column count - 1, leaving last column for action button)
+                    int columnLimit = Math.min(fields.length, model.getColumnCount() - 1);
+                    for (int i = 0; i < columnLimit; i++) {
+                        rowData[i] = fields[i];
+                    }
+                    
+                    // Set the action column if it exists
+                    if (model.getColumnCount() > fields.length) {
+                        rowData[model.getColumnCount() - 1] = "Xem chi tiết";
+                    }
+                    
+                    model.addRow(rowData);
+                    rowNum++;
+                }
+                
+                JOptionPane.showMessageDialog(null, "Đã nhập " + rowNum + " dòng dữ liệu từ file CSV!", 
+                    "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Lỗi khi đọc file CSV: " + e.getMessage(), 
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+    }
 }

@@ -16,6 +16,10 @@ public class xuathang extends javax.swing.JPanel {
      */
     public xuathang() {
         initComponents();
+        jTextField7.setEditable(false); // Đơn giá không cho chỉnh sửa
+        jTextField9.setEditable(false); // Thành tiền không cho chỉnh sửa
+        jTextField6.setEditable(false); // Mã khách hàng không cho chỉnh sửa
+        jTextField2.setEditable(false); // Tên khách hàng không cho chỉnh sửa
         loadComboBoxData();
         loadXuatHangTable();
         loadKhachHangComboBox();
@@ -92,14 +96,10 @@ public class xuathang extends javax.swing.JPanel {
         });
         cbMaKhachHang.addActionListener(e -> {
             int idx = cbMaKhachHang.getSelectedIndex();
-            if (idx >= 0 && idx < cbTenKhachHang.getItemCount()) {
-                cbTenKhachHang.setSelectedIndex(idx);
-            }
-        });
-        cbTenKhachHang.addActionListener(e -> {
-            int idx = cbTenKhachHang.getSelectedIndex();
-            if (idx >= 0 && idx < cbMaKhachHang.getItemCount()) {
-                cbMaKhachHang.setSelectedIndex(idx);
+            if (idx >= 0 && idx < listKhachHang.size()) {
+                jTextFieldTenKhachHang.setText(listKhachHang.get(idx).getHoTen());
+            } else {
+                jTextFieldTenKhachHang.setText("");
             }
         });
         jButton17.addActionListener(new java.awt.event.ActionListener() {
@@ -210,7 +210,9 @@ public class xuathang extends javax.swing.JPanel {
         lblHinhThucThanhToan = new javax.swing.JLabel();
         cbHinhThucThanhToan = new javax.swing.JComboBox<>();
         cbMaKhachHang = new javax.swing.JComboBox<>();
-        cbTenKhachHang = new javax.swing.JComboBox<>();
+        jTextFieldTenKhachHang = new javax.swing.JTextField();
+        jTextFieldTenKhachHang.setEditable(false);
+        jPanel5.add(jTextFieldTenKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 71, 183, 41));
         
 
         pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
@@ -246,7 +248,12 @@ public class xuathang extends javax.swing.JPanel {
             new String [] {
                 "Mã PX", "Mã KH", "Tên KH", "Mã SP", "Tên SP", "Kích thước", "Màu sắc", "Số lượng", "Đơn giá", "Thành tiền", "Hình thức thanh toán", "Trạng thái"
             }
-        ));
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Không cho phép chỉnh sửa trực tiếp trên bảng
+            }
+        });
         jTable1.setShowGrid(true);
         jScrollPane1.setViewportView(jTable1);
 
@@ -276,7 +283,7 @@ public class xuathang extends javax.swing.JPanel {
         });
         jPanel5.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 71, -1, 41));
         jPanel5.add(cbMaKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 24, 183, 41));
-        jPanel5.add(cbTenKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 71, 183, 41));
+        jPanel5.add(jTextFieldTenKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 71, 183, 41));
 
         jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 180, 320, 120));
 
@@ -286,11 +293,9 @@ public class xuathang extends javax.swing.JPanel {
         jPanel9.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTextField8.setText("Thành tiền");
-        jTextField8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField8ActionPerformed(evt);
-            }
-        });
+        jTextField8.setEditable(false);
+        jTextField8.setFocusable(false);
+        jTextField8.setBackground(new java.awt.Color(240, 240, 240));
         jPanel9.add(jTextField8, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 24, 288, 42));
         jPanel9.add(jTextField9, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 72, 288, 40));
 
@@ -338,7 +343,7 @@ public class xuathang extends javax.swing.JPanel {
                     BUS.XuatHangBUS xuatHangBUS = new BUS.XuatHangBUS();
                     String maPX = xuatHangBUS.generateNextMaPX();
                     String maKH = (String) cbMaKhachHang.getSelectedItem();
-                    String tenKH = (String) cbTenKhachHang.getSelectedItem();
+                    String tenKH = jTextFieldTenKhachHang.getText();
                     String tenSP = jTextField1.getText().trim();
                     String kichThuoc = jTextField4.getText().trim();
                     String mauSac = jTextField3.getText().trim();
@@ -694,11 +699,15 @@ public class xuathang extends javax.swing.JPanel {
         BUS.KhachHangBUS khachHangBUS = new BUS.KhachHangBUS();
         java.util.List<DTO.khachHangDTO> list = khachHangBUS.getAllKhachHang();
         cbMaKhachHang.removeAllItems();
-        cbTenKhachHang.removeAllItems();
         for (DTO.khachHangDTO kh : list) {
             cbMaKhachHang.addItem(kh.getMaKhachHang());
-            cbTenKhachHang.addItem(kh.getHoTen());
         }
+        if (!list.isEmpty()) {
+            jTextFieldTenKhachHang.setText(list.get(0).getHoTen());
+        } else {
+            jTextFieldTenKhachHang.setText("");
+        }
+        listKhachHang = list;
     }
 
     /**
@@ -779,6 +788,7 @@ public class xuathang extends javax.swing.JPanel {
     private javax.swing.JLabel lblHinhThucThanhToan;
     private javax.swing.JComboBox<String> cbHinhThucThanhToan;
     private javax.swing.JComboBox<String> cbMaKhachHang;
-    private javax.swing.JComboBox<String> cbTenKhachHang;
+    private javax.swing.JTextField jTextFieldTenKhachHang;
+    private java.util.List<DTO.khachHangDTO> listKhachHang;
     // End of variables declaration//GEN-END:variables
 }

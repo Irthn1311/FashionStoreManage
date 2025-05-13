@@ -40,7 +40,7 @@ public class NhapHangDAO {
 
     public List<nhapHangDTO> getAllNhapHang() {
         List<nhapHangDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM NhapHang";
+        String sql = "SELECT * FROM NhapHang ORDER BY MaPN";
         try (Connection conn = ConnectDB.getConnection();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {

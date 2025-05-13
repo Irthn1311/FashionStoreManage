@@ -105,7 +105,13 @@ public class nhaphang extends javax.swing.JPanel {
                 textSoLuong = new javax.swing.JTextField();
                 jPanel9 = new javax.swing.JPanel();
                 lblThanhTien = new javax.swing.JTextField();
+                lblThanhTien.setEditable(false);
+                lblThanhTien.setFocusable(false);
+                lblThanhTien.setBackground(new java.awt.Color(240, 240, 240));
                 textThanhTien = new javax.swing.JTextField();
+                textThanhTien.setEditable(false);
+                textThanhTien.setFocusable(false);
+                textThanhTien.setBackground(new java.awt.Color(240, 240, 240));
                 jButton15 = new javax.swing.JButton();
                 jButton18 = new javax.swing.JButton();
                 jButton16 = new javax.swing.JButton();
@@ -171,7 +177,12 @@ public class nhaphang extends javax.swing.JPanel {
                                                 "STT", "Ma PN", "Mã NCC", "Mã SP", "Tên SP", "Màu sắc",
                                                 "Kích thước", "Số Lượng",
                                                 "Đơn giá", "Thành tiền", "Hình thức thanh toán", "Trạng thái"
-                                }));
+                                }) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false; // Không cho phép chỉnh sửa trực tiếp trên bảng
+                    }
+                });
                 jTable1.setShowGrid(true);
                 jScrollPane1.setViewportView(jTable1);
 
@@ -563,9 +574,25 @@ public class nhaphang extends javax.swing.JPanel {
                 return;
             }
 
+            // Kiểm tra số lượng là số nguyên dương
+            int soLuong;
+            try {
+                soLuong = Integer.parseInt(textSoLuong.getText().trim());
+                if (soLuong <= 0) {
+                    JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
+                return;
+            }
+
+            // Tạo mã phiếu nhập tiếp theo theo thứ tự
+            String nextMaPN = nhapHangBUS.generateNextMaPN();
+            
             // Create new import record
             nhapHangDTO nh = new nhapHangDTO();
-            nh.setMaPN(nhapHangBUS.generateNextMaPN());
+            nh.setMaPN(nextMaPN);
             nh.setMaSanPham((String) cbMaSanPham.getSelectedItem());
             nh.setMaNhaCungCap((String) cbMaNCC.getSelectedItem());
             nh.setTenSanPham(textTenSanPham.getText());
@@ -579,7 +606,7 @@ public class nhaphang extends javax.swing.JPanel {
             nh.setHinhThucThanhToan((String) cbHinhThucThanhToan.getSelectedItem());
 
             if (nhapHangBUS.themNhapHang(nh)) {
-                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công với mã phiếu nhập: " + nextMaPN);
                 loadImportTable(); // Refresh table
                 // Clear input fields
                 cbMaSanPham.setSelectedIndex(0);
@@ -698,6 +725,7 @@ public class nhaphang extends javax.swing.JPanel {
                 javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
                 model.setRowCount(0);
 
+                // Đảm bảo STT bắt đầu từ 1 và tăng dần
         int stt = 1;
         for (nhapHangDTO nh : list) {
             model.addRow(new Object[]{

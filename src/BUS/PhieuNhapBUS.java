@@ -23,6 +23,25 @@ public class PhieuNhapBUS {
         return true;
     }
 
+    // Phương thức tạo mã phiếu nhập tiếp theo
+    public String getNextMaPhieuNhap() {
+        String maxMaPN = phieuNhapDAO.getMaxMaPN();
+        if (maxMaPN == null || maxMaPN.isEmpty()) {
+            return "PN001";
+        }
+        try {
+            // Lấy phần số từ mã phiếu nhập
+            String numStr = maxMaPN.substring(2); // Bỏ "PN" lấy phần số
+            int num = Integer.parseInt(numStr);
+            num++; // Tăng giá trị lên 1
+            // Format lại mã với số 0 ở đầu (nếu cần)
+            return String.format("PN%03d", num);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "PN001"; // Mặc định nếu có lỗi
+        }
+    }
+
     // Create new PhieuNhap with validation
     public boolean createPhieuNhap(PhieuNhapDTO phieuNhap) {
         if (!validatePhieuNhap(phieuNhap)) {

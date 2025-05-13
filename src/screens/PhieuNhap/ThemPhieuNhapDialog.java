@@ -11,12 +11,14 @@ import java.util.Date;
 import javax.swing.border.TitledBorder;
 import DAO.SanPhamDAO;
 import DTO.sanPhamDTO;
+import BUS.PhieuNhapBUS;
 
 public class ThemPhieuNhapDialog extends JDialog {
     private JTextField tfMaPN, tfTenSP, tfSoLuong, tfDonGia, tfThanhTien, tfThoiGian;
     private JComboBox<String> cbMaSP, cbMaNCC, cbTrangThai, cbHinhThucThanhToan;
     private boolean saved = false;
     private SanPhamDAO sanPhamDAO = new SanPhamDAO();
+    private PhieuNhapBUS phieuNhapBUS = new PhieuNhapBUS();
 
     public ThemPhieuNhapDialog(Frame parent) {
         super(parent, "Thêm Phiếu Nhập", true);
@@ -38,6 +40,12 @@ public class ThemPhieuNhapDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         tfMaPN = new JTextField(20);
+        // Không cho phép chỉnh sửa mã phiếu nhập
+        tfMaPN.setEditable(false);
+        tfMaPN.setBackground(Color.LIGHT_GRAY);
+        // Tự động lấy mã phiếu nhập mới từ BUS
+        tfMaPN.setText(phieuNhapBUS.getNextMaPhieuNhap());
+        
         cbMaSP = new JComboBox<>();
         for (sanPhamDTO sp : sanPhamDAO.getAllSanPham()) {
             cbMaSP.addItem(sp.getMaSanPham());
@@ -142,6 +150,16 @@ public class ThemPhieuNhapDialog extends JDialog {
 
         pack();
         setLocationRelativeTo(parent);
+    }
+
+    /**
+     * Thiết lập mã phiếu nhập tự động và không cho phép chỉnh sửa
+     * @param maPhieuNhap Mã phiếu nhập mới
+     */
+    public void setMaPhieuNhap(String maPhieuNhap) {
+        if (maPhieuNhap != null && !maPhieuNhap.isEmpty()) {
+            tfMaPN.setText(maPhieuNhap);
+        }
     }
 
     private void calculateTotal() {
