@@ -20,6 +20,8 @@ import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import utils.FileUtils;
+import javax.swing.JEditorPane;
+import java.text.DecimalFormat;
 
 public class loaisanpham extends javax.swing.JPanel {
 
@@ -379,7 +381,7 @@ public class loaisanpham extends javax.swing.JPanel {
                 jButton34.setPreferredSize(new java.awt.Dimension(340, 40));
                 jButton34.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                utils.FileUtils.showExportOptions(jTable2, "Danh sách sản phẩm");
+                                utils.FileUtils.showExportOptionsForLoaiSanPham(jTable2, "DanhSachSanPham");
                         }
                 });
 
@@ -392,7 +394,7 @@ public class loaisanpham extends javax.swing.JPanel {
                 jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
                 jButton36.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                utils.FileUtils.importFromCSVForProduct(jTable2);
+                                utils.FileUtils.importFromExcelForLoaiSanPham(jTable2);
                                 loadTableData(); // Refresh the table after import
                         }
                 });
@@ -407,10 +409,57 @@ public class loaisanpham extends javax.swing.JPanel {
                 jButton37.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 try {
-                                        jTable2.print();
+                                        List<sanPhamDTO> productList = productService.getAllProducts();
+
+                                        if (productList == null || productList.isEmpty()) {
+                                                JOptionPane.showMessageDialog(null, "Không có dữ liệu sản phẩm để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                                                return;
+                                        }
+
+                                        StringBuilder htmlContent = new StringBuilder();
+                                        htmlContent.append("<html><head><style>");
+                                        htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+                                        htmlContent.append("h1 { text-align: center; color: #333; }");
+                                        htmlContent.append(".product-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                                        htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+                                        htmlContent.append("p { margin: 5px 0; }");
+                                        htmlContent.append("</style></head><body>");
+                                        htmlContent.append("<h1>Danh Sách Chi Tiết Sản Phẩm</h1>");
+
+                                        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+
+                                        for (sanPhamDTO sp : productList) {
+                                                htmlContent.append("<div class='product-record'>");
+                                                htmlContent.append("<p><span class='field-label'>Mã Sản Phẩm:</span> ").append(sp.getMaSanPham() != null ? sp.getMaSanPham() : "").append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>Tên Sản Phẩm:</span> ").append(sp.getTenSanPham() != null ? sp.getTenSanPham() : "").append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>Mã Nhà Cung Cấp:</span> ").append(sp.getMaNhaCungCap() != null ? sp.getMaNhaCungCap() : "").append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>Mã Danh Mục (Loại SP):</span> ").append(sp.getMaDanhMuc() != null ? sp.getMaDanhMuc() : "").append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>Màu Sắc:</span> ").append(sp.getMauSac() != null ? sp.getMauSac() : "").append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>Size:</span> ").append(sp.getSize() != null ? sp.getSize() : "").append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>Số Lượng Tồn Kho:</span> ").append(decimalFormat.format(sp.getSoLuongTonKho())).append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>Giá Bán:</span> ").append(decimalFormat.format(sp.getGiaBan())).append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>URL Hình Ảnh:</span> ").append(sp.getImgURL() != null ? sp.getImgURL() : "").append("</p>");
+                                                htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(sp.getTrangThai() != null ? sp.getTrangThai() : "").append("</p>");
+                                                htmlContent.append("</div>");
+                                        }
+                                        htmlContent.append("</body></html>");
+
+                                        JEditorPane editorPane = new JEditorPane();
+                                        editorPane.setContentType("text/html");
+                                        editorPane.setText(htmlContent.toString());
+                                        editorPane.setEditable(false);
+
+                                        boolean printed = editorPane.print();
+                                        if (!printed) {
+                                                // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                                        }
+                                } catch (java.awt.print.PrinterException pe) {
+                                    JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                                     pe.printStackTrace();
                                 } catch (Exception e) {
-                                        JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi",
+                                        JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi",
                                                         JOptionPane.ERROR_MESSAGE);
+                                         e.printStackTrace();
                                 }
                         }
                 });
@@ -504,125 +553,6 @@ public class loaisanpham extends javax.swing.JPanel {
                                                                 .addGap(16, 16, 16)));
 
                 containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
-        }
-
-        private void jButton34ActionPerformed(java.awt.event.ActionEvent evt) {
-                Workbook workbook = new HSSFWorkbook();
-                Sheet sheet = workbook.createSheet("Danh sách sản phẩm");
-
-                Row headerRow = sheet.createRow(0);
-                String[] headers = { "STT", "Mã SP", "Tên SP", "Mã NCC", "Loại SP", "Màu sắc", "Kích cỡ", "Số lượng",
-                                "Đơn giá", "Hình ảnh", "Trạng thái" };
-                for (int i = 0; i < headers.length; i++) {
-                        Cell cell = headerRow.createCell(i);
-                        cell.setCellValue(headers[i]);
-                        CellStyle headerStyle = workbook.createCellStyle();
-                        Font font = workbook.createFont();
-                        font.setBold(true);
-                        headerStyle.setFont(font);
-                        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-                        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-                        cell.setCellStyle(headerStyle);
-                }
-
-                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                for (int i = 0; i < model.getRowCount(); i++) {
-                        Row row = sheet.createRow(i + 1);
-                        for (int j = 0; j < headers.length; j++) {
-                                Cell cell = row.createCell(j);
-                                Object value = model.getValueAt(i, j);
-                                if (value != null) {
-                                        cell.setCellValue(value.toString());
-                                }
-                        }
-                }
-
-                for (int i = 0; i < headers.length; i++) {
-                        sheet.autoSizeColumn(i);
-                }
-
-                String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                String fileName = "DanhSachSanPham_" + timestamp + ".xls";
-
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
-                fileChooser.setSelectedFile(new java.io.File(fileName));
-                fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-                        @Override
-                        public boolean accept(java.io.File f) {
-                                return f.isDirectory() || f.getName().toLowerCase().endsWith(".xls");
-                        }
-
-                        @Override
-                        public String getDescription() {
-                                return "Excel Files (*.xls)";
-                        }
-                });
-
-                int userSelection = fileChooser.showSaveDialog(this);
-                if (userSelection == JFileChooser.APPROVE_OPTION) {
-                        java.io.File fileToSave = fileChooser.getSelectedFile();
-                        String filePath = fileToSave.getAbsolutePath();
-                        if (!filePath.toLowerCase().endsWith(".xls")) {
-                                filePath += ".xls";
-                                fileToSave = new java.io.File(filePath);
-                        }
-
-                        try (FileOutputStream fileOut = new FileOutputStream(fileToSave)) {
-                                workbook.write(fileOut);
-                                JOptionPane.showMessageDialog(this,
-                                                "Xuất file Excel thành công: " + fileToSave.getAbsolutePath(),
-                                                "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                        } catch (IOException e) {
-                                JOptionPane.showMessageDialog(this, "Lỗi khi xuất file Excel: " + e.getMessage(), "Lỗi",
-                                                JOptionPane.ERROR_MESSAGE);
-                        } finally {
-                                try {
-                                        workbook.close();
-                                } catch (IOException e) {
-                                        e.printStackTrace();
-                                }
-                        }
-                }
-        }
-
-        private List<sanPhamDTO> filterByPriceRange(List<sanPhamDTO> list, Double priceFrom, Double priceTo) {
-                if (priceFrom == null && priceTo == null) {
-                        return list;
-                }
-                return list.stream()
-                                .filter(sp -> {
-                                        double price = sp.getGiaBan();
-                                        boolean matches = true;
-                                        if (priceFrom != null) {
-                                                matches = matches && price >= priceFrom;
-                                        }
-                                        if (priceTo != null) {
-                                                matches = matches && price <= priceTo;
-                                        }
-                                        return matches;
-                                })
-                                .collect(Collectors.toList());
-        }
-
-        private List<sanPhamDTO> filterByQuantityRange(List<sanPhamDTO> list, Integer quantityFrom,
-                        Integer quantityTo) {
-                if (quantityFrom == null && quantityTo == null) {
-                        return list;
-                }
-                return list.stream()
-                                .filter(sp -> {
-                                        int quantity = sp.getSoLuongTonKho();
-                                        boolean matches = true;
-                                        if (quantityFrom != null) {
-                                                matches = matches && quantity >= quantityFrom;
-                                        }
-                                        if (quantityTo != null) {
-                                                matches = matches && quantity <= quantityTo;
-                                        }
-                                        return matches;
-                                })
-                                .collect(Collectors.toList());
         }
 
         private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -751,5 +681,44 @@ public class loaisanpham extends javax.swing.JPanel {
                 } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
+        }
+
+        private List<sanPhamDTO> filterByPriceRange(List<sanPhamDTO> list, Double priceFrom, Double priceTo) {
+                if (priceFrom == null && priceTo == null) {
+                        return list;
+                }
+                return list.stream()
+                                .filter(sp -> {
+                                        double price = sp.getGiaBan();
+                                        boolean matches = true;
+                                        if (priceFrom != null) {
+                                                matches = matches && price >= priceFrom;
+                                        }
+                                        if (priceTo != null) {
+                                                matches = matches && price <= priceTo;
+                                        }
+                                        return matches;
+                                })
+                                .collect(Collectors.toList());
+        }
+
+        private List<sanPhamDTO> filterByQuantityRange(List<sanPhamDTO> list, Integer quantityFrom,
+                        Integer quantityTo) {
+                if (quantityFrom == null && quantityTo == null) {
+                        return list;
+                }
+                return list.stream()
+                                .filter(sp -> {
+                                        int quantity = sp.getSoLuongTonKho();
+                                        boolean matches = true;
+                                        if (quantityFrom != null) {
+                                                matches = matches && quantity >= quantityFrom;
+                                        }
+                                        if (quantityTo != null) {
+                                                matches = matches && quantity <= quantityTo;
+                                        }
+                                        return matches;
+                                })
+                                .collect(Collectors.toList());
         }
 }

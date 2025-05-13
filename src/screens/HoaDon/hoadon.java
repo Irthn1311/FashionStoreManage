@@ -586,7 +586,7 @@ public class hoadon extends javax.swing.JPanel {
                             JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                utils.FileUtils.showExportOptions(jTable2, "Danh sách hóa đơn");
+                utils.FileUtils.showExportOptionsForHoaDon(jTable2, "Danh sách hóa đơn");
             }
         });
 

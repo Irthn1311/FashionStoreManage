@@ -24,6 +24,8 @@ import javax.swing.SwingConstants;
 import utils.FileUtils;
 import BUS.NhaCungCap_SanPhamBUS;
 import DTO.NhaCungCap_SanPhamDTO;
+import javax.swing.JEditorPane;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -88,14 +90,14 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         // Thêm action listener cho nút export
         btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                utils.FileUtils.exportToCSV(nhaCungCapTable, "Danh sách nhà cung cấp");
+                utils.FileUtils.showExportOptionsForNhaCungCap(nhaCungCapTable, "DanhSachNhaCungCap");
             }
         });
 
         // Thêm action listener cho nút import
         btnImport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                utils.FileUtils.importFromCSV(nhaCungCapTable);
+                utils.FileUtils.importFromExcelForNhaCungCap(nhaCungCapTable);
                 loadData(); // Refresh the table after import
             }
         });
@@ -104,10 +106,54 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         btnPrinter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    nhaCungCapTable.print();
+                    List<nhaCungCapDTO> nccList = nhaCungCapBUS.getAllNhaCungCap();
+
+                    if (nccList == null || nccList.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Không có dữ liệu nhà cung cấp để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+
+                    StringBuilder htmlContent = new StringBuilder();
+                    htmlContent.append("<html><head><style>");
+                    htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+                    htmlContent.append("h1 { text-align: center; color: #333; }");
+                    htmlContent.append(".supplier-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                    htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+                    htmlContent.append("p { margin: 5px 0; }");
+                    htmlContent.append("</style></head><body>");
+                    htmlContent.append("<h1>Danh Sách Chi Tiết Nhà Cung Cấp</h1>");
+
+                    for (nhaCungCapDTO ncc : nccList) {
+                        htmlContent.append("<div class='supplier-record'>");
+                        htmlContent.append("<p><span class='field-label'>Mã NCC:</span> ").append(ncc.getMaNhaCungCap() != null ? ncc.getMaNhaCungCap() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Tên NCC:</span> ").append(ncc.getTenNhaCungCap() != null ? ncc.getTenNhaCungCap() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Loại Sản Phẩm:</span> ").append(ncc.getLoaiSP() != null ? ncc.getLoaiSP() : "").append("</p>");
+                        String namHopTacDisplay = (ncc.getNamHopTac() > 0) ? String.valueOf(ncc.getNamHopTac()) : "Chưa cập nhật";
+                        htmlContent.append("<p><span class='field-label'>Năm Hợp Tác:</span> ").append(namHopTacDisplay).append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Địa Chỉ:</span> ").append(ncc.getDiaChi() != null ? ncc.getDiaChi() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Email:</span> ").append(ncc.getEmail() != null ? ncc.getEmail() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Số Điện Thoại:</span> ").append(ncc.getSoDienThoai() != null ? ncc.getSoDienThoai() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(ncc.getTrangThai() != null ? ncc.getTrangThai() : "").append("</p>");
+                        htmlContent.append("</div>");
+                    }
+                    htmlContent.append("</body></html>");
+
+                    JEditorPane editorPane = new JEditorPane();
+                    editorPane.setContentType("text/html");
+                    editorPane.setText(htmlContent.toString());
+                    editorPane.setEditable(false);
+
+                    boolean printed = editorPane.print();
+                    if (!printed) {
+                        // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                    }
+                } catch (java.awt.print.PrinterException pe) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                    pe.printStackTrace();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi",
+                    JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
                 }
             }
         });

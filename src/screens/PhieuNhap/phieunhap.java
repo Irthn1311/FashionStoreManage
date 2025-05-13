@@ -20,6 +20,9 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.JOptionPane;
 import utils.FileUtils;
+import javax.swing.JEditorPane;
+import java.text.DecimalFormat;
+import java.sql.Timestamp;
 
 /**
  *
@@ -160,7 +163,7 @@ public class phieunhap extends javax.swing.JPanel {
         btnExport.setPreferredSize(new java.awt.Dimension(340, 40));
         btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                utils.FileUtils.exportToCSV(jTable2, "Danh sách phiếu nhập");
+                utils.FileUtils.showExportOptionsForPhieuNhap(jTable2, "DanhSachPhieuNhap");
             }
         });
 
@@ -171,7 +174,7 @@ public class phieunhap extends javax.swing.JPanel {
         btnImport.setPreferredSize(new java.awt.Dimension(100, 40));
         btnImport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                utils.FileUtils.importFromCSV(jTable2);
+                utils.FileUtils.importFromExcelForPhieuNhap(jTable2);
                 loadPhieuNhapTable(); // Refresh the table after import
             }
         });
@@ -184,9 +187,56 @@ public class phieunhap extends javax.swing.JPanel {
         btnPrinter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    jTable2.print();
+                    List<PhieuNhapDTO> phieuNhapList = phieuNhapBUS.getAllPhieuNhap();
+
+                    if (phieuNhapList == null || phieuNhapList.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Không có dữ liệu phiếu nhập để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+
+                    StringBuilder htmlContent = new StringBuilder();
+                    htmlContent.append("<html><head><style>");
+                    htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+                    htmlContent.append("h1 { text-align: center; color: #333; }");
+                    htmlContent.append(".entry-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                    htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+                    htmlContent.append("p { margin: 5px 0; }");
+                    htmlContent.append("</style></head><body>");
+                    htmlContent.append("<h1>Danh Sách Chi Tiết Phiếu Nhập</h1>");
+
+                    SimpleDateFormat timestampFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+
+                    for (PhieuNhapDTO pn : phieuNhapList) {
+                        htmlContent.append("<div class='entry-record'>");
+                        htmlContent.append("<p><span class='field-label'>Mã Phiếu Nhập:</span> ").append(pn.getMaPhieuNhap() != null ? pn.getMaPhieuNhap() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Mã Sản Phẩm:</span> ").append(pn.getMaSanPham() != null ? pn.getMaSanPham() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Mã Nhà Cung Cấp:</span> ").append(pn.getMaNhaCungCap() != null ? pn.getMaNhaCungCap() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Số Lượng:</span> ").append(decimalFormat.format(pn.getSoLuong())).append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Đơn Giá:</span> ").append(decimalFormat.format(pn.getDonGia())).append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Thành Tiền:</span> ").append(decimalFormat.format(pn.getThanhTien())).append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Thời Gian:</span> ").append(pn.getThoiGian() != null ? timestampFormat.format(pn.getThoiGian()) : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(pn.getTrangThai() != null ? pn.getTrangThai() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Hình Thức Thanh Toán:</span> ").append(pn.getHinhThucThanhToan() != null ? pn.getHinhThucThanhToan() : "").append("</p>");
+                        htmlContent.append("</div>");
+                    }
+                    htmlContent.append("</body></html>");
+
+                    JEditorPane editorPane = new JEditorPane();
+                    editorPane.setContentType("text/html");
+                    editorPane.setText(htmlContent.toString());
+                    editorPane.setEditable(false);
+
+                    boolean printed = editorPane.print();
+                    if (!printed) {
+                        // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                    }
+                } catch (java.awt.print.PrinterException pe) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                    pe.printStackTrace();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                     e.printStackTrace();
                 }
             }
         });

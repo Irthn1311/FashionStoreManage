@@ -29,6 +29,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import java.io.File;
 import utils.FileUtils;
+import javax.swing.JEditorPane;
 
 public class HoaDonPanel extends javax.swing.JPanel {
     private HoaDonDAO hoaDonDAO;
@@ -605,7 +606,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
                             JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                utils.FileUtils.showExportOptions(jTable2, "Danh sách hóa đơn");
+                utils.FileUtils.showExportOptionsForHoaDon(jTable2, "DanhSachHoaDon");
             }
         });
 
@@ -613,7 +614,8 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jButton36.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                utils.FileUtils.importFromCSVForHoaDon(jTable2);
+                utils.FileUtils.importFromExcelForHoaDon(jTable2);
+                loadHoaDonData();
             }
         });
 
@@ -622,10 +624,58 @@ public class HoaDonPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    jTable2.print();
+                    List<hoaDonDTO> hoaDonList = hoaDonDAO.getAllHoaDon();
+
+                    if (hoaDonList == null || hoaDonList.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Không có dữ liệu hóa đơn để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+
+                    StringBuilder htmlContent = new StringBuilder();
+                    htmlContent.append("<html><head><style>");
+                    htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+                    htmlContent.append("h1 { text-align: center; color: #333; }");
+                    htmlContent.append(".invoice-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                    htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+                    htmlContent.append("p { margin: 5px 0; }");
+                    htmlContent.append("</style></head><body>");
+                    htmlContent.append("<h1>Danh Sách Chi Tiết Hóa Đơn</h1>");
+
+                    for (hoaDonDTO hd : hoaDonList) {
+                        htmlContent.append("<div class='invoice-record'>");
+                        htmlContent.append("<p><span class='field-label'>Mã Hóa Đơn:</span> ").append(hd.getMaHoaDon() != null ? hd.getMaHoaDon() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Mã Sản Phẩm:</span> ").append(hd.getMaSanPham() != null ? hd.getMaSanPham() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Tên Sản Phẩm:</span> ").append(hd.getTenSanPham() != null ? hd.getTenSanPham() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Mã Khách Hàng:</span> ").append(hd.getMaKhachHang() != null ? hd.getMaKhachHang() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Tên Khách Hàng:</span> ").append(hd.getTenKhachHang() != null ? hd.getTenKhachHang() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Kích Cỡ:</span> ").append(hd.getKichCo() != null ? hd.getKichCo() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Màu Sắc:</span> ").append(hd.getMauSac() != null ? hd.getMauSac() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Số Lượng:</span> ").append(decimalFormat.format(hd.getSoLuong())).append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Đơn Giá:</span> ").append(decimalFormat.format(hd.getDonGia())).append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Thành Tiền:</span> ").append(decimalFormat.format(hd.getThanhTien())).append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Thời Gian:</span> ").append(hd.getThoiGian() != null ? dateFormat.format(hd.getThoiGian()) : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Hình Thức Thanh Toán:</span> ").append(hd.getHinhThucThanhToan() != null ? hd.getHinhThucThanhToan() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(hd.getTrangThai() != null ? hd.getTrangThai() : "").append("</p>");
+                        htmlContent.append("</div>");
+                    }
+                    htmlContent.append("</body></html>");
+
+                    JEditorPane editorPane = new JEditorPane();
+                    editorPane.setContentType("text/html");
+                    editorPane.setText(htmlContent.toString());
+                    editorPane.setEditable(false);
+
+                    boolean printed = editorPane.print();
+                     if (!printed) {
+                        // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                    }
+                } catch (java.awt.print.PrinterException pe) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                    pe.printStackTrace();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi",
+                    JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
                 }
             }
         });

@@ -15,7 +15,7 @@ public class LoaiSanPhamDAO {
     }
 
     private int getNextSanPhamNumber() {
-        String sql = "SELECT MAX(CAST(SUBSTRING(MaSanPham, 3) AS UNSIGNED)) FROM SanPham WHERE MaSanPham LIKE 'SP%'";
+        String sql = "SELECT MAX(CAST(SUBSTRING(MaSanPham, 3, LEN(MaSanPham)) AS INT)) FROM SanPham WHERE MaSanPham LIKE 'SP%'";
         try (Connection conn = ConnectDB.getConnection()) {
             if (conn == null) {
                 System.err.println("Không thể kết nối đến cơ sở dữ liệu.");

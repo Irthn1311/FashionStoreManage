@@ -26,6 +26,8 @@ import javax.swing.SwingConstants;
 import utils.FileUtils;
 import javax.swing.JFileChooser;
 import java.io.File;
+import javax.swing.JEditorPane;
+import java.text.DecimalFormat;
 
 public class khachHangPanel extends javax.swing.JPanel {
     private KhachHangBUS khachHangBUS;
@@ -149,7 +151,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         btnExport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                utils.FileUtils.exportToCSV(khachHangTable, "Danh sách khách hàng");
+                utils.FileUtils.showExportOptionsForKhachHang(khachHangTable, "DanhSachKhachHang");
             }
         });
 
@@ -179,7 +181,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         btnImport.setPreferredSize(new java.awt.Dimension(100, 40));
         btnImport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                utils.FileUtils.importFromCSV(khachHangTable);
+                utils.FileUtils.importFromExcelForKhachHang(khachHangTable);
                 loadKhachHangData(); // Refresh the table after import
             }
         });
@@ -194,9 +196,57 @@ public class khachHangPanel extends javax.swing.JPanel {
         btnPrinter.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                         try {
-                                khachHangTable.print();
+                                List<khachHangDTO> khachHangList = khachHangBUS.getAllKhachHang();
+
+                                if (khachHangList == null || khachHangList.isEmpty()) {
+                                        JOptionPane.showMessageDialog(null, "Không có dữ liệu khách hàng để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                                        return;
+                                }
+
+                                StringBuilder htmlContent = new StringBuilder();
+                                htmlContent.append("<html><head><style>");
+                                htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+                                htmlContent.append("h1 { text-align: center; color: #333; }");
+                                htmlContent.append(".customer-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                                htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+                                htmlContent.append("p { margin: 5px 0; }");
+                                htmlContent.append("</style></head><body>");
+                                htmlContent.append("<h1>Danh Sách Chi Tiết Khách Hàng</h1>");
+
+                                for (khachHangDTO kh : khachHangList) {
+                                        htmlContent.append("<div class='customer-record'>");
+                                        htmlContent.append("<p><span class='field-label'>Mã Khách Hàng:</span> ").append(kh.getMaKhachHang() != null ? kh.getMaKhachHang() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Họ Tên:</span> ").append(kh.getHoTen() != null ? kh.getHoTen() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Giới Tính:</span> ").append(kh.getGioiTinh() != null ? kh.getGioiTinh() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Số Điện Thoại:</span> ").append(kh.getSoDienThoai() != null && !kh.getSoDienThoai().trim().isEmpty() ? kh.getSoDienThoai() : "Chưa cập nhật").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Email:</span> ").append(kh.getEmail() != null && !kh.getEmail().trim().isEmpty() ? kh.getEmail() : "Chưa cập nhật").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Địa Chỉ:</span> ").append(kh.getDiaChi() != null && !kh.getDiaChi().trim().isEmpty() ? kh.getDiaChi() : "Chưa cập nhật").append("</p>");
+                                        String ngaySinhDisplay = "Chưa cập nhật";
+                                        if (kh.getNgaySinh() != null) {
+                                            try {
+                                                ngaySinhDisplay = dateFormat.format(kh.getNgaySinh());
+                                            } catch (Exception ex) { /* ignore, keep default */ }
+                                        }
+                                        htmlContent.append("<p><span class='field-label'>Ngày Sinh:</span> ").append(ngaySinhDisplay).append("</p>");
+                                        htmlContent.append("</div>");
+                                }
+                                htmlContent.append("</body></html>");
+
+                                JEditorPane editorPane = new JEditorPane();
+                                editorPane.setContentType("text/html");
+                                editorPane.setText(htmlContent.toString());
+                                editorPane.setEditable(false);
+
+                                boolean printed = editorPane.print();
+                                if (!printed) {
+                                    // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                                }
+                        } catch (java.awt.print.PrinterException pe) {
+                            JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                            pe.printStackTrace();
                         } catch (Exception e) {
-                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                                e.printStackTrace();
                         }
                 }
         });

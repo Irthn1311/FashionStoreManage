@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import utils.FileUtils;
+import javax.swing.JEditorPane;
 
 /**
  *
@@ -219,7 +220,7 @@ public class nhanVienPanel extends javax.swing.JPanel {
         btnImport.setPreferredSize(new java.awt.Dimension(100, 40));
         btnImport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                utils.FileUtils.importFromCSV(nhanVienTable);
+                utils.FileUtils.importFromExcelForNhanVien(nhanVienTable);
                 loadNhanVienData(); // Refresh the table after import
             }
         });
@@ -234,9 +235,87 @@ public class nhanVienPanel extends javax.swing.JPanel {
         btnPrinter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    nhanVienTable.print();
+                    // OLD: nhanVienTable.print();
+                    NhanVienDAO dao = new NhanVienDAO();
+                    List<nhanVienDTO> nhanVienList = dao.getAllNhanVien();
+
+                    if (nhanVienList == null || nhanVienList.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Không có dữ liệu nhân viên để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+
+                    StringBuilder htmlContent = new StringBuilder();
+                    htmlContent.append("<html><head><style>");
+                    htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+                    htmlContent.append("h1 { text-align: center; color: #333; }");
+                    htmlContent.append(".employee-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                    htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+                    htmlContent.append("p { margin: 5px 0; }");
+                    htmlContent.append("hr { border: 0; border-top: 1px dashed #ccc; margin: 10px 0; }");
+                    htmlContent.append("</style></head><body>");
+                    htmlContent.append("<h1>Danh Sách Chi Tiết Nhân Viên</h1>");
+
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat timestampFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+
+                    for (nhanVienDTO nv : nhanVienList) {
+                        htmlContent.append("<div class='employee-record'>");
+                        htmlContent.append("<p><span class='field-label'>Mã Nhân Viên:</span> ").append(nv.getMaNhanVien() != null ? nv.getMaNhanVien() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Họ Tên:</span> ").append(nv.getHoTen() != null ? nv.getHoTen() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Giới Tính:</span> ").append(nv.getGioiTinh() != null ? nv.getGioiTinh() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Ngày Sinh:</span> ").append(nv.getNgaySinh() != null ? dateFormat.format(nv.getNgaySinh()) : "Chưa cập nhật").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Số Điện Thoại:</span> ").append(nv.getSoDienThoai() != null ? nv.getSoDienThoai() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Email:</span> ").append(nv.getEmail() != null ? nv.getEmail() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Địa Chỉ:</span> ").append(nv.getDiaChi() != null ? nv.getDiaChi() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Chức Vụ:</span> ").append(nv.getChucVu() != null ? nv.getChucVu() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Mức Lương:</span> ").append(nv.getMucLuong() != null ? decimalFormat.format(nv.getMucLuong()) : "Chưa cập nhật").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Ngày Vào Làm:</span> ").append(nv.getNgayVaoLam() != null ? timestampFormat.format(nv.getNgayVaoLam()) : "Chưa cập nhật").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Mã Quản Lý:</span> ").append(nv.getMaQuanLy() != null ? nv.getMaQuanLy() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Trạng Thái Nhân Viên:</span> ").append(nv.getTrangThai() != null ? nv.getTrangThai() : "").append("</p>");
+                        
+                        taiKhoanDTO tk = dao.getTaiKhoanByMaNhanVien(nv.getMaNhanVien());
+                        if (tk != null) {
+                            htmlContent.append("<hr>");
+                            htmlContent.append("<p><span class='field-label'>Tên Đăng Nhập (TK):</span> ").append(tk.getTenDangNhap() != null ? tk.getTenDangNhap() : "").append("</p>");
+                            // htmlContent.append("<p><span class='field-label'>Mật Khẩu (TK):</span> ").append(tk.getMatKhau() != null ? tk.getMatKhau() : "").append("</p>"); // Consider security if printing passwords
+                            htmlContent.append("<p><span class='field-label'>Vai Trò (TK):</span> ").append(tk.getVaiTro() != null ? tk.getVaiTro().getDisplayName() : "").append("</p>");
+                            String trangThaiTKStr;
+                            switch (tk.getTrangThai()) {
+                                case 1: trangThaiTKStr = "Hoạt động"; break;
+                                case 0: trangThaiTKStr = "Không hoạt động"; break;
+                                case -1: trangThaiTKStr = "Đang xét duyệt"; break;
+                                default: trangThaiTKStr = "Không xác định";
+                            }
+                            htmlContent.append("<p><span class='field-label'>Trạng Thái (TK):</span> ").append(trangThaiTKStr).append("</p>");
+                        } else {
+                            htmlContent.append("<hr>");
+                            htmlContent.append("<p><em>Nhân viên này chưa có tài khoản.</em></p>");
+                        }
+                        htmlContent.append("</div>");
+                    }
+                    htmlContent.append("</body></html>");
+
+                    JEditorPane editorPane = new JEditorPane();
+                    editorPane.setContentType("text/html");
+                    editorPane.setText(htmlContent.toString());
+                    editorPane.setEditable(false);
+                    
+                    // For a better print preview experience, you might put the JEditorPane in a JScrollPane
+                    // and show it in a JDialog before printing, but for direct printing:
+                    boolean printed = editorPane.print();
+                    if (printed) {
+                        // JOptionPane.showMessageDialog(null, "Đã gửi lệnh in thành công.", "In Hoàn Tất", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                    }
+
+                } catch (java.awt.print.PrinterException pe) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                     pe.printStackTrace();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
                 }
             }
         });
@@ -249,7 +328,7 @@ public class nhanVienPanel extends javax.swing.JPanel {
         btnExport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                utils.FileUtils.exportToCSV(nhanVienTable, "Danh sách nhân viên");
+                utils.FileUtils.showExportOptionsForNhanVien(nhanVienTable, "DanhSachNhanVien");
             }
         });
 

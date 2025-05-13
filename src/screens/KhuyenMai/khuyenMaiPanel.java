@@ -29,6 +29,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import java.awt.print.PrinterJob;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
+import javax.swing.JEditorPane;
+import java.text.DecimalFormat;
 
 public class khuyenMaiPanel extends javax.swing.JPanel {
         private KhuyenMaiService khuyenMaiService;
@@ -161,7 +163,7 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 jButton34.setHorizontalTextPosition(SwingConstants.RIGHT);
                 jButton34.setPreferredSize(new java.awt.Dimension(340, 40));
                 jButton34.addActionListener(e -> {
-                        utils.FileUtils.showExportOptions(khuyenMaiTable, "Danh sách khuyến mãi");
+                        utils.FileUtils.showExportOptionsForKhuyenMai(khuyenMaiTable, "DanhSachKhuyenMai");
                 });
 
                 jButton36 = new javax.swing.JButton("Import");
@@ -171,7 +173,7 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
                 jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
                 jButton36.addActionListener(e -> {
-                        utils.FileUtils.importFromFileForKhuyenMai(khuyenMaiTable);
+                        utils.FileUtils.importFromExcelForKhuyenMai(khuyenMaiTable);
                         loadKhuyenMaiData(); // Refresh the table after import
                 });
 
@@ -183,10 +185,59 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 btnPrinter.setPreferredSize(new java.awt.Dimension(100, 40));
                 btnPrinter.addActionListener(e -> {
                         try {
-                                khuyenMaiTable.print();
+                                List<khuyenMaiDTO> khuyenMaiList = khuyenMaiService.getAllKhuyenMai();
+
+                                if (khuyenMaiList == null || khuyenMaiList.isEmpty()) {
+                                        JOptionPane.showMessageDialog(null, "Không có dữ liệu khuyến mãi để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                                        return;
+                                }
+
+                                StringBuilder htmlContent = new StringBuilder();
+                                htmlContent.append("<html><head><style>");
+                                htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+                                htmlContent.append("h1 { text-align: center; color: #333; }");
+                                htmlContent.append(".promo-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                                htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+                                htmlContent.append("p { margin: 5px 0; }");
+                                htmlContent.append("</style></head><body>");
+                                htmlContent.append("<h1>Danh Sách Chi Tiết Khuyến Mãi</h1>");
+
+                                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                                DecimalFormat percentFormat = new DecimalFormat("#,##0.00'#'");
+
+                                for (khuyenMaiDTO km : khuyenMaiList) {
+                                        htmlContent.append("<div class='promo-record'>");
+                                        htmlContent.append("<p><span class='field-label'>Mã Khuyến Mãi:</span> ").append(km.getMaKhuyenMai() != null ? km.getMaKhuyenMai() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Mã Sản Phẩm:</span> ").append(km.getMaSanPham() != null ? km.getMaSanPham() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Tên Sản Phẩm:</span> ").append(km.getTenSanPham() != null ? km.getTenSanPham() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Tên Chương Trình:</span> ").append(km.getTenChuongTrinh() != null ? km.getTenChuongTrinh() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Ngày Bắt Đầu:</span> ").append(km.getNgayBatDau() != null ? dateFormat.format(km.getNgayBatDau()) : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Ngày Kết Thúc:</span> ").append(km.getNgayKetThuc() != null ? dateFormat.format(km.getNgayKetThuc()) : "").append("</p>");
+                                        String giamGiaDisplay = percentFormat.format(km.getGiamGia()).replace("#", "%");
+                                        htmlContent.append("<p><span class='field-label'>Giảm Giá:</span> ").append(giamGiaDisplay).append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Giá Cũ:</span> ").append(decimalFormat.format(km.getGiaCu())).append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Giá Mới:</span> ").append(decimalFormat.format(km.getGiaMoi())).append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(km.getTrangThai() != null ? km.getTrangThai() : "").append("</p>");
+                                        htmlContent.append("</div>");
+                                }
+                                htmlContent.append("</body></html>");
+
+                                JEditorPane editorPane = new JEditorPane();
+                                editorPane.setContentType("text/html");
+                                editorPane.setText(htmlContent.toString());
+                                editorPane.setEditable(false);
+
+                                boolean printed = editorPane.print();
+                                if (!printed) {
+                                        // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                                }
+                        } catch (java.awt.print.PrinterException pe) {
+                                JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                                pe.printStackTrace();
                         } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + ex.getMessage(), "Lỗi",
+                                JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + ex.getMessage(), "Lỗi",
                                                 JOptionPane.ERROR_MESSAGE);
+                                ex.printStackTrace();
                         }
                 });
 
@@ -479,7 +530,7 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 jButton34.setHorizontalTextPosition(SwingConstants.RIGHT);
                 jButton34.setPreferredSize(new java.awt.Dimension(340, 40));
                 jButton34.addActionListener(e -> {
-                        utils.FileUtils.showExportOptions(khuyenMaiTable, "Danh sách khuyến mãi");
+                        utils.FileUtils.showExportOptionsForKhuyenMai(khuyenMaiTable, "DanhSachKhuyenMai");
                 });
 
                 jButton36 = new javax.swing.JButton("Import");
@@ -489,7 +540,7 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
                 jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
                 jButton36.addActionListener(e -> {
-                        utils.FileUtils.importFromFileForKhuyenMai(khuyenMaiTable);
+                        utils.FileUtils.importFromExcelForKhuyenMai(khuyenMaiTable);
                         loadKhuyenMaiData(); // Refresh the table after import
                 });
 
@@ -501,10 +552,59 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
                 btnPrinter.setPreferredSize(new java.awt.Dimension(100, 40));
                 btnPrinter.addActionListener(e -> {
                         try {
-                                khuyenMaiTable.print();
+                                List<khuyenMaiDTO> khuyenMaiList = khuyenMaiService.getAllKhuyenMai();
+
+                                if (khuyenMaiList == null || khuyenMaiList.isEmpty()) {
+                                        JOptionPane.showMessageDialog(null, "Không có dữ liệu khuyến mãi để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                                        return;
+                                }
+
+                                StringBuilder htmlContent = new StringBuilder();
+                                htmlContent.append("<html><head><style>");
+                                htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+                                htmlContent.append("h1 { text-align: center; color: #333; }");
+                                htmlContent.append(".promo-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                                htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+                                htmlContent.append("p { margin: 5px 0; }");
+                                htmlContent.append("</style></head><body>");
+                                htmlContent.append("<h1>Danh Sách Chi Tiết Khuyến Mãi</h1>");
+
+                                DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                                DecimalFormat percentFormat = new DecimalFormat("#,##0.00'#'");
+
+                                for (khuyenMaiDTO km : khuyenMaiList) {
+                                        htmlContent.append("<div class='promo-record'>");
+                                        htmlContent.append("<p><span class='field-label'>Mã Khuyến Mãi:</span> ").append(km.getMaKhuyenMai() != null ? km.getMaKhuyenMai() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Mã Sản Phẩm:</span> ").append(km.getMaSanPham() != null ? km.getMaSanPham() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Tên Sản Phẩm:</span> ").append(km.getTenSanPham() != null ? km.getTenSanPham() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Tên Chương Trình:</span> ").append(km.getTenChuongTrinh() != null ? km.getTenChuongTrinh() : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Ngày Bắt Đầu:</span> ").append(km.getNgayBatDau() != null ? dateFormat.format(km.getNgayBatDau()) : "").append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Ngày Kết Thúc:</span> ").append(km.getNgayKetThuc() != null ? dateFormat.format(km.getNgayKetThuc()) : "").append("</p>");
+                                        String giamGiaDisplay = percentFormat.format(km.getGiamGia()).replace("#", "%");
+                                        htmlContent.append("<p><span class='field-label'>Giảm Giá:</span> ").append(giamGiaDisplay).append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Giá Cũ:</span> ").append(decimalFormat.format(km.getGiaCu())).append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Giá Mới:</span> ").append(decimalFormat.format(km.getGiaMoi())).append("</p>");
+                                        htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(km.getTrangThai() != null ? km.getTrangThai() : "").append("</p>");
+                                        htmlContent.append("</div>");
+                                }
+                                htmlContent.append("</body></html>");
+
+                                JEditorPane editorPane = new JEditorPane();
+                                editorPane.setContentType("text/html");
+                                editorPane.setText(htmlContent.toString());
+                                editorPane.setEditable(false);
+
+                                boolean printed = editorPane.print();
+                                if (!printed) {
+                                        // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                                }
+                        } catch (java.awt.print.PrinterException pe) {
+                                JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                                pe.printStackTrace();
                         } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(null, "Lỗi khi in: " + ex.getMessage(), "Lỗi",
+                                JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + ex.getMessage(), "Lỗi",
                                                 JOptionPane.ERROR_MESSAGE);
+                                ex.printStackTrace();
                         }
                 });
 
