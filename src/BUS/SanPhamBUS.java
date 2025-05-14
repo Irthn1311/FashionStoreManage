@@ -12,6 +12,10 @@ public class SanPhamBUS {
         this.sanPhamDAO = new SanPhamDAO();
     }
 
+    public List<sanPhamDTO> getAll() {
+        return sanPhamDAO.getAllSanPham();
+    }
+
     public List<String> getAllProductCodes() {
         List<sanPhamDTO> products = sanPhamDAO.getAll();
         return products.stream()

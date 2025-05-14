@@ -2,6 +2,8 @@ package BUS;
 
 import DAO.HoaDonDAO;
 import DTO.hoaDonDTO;
+import DTO.sanPhamThongKeDTO;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class HoaDonBUS {
@@ -25,5 +27,9 @@ public class HoaDonBUS {
 
     public boolean updateHoaDon(hoaDonDTO hd) {
         return hoaDonDAO.updateHoaDon(hd);
+    }
+
+    public List<sanPhamThongKeDTO> getSanPhamBanChayNhat(Timestamp startDate, Timestamp endDate) {
+        return hoaDonDAO.getSanPhamBanChayNhat(startDate, endDate);
     }
 } 

@@ -404,8 +404,43 @@ public class HoaDonDAO {
     }
 
     public List<sanPhamThongKeDTO> getSanPhamBanChayNhat(Timestamp startDate, Timestamp endDate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSanPhamBanChayNhat'");
+        List<sanPhamThongKeDTO> result = new ArrayList<>();
+        // Default to top 10 bestsellers if not specified otherwise by a parameter later
+        int topN = 10; 
+        String sql = "SELECT TOP (?) hd.MaSanPham, sp.TenSanPham, SUM(hd.SoLuong) as TongSoLuongBan " +
+                     "FROM HoaDon hd " +
+                     "JOIN SanPham sp ON hd.MaSanPham = sp.MaSanPham " +
+                     "WHERE hd.ThoiGian BETWEEN ? AND ? " +
+                     "GROUP BY hd.MaSanPham, sp.TenSanPham " +
+                     "ORDER BY TongSoLuongBan DESC";
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, topN);
+            ps.setTimestamp(2, startDate);
+            ps.setTimestamp(3, endDate);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    // Assuming sanPhamThongKeDTO can be constructed with MaSanPham, TenSanPham, 
+                    // and TongSoLuongBan (for SoLuong field). Other fields will be null/default.
+                    sanPhamThongKeDTO dto = new sanPhamThongKeDTO(
+                            rs.getString("MaSanPham"),
+                            rs.getString("TenSanPham"),
+                            null, // MaKhachHang - not relevant here
+                            null, // TenKhachHang - not relevant here
+                            rs.getInt("TongSoLuongBan"), // SoLuong
+                            0.0   // DoanhThu - not calculated here, can be if needed
+                    );
+                    result.add(dto);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy danh sách sản phẩm bán chạy nhất: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public int getSoLuongHoaDon() {

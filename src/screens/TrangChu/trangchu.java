@@ -182,7 +182,7 @@ public class trangchu extends javax.swing.JFrame {
         }
     }
 
-    private void switchPanel(javax.swing.JPanel panel) {
+    public void switchPanel(javax.swing.JPanel panel) {
         if (panel == null) {
             System.out.println("Error: Panel mới là null");
             return;
@@ -499,7 +499,7 @@ public class trangchu extends javax.swing.JFrame {
     }
 
     private void btnNhapHangActionPerformed(java.awt.event.ActionEvent evt) {
-        nhaphang nhapHangScreen = new nhaphang();
+        nhaphang nhapHangScreen = new nhaphang(this);
         switchPanel(nhapHangScreen.getNhapHangPanel());
     }
 

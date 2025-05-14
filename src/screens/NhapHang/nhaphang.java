@@ -25,6 +25,7 @@ import DTO.NhaCungCap_SanPhamDTO;
 import BUS.NhapHangBUS;
 import BUS.SanPhamBUS;
 import BUS.NhaCungCapBUS;
+import screens.TrangChu.trangchu;
 
 /**
  *
@@ -38,16 +39,23 @@ public class nhaphang extends javax.swing.JPanel {
         private NhapHangBUS nhapHangBUS;
         private SanPhamBUS sanPhamBUS;
         private NhaCungCapBUS nhaCungCapBUS;
+        private trangchu mainFrame;
 
         // Thêm biến giao diện tìm kiếm
         private javax.swing.JComboBox<String> cbSearchType;
         private javax.swing.JTextField txtSearchValue;
         private javax.swing.JButton btnSearch;
+        private javax.swing.JButton btnOpenSmartImport;
 
         /**
          * Creates new form phieunhap
          */
         public nhaphang() {
+                this(null);
+        }
+
+        public nhaphang(trangchu mainFrame) {
+                this.mainFrame = mainFrame;
                 nhapHangBUS = new NhapHangBUS();
                 sanPhamBUS = new SanPhamBUS();
                 nhaCungCapBUS = new NhaCungCapBUS();
@@ -117,6 +125,7 @@ public class nhaphang extends javax.swing.JPanel {
                 jButton18 = new javax.swing.JButton();
                 jButton16 = new javax.swing.JButton();
                 jButton17 = new javax.swing.JButton();
+                btnOpenSmartImport = new javax.swing.JButton();
 
                 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
                 jPanel1.setLayout(jPanel1Layout);
@@ -132,6 +141,13 @@ public class nhaphang extends javax.swing.JPanel {
                 jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
                 jLabel1.setText("Quản lý  nhập hàng");
 
+                btnOpenSmartImport.setText("Trợ Lý Nhập Hàng");
+                btnOpenSmartImport.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        btnOpenSmartImportActionPerformed(evt);
+                    }
+                });
+
                 javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
                 pnlHeader.setLayout(pnlHeaderLayout);
                 pnlHeaderLayout.setHorizontalGroup(
@@ -140,15 +156,16 @@ public class nhaphang extends javax.swing.JPanel {
                                                                 pnlHeaderLayout.createSequentialGroup()
                                                                                 .addContainerGap(422, Short.MAX_VALUE)
                                                                                 .addComponent(jLabel1)
-                                                                                .addGap(370, 370, 370)));
+                                                                                .addGap(180, 180, 180)
+                                                                                .addComponent(btnOpenSmartImport, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addGap(40, 40, 40)));
                 pnlHeaderLayout.setVerticalGroup(
                                 pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(pnlHeaderLayout.createSequentialGroup()
                                                                 .addGap(14, 14, 14)
-                                                                .addComponent(jLabel1,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                42,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addGroup(pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                    .addComponent(btnOpenSmartImport, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addContainerGap(14, Short.MAX_VALUE)));
 
                 containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
@@ -852,6 +869,15 @@ public class nhaphang extends javax.swing.JPanel {
             }
         }
 
+        private void btnOpenSmartImportActionPerformed(java.awt.event.ActionEvent evt) {
+            if (this.mainFrame != null) {
+                screens.NhapHang.SmartImportAdvisorPanel smartImportPanel = new screens.NhapHang.SmartImportAdvisorPanel(this.mainFrame, this);
+                this.mainFrame.switchPanel(smartImportPanel);
+            } else {
+                JOptionPane.showMessageDialog(this, "Không thể mở Trợ Lý Nhập Hàng từ context này (mainFrame is null).", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
         /**
          * @param args the command line arguments
          */
@@ -936,4 +962,8 @@ public class nhaphang extends javax.swing.JPanel {
         private javax.swing.JPanel pnlContent;
         private javax.swing.JPanel pnlHeader;
         // End of variables declaration//GEN-END:variables
+
+        public void refreshImportTable() {
+                loadImportTable();
+        }
 }
