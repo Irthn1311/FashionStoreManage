@@ -574,7 +574,7 @@ public class phieunhap extends javax.swing.JPanel {
     private void jButton33ActionPerformed(java.awt.event.ActionEvent evt) {
         int selectedRow = jTable2.getSelectedRow();
         if (selectedRow == -1) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng để xóa!");
+            javax.swing.JOptionPane.showMessageDialog(null, "Vui lòng chọn dữ liệu cần xóa!");
             return;
         }
         String maPN = jTable2.getValueAt(selectedRow, 1).toString();

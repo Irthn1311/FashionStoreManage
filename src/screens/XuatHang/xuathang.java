@@ -151,11 +151,11 @@ public class xuathang extends javax.swing.JPanel {
                     loadXuatHangTable();
 
                     // 5. Thông báo thành công
-                    JOptionPane.showMessageDialog(null, "Xác nhận xuất hàng thành công! Dữ liệu đã chuyển sang hóa đơn.");
+                    JOptionPane.showMessageDialog(null, "Xuất hàng thành công!");
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Lỗi khi xác nhận xuất hàng: " + e.getMessage());
+                    JOptionPane.showMessageDialog(null, "Lỗi khi xuất hàng: " + e.getMessage());
                 }
             }
         });
@@ -325,7 +325,7 @@ public class xuathang extends javax.swing.JPanel {
                 try {
                     // Validate dữ liệu
                     if (cbMaSanPham.getSelectedItem() == null || jTextField10.getText().trim().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm và nhập số lượng!");
+                        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin!");
                         return;
                     }
 
@@ -374,7 +374,7 @@ public class xuathang extends javax.swing.JPanel {
                     conn.close();
 
                     if (result > 0) {
-                        JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào phiếu xuất thành công!");
+                        JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào thành công!");
                         loadXuatHangTable();
                         
                         // Xóa các trường nhập liệu

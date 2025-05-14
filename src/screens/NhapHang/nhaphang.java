@@ -91,6 +91,7 @@ public class nhaphang extends javax.swing.JPanel {
                 cbMaSanPham = new javax.swing.JComboBox<>();
                 cbHinhThucThanhToan = new javax.swing.JComboBox<>();
                 jTextField7 = new javax.swing.JTextField();
+                jTextField7.setEditable(false);
                 lblLoaiSanPham = new javax.swing.JLabel();
                 lblMaSanPham = new javax.swing.JLabel();
                 lblTenSanPham = new javax.swing.JLabel();
@@ -606,7 +607,7 @@ public class nhaphang extends javax.swing.JPanel {
             nh.setHinhThucThanhToan((String) cbHinhThucThanhToan.getSelectedItem());
 
             if (nhapHangBUS.themNhapHang(nh)) {
-                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công với mã phiếu nhập: " + nextMaPN);
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công");
                 loadImportTable(); // Refresh table
                 // Clear input fields
                 cbMaSanPham.setSelectedIndex(0);
@@ -769,10 +770,10 @@ public class nhaphang extends javax.swing.JPanel {
         private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                         if (nhapHangBUS.chuyenNhapHangSangPhieuNhap()) {
-                                JOptionPane.showMessageDialog(this, "Chuyển phiếu nhập sang bảng Phiếu Nhập thành công!");
+                                JOptionPane.showMessageDialog(this, "Nhập hàng thành công!");
                                 loadImportTable(); // Refresh lại bảng NhapHang
                         } else {
-                                JOptionPane.showMessageDialog(this, "Có lỗi khi chuyển dữ liệu!");
+                                JOptionPane.showMessageDialog(this, "Có lỗi khi xác nhận nhập hàng");
                         }
                 } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
