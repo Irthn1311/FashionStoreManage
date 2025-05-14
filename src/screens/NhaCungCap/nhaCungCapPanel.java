@@ -26,6 +26,10 @@ import BUS.NhaCungCap_SanPhamBUS;
 import DTO.NhaCungCap_SanPhamDTO;
 import javax.swing.JEditorPane;
 import java.text.DecimalFormat;
+import BUS.SanPhamBUS;
+import DTO.sanPhamDTO;
+import BUS.PhieuNhapBUS;
+import DTO.PhieuNhapDTO;
 
 /**
  *
@@ -109,7 +113,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                     List<nhaCungCapDTO> nccList = nhaCungCapBUS.getAllNhaCungCap();
 
                     if (nccList == null || nccList.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Không có dữ liệu nhà cung cấp để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Không có dữ liệu nhà cung cấp để in.", "Thông báo",
+                                JOptionPane.INFORMATION_MESSAGE);
                         return;
                     }
 
@@ -117,7 +122,8 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                     htmlContent.append("<html><head><style>");
                     htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
                     htmlContent.append("h1 { text-align: center; color: #333; }");
-                    htmlContent.append(".supplier-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+                    htmlContent.append(
+                            ".supplier-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
                     htmlContent.append(".field-label { font-weight: bold; color: #555; }");
                     htmlContent.append("p { margin: 5px 0; }");
                     htmlContent.append("</style></head><body>");
@@ -125,15 +131,24 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
                     for (nhaCungCapDTO ncc : nccList) {
                         htmlContent.append("<div class='supplier-record'>");
-                        htmlContent.append("<p><span class='field-label'>Mã NCC:</span> ").append(ncc.getMaNhaCungCap() != null ? ncc.getMaNhaCungCap() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Tên NCC:</span> ").append(ncc.getTenNhaCungCap() != null ? ncc.getTenNhaCungCap() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Loại Sản Phẩm:</span> ").append(ncc.getLoaiSP() != null ? ncc.getLoaiSP() : "").append("</p>");
-                        String namHopTacDisplay = (ncc.getNamHopTac() > 0) ? String.valueOf(ncc.getNamHopTac()) : "Chưa cập nhật";
-                        htmlContent.append("<p><span class='field-label'>Năm Hợp Tác:</span> ").append(namHopTacDisplay).append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Địa Chỉ:</span> ").append(ncc.getDiaChi() != null ? ncc.getDiaChi() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Email:</span> ").append(ncc.getEmail() != null ? ncc.getEmail() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Số Điện Thoại:</span> ").append(ncc.getSoDienThoai() != null ? ncc.getSoDienThoai() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(ncc.getTrangThai() != null ? ncc.getTrangThai() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Mã NCC:</span> ")
+                                .append(ncc.getMaNhaCungCap() != null ? ncc.getMaNhaCungCap() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Tên NCC:</span> ")
+                                .append(ncc.getTenNhaCungCap() != null ? ncc.getTenNhaCungCap() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Loại Sản Phẩm:</span> ")
+                                .append(ncc.getLoaiSP() != null ? ncc.getLoaiSP() : "").append("</p>");
+                        String namHopTacDisplay = (ncc.getNamHopTac() > 0) ? String.valueOf(ncc.getNamHopTac())
+                                : "Chưa cập nhật";
+                        htmlContent.append("<p><span class='field-label'>Năm Hợp Tác:</span> ").append(namHopTacDisplay)
+                                .append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Địa Chỉ:</span> ")
+                                .append(ncc.getDiaChi() != null ? ncc.getDiaChi() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Email:</span> ")
+                                .append(ncc.getEmail() != null ? ncc.getEmail() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Số Điện Thoại:</span> ")
+                                .append(ncc.getSoDienThoai() != null ? ncc.getSoDienThoai() : "").append("</p>");
+                        htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ")
+                                .append(ncc.getTrangThai() != null ? ncc.getTrangThai() : "").append("</p>");
                         htmlContent.append("</div>");
                     }
                     htmlContent.append("</body></html>");
@@ -145,10 +160,13 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
                     boolean printed = editorPane.print();
                     if (!printed) {
-                        // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+                        // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy",
+                        // JOptionPane.WARNING_MESSAGE);
                     }
                 } catch (java.awt.print.PrinterException pe) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn",
+                            JOptionPane.ERROR_MESSAGE);
                     pe.printStackTrace();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi",
@@ -476,125 +494,218 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         String maNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 1);
         String tenNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 2);
 
-        int choice = JOptionPane.showConfirmDialog(this,
-                "Bạn có chắc chắn muốn xóa nhà cung cấp " + tenNCC + "?",
+        int initialChoice = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc chắn muốn xóa nhà cung cấp " + tenNCC + " (Mã: " + maNCC + ")?",
                 "Xác nhận xóa",
                 JOptionPane.YES_NO_OPTION);
 
-        if (choice == JOptionPane.YES_OPTION) {
-            try {
-                // Kiểm tra xem nhà cung cấp có sản phẩm liên kết không
-                NhaCungCap_SanPhamBUS nccspBUS = new NhaCungCap_SanPhamBUS();
-                List<NhaCungCap_SanPhamDTO> linkedProducts = nccspBUS.getSanPhamByNhaCungCap(maNCC);
+        if (initialChoice == JOptionPane.NO_OPTION) {
+            return;
+        }
 
-                if (linkedProducts != null && !linkedProducts.isEmpty()) {
-                    String[] options = {
-                            "Xóa tất cả sản phẩm liên kết",
-                            "Cập nhật sản phẩm sang nhà cung cấp khác",
-                            "Hủy"
-                    };
+        try {
+            // Dependency Checks
+            SanPhamBUS spBUS = new SanPhamBUS();
+            List<sanPhamDTO> primarySuppliedProducts = spBUS.getSanPhamByMaNhaCungCap(maNCC);
 
-                    int option = JOptionPane.showOptionDialog(this,
-                            "Nhà cung cấp này đang có " + linkedProducts.size() + " sản phẩm liên kết.\n" +
-                                    "Bạn muốn xử lý như thế nào?",
-                            "Xử lý sản phẩm liên kết",
-                            JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,
-                            options,
-                            options[2]);
+            NhaCungCap_SanPhamBUS nccspBUS = new NhaCungCap_SanPhamBUS();
+            List<NhaCungCap_SanPhamDTO> manyToManyLinks = nccspBUS.getSanPhamByNhaCungCap(maNCC);
 
-                    if (option == 0) { // Xóa tất cả sản phẩm
-                        int confirm = JOptionPane.showConfirmDialog(this,
-                                "Bạn có chắc chắn muốn xóa tất cả sản phẩm liên kết với nhà cung cấp này?\n" +
-                                        "Hành động này không thể hoàn tác!",
-                                "Xác nhận xóa sản phẩm",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.WARNING_MESSAGE);
+            BUS.PhieuNhapBUS pnBUS = new BUS.PhieuNhapBUS();
+            List<DTO.PhieuNhapDTO> phieuNhapLinks = pnBUS.searchBySupplier(maNCC);
 
-                        if (confirm == JOptionPane.YES_OPTION) {
-                            // Xóa tất cả liên kết sản phẩm trước
-                            for (NhaCungCap_SanPhamDTO nccsp : linkedProducts) {
-                                nccspBUS.xoaNhaCungCap_SanPham(maNCC, nccsp.getMaSanPham());
-                            }
-                            // Sau đó xóa nhà cung cấp
-                            if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
-                                JOptionPane.showMessageDialog(this, "Đã xóa nhà cung cấp và các sản phẩm liên kết!");
-                                loadData();
-                            }
-                        }
-                    } else if (option == 1) { // Cập nhật sang nhà cung cấp khác
-                        // Lấy danh sách nhà cung cấp khác
-                        List<nhaCungCapDTO> otherSuppliers = nhaCungCapBUS.getAllNhaCungCap();
-                        otherSuppliers.removeIf(ncc -> ncc.getMaNhaCungCap().equals(maNCC));
+            // 1. Handle PhieuNhap dependencies (Highest precedence for this error)
+            if (phieuNhapLinks != null && !phieuNhapLinks.isEmpty()) {
+                String[] pnOptions = { "Cập nhật Phiếu Nhập sang NCC khác", "Hủy" };
+                int pnOption = JOptionPane.showOptionDialog(this,
+                        "Nhà cung cấp " + tenNCC + " có " + phieuNhapLinks.size() + " phiếu nhập liên quan.\n" +
+                                "Bạn PHẢI chuyển các phiếu nhập này sang một nhà cung cấp khác trước khi xóa.",
+                        "Xử lý Phiếu Nhập liên quan",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        null,
+                        pnOptions,
+                        pnOptions[1]);
 
-                        if (otherSuppliers.isEmpty()) {
-                            JOptionPane.showMessageDialog(this,
-                                    "Không có nhà cung cấp khác để chuyển sản phẩm sang!",
-                                    "Không thể cập nhật",
-                                    JOptionPane.WARNING_MESSAGE);
-                            return;
-                        }
-
-                        // Tạo combobox chọn nhà cung cấp mới
-                        JComboBox<String> supplierCombo = new JComboBox<>();
-                        for (nhaCungCapDTO ncc : otherSuppliers) {
-                            supplierCombo.addItem(ncc.getMaNhaCungCap() + " - " + ncc.getTenNhaCungCap());
-                        }
-
-                        int result = JOptionPane.showConfirmDialog(this,
-                                supplierCombo,
-                                "Chọn nhà cung cấp mới",
-                                JOptionPane.OK_CANCEL_OPTION);
-
-                        if (result == JOptionPane.OK_OPTION) {
-                            String selectedSupplier = (String) supplierCombo.getSelectedItem();
-                            String newMaNCC = selectedSupplier.split(" - ")[0];
-
-                            // Cập nhật tất cả sản phẩm sang nhà cung cấp mới
-                            boolean success = true;
-                            for (NhaCungCap_SanPhamDTO nccsp : linkedProducts) {
-                                // Xóa liên kết cũ
-                                nccspBUS.xoaNhaCungCap_SanPham(maNCC, nccsp.getMaSanPham());
-                                // Thêm liên kết mới
-                                NhaCungCap_SanPhamDTO newLink = new NhaCungCap_SanPhamDTO(newMaNCC,
-                                        nccsp.getMaSanPham());
-                                if (!nccspBUS.themNhaCungCap_SanPham(newLink)) {
-                                    success = false;
-                                    break;
-                                }
-                            }
-
-                            if (success) {
-                                // Sau khi cập nhật thành công, xóa nhà cung cấp cũ
-                                if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
-                                    JOptionPane.showMessageDialog(this,
-                                            "Đã cập nhật sản phẩm sang nhà cung cấp mới và xóa nhà cung cấp cũ!");
-                                    loadData();
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(this,
-                                        "Có lỗi xảy ra khi cập nhật sản phẩm sang nhà cung cấp mới!",
-                                        "Lỗi",
-                                        JOptionPane.ERROR_MESSAGE);
-                            }
-                        }
+                if (pnOption == 0) { // Cập nhật Phiếu Nhập
+                    List<nhaCungCapDTO> otherSuppliers = nhaCungCapBUS.getAllNhaCungCap();
+                    otherSuppliers.removeIf(nccDto -> nccDto.getMaNhaCungCap().equals(maNCC));
+                    if (otherSuppliers.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Không có nhà cung cấp khác để chuyển phiếu nhập sang!",
+                                "Không thể cập nhật", JOptionPane.WARNING_MESSAGE);
+                        return;
                     }
-                } else {
-                    // Không có sản phẩm liên kết, xóa trực tiếp
-                    if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
-                        JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thành công!");
-                        loadData();
+                    JComboBox<String> supplierCombo = new JComboBox<>();
+                    for (nhaCungCapDTO nccDto : otherSuppliers) {
+                        supplierCombo.addItem(nccDto.getMaNhaCungCap() + " - " + nccDto.getTenNhaCungCap());
+                    }
+                    int result = JOptionPane.showConfirmDialog(this, supplierCombo,
+                            "Chọn nhà cung cấp mới cho các phiếu nhập", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        String selectedPnSupplierItem = (String) supplierCombo.getSelectedItem();
+                        String newPnMaNCC = selectedPnSupplierItem.split(" - ")[0];
+                        if (pnBUS.updateMaNhaCungCapForPhieuNhap(maNCC, newPnMaNCC)) {
+                            JOptionPane.showMessageDialog(this, "Đã cập nhật các phiếu nhập sang nhà cung cấp "
+                                    + newPnMaNCC + ". Giờ bạn có thể thử xóa lại.");
+                            // Clear phieuNhapLinks as they are now handled for subsequent checks
+                            phieuNhapLinks.clear();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật phiếu nhập sang nhà cung cấp mới.",
+                                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+                            return; // Stop deletion if PhieuNhap update fails
+                        }
                     } else {
-                        JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp thất bại!");
+                        return;
+                        /* User cancelled new supplier selection for PhieuNhap */ }
+                } else {
+                    return;
+                    /* User cancelled PhieuNhap handling */ }
+            } // End PhieuNhap check
+
+            // 2. Handle SanPham (primary supplier) dependencies
+            if (primarySuppliedProducts != null && !primarySuppliedProducts.isEmpty()) {
+                String[] spOptions = { "Cập nhật sản phẩm sang NCC khác", "Hủy" };
+                int spOption = JOptionPane.showOptionDialog(this,
+                        "Nhà cung cấp " + tenNCC + " là nhà cung cấp chính cho " + primarySuppliedProducts.size()
+                                + " sản phẩm.\n" +
+                                "Bạn PHẢI chuyển các sản phẩm này sang một nhà cung cấp khác trước khi xóa.",
+                        "Xử lý sản phẩm phụ thuộc (NCC Chính)",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.WARNING_MESSAGE,
+                        null,
+                        spOptions,
+                        spOptions[1]);
+
+                if (spOption == 0) { // Cập nhật sản phẩm
+                    List<nhaCungCapDTO> otherSuppliers = nhaCungCapBUS.getAllNhaCungCap();
+                    otherSuppliers.removeIf(nccDto -> nccDto.getMaNhaCungCap().equals(maNCC));
+                    if (otherSuppliers.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Không có nhà cung cấp khác để chuyển sản phẩm sang!",
+                                "Không thể cập nhật", JOptionPane.WARNING_MESSAGE);
+                        return;
                     }
-                }
-            } catch (Exception e) {
+                    JComboBox<String> supplierCombo = new JComboBox<>();
+                    for (nhaCungCapDTO nccDto : otherSuppliers) {
+                        supplierCombo.addItem(nccDto.getMaNhaCungCap() + " - " + nccDto.getTenNhaCungCap());
+                    }
+                    int result = JOptionPane.showConfirmDialog(this, supplierCombo,
+                            "Chọn nhà cung cấp mới cho các sản phẩm phụ thuộc", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        String selectedSpSupplierItem = (String) supplierCombo.getSelectedItem();
+                        String newSpMaNCC = selectedSpSupplierItem.split(" - ")[0];
+                        boolean allProductsUpdated = true;
+                        for (sanPhamDTO sp : primarySuppliedProducts) {
+                            String currentProductMaSP = sp.getMaSanPham();
+                            sp.setMaNhaCungCap(newSpMaNCC);
+                            if (!spBUS.updateSanPham(sp)) {
+                                allProductsUpdated = false;
+                                JOptionPane.showMessageDialog(this,
+                                        "Lỗi khi cập nhật sản phẩm " + currentProductMaSP + " sang NCC mới.", "Lỗi",
+                                        JOptionPane.ERROR_MESSAGE);
+                                break;
+                            }
+                            // Explicitly remove old link from NhaCungCap_SanPham if it exists for this
+                            // product and oldMaNCC
+                            // This is crucial because the product might have been linked via
+                            // NhaCungCap_SanPham
+                            // in addition to being a primary product.
+                            if (nccspBUS.getNhaCungCapBySanPham(currentProductMaSP).stream()
+                                    .anyMatch(link -> link.getMaNhaCungCap().equals(maNCC))) {
+                                nccspBUS.xoaNhaCungCap_SanPham(maNCC, currentProductMaSP);
+                            }
+                        }
+                        if (!allProductsUpdated)
+                            return; // Stop if product update fails
+                        // Clear primarySuppliedProducts as they are now handled
+                        primarySuppliedProducts.clear();
+                    } else {
+                        return;
+                        /* User cancelled new supplier selection for SanPham */ }
+                } else {
+                    return;
+                    /* User cancelled SanPham handling */ }
+            } // End SanPham (primary) check
+
+            // // 3. Handle NhaCungCap_SanPham (many-to-many) links
+            // // Re-fetch manyToManyLinks in case primary product updates also affected
+            // these
+            // manyToManyLinks = nccspBUS.getSanPhamByNhaCungCap(maNCC);
+            // if (manyToManyLinks != null && !manyToManyLinks.isEmpty()) {
+            // String[] linkOptions = { "Xóa các liên kết và xóa NCC", "Cập nhật liên kết
+            // sang NCC khác", "Hủy" };
+            // int linkOption = JOptionPane.showOptionDialog(this,
+            // "Nhà cung cấp " + tenNCC + " có " + manyToManyLinks.size()
+            // + " liên kết cung cấp sản phẩm (không phải NCC chính).\n" +
+            // "Bạn muốn xử lý như thế nào?",
+            // "Xử lý liên kết sản phẩm (NhaCungCap_SanPham)",
+            // JOptionPane.DEFAULT_OPTION,
+            // JOptionPane.QUESTION_MESSAGE,
+            // null,
+            // linkOptions,
+            // linkOptions[2]);
+
+            // if (linkOption == 0) { // Xóa các liên kết và xóa NCC
+            // for (NhaCungCap_SanPhamDTO link : manyToManyLinks) {
+            // nccspBUS.xoaNhaCungCap_SanPham(maNCC, link.getMaSanPham());
+            // }
+            // } else if (linkOption == 1) { // Cập nhật liên kết sang NCC khác
+            // List<nhaCungCapDTO> otherSuppliers = nhaCungCapBUS.getAllNhaCungCap();
+            // otherSuppliers.removeIf(nccDto -> nccDto.getMaNhaCungCap().equals(maNCC));
+            // if (otherSuppliers.isEmpty()) {
+            // JOptionPane.showMessageDialog(this,
+            // "Không có nhà cung cấp khác để chuyển liên kết sản phẩm sang!", "Không thể
+            // cập nhật",
+            // JOptionPane.WARNING_MESSAGE);
+            // return;
+            // }
+            // JComboBox<String> supplierCombo = new JComboBox<>();
+            // for (nhaCungCapDTO nccDto : otherSuppliers) {
+            // supplierCombo.addItem(nccDto.getMaNhaCungCap() + " - " +
+            // nccDto.getTenNhaCungCap());
+            // }
+            // int result = JOptionPane.showConfirmDialog(this, supplierCombo,
+            // "Chọn nhà cung cấp mới cho các liên kết sản phẩm",
+            // JOptionPane.OK_CANCEL_OPTION);
+            // if (result == JOptionPane.OK_OPTION) {
+            // String selectedLinkSupplierItem = (String) supplierCombo.getSelectedItem();
+            // String newLinkMaNCC = selectedLinkSupplierItem.split(" - ")[0];
+            // boolean allLinksUpdated = true;
+            // for (NhaCungCap_SanPhamDTO link : manyToManyLinks) {
+            // nccspBUS.xoaNhaCungCap_SanPham(maNCC, link.getMaSanPham());
+            // NhaCungCap_SanPhamDTO newLink = new NhaCungCap_SanPhamDTO(newLinkMaNCC,
+            // link.getMaSanPham());
+            // if (!nccspBUS.themNhaCungCap_SanPham(newLink)) {
+            // allLinksUpdated = false;
+            // JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật liên kết cho sản phẩm "
+            // + link.getMaSanPham() + " sang NCC mới.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            // break;
+            // }
+            // }
+            // if (!allLinksUpdated)
+            // return; // Stop if link update fails
+            // } else {
+            // return;
+            // /* User cancelled new supplier selection for links */ }
+            // } else {
+            // return;
+            // /* User cancelled link handling */ }
+            // } // End NhaCungCap_SanPham check
+
+            // 4. Final Deletion Attempt (all known dependencies should be handled by now)
+            if (nhaCungCapBUS.xoaNhaCungCap(maNCC)) {
+                JOptionPane.showMessageDialog(this, "Xóa nhà cung cấp " + tenNCC + " thành công!");
+                loadData();
+            } else {
                 JOptionPane.showMessageDialog(this,
-                        "Có lỗi xảy ra khi xóa nhà cung cấp: " + e.getMessage(),
-                        "Lỗi",
-                        JOptionPane.ERROR_MESSAGE);
+                        "Xóa nhà cung cấp " + tenNCC
+                                + " thất bại! Kiểm tra lại các ràng buộc dữ liệu hoặc liên hệ quản trị viên.",
+                        "Lỗi Xóa", JOptionPane.ERROR_MESSAGE);
             }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra trong quá trình xóa nhà cung cấp: " + e.getMessage(),
+                    "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 

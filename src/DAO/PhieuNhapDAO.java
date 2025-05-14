@@ -26,15 +26,15 @@ public class PhieuNhapDAO {
     // Create new PhieuNhap
     public boolean create(PhieuNhapDTO phieuNhap) {
         String sql = "INSERT INTO PhieuNhap (MaPhieuNhap, MaNhaCungCap, MaSanPham, TenSanPham, SoLuong, " +
-                    "ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             // Kiểm tra số lượng tồn kho trước khi thêm
             String checkSql = "SELECT SoLuongTonKho FROM SanPham WHERE MaSanPham = ?";
             PreparedStatement checkPs = conn.prepareStatement(checkSql);
             checkPs.setString(1, phieuNhap.getMaSanPham());
             ResultSet rs = checkPs.executeQuery();
-            
+
             if (rs.next()) {
                 int soLuongTonKho = rs.getInt("SoLuongTonKho");
                 if (soLuongTonKho < 0) {
@@ -69,17 +69,16 @@ public class PhieuNhapDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 return new PhieuNhapDTO(
-                    rs.getString("MaPhieuNhap"),
-                    rs.getString("MaNhaCungCap"),
-                    rs.getString("MaSanPham"),
-                    rs.getString("TenSanPham"),
-                    rs.getInt("SoLuong"),
-                    rs.getTimestamp("ThoiGian"),
-                    rs.getDouble("DonGia"),
-                    rs.getString("TrangThai"),
-                    rs.getString("HinhThucThanhToan"),
-                    rs.getDouble("ThanhTien")
-                );
+                        rs.getString("MaPhieuNhap"),
+                        rs.getString("MaNhaCungCap"),
+                        rs.getString("MaSanPham"),
+                        rs.getString("TenSanPham"),
+                        rs.getInt("SoLuong"),
+                        rs.getTimestamp("ThoiGian"),
+                        rs.getDouble("DonGia"),
+                        rs.getString("TrangThai"),
+                        rs.getString("HinhThucThanhToan"),
+                        rs.getDouble("ThanhTien"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -90,8 +89,8 @@ public class PhieuNhapDAO {
     // Update PhieuNhap
     public boolean update(PhieuNhapDTO phieuNhap) {
         String sql = "UPDATE PhieuNhap SET MaNhaCungCap=?, MaSanPham=?, TenSanPham=?, SoLuong=?, " +
-                    "ThoiGian=?, DonGia=?, TrangThai=?, HinhThucThanhToan=?, ThanhTien=? " +
-                    "WHERE MaPhieuNhap=?";
+                "ThoiGian=?, DonGia=?, TrangThai=?, HinhThucThanhToan=?, ThanhTien=? " +
+                "WHERE MaPhieuNhap=?";
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, phieuNhap.getMaNhaCungCap());
@@ -120,7 +119,8 @@ public class PhieuNhapDAO {
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             if (e.getMessage().contains("FK_") || e.getMessage().contains("foreign key constraint")) {
-                throw new RuntimeException("Không thể xóa phiếu nhập này vì đã được sử dụng trong hóa đơn hoặc bảng khác.");
+                throw new RuntimeException(
+                        "Không thể xóa phiếu nhập này vì đã được sử dụng trong hóa đơn hoặc bảng khác.");
             }
             e.printStackTrace();
             return false;
@@ -146,19 +146,18 @@ public class PhieuNhapDAO {
                 } catch (Exception e) {
                     thoiGian = new java.util.Date(); // Nếu có lỗi parse thì lấy thời gian hiện tại
                 }
-                
+
                 PhieuNhapDTO phieuNhap = new PhieuNhapDTO(
-                    rs.getString("MaPhieuNhap"),
-                    rs.getString("MaNhaCungCap"),
-                    rs.getString("MaSanPham"),
-                    rs.getString("TenSanPham"),
-                    rs.getInt("SoLuong"),
-                    thoiGian,
-                    rs.getDouble("DonGia"),
-                    rs.getString("TrangThai"),
-                    rs.getString("HinhThucThanhToan"),
-                    rs.getDouble("ThanhTien")
-                );
+                        rs.getString("MaPhieuNhap"),
+                        rs.getString("MaNhaCungCap"),
+                        rs.getString("MaSanPham"),
+                        rs.getString("TenSanPham"),
+                        rs.getInt("SoLuong"),
+                        thoiGian,
+                        rs.getDouble("DonGia"),
+                        rs.getString("TrangThai"),
+                        rs.getString("HinhThucThanhToan"),
+                        rs.getDouble("ThanhTien"));
                 danhSachPhieuNhap.add(phieuNhap);
             }
         } catch (Exception e) {
@@ -171,7 +170,7 @@ public class PhieuNhapDAO {
     public String getMaxMaPN() {
         String sql = "SELECT MAX(MaPhieuNhap) AS MaxMaPN FROM PhieuNhap";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getString("MaxMaPN");
             }
@@ -181,14 +180,31 @@ public class PhieuNhapDAO {
         return null;
     }
 
+    // Update MaNhaCungCap for multiple PhieuNhap records
+    public boolean updateMaNhaCungCap(String oldMaNCC, String newMaNCC) {
+        String sql = "UPDATE PhieuNhap SET MaNhaCungCap = ? WHERE MaNhaCungCap = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, newMaNCC);
+            ps.setString(2, oldMaNCC);
+            return ps.executeUpdate() > 0; // Returns true if one or more rows were updated
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Close resources
     public void close() {
         try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (conn != null) conn.close();
+            if (rs != null)
+                rs.close();
+            if (ps != null)
+                ps.close();
+            if (conn != null)
+                conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-} 
+}

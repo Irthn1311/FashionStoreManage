@@ -43,4 +43,8 @@ public class SanPhamBUS {
         SanPhamDAO sanPhamDAO = new SanPhamDAO();
         return sanPhamDAO.checkProductQuantity(maSanPham, soLuong);
     }
-} 
+
+    public List<sanPhamDTO> getSanPhamByMaNhaCungCap(String maNhaCungCap) {
+        return sanPhamDAO.getSanPhamByMaNhaCungCap(maNhaCungCap);
+    }
+}

@@ -75,7 +75,12 @@ public class ThongKePanel extends JPanel {
     private void setupTable() {
         tableModel = new DefaultTableModel(
                 new Object[][] {},
-                new String[] { "STT", "Mã SP", "Tên SP", "Số lượng bán", "Doanh thu" });
+                new String[] { "STT", "Mã SP", "Tên SP", "Số lượng bán", "Doanh thu" }) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Tắt khả năng chỉnh sửa cho tất cả các ô
+            }
+        };
         table.setModel(tableModel);
         table.setRowHeight(28);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 14));

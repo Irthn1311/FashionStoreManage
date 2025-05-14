@@ -439,7 +439,7 @@ public class SanPhamDAO {
     public boolean updateProductQuantity(String maSanPham, int soLuongNhap) {
         String sql = "UPDATE SanPham SET SoLuongTonKho = SoLuongTonKho + ? WHERE MaSanPham = ?";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, soLuongNhap);
             ps.setString(2, maSanPham);
             return ps.executeUpdate() > 0;
@@ -478,8 +478,8 @@ public class SanPhamDAO {
     public int getSoLuongSanPham() {
         String sql = "SELECT COUNT(*) FROM SanPham";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -487,5 +487,33 @@ public class SanPhamDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public List<sanPhamDTO> getSanPhamByMaNhaCungCap(String maNhaCungCap) {
+        List<sanPhamDTO> sanPhamList = new ArrayList<>();
+        String sql = "SELECT * FROM SanPham WHERE MaNhaCungCap = ?";
+        try (Connection conn = ConnectDB.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maNhaCungCap);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    sanPhamDTO sp = new sanPhamDTO(
+                            rs.getString("MaSanPham"),
+                            rs.getString("TenSanPham"),
+                            rs.getString("MaNhaCungCap"),
+                            rs.getString("MaDanhMuc"),
+                            rs.getString("MauSac"),
+                            rs.getString("Size"),
+                            rs.getInt("SoLuongTonKho"),
+                            rs.getDouble("GiaBan"),
+                            rs.getString("ImgURL"),
+                            rs.getString("TrangThai"));
+                    sanPhamList.add(sp);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sanPhamList;
     }
 }

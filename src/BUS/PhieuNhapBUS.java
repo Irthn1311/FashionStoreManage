@@ -14,12 +14,18 @@ public class PhieuNhapBUS {
 
     // Validate PhieuNhap data
     private boolean validatePhieuNhap(PhieuNhapDTO phieuNhap) {
-        if (phieuNhap == null) return false;
-        if (phieuNhap.getMaSanPham() == null || phieuNhap.getMaSanPham().trim().isEmpty()) return false;
-        if (phieuNhap.getMaNhaCungCap() == null || phieuNhap.getMaNhaCungCap().trim().isEmpty()) return false;
-        if (phieuNhap.getSoLuong() <= 0) return false;
-        if (phieuNhap.getDonGia() <= 0) return false;
-        if (phieuNhap.getTrangThai() == null || phieuNhap.getTrangThai().trim().isEmpty()) return false;
+        if (phieuNhap == null)
+            return false;
+        if (phieuNhap.getMaSanPham() == null || phieuNhap.getMaSanPham().trim().isEmpty())
+            return false;
+        if (phieuNhap.getMaNhaCungCap() == null || phieuNhap.getMaNhaCungCap().trim().isEmpty())
+            return false;
+        if (phieuNhap.getSoLuong() <= 0)
+            return false;
+        if (phieuNhap.getDonGia() <= 0)
+            return false;
+        if (phieuNhap.getTrangThai() == null || phieuNhap.getTrangThai().trim().isEmpty())
+            return false;
         return true;
     }
 
@@ -85,16 +91,16 @@ public class PhieuNhapBUS {
     public List<PhieuNhapDTO> searchByDateRange(Date startDate, Date endDate) {
         List<PhieuNhapDTO> allPhieuNhap = phieuNhapDAO.getAll();
         return allPhieuNhap.stream()
-            .filter(pn -> !pn.getThoiGian().before(startDate) && !pn.getThoiGian().after(endDate))
-            .toList();
+                .filter(pn -> !pn.getThoiGian().before(startDate) && !pn.getThoiGian().after(endDate))
+                .toList();
     }
 
     // Search PhieuNhap by supplier
     public List<PhieuNhapDTO> searchBySupplier(String maNhaCungCap) {
         List<PhieuNhapDTO> allPhieuNhap = phieuNhapDAO.getAll();
         return allPhieuNhap.stream()
-            .filter(pn -> pn.getMaNhaCungCap().equals(maNhaCungCap))
-            .toList();
+                .filter(pn -> pn.getMaNhaCungCap().equals(maNhaCungCap))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     // Close resources
@@ -106,4 +112,12 @@ public class PhieuNhapBUS {
     public PhieuNhapDTO getPhieuNhapByMa(String maPhieuNhap) {
         return phieuNhapDAO.read(maPhieuNhap);
     }
-} 
+
+    // Update MaNhaCungCap for PhieuNhap records
+    public boolean updateMaNhaCungCapForPhieuNhap(String oldMaNCC, String newMaNCC) {
+        if (oldMaNCC == null || oldMaNCC.trim().isEmpty() || newMaNCC == null || newMaNCC.trim().isEmpty()) {
+            return false;
+        }
+        return phieuNhapDAO.updateMaNhaCungCap(oldMaNCC, newMaNCC);
+    }
+}
