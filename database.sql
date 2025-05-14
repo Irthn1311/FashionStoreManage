@@ -277,16 +277,16 @@ INSERT INTO XuatHang (
     MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, KichThuoc, MauSac,
     SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai
 ) VALUES
-('PX001', 'KH001', N'Lê Thị Lan', 'SP0001', N'Áo sơ mi nam trắng', N'M', N'Trắng', 2, 299000, 598000, N'Chuyển khoản', N'Hoàn thành'),
-('PX002', 'KH002', N'Nguyễn Văn Mạnh', 'SP0001', N'Áo sơ mi nam trắng', N'L', N'Trắng', 1, 299000, 299000, N'Tiền mặt', N'Đã xuất'),
+('PX001', 'KH001', N'Lê Thị Lan', 'SP0001', N'Áo sơ mi nam trắng', N'M', N'Trắng', 2, 299000, 598000, N'Chuyển khoản', N'Đang xử lý'),
+('PX002', 'KH002', N'Nguyễn Văn Mạnh', 'SP0001', N'Áo sơ mi nam trắng', N'L', N'Trắng', 1, 299000, 299000, N'Tiền mặt', N'Đang xử lý'),
 ('PX003', 'KH003', N'Trần Thị Huyền', 'SP0002', N'Áo thun thế chữ', N'S', N'Xanh', 3, 459000, 1377000, N'Chuyển khoản', N'Đang xử lý'),
-('PX004', 'KH004', N'Phạm Văn An', 'SP0003', N'Áo form rộng', N'XL', N'Đen', 2, 499000, 998000, N'Tiền mặt', N'Chờ xác nhận'),
-('PX005', 'KH005', N'Đỗ Thị Thảo', 'SP0004', N'Áo khoác gió', N'M', N'Hồng', 4, 399000, 1596000, N'Chuyển khoản', N'Đang giao'),
-('PX006', 'KH006', N'Ngô Văn Khải', 'SP0005', N'Áo khoác nam nữ', N'L', N'Trắng', 1, 750000, 750000, N'Tiền mặt', N'Hoàn thành'),
-('PX007', 'KH007', N'Bùi Thị Hạnh', 'SP0006', N'Áo nữ tay dài', N'Free size', N'Nâu', 2, 550000, 1100000, N'Chuyển khoản', N'Hoàn thành'),
-('PX008', 'KH008', N'Lý Văn Minh', 'SP0007', N'Áo thun big size', N'Free size', N'Đen', 1, 150000, 150000, N'Tiền mặt', N'Đã xuất'),
+('PX004', 'KH004', N'Phạm Văn An', 'SP0003', N'Áo form rộng', N'XL', N'Đen', 2, 499000, 998000, N'Tiền mặt', N'Đang xử lý'),
+('PX005', 'KH005', N'Đỗ Thị Thảo', 'SP0004', N'Áo khoác gió', N'M', N'Hồng', 4, 399000, 1596000, N'Chuyển khoản', N'Đang xử lý'),
+('PX006', 'KH006', N'Ngô Văn Khải', 'SP0005', N'Áo khoác nam nữ', N'L', N'Trắng', 1, 750000, 750000, N'Tiền mặt', N'Đang xử lý'),
+('PX007', 'KH007', N'Bùi Thị Hạnh', 'SP0006', N'Áo nữ tay dài', N'Free size', N'Nâu', 2, 550000, 1100000, N'Chuyển khoản', N'Đang xử lý'),
+('PX008', 'KH008', N'Lý Văn Minh', 'SP0007', N'Áo thun big size', N'Free size', N'Đen', 1, 150000, 150000, N'Tiền mặt', N'Đang xử lý'),
 ('PX009', 'KH009', N'Tạ Thị Kim', 'SP0011', N'Áo thun Mikey', N'L', N'Đen', 1, 199009, 199009, N'Chuyển khoản', N'Đang xử lý'),
-('PX010', 'KH010', N'Phan Văn Long', 'SP0015', N'Giày Lucky', N'M', N'Trắng', 2, 259000, 518000, N'Tiền mặt', N'Đã giao');
+('PX010', 'KH010', N'Phan Văn Long', 'SP0015', N'Giày Lucky', N'M', N'Trắng', 2, 259000, 518000, N'Tiền mặt', N'Đang xử lý');
 
 
 CREATE TABLE KhuyenMai (
