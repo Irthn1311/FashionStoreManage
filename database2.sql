@@ -70,7 +70,7 @@ VALUES
 ('KH001', N'Nguyễn Thị Ngọc', N'Nữ', '0901122334', 'ngoc.nguyen@email.com', N'123 Nguyễn Huệ, Q1, TP.HCM', '1995-06-15'),
 ('KH002', N'Trần Văn Hùng', N'Nam', '0912233445', 'hung.tran@email.com', N'456 Lê Lai, Q1, TP.HCM', '1990-08-20'),
 ('KH003', N'Lê Thị Hồng', N'Nữ', '0923344556', 'hong.le@email.com', N'789 Cách Mạng Tháng 8, Q3, TP.HCM', '1992-03-10'),
-('KH004', N'Phạm Văn Đức', N'Nam', '0934455667', 'duc.pham@email.com', N'101 Lý Thường Kiệt, Q10, TP.HCM', '1988-11-25'),
+('KH004', N'Nguyễn Hữu Tri', N'Nam', '0582837353', 'nhtri1311@gmail.com', N'101 Lý Thường Kiệt, Q10, TP.HCM', '1988-11-25'),
 ('KH005', N'Hoàng Thị Lan', N'Nữ', '0945566778', 'lan.hoang@email.com', N'234 Nguyễn Trãi, Q5, TP.HCM', '1993-04-30'),
 ('KH006', N'Vũ Văn Minh', N'Nam', '0956677889', 'minh.vu@email.com', N'567 Trần Hưng Đạo, Q1, TP.HCM', '1991-12-05'),
 ('KH007', N'Đặng Thị Thu', N'Nữ', '0967788990', 'thu.dang@email.com', N'890 Lê Văn Sỹ, Q3, TP.HCM', '1994-09-15'),

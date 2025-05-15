@@ -4,8 +4,6 @@
  */
 package DTO;
 
-import model.*;
-
 /**
  *
  * @author ASUS

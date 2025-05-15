@@ -9,6 +9,9 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.table.JTableHeader;
 import javax.swing.JPanel;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import java.io.File;
 
 /**
  *
@@ -47,12 +50,12 @@ public class xuathang extends javax.swing.JPanel {
         };
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                int selectedRow = jTable1.getSelectedRow();
+                int selectedRow = tblXuatHang.getSelectedRow();
                 if (selectedRow == -1) {
                     JOptionPane.showMessageDialog(xuathang.this, "Vui lòng chọn một phiếu xuất để xóa.");
                     return;
                 }
-                String maPX = jTable1.getValueAt(selectedRow, 0).toString();
+                String maPX = tblXuatHang.getValueAt(selectedRow, 0).toString();
                 int confirm = JOptionPane.showConfirmDialog(xuathang.this, "Bạn có chắc chắn muốn xóa phiếu xuất này?",
                         "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
@@ -123,60 +126,198 @@ public class xuathang extends javax.swing.JPanel {
                 }
             }
         });
-        jButton17.addActionListener(new java.awt.event.ActionListener() {
+        btnXacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                java.sql.Connection conn = null; 
                 try {
-                    // 1. Lấy tất cả phiếu xuất đang xử lý
-                    java.sql.Connection conn = DTB.ConnectDB.getConnection();
-                    String sql = "SELECT * FROM XuatHang WHERE TrangThai = 'Đang xử lý'";
-                    java.sql.PreparedStatement ps = conn.prepareStatement(sql);
-                    java.sql.ResultSet rs = ps.executeQuery();
+                    conn = DTB.ConnectDB.getConnection();
+                    conn.setAutoCommit(false); 
 
-                    BUS.HoaDonBUS hoaDonBUS = new BUS.HoaDonBUS();
-
-                    // 2. Chuyển từng dòng sang bảng HoaDon
-                    while (rs.next()) {
-                        DTO.hoaDonDTO hd = new DTO.hoaDonDTO();
-                        hd.setMaHoaDon("HD" + System.currentTimeMillis() + (int)(Math.random()*1000)); // Sinh mã hóa đơn
-                        hd.setMaSanPham(rs.getString("MaSanPham"));
-                        hd.setTenSanPham(rs.getString("TenSanPham"));
-                        hd.setKichCo(rs.getString("KichThuoc"));
-                        hd.setMauSac(rs.getString("MauSac"));
-                        hd.setSoLuong(rs.getInt("SoLuong"));
-                        hd.setMaKhachHang(rs.getString("MaKhachHang"));
-                        hd.setTenKhachHang(rs.getString("HoTen"));
-                        hd.setThanhTien(rs.getDouble("ThanhTien"));
-                        hd.setDonGia(rs.getDouble("DonGia"));
-                        hd.setHinhThucThanhToan(rs.getString("HinhThucThanhToan"));
-                        hd.setThoiGian(new java.sql.Timestamp(System.currentTimeMillis()));
-                        hd.setTrangThai("Hoàn thành");
-                        hoaDonBUS.addHoaDon(hd);
-
-                        // === GIẢM TỒN KHO SẢN PHẨM ===
-                        String maSP = rs.getString("MaSanPham");
-                        int soLuong = rs.getInt("SoLuong");
-                        DAO.SanPhamDAO sanPhamDAO = new DAO.SanPhamDAO();
-                        sanPhamDAO.giamSoLuongTonKho(maSP, soLuong);
+                    if (cbMaKhachHang.getSelectedItem() == null) {
+                        JOptionPane.showMessageDialog(xuathang.this, "Vui lòng chọn khách hàng.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+                        if (conn != null) conn.rollback();
+                        return;
                     }
-                    rs.close();
-                    ps.close();
+                    String currentMaKhachHang = cbMaKhachHang.getSelectedItem().toString();
 
-                    // 3. Xóa tất cả phiếu xuất đang xử lý khỏi bảng XuatHang
-                    String deleteSql = "DELETE FROM XuatHang WHERE TrangThai = 'Đang xử lý'";
-                    java.sql.PreparedStatement psDelete = conn.prepareStatement(deleteSql);
-                    psDelete.executeUpdate();
-                    psDelete.close();
-                    conn.close();
+                    String sqlSelectXuatHang = "SELECT * FROM XuatHang WHERE TrangThai = 'Đang xử lý' AND MaKhachHang = ?";
+                    java.sql.PreparedStatement psSelect = conn.prepareStatement(sqlSelectXuatHang);
+                    psSelect.setString(1, currentMaKhachHang);
+                    java.sql.ResultSet rsXuatHang = psSelect.executeQuery();
 
-                    // 4. Refresh lại bảng xuất hàng
-                    loadXuatHangTable();
+                    List<DTO.xuatHangDTO> xuatHangListProcessing = new java.util.ArrayList<>();
+                    while (rsXuatHang.next()) {
+                        DTO.xuatHangDTO xh = new DTO.xuatHangDTO();
+                        xh.setMaPX(rsXuatHang.getString("MaPX"));
+                        xh.setMaKhachHang(rsXuatHang.getString("MaKhachHang"));
+                        xh.setHoTen(rsXuatHang.getString("HoTen"));
+                        xh.setMaSanPham(rsXuatHang.getString("MaSanPham"));
+                        xh.setTenSanPham(rsXuatHang.getString("TenSanPham"));
+                        xh.setKichThuoc(rsXuatHang.getString("KichThuoc"));
+                        xh.setMauSac(rsXuatHang.getString("MauSac"));
+                        xh.setSoLuong(String.valueOf(rsXuatHang.getInt("SoLuong")));
+                        xh.setDonGia(String.valueOf(rsXuatHang.getDouble("DonGia")));
+                        xh.setThanhTien(String.valueOf(rsXuatHang.getDouble("ThanhTien")));
+                        xh.setTrangThai(rsXuatHang.getString("TrangThai"));
+                        xuatHangListProcessing.add(xh);
+                    }
+                    rsXuatHang.close();
+                    psSelect.close();
 
-                    // 5. Thông báo thành công
-                    JOptionPane.showMessageDialog(null, "Xuất hàng thành công!");
+                    if (xuatHangListProcessing.isEmpty()) {
+                        JOptionPane.showMessageDialog(xuathang.this, "Không có sản phẩm nào trong phiếu xuất để xác nhận.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        if (conn != null) conn.rollback(); 
+                        return;
+                    }
+
+                    BUS.KhachHangBUS khachHangBUS_service = new BUS.KhachHangBUS();
+                    DTO.khachHangDTO selectedKhachHang = khachHangBUS_service.getKhachHangByMa(currentMaKhachHang);
+
+                    if (selectedKhachHang == null) {
+                        JOptionPane.showMessageDialog(xuathang.this, "Không tìm thấy thông tin khách hàng: " + currentMaKhachHang, "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        if (conn != null) conn.rollback();
+                        return;
+                    }
+
+                    JCheckBox chkExportPdf = new JCheckBox("Xuất hóa đơn PDF?");
+                    JCheckBox chkSendEmail = new JCheckBox("Gửi hóa đơn đến mail?");
+                    JCheckBox chkPrintInvoice = new JCheckBox("In hóa đơn trực tiếp?");
+
+                    if (selectedKhachHang.getEmail() == null || selectedKhachHang.getEmail().trim().isEmpty()) {
+                        chkSendEmail.setEnabled(false);
+                        chkSendEmail.setToolTipText("Khách hàng này chưa có thông tin email.");
+                    }
+
+                    JPanel optionPanel = new JPanel(new java.awt.GridLayout(0, 1));
+                    optionPanel.add(chkExportPdf);
+                    optionPanel.add(chkSendEmail);
+                    optionPanel.add(chkPrintInvoice);
+
+                    int dialogResult = JOptionPane.showConfirmDialog(
+                        xuathang.this, 
+                        optionPanel, 
+                        "Xác nhận xuất hàng & Tùy chọn", 
+                        JOptionPane.OK_CANCEL_OPTION, 
+                        JOptionPane.PLAIN_MESSAGE
+                    );
+
+                    if (dialogResult == JOptionPane.OK_OPTION) {
+                        boolean pdfSelected = chkExportPdf.isSelected();
+                        boolean emailSelected = chkSendEmail.isSelected() && chkSendEmail.isEnabled();
+                        boolean printSelected = chkPrintInvoice.isSelected();
+
+                        File generatedPdfFile = null;
+                        boolean allAuxiliaryTasksSucceeded = true;
+
+                        if (pdfSelected) {
+                            JFileChooser fileChooser = new JFileChooser();
+                            fileChooser.setDialogTitle("Lưu hóa đơn PDF");
+                            String defaultFileName = "HoaDon_" + selectedKhachHang.getMaKhachHang() + "_" + System.currentTimeMillis() + ".pdf";
+                            fileChooser.setSelectedFile(new File(defaultFileName));
+                            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("PDF Documents", "pdf"));
+                            
+                            int userSelection = fileChooser.showSaveDialog(xuathang.this);
+                            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                                generatedPdfFile = fileChooser.getSelectedFile();
+                                boolean pdfGenSuccess = utils.PdfService.generateInvoicePdf(xuatHangListProcessing, selectedKhachHang, generatedPdfFile.getAbsolutePath());
+                                if (pdfGenSuccess) {
+                                    JOptionPane.showMessageDialog(xuathang.this, "Xuất hóa đơn PDF thành công!\nĐã lưu tại: " + generatedPdfFile.getAbsolutePath(), "Thành công PDF", JOptionPane.INFORMATION_MESSAGE);
+                                } else {
+                                    JOptionPane.showMessageDialog(xuathang.this, "Xuất hóa đơn PDF thất bại!", "Lỗi PDF", JOptionPane.ERROR_MESSAGE);
+                                    allAuxiliaryTasksSucceeded = false;
+                                }
+                            } else {
+                                pdfSelected = false;
+                            }
+                        }
+
+                        if (emailSelected && allAuxiliaryTasksSucceeded) {
+                            boolean emailSendSuccess = utils.EmailService.sendInvoiceByEmail(selectedKhachHang, xuatHangListProcessing, pdfSelected ? generatedPdfFile : null);
+                            if (emailSendSuccess) {
+                                JOptionPane.showMessageDialog(xuathang.this, "Gửi email hóa đơn thành công đến " + selectedKhachHang.getEmail(), "Thành công Email", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(xuathang.this, "Gửi email hóa đơn thất bại!\nVui lòng kiểm tra cấu hình và kết nối.", "Lỗi Email", JOptionPane.ERROR_MESSAGE);
+                                allAuxiliaryTasksSucceeded = false;
+                            }
+                        }
+                        
+                        if (printSelected && allAuxiliaryTasksSucceeded) {
+                            boolean printOpSuccess = utils.PrintService.printInvoice(xuatHangListProcessing, selectedKhachHang);
+                            if (printOpSuccess) {
+                            } else {
+                                allAuxiliaryTasksSucceeded = false;
+                            }
+                        }
+
+                        if (allAuxiliaryTasksSucceeded) {
+                            BUS.HoaDonBUS hoaDonBUS_manager = new BUS.HoaDonBUS();
+                            DAO.SanPhamDAO sanPhamDAO_manager = new DAO.SanPhamDAO();
+                            String hinhThucTT = cbHinhThucThanhToan.getSelectedItem() != null ? cbHinhThucThanhToan.getSelectedItem().toString() : "Tiền Mặt";
+                            int savedHoaDonCount = 0;
+
+                            for (DTO.xuatHangDTO xhItem : xuatHangListProcessing) {
+                                DTO.hoaDonDTO hd = new DTO.hoaDonDTO();
+                                String maHoaDonMoi = "HD_" + xhItem.getMaPX().replaceAll("[^a-zA-Z0-9]", "") + "_" + System.nanoTime() % 1000000;
+                                while(hoaDonBUS_manager.isMaHoaDonExists(maHoaDonMoi)){
+                                     maHoaDonMoi = "HD_" + xhItem.getMaPX().replaceAll("[^a-zA-Z0-9]", "") + "_" + System.nanoTime() % 1000000 + (int)(Math.random()*100);
+                                }
+                                hd.setMaHoaDon(maHoaDonMoi);
+                                hd.setMaSanPham(xhItem.getMaSanPham());
+                                hd.setTenSanPham(xhItem.getTenSanPham());
+                                hd.setKichCo(xhItem.getKichThuoc());
+                                hd.setMauSac(xhItem.getMauSac());
+                                hd.setSoLuong(Integer.parseInt(xhItem.getSoLuong()));
+                                hd.setMaKhachHang(xhItem.getMaKhachHang());
+                                hd.setTenKhachHang(selectedKhachHang.getHoTen()); 
+                                hd.setThanhTien(Double.parseDouble(xhItem.getThanhTien()));
+                                hd.setDonGia(Double.parseDouble(xhItem.getDonGia()));
+                                hd.setHinhThucThanhToan(hinhThucTT);
+                                hd.setThoiGian(new java.sql.Timestamp(System.currentTimeMillis()));
+                                hd.setTrangThai("Hoàn thành");
+                                
+                                boolean addHoaDonSuccess = hoaDonBUS_manager.addHoaDon(hd);
+                                if (addHoaDonSuccess) {
+                                    sanPhamDAO_manager.giamSoLuongTonKho(xhItem.getMaSanPham(), Integer.parseInt(xhItem.getSoLuong()));
+                                    savedHoaDonCount++;
+                                } else {
+                                    conn.rollback(); 
+                                    JOptionPane.showMessageDialog(xuathang.this, "Lỗi khi lưu hóa đơn cho SP: " + xhItem.getTenSanPham() + ". Giao dịch hủy.", "Lỗi Lưu Hóa Đơn", JOptionPane.ERROR_MESSAGE);
+                                    return; 
+                                }
+                            }
+
+                            String deleteSql = "DELETE FROM XuatHang WHERE TrangThai = 'Đang xử lý' AND MaKhachHang = ?";
+                            java.sql.PreparedStatement psDelete = conn.prepareStatement(deleteSql);
+                            psDelete.setString(1, currentMaKhachHang);
+                            int deletedRows = psDelete.executeUpdate();
+                            psDelete.close();
+                            
+                            conn.commit(); 
+                            loadXuatHangTable(); 
+                            JOptionPane.showMessageDialog(xuathang.this, "Hoàn tất xử lý "+ xuatHangListProcessing.size() +" mục xuất hàng và lưu "+ savedHoaDonCount +" hóa đơn!","Hoàn thành", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(xuathang.this, "Do có lỗi/hủy trong quá trình xử lý tùy chọn (PDF/Email/In), các thay đổi chưa được lưu vào CSDL.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                            if (conn != null) conn.rollback();
+                        }
+
+                    } else {
+                        JOptionPane.showMessageDialog(xuathang.this, "Đã hủy thao tác xuất hàng.", "Thông báo hủy", JOptionPane.INFORMATION_MESSAGE);
+                        if (conn != null) conn.rollback(); 
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Lỗi khi xuất hàng: " + e.getMessage());
+                    JOptionPane.showMessageDialog(xuathang.this, "Lỗi hệ thống khi xử lý xuất hàng: " + e.getMessage(), "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
+                    if (conn != null) {
+                        try { conn.rollback(); } catch (java.sql.SQLException se) { se.printStackTrace(); }
+                    }
+                } finally {
+                    if (conn != null) {
+                        try { 
+                            conn.setAutoCommit(true); 
+                            conn.close(); 
+                        } catch (java.sql.SQLException se) { se.printStackTrace(); }
+                    }
                 }
             }
         });
@@ -201,9 +342,9 @@ public class xuathang extends javax.swing.JPanel {
         pnlHeader = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
-        jButton17 = new javax.swing.JButton();
+        btnXacNhan = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblXuatHang = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jTextField6 = new javax.swing.JTextField();
@@ -234,6 +375,9 @@ public class xuathang extends javax.swing.JPanel {
         cbMaKhachHang = new javax.swing.JComboBox<>();
         cbTenKhachHang = new javax.swing.JComboBox<>();
 
+        lblTongTien = new javax.swing.JLabel();
+        textTongTien = new javax.swing.JTextField();
+
         pnlHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -260,14 +404,14 @@ public class xuathang extends javax.swing.JPanel {
 
         pnlContent.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
-        jButton17.setText("Xác nhận");
-        jButton17.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
-        jButton17.setForeground(Color.WHITE);
-        jButton17.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
-        jButton17.setPreferredSize(new java.awt.Dimension(140, 40));
+        btnXacNhan.setText("Xác nhận");
+        btnXacNhan.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        btnXacNhan.setForeground(Color.WHITE);
+        btnXacNhan.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        btnXacNhan.setPreferredSize(new java.awt.Dimension(140, 40));
 
-        jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblXuatHang.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        tblXuatHang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {},
             new String [] {
                 "Mã PX", "Mã KH", "Tên KH", "Mã SP", "Tên SP", "Kích thước", "Màu sắc", "Số lượng", "Đơn giá", "Thành tiền", "Hình thức thanh toán", "Trạng thái"
@@ -278,15 +422,15 @@ public class xuathang extends javax.swing.JPanel {
                 return false; // Không cho phép chỉnh sửa trực tiếp trên bảng
             }
         });
-        jTable1.setShowGrid(true);
-        jTable1.setBackground(Color.WHITE);
-        jTable1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
-        jTable1.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
-        JTableHeader tableHeader = jTable1.getTableHeader();
+        tblXuatHang.setShowGrid(true);
+        tblXuatHang.setBackground(Color.WHITE);
+        tblXuatHang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        tblXuatHang.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
+        JTableHeader tableHeader = tblXuatHang.getTableHeader();
         tableHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
         tableHeader.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         tableHeader.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblXuatHang);
 
         jPanel7.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         javax.swing.border.Border lineBorder7 = BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
@@ -437,7 +581,7 @@ public class xuathang extends javax.swing.JPanel {
                     String hinhThucTT = cbHinhThucThanhToan.getSelectedItem().toString();
 
                     java.sql.Connection conn = DTB.ConnectDB.getConnection();
-                    String sql = "INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Đang xử lý')";
+                    String sql = "INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, N'Đang xử lý')";
                     java.sql.PreparedStatement ps = conn.prepareStatement(sql);
                     ps.setString(1, maPX);
                     ps.setString(2, maKH);
@@ -592,22 +736,39 @@ public class xuathang extends javax.swing.JPanel {
         jButton1.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
         jButton1.setPreferredSize(new java.awt.Dimension(140, 40));
 
+        lblTongTien.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+        lblTongTien.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        lblTongTien.setText("Tổng tiền:");
+
+        textTongTien.setEditable(false);
+        textTongTien.setBackground(java.awt.Color.WHITE); 
+        textTongTien.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        textTongTien.setBorder(javax.swing.BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        textTongTien.setPreferredSize(new java.awt.Dimension(150, 40)); 
+        textTongTien.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        textTongTien.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        textTongTien.setText("0.00");
+
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
         pnlContentLayout.setHorizontalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100)
-                .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(229, 229, 229))
             .addGroup(pnlContentLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 961, Short.MAX_VALUE)
                     .addComponent(jScrollPane1))
                 .addContainerGap(19, Short.MAX_VALUE))
+            .addGroup(pnlContentLayout.createSequentialGroup() 
+                .addGap(30, 30, 30) 
+                .addComponent(lblTongTien)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textTongTien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) 
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28) 
+                .addComponent(btnXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
         pnlContentLayout.setVerticalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -618,7 +779,9 @@ public class xuathang extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTongTien, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textTongTien, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(20, 20, 20))
         );
 
@@ -691,6 +854,41 @@ public class xuathang extends javax.swing.JPanel {
         // TODO add your handling code here:
     }// GEN-LAST:event_jTextField10ActionPerformed
 
+    private void updateTongTien() {
+        double tongTien = 0;
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblXuatHang.getModel();
+        int thanhTienColIndex = -1;
+
+        for (int col = 0; col < model.getColumnCount(); col++) {
+            if (model.getColumnName(col).equals("Thành tiền")) {
+                thanhTienColIndex = col;
+                break; // Found the column, no need to continue looping
+            }
+        }
+
+        if (thanhTienColIndex == -1) {
+            System.err.println("updateTongTien: Column 'Thành tiền' not found by name.");
+            textTongTien.setText("Error");
+            return;
+        }
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object thanhTienObj = model.getValueAt(i, thanhTienColIndex);
+            if (thanhTienObj != null) {
+                try {
+                    if (thanhTienObj instanceof Number) {
+                        tongTien += ((Number) thanhTienObj).doubleValue();
+                    } else {
+                        tongTien += Double.parseDouble(thanhTienObj.toString());
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Lỗi parse double ở hàng " + i + " cột 'Thành tiền': " + thanhTienObj);
+                }
+            }
+        }
+        textTongTien.setText(String.format("%.2f", tongTien));
+    }
+
     private void loadComboBoxData() {
         SanPhamDAO sanPhamDAO = new SanPhamDAO();
 
@@ -716,7 +914,7 @@ public class xuathang extends javax.swing.JPanel {
 
     private void loadXuatHangTable() {
         try {
-            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) tblXuatHang.getModel();
             model.setRowCount(0);
 
             java.sql.Connection conn = DTB.ConnectDB.getConnection();
@@ -751,11 +949,12 @@ public class xuathang extends javax.swing.JPanel {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu xuất hàng: " + e.getMessage());
         }
+        updateTongTien(); // Call to update total amount after table is loaded
     }
 
     private void loadKhachHangComboBox() {
-        BUS.KhachHangBUS khachHangBUS = new BUS.KhachHangBUS();
-        listKhachHang = khachHangBUS.getAllKhachHang();
+        BUS.KhachHangBUS khachHangBUS_loader = new BUS.KhachHangBUS(); // Đổi tên biến
+        listKhachHang = khachHangBUS_loader.getAllKhachHang();
         cbMaKhachHang.removeAllItems();
         cbTenKhachHang.removeAllItems();
 
@@ -777,7 +976,7 @@ public class xuathang extends javax.swing.JPanel {
     private javax.swing.JPanel containerPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton17;
+    private javax.swing.JButton btnXacNhan;
     private javax.swing.JButton jButton18;
     private javax.swing.JComboBox<String> cbMaSanPham;
     private javax.swing.JLabel jLabel1;
@@ -792,7 +991,7 @@ public class xuathang extends javax.swing.JPanel {
     private javax.swing.JPanel pblBoxSanPhamSoLuong;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblXuatHang;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField10;
     private javax.swing.JTextField jTextField14;
@@ -811,5 +1010,7 @@ public class xuathang extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> cbMaKhachHang;
     private javax.swing.JComboBox<String> cbTenKhachHang;
     private java.util.List<DTO.khachHangDTO> listKhachHang;
+    private javax.swing.JLabel lblTongTien;
+    private javax.swing.JTextField textTongTien;
     // End of variables declaration//GEN-END:variables
 }

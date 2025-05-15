@@ -52,6 +52,9 @@ public class nhaphang extends javax.swing.JPanel {
         private javax.swing.JButton btnSearch;
         private javax.swing.JButton btnOpenSmartImport;
 
+        private javax.swing.JLabel lblTongTienPhieuNhap;
+        private javax.swing.JTextField txtTongTienPhieuNhap;
+
         /**
          * Creates new form phieunhap
          */
@@ -125,6 +128,9 @@ public class nhaphang extends javax.swing.JPanel {
                 jButton16 = new javax.swing.JButton();
                 jButton17 = new javax.swing.JButton();
                 btnOpenSmartImport = new javax.swing.JButton();
+
+                lblTongTienPhieuNhap = new javax.swing.JLabel();
+                txtTongTienPhieuNhap = new javax.swing.JTextField();
 
                 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
                 jPanel1.setLayout(jPanel1Layout);
@@ -562,67 +568,56 @@ public class nhaphang extends javax.swing.JPanel {
                 actionButtonPanel.add(jButton16);
 
                 // Add the action button panel to the main panel - centered and adjusted size
-                jPanel7.add(actionButtonPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 310, 360, 60));
+                // jPanel7.add(actionButtonPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 310, 360, 60)); // Consider if this is still needed or conflicts
+
+                lblTongTienPhieuNhap.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
+                lblTongTienPhieuNhap.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblTongTienPhieuNhap.setText("Tổng tiền:");
+
+                txtTongTienPhieuNhap.setEditable(false);
+                txtTongTienPhieuNhap.setBackground(java.awt.Color.WHITE);
+                txtTongTienPhieuNhap.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                txtTongTienPhieuNhap.setBorder(javax.swing.BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+                txtTongTienPhieuNhap.setPreferredSize(new java.awt.Dimension(150, 40));
+                txtTongTienPhieuNhap.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+                txtTongTienPhieuNhap.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+                txtTongTienPhieuNhap.setText("0.00");
 
                 javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
                 pnlContent.setLayout(pnlContentLayout);
                 pnlContentLayout.setHorizontalGroup(
-                                pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlContentLayout
-                                                                .createSequentialGroup()
-                                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                Short.MAX_VALUE)
-                                                                .addComponent(jButton16,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                164,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(100, 100, 100)
-                                                                .addComponent(jButton17,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                205,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(229, 229, 229))
-                                                .addGroup(pnlContentLayout.createSequentialGroup()
-                                                                .addGap(20, 20, 20)
-                                                                .addGroup(pnlContentLayout
-                                                                                .createParallelGroup(
-                                                                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                false)
-                                                                                .addComponent(jPanel7,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                961,
-                                                                                                Short.MAX_VALUE)
-                                                                                .addComponent(jScrollPane1))
-                                                                .addContainerGap(19, Short.MAX_VALUE)));
+                    pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContentLayout.createSequentialGroup()
+                            .addGap(20, 20, 20)
+                            .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 961, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1))
+                            .addContainerGap(19, Short.MAX_VALUE))
+                        .addGroup(pnlContentLayout.createSequentialGroup()
+                            .addGap(30, 30, 30)
+                            .addComponent(lblTongTienPhieuNhap)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtTongTienPhieuNhap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(28, 28, 28)
+                            .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(30, 30, 30))
+                );
                 pnlContentLayout.setVerticalGroup(
-                                pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(pnlContentLayout.createSequentialGroup()
-                                                                .addComponent(jPanel7,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                340,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(jScrollPane1,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                192,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                                                26,
-                                                                                Short.MAX_VALUE)
-                                                                .addGroup(
-                                                                                pnlContentLayout.createParallelGroup(
-                                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                                .addComponent(jButton16,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                46,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                .addComponent(jButton17,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                46,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(20, 20, 20)));
+                    pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlContentLayout.createSequentialGroup()
+                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                            .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblTongTienPhieuNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtTongTienPhieuNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(20, 20, 20))
+                );
 
                 containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
 
@@ -847,6 +842,7 @@ public class nhaphang extends javax.swing.JPanel {
                 nh.getTrangThai()
             });
         }
+        updateTongTienPhieuNhap(); // Call to update total
     }
 
     private void setupAmountCalculation() {
@@ -868,6 +864,7 @@ public class nhaphang extends javax.swing.JPanel {
         } catch (NumberFormatException e) {
             textThanhTien.setText("0");
         }
+        updateTongTienPhieuNhap(); // Call to update total
     }
 
         private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -953,6 +950,7 @@ public class nhaphang extends javax.swing.JPanel {
                     nh.getTrangThai()
                 });
             }
+            updateTongTienPhieuNhap(); // Call to update total
         }
 
         private void btnOpenSmartImportActionPerformed(java.awt.event.ActionEvent evt) {
@@ -962,6 +960,42 @@ public class nhaphang extends javax.swing.JPanel {
             } else {
                 JOptionPane.showMessageDialog(this, "Không thể mở Trợ Lý Nhập Hàng từ context này (mainFrame is null).", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
+        }
+
+        private void updateTongTienPhieuNhap() {
+            double tongTien = 0;
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+            int thanhTienColIndex = -1;
+
+            for (int col = 0; col < model.getColumnCount(); col++) {
+                if (model.getColumnName(col).equals("Thành tiền")) {
+                    thanhTienColIndex = col;
+                    break; 
+                }
+            }
+
+            if (thanhTienColIndex == -1) {
+                System.err.println("updateTongTienPhieuNhap: Column 'Thành tiền' not found.");
+                txtTongTienPhieuNhap.setText("Error");
+                return;
+            }
+
+            for (int i = 0; i < model.getRowCount(); i++) {
+                Object thanhTienObj = model.getValueAt(i, thanhTienColIndex);
+                if (thanhTienObj != null) {
+                    try {
+                        if (thanhTienObj instanceof Number) {
+                            tongTien += ((Number) thanhTienObj).doubleValue();
+                        } else {
+                            tongTien += Double.parseDouble(thanhTienObj.toString());
+                        }
+                    } catch (NumberFormatException e) {
+                        System.err.println("Lỗi parse double ở hàng " + i + " cột 'Thành tiền' trong Nhập Hàng: " + thanhTienObj + " Error: " + e.getMessage());
+                    }
+                }
+            }
+            java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0.00"); // Standard format with comma for thousands, dot for decimal
+            txtTongTienPhieuNhap.setText(df.format(tongTien));
         }
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
