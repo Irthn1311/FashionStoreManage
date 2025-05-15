@@ -131,7 +131,20 @@ public class KhuyenMaiService {
             throw new Exception("Khuyến mãi với mã " + maKhuyenMai + " không tồn tại.");
         }
 
-        return khuyenMaiDAO.deleteKhuyenMai(maKhuyenMai);
+        // Tìm thông tin sản phẩm trước khi xóa
+        khuyenMaiDTO kmToDelete = existingPromotions.stream()
+                .filter(p -> p.getMaKhuyenMai().equals(maKhuyenMai))
+                .findFirst()
+                .orElse(null);
+
+        if (kmToDelete != null) {
+            System.out.println("SERVICE: Chuẩn bị xóa khuyến mãi " + maKhuyenMai + " cho sản phẩm " +
+                    kmToDelete.getMaSanPham() + " (Giá cũ: " + kmToDelete.getGiaCu() + ")");
+        }
+
+        boolean result = khuyenMaiDAO.deleteKhuyenMai(maKhuyenMai);
+        System.out.println("SERVICE: Kết quả xóa khuyến mãi: " + (result ? "Thành công" : "Thất bại"));
+        return result;
     }
 
     public String generateMaKhuyenMai() {
