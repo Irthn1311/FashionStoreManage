@@ -176,4 +176,22 @@ public class NhapHangDAO {
         }
         return null;
     }
+
+    public String generateNextMaPN() {
+        String maxMaPN = getMaxMaPN();
+        int nextNumber = 1;
+        
+        if (maxMaPN != null && maxMaPN.startsWith("PN")) {
+            try {
+                String numberPart = maxMaPN.substring(2); // Get the number part after "PN"
+                nextNumber = Integer.parseInt(numberPart) + 1;
+            } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                System.err.println("Error parsing maxMaPN: " + maxMaPN + " - " + e.getMessage());
+                // Default to 1 if there's an error
+                nextNumber = 1;
+            }
+        }
+        
+        return String.format("PN%03d", nextNumber); // Format with leading zeros (PN001, PN002, etc.)
+    }
 }

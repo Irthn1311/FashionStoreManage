@@ -16,7 +16,7 @@ public class PhieuNhapDAO {
     private PreparedStatement ps;
     private ResultSet rs;
 
-    private static final Pattern MA_PN_BATCH_PATTERN = Pattern.compile("PN(\\\\d{5})_\\\\d{5}");
+    private static final Pattern MA_PN_BATCH_PATTERN = Pattern.compile("PN(\\d{5})_\\d{5}");
 
     public PhieuNhapDAO() {
         // Initialize database connection
@@ -180,9 +180,9 @@ public class PhieuNhapDAO {
                 String maPN = rs.getString("MaPhieuNhap");
                 if (maPN != null) {
                     Matcher matcher = MA_PN_BATCH_PATTERN.matcher(maPN);
-                    if (matcher.matches()) { // Use matches() if the whole string should match
+                    if (matcher.matches()) { // Use matches() for full string match
                         try {
-                            // group(1) is the first capturing group: (\\d{5})
+                            // group(1) is the first capturing group: (\d{5})
                             int currentBatchNum = Integer.parseInt(matcher.group(1));
                             if (currentBatchNum > maxBatchNum) {
                                 maxBatchNum = currentBatchNum;
