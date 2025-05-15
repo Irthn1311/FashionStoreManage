@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import DAO.HoaDonDAO;
 import DTO.hoaDonDTO;
+import BUS.HoaDonBUS;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
@@ -17,6 +18,13 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButton;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.BorderFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -33,6 +41,23 @@ import javax.swing.JEditorPane;
 import screens.TrangChu.AppColors;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.io.FileOutputStream;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import java.text.ParseException;
+import java.util.Date;
 
 public class HoaDonPanel extends javax.swing.JPanel {
     private HoaDonDAO hoaDonDAO;
@@ -627,7 +652,225 @@ public class HoaDonPanel extends javax.swing.JPanel {
                             JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                utils.FileUtils.showExportOptionsForHoaDon(jTable2, "DanhSachHoaDon");
+                
+                // Tạo dialog lựa chọn kiểu xuất
+                JDialog exportOptionDialog = new JDialog();
+                exportOptionDialog.setTitle("Lựa chọn xuất dữ liệu");
+                exportOptionDialog.setSize(400, 300);
+                exportOptionDialog.setLocationRelativeTo(null);
+                exportOptionDialog.setLayout(new BorderLayout());
+                exportOptionDialog.setModal(true);
+                
+                JPanel optionPanel = new JPanel();
+                optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
+                
+                // Radio buttons cho việc lựa chọn
+                JRadioButton rbExportAll = new JRadioButton("Xuất toàn bộ hóa đơn");
+                JRadioButton rbExportByCustomer = new JRadioButton("Xuất hóa đơn theo khách hàng và thời gian");
+                ButtonGroup group = new ButtonGroup();
+                group.add(rbExportAll);
+                group.add(rbExportByCustomer);
+                rbExportAll.setSelected(true);
+                
+                optionPanel.add(Box.createVerticalStrut(20));
+                optionPanel.add(rbExportAll);
+                optionPanel.add(Box.createVerticalStrut(10));
+                optionPanel.add(rbExportByCustomer);
+                optionPanel.add(Box.createVerticalStrut(20));
+                
+                // Panel cho lựa chọn khách hàng và thời gian
+                JPanel customerTimePanel = new JPanel();
+                customerTimePanel.setLayout(new GridLayout(2, 2, 10, 10));
+                customerTimePanel.setBorder(BorderFactory.createTitledBorder("Lựa chọn khách hàng và thời gian"));
+                
+                JComboBox<String> customerComboBox = new JComboBox<>();
+                JComboBox<String> timeComboBox = new JComboBox<>();
+                
+                // Disable ban đầu
+                customerComboBox.setEnabled(false);
+                timeComboBox.setEnabled(false);
+                
+                // Lấy danh sách khách hàng và thời gian từ dữ liệu hiện có
+                List<String> uniqueCustomers = new ArrayList<>();
+                List<Timestamp> uniqueTimestamps = new ArrayList<>();
+                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String maKhachHang = model.getValueAt(i, 4).toString(); // Cột 4 là mã khách hàng
+                    String tenKhachHang = model.getValueAt(i, 5).toString(); // Cột 5 là tên khách hàng
+                    String customerInfo = maKhachHang + " - " + tenKhachHang;
+                    
+                    if (!uniqueCustomers.contains(customerInfo)) {
+                        uniqueCustomers.add(customerInfo);
+                        customerComboBox.addItem(customerInfo);
+                    }
+                }
+                
+                // Cập nhật combo box đợt xuất khi chọn khách hàng
+                customerComboBox.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        timeComboBox.removeAllItems(); // Conceptually seriesComboBox
+                        
+                        if (customerComboBox.getSelectedItem() != null) {
+                            String selectedCustomer = customerComboBox.getSelectedItem().toString();
+                            String maKhachHang = selectedCustomer.split(" - ")[0];
+                            
+                            Set<String> uniqueSeriesParts = new HashSet<>();
+                            
+                            for (int i = 0; i < model.getRowCount(); i++) {
+                                if (model.getValueAt(i, 4).toString().equals(maKhachHang)) { // MaKhachHang is at index 4
+                                    String maHoaDon = model.getValueAt(i, 1).toString(); // MaHoaDon is at index 1
+                                    if (maHoaDon != null && maHoaDon.contains("_")) {
+                                        String series = maHoaDon.substring(0, maHoaDon.indexOf('_'));
+                                        if (!uniqueSeriesParts.contains(series)) {
+                                            uniqueSeriesParts.add(series);
+                                            timeComboBox.addItem(series); // Add unique series to the combo box
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                customerTimePanel.add(new JLabel("Khách hàng:"));
+                customerTimePanel.add(customerComboBox);
+                customerTimePanel.add(new JLabel("Đợt xuất (Mã HD series):")); // Changed Label
+                customerTimePanel.add(timeComboBox); // This is now seriesComboBox
+                
+                optionPanel.add(customerTimePanel);
+                
+                // Enable/disable panel dựa trên lựa chọn radio button
+                rbExportByCustomer.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        customerComboBox.setEnabled(true);
+                        timeComboBox.setEnabled(true);
+                    }
+                });
+                
+                rbExportAll.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        customerComboBox.setEnabled(false);
+                        timeComboBox.setEnabled(false);
+                    }
+                });
+                
+                // Panel nút
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                JButton btnOK = new JButton("Xác nhận");
+                JButton btnCancel = new JButton("Hủy");
+                
+                btnOK.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        exportOptionDialog.dispose();
+                        
+                        List<hoaDonDTO> hoaDonList;
+                        HoaDonBUS hoaDonBUS = new HoaDonBUS();
+                        
+                        if (rbExportAll.isSelected()) {
+                            // Xuất toàn bộ hóa đơn
+                            hoaDonList = hoaDonBUS.getAllHoaDon();
+                        } else {
+                            // Xuất theo khách hàng và thời gian
+                            if (customerComboBox.getSelectedItem() == null || timeComboBox.getSelectedItem() == null) {
+                                JOptionPane.showMessageDialog(null, 
+                                        "Vui lòng chọn khách hàng và thời gian", 
+                                        "Thông báo", 
+                                        JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
+                            
+                            String selectedCustomer = customerComboBox.getSelectedItem().toString();
+                            String maKhachHang = selectedCustomer.split(" - ")[0];
+                            String seriesPart = timeComboBox.getSelectedItem().toString(); // Selected series part
+                            
+                            // No longer parsing timestamp, directly use seriesPart
+                            hoaDonList = hoaDonBUS.getHoaDonByKhachHangAndSeries(maKhachHang, seriesPart); 
+                        }
+                        
+                        if (hoaDonList.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, 
+                                    "Không có dữ liệu hóa đơn để xuất", 
+                                    "Thông báo", 
+                                    JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                        
+                        // Hiển thị lựa chọn định dạng xuất
+                        String[] options = { "Excel (.xlsx)", "Word (.docx)" };
+                        int choice = JOptionPane.showOptionDialog(null, 
+                                "Chọn định dạng file xuất cho Hóa Đơn:", 
+                                "Xuất File Hóa Đơn",
+                                JOptionPane.DEFAULT_OPTION, 
+                                JOptionPane.QUESTION_MESSAGE, 
+                                null, 
+                                options, 
+                                options[0]);
+                        
+                        // Chuẩn bị tệp tạm thời nếu cần
+                        String title = "DanhSachHoaDon";
+                        if (rbExportByCustomer.isSelected()) {
+                            String selectedCustomer = customerComboBox.getSelectedItem().toString();
+                            String tenKhachHang = selectedCustomer.split(" - ")[1];
+                            title = "HoaDon_" + tenKhachHang.replace(" ", "_");
+                        }
+                        
+                        // Tiến hành xuất file theo định dạng đã chọn
+                        if (choice == 0) {
+                            // Xuất Excel
+                            JFileChooser fileChooser = new JFileChooser();
+                            fileChooser.setDialogTitle("Chọn nơi lưu file Excel Hóa Đơn");
+                            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel files (*.xlsx)", "xlsx"));
+                            fileChooser.setSelectedFile(new File(title + ".xlsx"));
+
+                            int userSelection = fileChooser.showSaveDialog(null);
+                            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                                File fileToSave = fileChooser.getSelectedFile();
+                                String filePath = fileToSave.getAbsolutePath();
+                                if (!filePath.toLowerCase().endsWith(".xlsx")) {
+                                    filePath += ".xlsx";
+                                }
+                                
+                                exportHoaDonToExcel(hoaDonList, filePath);
+                            }
+                        } else if (choice == 1) {
+                            // Xuất Word
+                            JFileChooser fileChooser = new JFileChooser();
+                            fileChooser.setDialogTitle("Chọn nơi lưu file Word Hóa Đơn");
+                            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Word files (*.docx)", "docx"));
+                            fileChooser.setSelectedFile(new File(title + ".docx"));
+
+                            int userSelection = fileChooser.showSaveDialog(null);
+                            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                                File fileToSave = fileChooser.getSelectedFile();
+                                String filePath = fileToSave.getAbsolutePath();
+                                if (!filePath.toLowerCase().endsWith(".docx")) {
+                                    filePath += ".docx";
+                                }
+                                
+                                exportHoaDonToWord(hoaDonList, filePath);
+                            }
+                        }
+                    }
+                });
+                
+                btnCancel.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        exportOptionDialog.dispose();
+                    }
+                });
+                
+                buttonPanel.add(btnOK);
+                buttonPanel.add(btnCancel);
+                
+                exportOptionDialog.add(optionPanel, BorderLayout.CENTER);
+                exportOptionDialog.add(buttonPanel, BorderLayout.SOUTH);
+                exportOptionDialog.setVisible(true);
             }
         });
 
@@ -644,62 +887,206 @@ public class HoaDonPanel extends javax.swing.JPanel {
         btnPrinter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                try {
-                    List<hoaDonDTO> hoaDonList = hoaDonDAO.getAllHoaDon();
-
-                    if (hoaDonList == null || hoaDonList.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Không có dữ liệu hóa đơn để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                        return;
-                    }
-
-                    StringBuilder htmlContent = new StringBuilder();
-                    htmlContent.append("<html><head><style>");
-                    htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
-                    htmlContent.append("h1 { text-align: center; color: #333; }");
-                    htmlContent.append(".invoice-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
-                    htmlContent.append(".field-label { font-weight: bold; color: #555; }");
-                    htmlContent.append("p { margin: 5px 0; }");
-                    htmlContent.append("</style></head><body>");
-                    htmlContent.append("<h1>Danh Sách Chi Tiết Hóa Đơn</h1>");
-
-                    for (hoaDonDTO hd : hoaDonList) {
-                        htmlContent.append("<div class='invoice-record'>");
-                        htmlContent.append("<p><span class='field-label'>Mã Hóa Đơn:</span> ").append(hd.getMaHoaDon() != null ? hd.getMaHoaDon() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Mã Sản Phẩm:</span> ").append(hd.getMaSanPham() != null ? hd.getMaSanPham() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Tên Sản Phẩm:</span> ").append(hd.getTenSanPham() != null ? hd.getTenSanPham() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Mã Khách Hàng:</span> ").append(hd.getMaKhachHang() != null ? hd.getMaKhachHang() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Tên Khách Hàng:</span> ").append(hd.getTenKhachHang() != null ? hd.getTenKhachHang() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Kích Cỡ:</span> ").append(hd.getKichCo() != null ? hd.getKichCo() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Màu Sắc:</span> ").append(hd.getMauSac() != null ? hd.getMauSac() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Số Lượng:</span> ").append(decimalFormat.format(hd.getSoLuong())).append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Đơn Giá:</span> ").append(decimalFormat.format(hd.getDonGia())).append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Thành Tiền:</span> ").append(decimalFormat.format(hd.getThanhTien())).append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Thời Gian:</span> ").append(hd.getThoiGian() != null ? dateFormat.format(hd.getThoiGian()) : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Hình Thức Thanh Toán:</span> ").append(hd.getHinhThucThanhToan() != null ? hd.getHinhThucThanhToan() : "").append("</p>");
-                        htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(hd.getTrangThai() != null ? hd.getTrangThai() : "").append("</p>");
-                        htmlContent.append("</div>");
-                    }
-                    htmlContent.append("</body></html>");
-
-                    JEditorPane editorPane = new JEditorPane();
-                    editorPane.setContentType("text/html");
-                    editorPane.setText(htmlContent.toString());
-                    editorPane.setEditable(false);
-
-                    boolean printed = editorPane.print();
-                     if (!printed) {
-                        // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
-                    }
-                } catch (java.awt.print.PrinterException pe) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
-                    pe.printStackTrace();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi",
-                            JOptionPane.ERROR_MESSAGE);
-                    e.printStackTrace();
+                if (jTable2.getRowCount() == 0) {
+                    JOptionPane.showMessageDialog(null,
+                            "Không có dữ liệu để in!",
+                            "Thông báo",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
+
+                // Tạo dialog lựa chọn kiểu in
+                JDialog printOptionDialog = new JDialog();
+                printOptionDialog.setTitle("Lựa chọn in dữ liệu");
+                printOptionDialog.setSize(400, 300);
+                printOptionDialog.setLocationRelativeTo(null);
+                printOptionDialog.setLayout(new BorderLayout());
+                printOptionDialog.setModal(true);
+
+                JPanel optionPanel = new JPanel();
+                optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.Y_AXIS));
+
+                JRadioButton rbPrintAll = new JRadioButton("In toàn bộ hóa đơn");
+                JRadioButton rbPrintByCustomer = new JRadioButton("In hóa đơn theo khách hàng và đợt xuất");
+                ButtonGroup group = new ButtonGroup();
+                group.add(rbPrintAll);
+                group.add(rbPrintByCustomer);
+                rbPrintAll.setSelected(true);
+
+                optionPanel.add(Box.createVerticalStrut(20));
+                optionPanel.add(rbPrintAll);
+                optionPanel.add(Box.createVerticalStrut(10));
+                optionPanel.add(rbPrintByCustomer);
+                optionPanel.add(Box.createVerticalStrut(20));
+
+                JPanel customerSeriesPanel = new JPanel();
+                customerSeriesPanel.setLayout(new GridLayout(2, 2, 10, 10));
+                customerSeriesPanel.setBorder(BorderFactory.createTitledBorder("Lựa chọn khách hàng và đợt xuất"));
+
+                JComboBox<String> customerComboBox = new JComboBox<>();
+                JComboBox<String> seriesComboBox = new JComboBox<>();
+
+                customerComboBox.setEnabled(false);
+                seriesComboBox.setEnabled(false);
+
+                DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                List<String> uniqueCustomers = new ArrayList<>();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String maKhachHang = model.getValueAt(i, 4).toString();
+                    String tenKhachHang = model.getValueAt(i, 5).toString();
+                    String customerInfo = maKhachHang + " - " + tenKhachHang;
+                    if (!uniqueCustomers.contains(customerInfo)) {
+                        uniqueCustomers.add(customerInfo);
+                        customerComboBox.addItem(customerInfo);
+                    }
+                }
+
+                customerComboBox.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        seriesComboBox.removeAllItems();
+                        if (customerComboBox.getSelectedItem() != null) {
+                            String selectedCustomer = customerComboBox.getSelectedItem().toString();
+                            String maKhachHang = selectedCustomer.split(" - ")[0];
+                            Set<String> uniqueSeriesParts = new HashSet<>();
+                            for (int i = 0; i < model.getRowCount(); i++) {
+                                if (model.getValueAt(i, 4).toString().equals(maKhachHang)) {
+                                    String maHoaDon = model.getValueAt(i, 1).toString();
+                                    if (maHoaDon != null && maHoaDon.contains("_")) {
+                                        String series = maHoaDon.substring(0, maHoaDon.indexOf('_'));
+                                        if (!uniqueSeriesParts.contains(series)) {
+                                            uniqueSeriesParts.add(series);
+                                            seriesComboBox.addItem(series);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                customerSeriesPanel.add(new JLabel("Khách hàng:"));
+                customerSeriesPanel.add(customerComboBox);
+                customerSeriesPanel.add(new JLabel("Đợt xuất (Mã HD series):"));
+                customerSeriesPanel.add(seriesComboBox);
+                optionPanel.add(customerSeriesPanel);
+
+                rbPrintByCustomer.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        customerComboBox.setEnabled(true);
+                        seriesComboBox.setEnabled(true);
+                    }
+                });
+
+                rbPrintAll.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        customerComboBox.setEnabled(false);
+                        seriesComboBox.setEnabled(false);
+                    }
+                });
+
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                JButton btnOK = new JButton("Xác nhận In");
+                JButton btnCancel = new JButton("Hủy");
+
+                btnOK.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        printOptionDialog.dispose();
+                        List<hoaDonDTO> hoaDonListToPrint;
+                        HoaDonBUS hoaDonBUS = new HoaDonBUS();
+
+                        if (rbPrintAll.isSelected()) {
+                            hoaDonListToPrint = hoaDonBUS.getAllHoaDon();
+                        } else {
+                            if (customerComboBox.getSelectedItem() == null || seriesComboBox.getSelectedItem() == null) {
+                                JOptionPane.showMessageDialog(null,
+                                        "Vui lòng chọn khách hàng và đợt xuất",
+                                        "Thông báo",
+                                        JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
+                            String selectedCustomer = customerComboBox.getSelectedItem().toString();
+                            String maKhachHang = selectedCustomer.split(" - ")[0];
+                            String seriesPart = seriesComboBox.getSelectedItem().toString();
+                            hoaDonListToPrint = hoaDonBUS.getHoaDonByKhachHangAndSeries(maKhachHang, seriesPart);
+                        }
+
+                        if (hoaDonListToPrint == null || hoaDonListToPrint.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Không có dữ liệu hóa đơn để in.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                            return;
+                        }
+                        printSelectedHoaDon(hoaDonListToPrint);
+                    }
+                });
+
+                btnCancel.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        printOptionDialog.dispose();
+                    }
+                });
+
+                buttonPanel.add(btnOK);
+                buttonPanel.add(btnCancel);
+
+                printOptionDialog.add(optionPanel, BorderLayout.CENTER);
+                printOptionDialog.add(buttonPanel, BorderLayout.SOUTH);
+                printOptionDialog.setVisible(true);
             }
         });
+    }
+
+    private void printSelectedHoaDon(List<hoaDonDTO> hoaDonList) {
+        try {
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.append("<html><head><style>");
+            htmlContent.append("body { font-family: Arial, sans-serif; margin: 20px; }");
+            htmlContent.append("h1 { text-align: center; color: #333; }");
+            htmlContent.append(".invoice-record { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; border-radius: 5px; page-break-inside: avoid; }");
+            htmlContent.append(".field-label { font-weight: bold; color: #555; }");
+            htmlContent.append("p { margin: 5px 0; }");
+            htmlContent.append("</style></head><body>");
+            htmlContent.append("<h1>Danh Sách Chi Tiết Hóa Đơn</h1>");
+
+            for (hoaDonDTO hd : hoaDonList) {
+                htmlContent.append("<div class='invoice-record'>");
+                htmlContent.append("<p><span class='field-label'>Mã Hóa Đơn:</span> ").append(hd.getMaHoaDon() != null ? hd.getMaHoaDon() : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Mã Sản Phẩm:</span> ").append(hd.getMaSanPham() != null ? hd.getMaSanPham() : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Tên Sản Phẩm:</span> ").append(hd.getTenSanPham() != null ? hd.getTenSanPham() : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Mã Khách Hàng:</span> ").append(hd.getMaKhachHang() != null ? hd.getMaKhachHang() : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Tên Khách Hàng:</span> ").append(hd.getTenKhachHang() != null ? hd.getTenKhachHang() : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Kích Cỡ:</span> ").append(hd.getKichCo() != null ? hd.getKichCo() : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Màu Sắc:</span> ").append(hd.getMauSac() != null ? hd.getMauSac() : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Số Lượng:</span> ").append(decimalFormat.format(hd.getSoLuong())).append("</p>");
+                htmlContent.append("<p><span class='field-label'>Đơn Giá:</span> ").append(decimalFormat.format(hd.getDonGia())).append("</p>");
+                htmlContent.append("<p><span class='field-label'>Thành Tiền:</span> ").append(decimalFormat.format(hd.getThanhTien())).append("</p>");
+                htmlContent.append("<p><span class='field-label'>Thời Gian:</span> ").append(hd.getThoiGian() != null ? dateFormat.format(hd.getThoiGian()) : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Hình Thức Thanh Toán:</span> ").append(hd.getHinhThucThanhToan() != null ? hd.getHinhThucThanhToan() : "").append("</p>");
+                htmlContent.append("<p><span class='field-label'>Trạng Thái:</span> ").append(hd.getTrangThai() != null ? hd.getTrangThai() : "").append("</p>");
+                htmlContent.append("</div>");
+            }
+            htmlContent.append("</body></html>");
+
+            JEditorPane editorPane = new JEditorPane();
+            editorPane.setContentType("text/html");
+            editorPane.setText(htmlContent.toString());
+            editorPane.setEditable(false);
+
+            boolean printed = editorPane.print();
+            if (!printed) {
+                // JOptionPane.showMessageDialog(null, "Lệnh in đã bị hủy.", "In Bị Hủy", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (java.awt.print.PrinterException pe) {
+            JOptionPane.showMessageDialog(null, "Lỗi khi in: Không tìm thấy máy in hoặc lỗi máy in.\n" + pe.getMessage(), "Lỗi In Ấn", JOptionPane.ERROR_MESSAGE);
+            pe.printStackTrace();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Lỗi khi chuẩn bị dữ liệu để in: " + e.getMessage(), "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     public javax.swing.JPanel getHoaDonPanel() {
@@ -988,4 +1375,97 @@ public class HoaDonPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnImport;
     private javax.swing.JButton btnPrinter;
     private javax.swing.JPanel pnlBottomButtons;
+
+    // Phương thức xuất hóa đơn sang Excel
+    private void exportHoaDonToExcel(List<hoaDonDTO> hoaDonList, String filePath) {
+        String[] headers = {
+            "Mã Hóa Đơn", "Mã Sản Phẩm", "Tên Sản Phẩm", "Kích Cỡ", "Màu Sắc", "Số Lượng",
+            "Mã Khách Hàng", "Tên Khách Hàng", "Thành Tiền", "Đơn Giá",
+            "Hình Thức Thanh Toán", "Thời Gian", "Trạng Thái"
+        };
+        
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Hóa Đơn");
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+            }
+            
+            int rowNum = 1;
+            for (hoaDonDTO hd : hoaDonList) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(hd.getMaHoaDon());
+                row.createCell(1).setCellValue(hd.getMaSanPham());
+                row.createCell(2).setCellValue(hd.getTenSanPham());
+                row.createCell(3).setCellValue(hd.getKichCo());
+                row.createCell(4).setCellValue(hd.getMauSac());
+                row.createCell(5).setCellValue(hd.getSoLuong());
+                row.createCell(6).setCellValue(hd.getMaKhachHang());
+                row.createCell(7).setCellValue(hd.getTenKhachHang());
+                row.createCell(8).setCellValue(hd.getThanhTien());
+                row.createCell(9).setCellValue(hd.getDonGia());
+                row.createCell(10).setCellValue(hd.getHinhThucThanhToan());
+                row.createCell(11).setCellValue(hd.getThoiGian() != null ? dateFormat.format(hd.getThoiGian()) : "");
+                row.createCell(12).setCellValue(hd.getTrangThai());
+            }
+            
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+            
+            try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                workbook.write(fileOut);
+                JOptionPane.showMessageDialog(null, "Xuất file Excel Hóa Đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi xuất file Excel Hóa Đơn: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    // Phương thức xuất hóa đơn sang Word
+    private void exportHoaDonToWord(List<hoaDonDTO> hoaDonList, String filePath) {
+        try (XWPFDocument document = new XWPFDocument()) {
+            XWPFParagraph titleParagraph = document.createParagraph();
+            titleParagraph.setAlignment(ParagraphAlignment.CENTER);
+            XWPFRun titleRun = titleParagraph.createRun();
+            titleRun.setBold(true);
+            titleRun.setFontSize(16);
+            titleRun.setText("DANH SÁCH HÓA ĐƠN");
+            titleRun.addBreak();
+            
+            for (hoaDonDTO hd : hoaDonList) {
+                addWordParagraph(document, "Mã Hóa Đơn: " + hd.getMaHoaDon());
+                addWordParagraph(document, "Mã Sản Phẩm: " + hd.getMaSanPham());
+                addWordParagraph(document, "Tên Sản Phẩm: " + hd.getTenSanPham());
+                addWordParagraph(document, "Kích Cỡ: " + hd.getKichCo());
+                addWordParagraph(document, "Màu Sắc: " + hd.getMauSac());
+                addWordParagraph(document, "Số Lượng: " + hd.getSoLuong());
+                addWordParagraph(document, "Mã Khách Hàng: " + hd.getMaKhachHang());
+                addWordParagraph(document, "Tên Khách Hàng: " + hd.getTenKhachHang());
+                addWordParagraph(document, "Thành Tiền: " + decimalFormat.format(hd.getThanhTien()));
+                addWordParagraph(document, "Đơn Giá: " + decimalFormat.format(hd.getDonGia()));
+                addWordParagraph(document, "Hình Thức Thanh Toán: " + hd.getHinhThucThanhToan());
+                addWordParagraph(document, "Thời Gian: " + (hd.getThoiGian() != null ? dateFormat.format(hd.getThoiGian()) : ""));
+                addWordParagraph(document, "Trạng Thái: " + hd.getTrangThai());
+                document.createParagraph().createRun().addBreak();
+            }
+            
+            try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+                document.write(fileOut);
+                JOptionPane.showMessageDialog(null, "Xuất file Word Hóa Đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi xuất file Word Hóa Đơn: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    // Method for adding paragraphs to Word document
+    private void addWordParagraph(XWPFDocument document, String text) {
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+        run.setText(text);
+    }
 }

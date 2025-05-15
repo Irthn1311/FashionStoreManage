@@ -184,7 +184,12 @@ VALUES
 ('NCC001', 'SP0007'),
 ('NCC001', 'SP0008'),
 ('NCC001', 'SP0009'),
-('NCC001', 'SP0010');
+('NCC001', 'SP0010'),
+('NCC002', 'SP0011'),
+('NCC003', 'SP0012'),
+('NCC004', 'SP0013'),
+('NCC005', 'SP0014'),
+('NCC006', 'SP0015');
 
 
 -- Tạo bảng HoaDon (đã chỉnh sửa theo yêu cầu)
@@ -207,16 +212,16 @@ CREATE TABLE HoaDon (
 );
 INSERT INTO HoaDon (MaHoaDon, MaSanPham, TenSanPham, KichCo, MauSac, SoLuong, MaKhachHang, ThanhTien, DonGia, HinhThucThanhToan, ThoiGian, TrangThai, TenKhachHang)
 VALUES
-('HD001', 'SP0001', N'Áo sơ mi nam trắng', 'L', N'Trắng', 2, 'KH001', 598000.00, 299000.00, N'Tiền mặt', '2024-08-15 10:30:00', N'Hoàn thành', N'Nguyễn Thị Ngọc'),
-('HD002', 'SP0002', N'Áo thun thế chữ', 'M', N'Xanh', 1, 'KH002', 459000.00, 459000.00, N'Chuyển khoản', '2024-08-16 14:45:00', N'Hoàn thành', N'Trần Văn Hùng'),
-('HD003', 'SP0003', N'Áo form rộng', 'S', N'Đen', 3, 'KH003', 1497000.00, 499000.00, N'Tiền mặt', '2024-08-17 09:20:00', N'Hoàn thành', N'Lê Thị Hồng'),
-('HD004', 'SP0004', N'Áo khoác gió', 'M', N'Hồng', 1, 'KH004', 399000.00, 399000.00, N'Chuyển khoản', '2024-08-18 16:10:00', N'Hoàn thành', N'Phạm Văn Đức'),
-('HD005', 'SP0005', N'Áo khoác nam nữ', '42', N'Trắng', 2, 'KH005', 1500000.00, 750000.00, N'Tiền mặt', '2024-08-19 11:30:00', N'Hoàn thành', N'Hoàng Thị Lan'),
-('HD006', 'SP0006', N'Áo nữ tay dài', 'Free size', N'Nâu', 1, 'KH006', 550000.00, 550000.00, N'Chuyển khoản', '2024-08-20 13:45:00', N'Đang xử lý', N'Vũ Văn Minh'),
-('HD007', 'SP0007', N'Áo thun big size', 'Free size', N'Đen', 2, 'KH007', 300000.00, 150000.00, N'Tiền mặt', '2024-08-21 15:20:00', N'Đang xử lý', N'Đặng Thị Thu'),
-('HD008', 'SP0008', N'Áo thun cổ trắng', 'Free size', N'Bạc', 1, 'KH008', 1200000.00, 1200000.00, N'Chuyển khoản', '2024-08-22 10:10:00', N'Chờ giao', N'Ngô Văn Hải'),
-('HD009', 'SP0009', N'Áo thun cotton', 'Free size', N'Nâu', 3, 'KH009', 897000.00, 299000.00, N'Tiền mặt', '2024-08-23 14:30:00', N'Chờ giao', N'Bùi Thị Thảo'),
-('HD010', 'SP0010', N'Áo thun hình mèo', 'S', N'Đen', 2, 'KH010', 398000.00, 199000.00, N'Chuyển khoản', '2024-08-24 16:45:00', N'Hoàn thành', N'Trịnh Văn Long');
+('HD00001_36654', 'SP0001', N'Áo sơ mi nam trắng', 'L', N'Trắng', 2, 'KH001', 598000.00, 299000.00, N'Tiền mặt', '2024-08-15 10:30:00', N'Hoàn thành', N'Nguyễn Thị Ngọc'),
+('HD00002_74564', 'SP0002', N'Áo thun thế chữ', 'M', N'Xanh', 1, 'KH002', 459000.00, 459000.00, N'Chuyển khoản', '2024-08-16 14:45:00', N'Hoàn thành', N'Trần Văn Hùng'),
+('HD00003_75632', 'SP0003', N'Áo form rộng', 'S', N'Đen', 3, 'KH003', 1497000.00, 499000.00, N'Tiền mặt', '2024-08-17 09:20:00', N'Hoàn thành', N'Lê Thị Hồng'),
+('HD00004_87654', 'SP0004', N'Áo khoác gió', 'M', N'Hồng', 1, 'KH004', 399000.00, 399000.00, N'Chuyển khoản', '2024-08-18 16:10:00', N'Hoàn thành', N'Phạm Văn Đức'),
+('HD00005_97565', 'SP0005', N'Áo khoác nam nữ', '42', N'Trắng', 2, 'KH005', 1500000.00, 750000.00, N'Tiền mặt', '2024-08-19 11:30:00', N'Hoàn thành', N'Hoàng Thị Lan'),
+('HD00006_13765', 'SP0006', N'Áo nữ tay dài', 'Free size', N'Nâu', 1, 'KH006', 550000.00, 550000.00, N'Chuyển khoản', '2024-08-20 13:45:00', N'Đang xử lý', N'Vũ Văn Minh'),
+('HD00007_21425', 'SP0007', N'Áo thun big size', 'Free size', N'Đen', 2, 'KH007', 300000.00, 150000.00, N'Tiền mặt', '2024-08-21 15:20:00', N'Đang xử lý', N'Đặng Thị Thu'),
+('HD00008_63425', 'SP0008', N'Áo thun cổ trắng', 'Free size', N'Bạc', 1, 'KH008', 1200000.00, 1200000.00, N'Chuyển khoản', '2024-08-22 10:10:00', N'Chờ giao', N'Ngô Văn Hải'),
+('HD00009_87654', 'SP0009', N'Áo thun cotton', 'Free size', N'Nâu', 3, 'KH009', 897000.00, 299000.00, N'Tiền mặt', '2024-08-23 14:30:00', N'Chờ giao', N'Bùi Thị Thảo'),
+('HD00010_34574', 'SP0010', N'Áo thun hình mèo', 'S', N'Đen', 2, 'KH010', 398000.00, 199000.00, N'Chuyển khoản', '2024-08-24 16:45:00', N'Hoàn thành', N'Trịnh Văn Long');
 
 
 -- Tạo bảng NhapHang

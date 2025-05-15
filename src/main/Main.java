@@ -7,6 +7,7 @@ public class Main {
         // Khởi tạo giao diện đăng nhập
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                java.util.Locale.setDefault(java.util.Locale.US);
                 new login().setVisible(true);
             }
         });
