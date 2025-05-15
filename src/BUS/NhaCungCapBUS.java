@@ -4,6 +4,8 @@ import DAO.NhaCungCapDAO;
 import DTO.nhaCungCapDTO;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class NhaCungCapBUS {
     private NhaCungCapDAO nhaCungCapDAO;
@@ -111,20 +113,25 @@ public class NhaCungCapBUS {
     public List<String> getAllSuppliers() {
         List<nhaCungCapDTO> suppliers = nhaCungCapDAO.getAllNhaCungCap();
         return suppliers.stream()
-            .map(nhaCungCapDTO::getMaNhaCungCap)
-            .collect(Collectors.toList());
+                .map(nhaCungCapDTO::getMaNhaCungCap)
+                .collect(Collectors.toList());
     }
 
     public boolean isSupplierActive(String maNhaCungCap) {
         return nhaCungCapDAO.isSupplierActive(maNhaCungCap);
     }
 
-    public List<nhaCungCapDTO> searchNhaCungCapAdvanced(String keyword, String searchType, String namHopTacFilter, String trangThaiFilter) {
-        // Convert "Tất cả" or empty strings for filters to null or handle them appropriately for DAO
+    public List<nhaCungCapDTO> searchNhaCungCapAdvanced(String keyword, String searchType, String namHopTacFilter,
+            String trangThaiFilter) {
+        // Convert "Tất cả" or empty strings for filters to null or handle them
+        // appropriately for DAO
         String finalKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null;
-        String finalSearchType = (searchType != null && !searchType.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(searchType.trim())) ? searchType.trim() : null;
-        String finalNamHopTac = (namHopTacFilter != null && !namHopTacFilter.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(namHopTacFilter.trim())) ? namHopTacFilter.trim() : null;
-        String finalTrangThai = (trangThaiFilter != null && !trangThaiFilter.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(trangThaiFilter.trim())) ? trangThaiFilter.trim() : null;
+        String finalSearchType = (searchType != null && !searchType.trim().isEmpty()
+                && !"Tất cả".equalsIgnoreCase(searchType.trim())) ? searchType.trim() : null;
+        String finalNamHopTac = (namHopTacFilter != null && !namHopTacFilter.trim().isEmpty()
+                && !"Tất cả".equalsIgnoreCase(namHopTacFilter.trim())) ? namHopTacFilter.trim() : null;
+        String finalTrangThai = (trangThaiFilter != null && !trangThaiFilter.trim().isEmpty()
+                && !"Tất cả".equalsIgnoreCase(trangThaiFilter.trim())) ? trangThaiFilter.trim() : null;
 
         return nhaCungCapDAO.searchNhaCungCapAdvanced(finalKeyword, finalSearchType, finalNamHopTac, finalTrangThai);
     }
@@ -149,9 +156,48 @@ public class NhaCungCapBUS {
             newTrangThai = "Đang hợp tác";
         } else {
             // Default to "Đang hợp tác" if current status is unclear or different
-            newTrangThai = "Đang hợp tác"; 
+            newTrangThai = "Đang hợp tác";
         }
-        
+
         return nhaCungCapDAO.capNhatTrangThaiNhaCungCap(maNCC, newTrangThai);
+    }
+
+    public String generateNextMaNhaCungCap() {
+        List<nhaCungCapDTO> allNhaCungCap = nhaCungCapDAO.getAllNhaCungCap();
+
+        // If no suppliers exist, start with NCC001
+        if (allNhaCungCap == null || allNhaCungCap.isEmpty()) {
+            return "NCC001";
+        }
+
+        // Extract all existing supplier IDs
+        List<Integer> existingIds = new ArrayList<>();
+        for (nhaCungCapDTO ncc : allNhaCungCap) {
+            String maNCC = ncc.getMaNhaCungCap();
+            if (maNCC != null && maNCC.matches("NCC\\d{3}")) {
+                try {
+                    int idNumber = Integer.parseInt(maNCC.substring(3));
+                    existingIds.add(idNumber);
+                } catch (NumberFormatException e) {
+                    // Skip invalid formats
+                }
+            }
+        }
+
+        // Sort the IDs to find gaps
+        Collections.sort(existingIds);
+
+        // Look for gaps in the sequence
+        int expectedId = 1;
+        for (int existingId : existingIds) {
+            if (existingId > expectedId) {
+                // Found a gap, use the missing ID
+                break;
+            }
+            expectedId = existingId + 1;
+        }
+
+        // Format the new ID with leading zeros
+        return String.format("NCC%03d", expectedId);
     }
 }
