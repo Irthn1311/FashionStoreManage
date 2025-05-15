@@ -69,7 +69,8 @@ public class EditProductDialog extends JDialog {
         mainPanel.add(new JLabel("Mã sản phẩm:"), gbc);
         gbc.gridx = 1;
         txtMaSanPham = new JTextField(20);
-        txtMaSanPham.setEnabled(false);
+        txtMaSanPham.setForeground(Color.BLACK); // In đậm mã sản phẩm
+        txtMaSanPham.setEnabled(false); 
         mainPanel.add(txtMaSanPham, gbc);
 
         // Tên sản phẩm

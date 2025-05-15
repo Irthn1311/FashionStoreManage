@@ -67,8 +67,8 @@ CREATE TABLE KhachHang (
 
 INSERT INTO KhachHang (MaKhachHang, HoTen, GioiTinh, SoDienThoai, Email, DiaChi, NgaySinh)
 VALUES
-('KH001', N'Nguyễn Thị Ngọc', N'Nữ', '0901122334', 'ngoc.nguyen@email.com', N'123 Nguyễn Huệ, Q1, TP.HCM', '1995-06-15'),
-('KH002', N'Trần Văn Hùng', N'Nam', '0912233445', 'hung.tran@email.com', N'456 Lê Lai, Q1, TP.HCM', '1990-08-20'),
+('KH001', N'Nguyễn Thị Ngọc', N'Nữ', '0901122334', 'huutri13113@gmail.com', N'123 Nguyễn Huệ, Q1, TP.HCM', '1995-06-15'),
+('KH002', N'Nguyễn Đăng Quang', N'Nam', '0912233445', 'quangnguyendang106@gmail.com', N'456 Lê Lai, Q1, TP.HCM', '1990-08-20'),
 ('KH003', N'Lê Thị Hồng', N'Nữ', '0923344556', 'hong.le@email.com', N'789 Cách Mạng Tháng 8, Q3, TP.HCM', '1992-03-10'),
 ('KH004', N'Nguyễn Hữu Tri', N'Nam', '0582837353', 'nhtri1311@gmail.com', N'101 Lý Thường Kiệt, Q10, TP.HCM', '1988-11-25'),
 ('KH005', N'Hoàng Thị Lan', N'Nữ', '0945566778', 'lan.hoang@email.com', N'234 Nguyễn Trãi, Q5, TP.HCM', '1993-04-30'),
@@ -163,9 +163,6 @@ VALUES
 
 
 
-
-
-
 CREATE TABLE NhaCungCap_SanPham (
     MaNhaCungCap VARCHAR(100),
     MaSanPham VARCHAR(100),
@@ -217,10 +214,10 @@ VALUES
 ('HD00003_75632', 'SP0003', N'Áo form rộng', 'S', N'Đen', 3, 'KH003', 1497000.00, 499000.00, N'Tiền mặt', '2024-08-17 09:20:00', N'Hoàn thành', N'Lê Thị Hồng'),
 ('HD00004_87654', 'SP0004', N'Áo khoác gió', 'M', N'Hồng', 1, 'KH004', 399000.00, 399000.00, N'Chuyển khoản', '2024-08-18 16:10:00', N'Hoàn thành', N'Phạm Văn Đức'),
 ('HD00005_97565', 'SP0005', N'Áo khoác nam nữ', '42', N'Trắng', 2, 'KH005', 1500000.00, 750000.00, N'Tiền mặt', '2024-08-19 11:30:00', N'Hoàn thành', N'Hoàng Thị Lan'),
-('HD00006_13765', 'SP0006', N'Áo nữ tay dài', 'Free size', N'Nâu', 1, 'KH006', 550000.00, 550000.00, N'Chuyển khoản', '2024-08-20 13:45:00', N'Đang xử lý', N'Vũ Văn Minh'),
-('HD00007_21425', 'SP0007', N'Áo thun big size', 'Free size', N'Đen', 2, 'KH007', 300000.00, 150000.00, N'Tiền mặt', '2024-08-21 15:20:00', N'Đang xử lý', N'Đặng Thị Thu'),
-('HD00008_63425', 'SP0008', N'Áo thun cổ trắng', 'Free size', N'Bạc', 1, 'KH008', 1200000.00, 1200000.00, N'Chuyển khoản', '2024-08-22 10:10:00', N'Chờ giao', N'Ngô Văn Hải'),
-('HD00009_87654', 'SP0009', N'Áo thun cotton', 'Free size', N'Nâu', 3, 'KH009', 897000.00, 299000.00, N'Tiền mặt', '2024-08-23 14:30:00', N'Chờ giao', N'Bùi Thị Thảo'),
+('HD00006_13765', 'SP0006', N'Áo nữ tay dài', 'L', N'Nâu', 1, 'KH006', 550000.00, 550000.00, N'Chuyển khoản', '2024-08-20 13:45:00', N'Hoàn thành', N'Vũ Văn Minh'),
+('HD00007_21425', 'SP0007', N'Áo thun big size', 'XXL', N'Đen', 2, 'KH007', 300000.00, 150000.00, N'Tiền mặt', '2024-08-21 15:20:00', N'Hoàn thành', N'Đặng Thị Thu'),
+('HD00008_63425', 'SP0008', N'Áo thun cổ trắng', 'XL', N'Bạc', 1, 'KH008', 1200000.00, 1200000.00, N'Chuyển khoản', '2024-08-22 10:10:00', N'Hoàn thành', N'Ngô Văn Hải'),
+('HD00009_87654', 'SP0009', N'Áo thun cotton', 'M', N'Nâu', 3, 'KH009', 897000.00, 299000.00, N'Tiền mặt', '2024-08-23 14:30:00', N'Hoàn thành', N'Bùi Thị Thảo'),
 ('HD00010_34574', 'SP0010', N'Áo thun hình mèo', 'S', N'Đen', 2, 'KH010', 398000.00, 199000.00, N'Chuyển khoản', '2024-08-24 16:45:00', N'Hoàn thành', N'Trịnh Văn Long');
 
 
@@ -332,14 +329,14 @@ CREATE TABLE PhieuNhap (
 
 INSERT INTO PhieuNhap (MaPhieuNhap, MaNhaCungCap, MaSanPham, TenSanPham, SoLuong, ThoiGian, DonGia, TrangThai, HinhThucThanhToan, ThanhTien)
 VALUES
-('PN001', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', 50, '2023-05-10 09:30:00', 250000, N'Hoàn thành', N'Chuyển khoản', 12500000),
-('PN002', 'NCC001', 'SP0002', N'Áo thun thế chữ', 30, '2023-05-12 10:45:00', 350000, N'Hoàn thành', N'Tiền mặt', 10500000),
-('PN003', 'NCC001', 'SP0003', N'Áo form rộng', 40, '2023-05-15 14:20:00', 400000, N'Hoàn thành', N'Chuyển khoản', 16000000),
-('PN004', 'NCC004', 'SP0004', N'Áo khoác gió', 35, '2023-05-18 11:30:00', 300000, N'Hoàn thành', N'Tiền mặt', 10500000),
-('PN005', 'NCC004', 'SP0005', N'Áo khoác nam nữ', 25, '2023-05-20 15:45:00', 600000, N'Hoàn thành', N'Chuyển khoản', 15000000),
-('PN006', 'NCC001', 'SP0006', N'Áo nữ tay dài', 20, '2023-06-01 09:15:00', 450000, N'Đang xử lý', N'Tiền mặt', 9000000),
-('PN007', 'NCC001', 'SP0007', N'Áo thun big size', 40, '2023-06-05 10:30:00', 120000, N'Đang xử lý', N'Chuyển khoản', 4800000),
-('PN008', 'NCC001', 'SP0008', N'Áo thun cổ trắng', 15, '2023-06-10 14:45:00', 950000, N'Đang xử lý', N'Tiền mặt', 14250000),
-('PN009', 'NCC001', 'SP0009', N'Áo thun cotton', 30, '2023-06-15 16:20:00', 250000, N'Đang xử lý', N'Chuyển khoản', 7500000),
-('PN010', 'NCC001', 'SP0010', N'Áo thun hình mèo', 25, '2023-06-20 11:10:00', 150000, N'Đang xử lý', N'Tiền mặt', 3750000);
+('PN00001_43553', 'NCC007', 'SP0001', N'Áo sơ mi nam trắng', 50, '2023-05-10 09:30:00', 250000, N'Hoàn thành', N'Chuyển khoản', 12500000),
+('PN00002_23543', 'NCC001', 'SP0002', N'Áo thun thế chữ', 30, '2023-05-12 10:45:00', 350000, N'Hoàn thành', N'Tiền mặt', 10500000),
+('PN00003_67556', 'NCC001', 'SP0003', N'Áo form rộng', 40, '2023-05-15 14:20:00', 400000, N'Hoàn thành', N'Chuyển khoản', 16000000),
+('PN00004_75453', 'NCC004', 'SP0004', N'Áo khoác gió', 35, '2023-05-18 11:30:00', 300000, N'Hoàn thành', N'Tiền mặt', 10500000),
+('PN00005_98543', 'NCC004', 'SP0005', N'Áo khoác nam nữ', 25, '2023-05-20 15:45:00', 600000, N'Hoàn thành', N'Chuyển khoản', 15000000),
+('PN00006_12543', 'NCC001', 'SP0006', N'Áo nữ tay dài', 20, '2023-06-01 09:15:00', 450000, N'Hoàn thành', N'Tiền mặt', 9000000),
+('PN00007_17674', 'NCC001', 'SP0007', N'Áo thun big size', 40, '2023-06-05 10:30:00', 120000, N'Hoàn thành', N'Chuyển khoản', 4800000),
+('PN00008_86746', 'NCC001', 'SP0008', N'Áo thun cổ trắng', 15, '2023-06-10 14:45:00', 950000, N'Hoàn thành', N'Tiền mặt', 14250000),
+('PN00009_18745', 'NCC001', 'SP0009', N'Áo thun cotton', 30, '2023-06-15 16:20:00', 250000, N'Hoàn thành', N'Chuyển khoản', 7500000),
+('PN00010_15654', 'NCC001', 'SP0010', N'Áo thun hình mèo', 25, '2023-06-20 11:10:00', 150000, N'Hoàn thành', N'Tiền mặt', 3750000);
 

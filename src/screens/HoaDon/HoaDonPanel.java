@@ -61,6 +61,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.awt.Font;
+import javax.swing.JSeparator;
 
 public class HoaDonPanel extends javax.swing.JPanel {
     private HoaDonDAO hoaDonDAO;
@@ -72,6 +75,10 @@ public class HoaDonPanel extends javax.swing.JPanel {
     private Map<String, Color> maHoaDonPrefixColorMap;
     private int nextColorIndex = 0;
 
+    // Added for Tong Tien Ban Hang
+    private javax.swing.JLabel lblTongTienBanHang;
+    private javax.swing.JTextField txtTongTienBanHang;
+
     public HoaDonPanel() {
         initComponents();
         setupUI();
@@ -79,7 +86,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         // Khởi tạo DAO và định dạng
         hoaDonDAO = new HoaDonDAO();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        decimalFormat = new DecimalFormat("#,###.##");
+        decimalFormat = new DecimalFormat("#,##0.00");
 
         // Initialize color fields
         rowColors = new ArrayList<>(Arrays.asList(
@@ -113,25 +120,25 @@ public class HoaDonPanel extends javax.swing.JPanel {
             ImageIcon addIcon = new ImageIcon(getClass().getResource("/icon_img/add.png"));
             if (addIcon.getImage() != null) {
                 Image scaledAddIcon = addIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-                jButton31.setIcon(new ImageIcon(scaledAddIcon));
-                jButton31.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-                jButton31.setIconTextGap(5);
+                btnThem.setIcon(new ImageIcon(scaledAddIcon));
+                btnThem.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                btnThem.setIconTextGap(5);
             }
 
             ImageIcon editIcon = new ImageIcon(getClass().getResource("/icon_img/edit.png"));
             if (editIcon.getImage() != null) {
                 Image scaledEditIcon = editIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-                jButton32.setIcon(new ImageIcon(scaledEditIcon));
-                jButton32.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-                jButton32.setIconTextGap(5);
+                btnSua.setIcon(new ImageIcon(scaledEditIcon));
+                btnSua.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                btnSua.setIconTextGap(5);
             }
 
             ImageIcon deleteIcon = new ImageIcon(getClass().getResource("/icon_img/delete.png"));
             if (deleteIcon.getImage() != null) {
                 Image scaledDeleteIcon = deleteIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-                jButton33.setIcon(new ImageIcon(scaledDeleteIcon));
-                jButton33.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-                jButton33.setIconTextGap(5);
+                btnXoa.setIcon(new ImageIcon(scaledDeleteIcon));
+                btnXoa.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                btnXoa.setIconTextGap(5);
             }
 
             ImageIcon exportIcon = new ImageIcon(getClass().getResource("/icon_img/export_icon.png"));
@@ -353,6 +360,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
                     "Xem chi tiết"
             });
         }
+        updateTongTienBanHang(); // Update total after table data is set/changed
     }
 
     // Cập nhật STT sau khi xóa dòng
@@ -385,7 +393,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
             // Nếu không có điều kiện tìm kiếm, tải lại toàn bộ dữ liệu
             if (keyword.isEmpty() && soLuongTu.isEmpty() && soLuongDen.isEmpty() && thanhTienTu.isEmpty()
                     && thanhTienDen.isEmpty()) {
-                loadHoaDonData();
+                loadHoaDonData(); // This will call updateTableData which calls updateTongTienBanHang
                 return;
             }
 
@@ -444,11 +452,13 @@ public class HoaDonPanel extends javax.swing.JPanel {
                         "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
             }
+            updateTongTienBanHang(); // Update total after filtering by date
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Lỗi khi tìm kiếm hóa đơn: " + e.getMessage(),
                     "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
@@ -573,7 +583,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
 
     private void setupListeners() {
         // Nút Thêm
-        jButton31.addActionListener(new ActionListener() {
+        btnThem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog dialog = new JDialog();
@@ -593,7 +603,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         });
 
         // Nút Sửa
-        jButton32.addActionListener(new ActionListener() {
+        btnSua.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = jTable2.getSelectedRow();
@@ -638,13 +648,13 @@ public class HoaDonPanel extends javax.swing.JPanel {
         });
 
         // Nút Xóa
-        jButton33.addActionListener(new ActionListener() {
+        btnXoa.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = jTable2.getSelectedRow();
                 if (selectedRow >= 0) {
                     // Vô hiệu hóa nút Xóa để tránh nhấp chuột lặp lại
-                    jButton33.setEnabled(false);
+                    btnXoa.setEnabled(false);
 
                     try {
                         String maHoaDon = getTableValueAsString(selectedRow, 1);
@@ -672,6 +682,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
                             DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
                             model.removeRow(selectedRow);
                             updateTableSTT(); // Cập nhật lại STT
+                            updateTongTienBanHang(); // Update total after row deletion
                         }
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null,
@@ -680,7 +691,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
                                 JOptionPane.ERROR_MESSAGE);
                     } finally {
                         // Kích hoạt lại nút Xóa
-                        jButton33.setEnabled(true);
+                        btnXoa.setEnabled(true);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null,
@@ -929,7 +940,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 utils.FileUtils.importFromExcelForHoaDon(jTable2);
-                loadHoaDonData();
+                loadHoaDonData(); // This will call updateTableData which calls updateTongTienBanHang
             }
         });
 
@@ -1168,11 +1179,11 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jLabelThanhTienTu = new javax.swing.JLabel();
         jLabelThanhTienDen = new javax.swing.JLabel();
         jButtonReset = new javax.swing.JButton();
-        jPanel17 = new javax.swing.JPanel();
-        jButton31 = new javax.swing.JButton();
-        jButton32 = new javax.swing.JButton();
-        jButton33 = new javax.swing.JButton();
-        jPanel18 = new javax.swing.JPanel();
+        pnlBoxChinhSua = new javax.swing.JPanel();
+        btnThem = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
+        btnXoa = new javax.swing.JButton();
+        pnlBoxBangThongTin = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         btnExport = new javax.swing.JButton();
@@ -1276,39 +1287,130 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jButtonReset.setPreferredSize(new java.awt.Dimension(120, 30));
         jPanel33.add(jButtonReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, 120, 30));
 
-        jPanel17.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        pnlBoxChinhSua.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         javax.swing.border.TitledBorder editBorder = javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Chỉnh sửa");
+                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Bộ lọc thời gian");
         editBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
-        jPanel17.setBorder(editBorder);
-        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 23));
+        pnlBoxChinhSua.setBorder(editBorder);
+        pnlBoxChinhSua.setLayout(new BorderLayout());
 
-        Dimension editButtonSize = new java.awt.Dimension(120, 34);
+        // Panel chính chứa các thành phần lọc
+        JPanel mainFilterPanel = new JPanel();
+        mainFilterPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 10)); // Giảm padding xuống 2
+        mainFilterPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
-        jButton31.setText("Thêm");
-        jButton31.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
-        jButton31.setForeground(java.awt.Color.WHITE);
-        jButton31.setPreferredSize(editButtonSize);
-        jPanel17.add(jButton31);
+        // Nút lọc (bên trái)
+        JButton btnFilter = new JButton("Lọc");
+        btnFilter.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        btnFilter.setForeground(Color.WHITE);
+        btnFilter.setPreferredSize(new Dimension(100, 30));
+        btnFilter.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        mainFilterPanel.add(btnFilter);
+        mainFilterPanel.add(Box.createHorizontalStrut(8)); // Giảm xuống 8
 
-        jButton32.setText("Sửa");
-        jButton32.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
-        jButton32.setForeground(java.awt.Color.WHITE);
-        jButton32.setPreferredSize(editButtonSize);
-        jPanel17.add(jButton32);
+        // Panel cho ngày bắt đầu
+        JPanel fromDatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0)); // Giảm padding xuống 2
+        fromDatePanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        JLabel lblFromDate = new JLabel("Từ ngày:");
+        lblFromDate.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        lblFromDate.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        
+        // ComboBox cho ngày bắt đầu
+        JComboBox<Integer> cbFromYear = new JComboBox<>(new Integer[]{2020, 2021, 2022, 2023, 2024, 2025});
+        JComboBox<Integer> cbFromMonth = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+        JComboBox<Integer> cbFromDay = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31});
 
-        jButton33.setText("Xóa");
-        jButton33.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
-        jButton33.setForeground(java.awt.Color.WHITE);
-        jButton33.setPreferredSize(editButtonSize);
-        jPanel17.add(jButton33);
+        // Thiết lập kích thước cho các combo box
+        Dimension cbSize = new Dimension(80, 30);
+        cbFromYear.setPreferredSize(cbSize);
+        cbFromMonth.setPreferredSize(cbSize);
+        cbFromDay.setPreferredSize(cbSize);
 
-        jPanel18.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        fromDatePanel.add(lblFromDate);
+        fromDatePanel.add(Box.createHorizontalStrut(3)); // Giảm xuống 3
+        fromDatePanel.add(cbFromDay);
+        fromDatePanel.add(new JLabel("/"));
+        fromDatePanel.add(cbFromMonth);
+        fromDatePanel.add(new JLabel("/"));
+        fromDatePanel.add(cbFromYear);
+        mainFilterPanel.add(fromDatePanel);
+
+        mainFilterPanel.add(Box.createHorizontalStrut(10)); // Giảm xuống 10
+
+        // Panel cho ngày kết thúc
+        JPanel toDatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0)); // Giảm padding xuống 2
+        toDatePanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        JLabel lblToDate = new JLabel("Đến ngày:");
+        lblToDate.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        lblToDate.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        // ComboBox cho ngày kết thúc
+        JComboBox<Integer> cbToYear = new JComboBox<>(new Integer[]{2020, 2021, 2022, 2023, 2024, 2025});
+        JComboBox<Integer> cbToMonth = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+        JComboBox<Integer> cbToDay = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31});
+
+        // Thiết lập kích thước cho các combo box
+        cbToYear.setPreferredSize(cbSize);
+        cbToMonth.setPreferredSize(cbSize);
+        cbToDay.setPreferredSize(cbSize);
+
+        toDatePanel.add(lblToDate);
+        toDatePanel.add(Box.createHorizontalStrut(3)); // Giảm xuống 3
+        toDatePanel.add(cbToDay);
+        toDatePanel.add(new JLabel("/"));
+        toDatePanel.add(cbToMonth);
+        toDatePanel.add(new JLabel("/"));
+        toDatePanel.add(cbToYear);
+        mainFilterPanel.add(toDatePanel);
+
+        // Tạo panel riêng cho nút xóa để căn phải
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        
+        // Thêm JSeparator
+        JSeparator separator = new JSeparator(JSeparator.VERTICAL);
+        separator.setPreferredSize(new Dimension(1, 25));
+        separator.setForeground(AppColors.NEW_BORDER_LINES_COLOR);
+        rightPanel.add(Box.createHorizontalStrut(10));
+        rightPanel.add(separator);
+        rightPanel.add(Box.createHorizontalStrut(10));
+        
+        // Nút xóa (bên phải)
+        btnXoa.setText("Xóa");
+        btnXoa.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        btnXoa.setForeground(Color.WHITE);
+        btnXoa.setPreferredSize(new Dimension(100, 30));
+        btnXoa.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        rightPanel.add(btnXoa);
+
+        // Panel wrapper để chứa cả mainFilterPanel và rightPanel
+        JPanel wrapperPanel = new JPanel(new BorderLayout());
+        wrapperPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        wrapperPanel.add(mainFilterPanel, BorderLayout.WEST);
+        wrapperPanel.add(rightPanel, BorderLayout.EAST);
+
+        // Thêm action listener cho nút lọc
+        btnFilter.addActionListener(e -> {
+            Integer fromYear = (Integer) cbFromYear.getSelectedItem();
+            Integer fromMonth = (Integer) cbFromMonth.getSelectedItem();
+            Integer fromDay = (Integer) cbFromDay.getSelectedItem();
+            Integer toYear = (Integer) cbToYear.getSelectedItem();
+            Integer toMonth = (Integer) cbToMonth.getSelectedItem();
+            Integer toDay = (Integer) cbToDay.getSelectedItem();
+
+            filterByDateRange(fromYear, fromMonth, fromDay, toYear, toMonth, toDay);
+        });
+
+        pnlBoxChinhSua.add(wrapperPanel, BorderLayout.CENTER);
+
+        pnlBoxBangThongTin.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         javax.swing.border.TitledBorder tableBorder = javax.swing.BorderFactory.createTitledBorder(
                 javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Bảng thông tin");
         tableBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
-        jPanel18.setBorder(tableBorder);
-        jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlBoxBangThongTin.setBorder(tableBorder);
+        pnlBoxBangThongTin.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][] {},
@@ -1331,11 +1433,30 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jTable2.getTableHeader().setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         jTable2.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
         jScrollPane2.setViewportView(jTable2);
-        jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 941, 292));
+        pnlBoxBangThongTin.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 941, 292));
 
-        pnlBottomButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        pnlBottomButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 10)); // Matches phieunhap.java
         pnlBottomButtons.setBackground(AppColors.NEW_MAIN_BG_COLOR);
-        Dimension bottomButtonSize = new Dimension(170, 40);
+        Dimension bottomButtonSize = new Dimension(170, 40); // Matches phieunhap.java
+
+        // Add Tong Tien Ban Hang display FIRST
+        lblTongTienBanHang = new JLabel("Tổng tiền bán hàng:");
+        lblTongTienBanHang.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblTongTienBanHang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        pnlBottomButtons.add(lblTongTienBanHang);
+
+        txtTongTienBanHang = new JTextField("0.00");
+        txtTongTienBanHang.setEditable(false);
+        txtTongTienBanHang.setPreferredSize(new Dimension(150, 30)); // Matches phieunhap.java
+        txtTongTienBanHang.setHorizontalAlignment(JTextField.RIGHT);
+        txtTongTienBanHang.setBackground(java.awt.Color.WHITE);
+        txtTongTienBanHang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        txtTongTienBanHang.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        pnlBottomButtons.add(txtTongTienBanHang);
+        
+        // THEN add the buttons, maintaining original spacing logic from phieunhap.java if any
+        // In phieunhap, buttons are added directly after the total display.
+        // The FlowLayout with hgap=30 will handle spacing between (txtTongTienBanHang) and (btnImport)
 
         btnImport.setText("Nhập dữ liệu");
         btnImport.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
@@ -1363,8 +1484,8 @@ public class HoaDonPanel extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel33, javax.swing.GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
-                    .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlBoxChinhSua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlBoxBangThongTin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlBottomButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
@@ -1374,9 +1495,9 @@ public class HoaDonPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlBoxChinhSua, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlBoxBangThongTin, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlBottomButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1389,16 +1510,16 @@ public class HoaDonPanel extends javax.swing.JPanel {
 
     private void setupUI() {
         jPanel33.setPreferredSize(new java.awt.Dimension(961, 120));
-        jPanel17.setPreferredSize(new java.awt.Dimension(961, 90));
-        jPanel18.setPreferredSize(new java.awt.Dimension(961, 352));
+        pnlBoxChinhSua.setPreferredSize(new java.awt.Dimension(961, 90));
+        pnlBoxBangThongTin.setPreferredSize(new java.awt.Dimension(961, 352));
     }
 
     // Khai báo biến
     private javax.swing.JPanel containerPanel;
     private javax.swing.JButton jButton30;
-    private javax.swing.JButton jButton31;
-    private javax.swing.JButton jButton32;
-    private javax.swing.JButton jButton33;
+    private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnXoa;
     private javax.swing.JButton btnExport;
     private javax.swing.JButton jButtonReset;
     private javax.swing.JComboBox<String> jComboBox1;
@@ -1410,8 +1531,8 @@ public class HoaDonPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelThanhTien;
     private javax.swing.JLabel jLabelThanhTienTu;
     private javax.swing.JLabel jLabelThanhTienDen;
-    private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel pnlBoxChinhSua;
+    private javax.swing.JPanel pnlBoxBangThongTin;
     private javax.swing.JPanel jPanel33;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
@@ -1573,6 +1694,141 @@ public class HoaDonPanel extends javax.swing.JPanel {
                 }
             }
             return c;
+        }
+    }
+
+    private void filterByDateRange(Integer fromYear, Integer fromMonth, Integer fromDay,
+                                 Integer toYear, Integer toMonth, Integer toDay) {
+        try {
+            List<hoaDonDTO> allHoaDon = hoaDonDAO.getAllHoaDon();
+            List<hoaDonDTO> filteredList = new ArrayList<>();
+
+            // Nếu tất cả các tham số đều null, hiển thị tất cả hóa đơn
+            if (fromYear == null && fromMonth == null && fromDay == null &&
+                toYear == null && toMonth == null && toDay == null) {
+                updateTableData(allHoaDon);
+                return;
+            }
+
+            // Tạo đối tượng Calendar cho ngày bắt đầu và kết thúc
+            Calendar fromDate = Calendar.getInstance();
+            Calendar toDate = Calendar.getInstance();
+            Calendar rowDate = Calendar.getInstance();
+
+            // Thiết lập ngày bắt đầu
+            if (fromYear != null) {
+                fromDate.set(Calendar.YEAR, fromYear);
+                if (fromMonth != null) {
+                    fromDate.set(Calendar.MONTH, fromMonth - 1); // Calendar.MONTH bắt đầu từ 0
+                    if (fromDay != null) {
+                        fromDate.set(Calendar.DAY_OF_MONTH, fromDay);
+                    } else {
+                        fromDate.set(Calendar.DAY_OF_MONTH, 1);
+                    }
+                } else {
+                    fromDate.set(Calendar.MONTH, 0);
+                    fromDate.set(Calendar.DAY_OF_MONTH, 1);
+                }
+            } else {
+                fromDate.set(Calendar.YEAR, 1900);
+                fromDate.set(Calendar.MONTH, 0);
+                fromDate.set(Calendar.DAY_OF_MONTH, 1);
+            }
+
+            // Thiết lập ngày kết thúc
+            if (toYear != null) {
+                toDate.set(Calendar.YEAR, toYear);
+                if (toMonth != null) {
+                    toDate.set(Calendar.MONTH, toMonth - 1);
+                    if (toDay != null) {
+                        toDate.set(Calendar.DAY_OF_MONTH, toDay);
+                    } else {
+                        toDate.set(Calendar.DAY_OF_MONTH, toDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+                    }
+                } else {
+                    toDate.set(Calendar.MONTH, 11);
+                    toDate.set(Calendar.DAY_OF_MONTH, 31);
+                }
+            } else {
+                toDate.set(Calendar.YEAR, 9999);
+                toDate.set(Calendar.MONTH, 11);
+                toDate.set(Calendar.DAY_OF_MONTH, 31);
+            }
+
+            // Set time to start and end of day
+            fromDate.set(Calendar.HOUR_OF_DAY, 0);
+            fromDate.set(Calendar.MINUTE, 0);
+            fromDate.set(Calendar.SECOND, 0);
+            fromDate.set(Calendar.MILLISECOND, 0);
+
+            toDate.set(Calendar.HOUR_OF_DAY, 23);
+            toDate.set(Calendar.MINUTE, 59);
+            toDate.set(Calendar.SECOND, 59);
+            toDate.set(Calendar.MILLISECOND, 999);
+
+            // Lọc danh sách hóa đơn
+            for (hoaDonDTO hd : allHoaDon) {
+                if (hd.getThoiGian() != null) {
+                    rowDate.setTimeInMillis(hd.getThoiGian().getTime());
+                    if (rowDate.after(fromDate) && rowDate.before(toDate) || 
+                        rowDate.equals(fromDate) || rowDate.equals(toDate)) {
+                        filteredList.add(hd);
+                    }
+                }
+            }
+
+            updateTableData(filteredList);
+
+            if (filteredList.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy hóa đơn nào trong khoảng thời gian đã chọn",
+                    "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+            updateTongTienBanHang(); // Update total after filtering by date
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Lỗi khi lọc dữ liệu: " + e.getMessage(),
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void updateTongTienBanHang() {
+        double tongTien = 0;
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        int thanhTienColIndex = -1;
+
+        // Find the "Thành tiền" column index dynamically
+        for (int col = 0; col < model.getColumnCount(); col++) {
+            if (model.getColumnName(col).equals("Thành tiền")) {
+                thanhTienColIndex = col;
+                break;
+            }
+        }
+
+        if (thanhTienColIndex == -1) {
+            System.err.println("updateTongTienBanHang: Column 'Thành tiền' not found.");
+            if (txtTongTienBanHang != null) {
+                txtTongTienBanHang.setText("Error");
+            }
+            return;
+        }
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object thanhTienObj = model.getValueAt(i, thanhTienColIndex);
+            if (thanhTienObj != null) {
+                try {
+                    Number parsedNumber = decimalFormat.parse(thanhTienObj.toString());
+                    tongTien += parsedNumber.doubleValue();
+                } catch (java.text.ParseException e) {
+                    System.err.println("Lỗi parse double ở hàng " + i + " cột 'Thành tiền' trong Hóa Đơn: " + thanhTienObj + " Error: " + e.getMessage());
+                }
+            }
+        }
+        if (txtTongTienBanHang != null) {
+            txtTongTienBanHang.setText(decimalFormat.format(tongTien));
         }
     }
 }

@@ -406,7 +406,19 @@ public class SmartImportAdvisorPanel extends JPanel {
                         continue;
 
                     nhapHangDTO newItem = new nhapHangDTO();
-                    newItem.setMaPN(nhapHangBUS.generateNextMaPN());
+                    
+                    String batchPrefix = previousPanel.getCurrentNhapHangBatchPrefix();
+                    PhieuNhapBUS pnBus = previousPanel.getPhieuNhapBUSForIdGeneration();
+                    if (pnBus == null) {
+                         JOptionPane.showMessageDialog(this, "Lỗi: Không thể truy cập PhieuNhapBUS từ màn hình Nhập Hàng.", "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
+                         return;
+                    }
+                    if (batchPrefix == null) {
+                        JOptionPane.showMessageDialog(this, "Lỗi: Không thể lấy batch prefix hiện tại.", "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
+                         return;
+                    }
+                    String maPN = pnBus.generateMaPhieuNhapForBatch(batchPrefix);
+                    newItem.setMaPN(maPN);
 
                     sanPhamDTO productDetails = sanPhamBUS.getSanPhamByMa(maSP);
                     if (productDetails != null && productDetails.getMaNhaCungCap() != null

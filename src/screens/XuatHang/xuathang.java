@@ -12,12 +12,17 @@ import javax.swing.JPanel;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import java.io.File;
+import java.text.DecimalFormat;
 
 /**
  *
  * @author nson9
  */
 public class xuathang extends javax.swing.JPanel {
+
+    private DecimalFormat decimalFormat;
+    private double currentDonGiaRaw; // Raw unit price for export
+    private double currentThanhTienRaw; // Raw total price for export
 
     // Variables for jPanel5 - KhachHang
     private javax.swing.JLabel lblMaKhachHang;
@@ -28,6 +33,7 @@ public class xuathang extends javax.swing.JPanel {
      */
     public xuathang() {
         initComponents();
+        decimalFormat = new DecimalFormat("#,##0.00");
         jTextField7.setEditable(false); // Đơn giá không cho chỉnh sửa
         jTextField9.setEditable(false); // Thành tiền không cho chỉnh sửa
         jTextField6.setEditable(false); // Mã khách hàng không cho chỉnh sửa
@@ -92,16 +98,19 @@ public class xuathang extends javax.swing.JPanel {
                         jTextField1.setText(sp.getTenSanPham());
                         jTextField3.setText(sp.getMauSac());
                         jTextField4.setText(sp.getSize());
-                        jTextField7.setText(String.valueOf(sp.getGiaBan()));
-                        jTextField10.setText("1");
+                        currentDonGiaRaw = sp.getGiaBan(); // Store raw unit price
+                        jTextField7.setText(String.valueOf(currentDonGiaRaw)); // Display plain number for Don Gia
+                        jTextField10.setText("1"); // Default So Luong to 1
                         calculateThanhTien();
                     } else {
                         jTextField1.setText("");
                         jTextField3.setText("");
                         jTextField4.setText("");
+                        currentDonGiaRaw = 0.0; // Reset raw unit price
                         jTextField7.setText("");
                         jTextField9.setText("");
                         jTextField10.setText("");
+                        currentThanhTienRaw = 0.0; // Reset raw total price
                     }
                 }
             }
@@ -621,27 +630,33 @@ public class xuathang extends javax.swing.JPanel {
                     }
 
                     String maSP = cbMaSanPham.getSelectedItem().toString();
-                    int soLuong = Integer.parseInt(jTextField10.getText().trim());
+
+                    String soLuongStr = jTextField10.getText().trim();
+                    System.err.println("Attempting to parse SoLuong from jTextField10: '" + soLuongStr + "'"); // DEBUG PRINT
+                    int soLuong = Integer.parseInt(soLuongStr);
+
                     if (soLuong <= 0) {
                         JOptionPane.showMessageDialog(xuathang.this, "Số lượng phải lớn hơn 0!");
                         return;
                     }
 
-                    SanPhamDAO sanPhamDAO = new SanPhamDAO();
-                    if (!sanPhamDAO.kiemTraTonKho(maSP, soLuong)) {
+                    SanPhamDAO sanPhamDAO_check = new SanPhamDAO(); // Renamed to avoid conflict if SanPhamDAO is a field
+                    if (!sanPhamDAO_check.kiemTraTonKho(maSP, soLuong)) {
                         JOptionPane.showMessageDialog(xuathang.this, "Không đủ số lượng sản phẩm trong kho!");
                         return;
                     }
 
                     BUS.XuatHangBUS xuatHangBUS = new BUS.XuatHangBUS();
-                    String maPX = xuatHangBUS.generateNextMaPX();
+                    String maPX = xuatHangBUS.generateNextMaPX(); // Ensure this method provides a unique MaPX
                     String maKH = cbMaKhachHang.getSelectedItem().toString();
-                    String tenKH = cbTenKhachHang.getSelectedItem().toString();
+                    String tenKH = cbTenKhachHang.getSelectedItem().toString(); // Ensure this gets updated if cbMaKhachHang changes
                     String tenSP = jTextField1.getText();
                     String kichThuoc = jTextField4.getText();
                     String mauSac = jTextField3.getText();
-                    double donGia = Double.parseDouble(jTextField7.getText());
-                    double thanhTien = Double.parseDouble(jTextField9.getText());
+                    // Ensure currentDonGiaRaw and currentThanhTienRaw are up-to-date here.
+                    // They should be set by cbMaSanPham listener and calculateThanhTien().
+                    // No need to parse from jTextField7 or jTextField9.
+
                     String hinhThucTT = cbHinhThucThanhToan.getSelectedItem().toString();
 
                     java.sql.Connection conn = DTB.ConnectDB.getConnection();
@@ -655,8 +670,8 @@ public class xuathang extends javax.swing.JPanel {
                     ps.setString(6, kichThuoc);
                     ps.setString(7, mauSac);
                     ps.setInt(8, soLuong);
-                    ps.setDouble(9, donGia);
-                    ps.setDouble(10, thanhTien);
+                    ps.setDouble(9, currentDonGiaRaw); // Use raw donGia
+                    ps.setDouble(10, currentThanhTienRaw); // Use raw thanhTien
                     ps.setString(11, hinhThucTT);
 
                     int result = ps.executeUpdate();
@@ -665,16 +680,19 @@ public class xuathang extends javax.swing.JPanel {
 
                     if (result > 0) {
                         JOptionPane.showMessageDialog(xuathang.this, "Thêm sản phẩm vào phiếu xuất thành công!");
-                        loadXuatHangTable();
-                        cbMaSanPham.setSelectedIndex(0);
-                        jTextField10.setText("1");
-                        jTextField9.setText("0.00");
+                        loadXuatHangTable(); // Refresh table
+                        // Optionally reset fields after successful add
+                        // cbMaSanPham.setSelectedIndex(0); // Or some other default
+                        // jTextField10.setText("1"); // Reset quantity
+                        // jTextField9.setText("0.00"); // Reset thanhTien display (will be updated by calculateThanhTien if soLuong changes)
                     } else {
                         JOptionPane.showMessageDialog(xuathang.this, "Thêm sản phẩm vào phiếu xuất thất bại!");
                     }
 
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(xuathang.this, "Số lượng hoặc đơn giá không hợp lệ!");
+                    JOptionPane.showMessageDialog(xuathang.this, "Số lượng không hợp lệ! Đơn giá được tải tự động.");
+                    System.err.println("NFE in xuathang Them button for SoLuong. Raw text: '" + jTextField10.getText() + "'. Trimmed text: '" + jTextField10.getText().trim() + "'");
+                    ex.printStackTrace(); 
                 } catch (Exception e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(xuathang.this,
@@ -985,14 +1003,16 @@ public class xuathang extends javax.swing.JPanel {
                     if (thanhTienObj instanceof Number) {
                         tongTien += ((Number) thanhTienObj).doubleValue();
                     } else {
-                        tongTien += Double.parseDouble(thanhTienObj.toString());
+                        // Parse the formatted string back to double for calculation
+                         Number parsedNumber = decimalFormat.parse(thanhTienObj.toString());
+                        tongTien += parsedNumber.doubleValue();
                     }
-                } catch (NumberFormatException e) {
-                    System.err.println("Lỗi parse double ở hàng " + i + " cột 'Thành tiền': " + thanhTienObj);
+                } catch (NumberFormatException | java.text.ParseException e) { // Added ParseException
+                    System.err.println("Lỗi parse double/formatted string ở hàng " + i + " cột 'Thành tiền': " + thanhTienObj + " Error: " + e.getMessage());
                 }
             }
         }
-        textTongTien.setText(String.format("%.2f", tongTien));
+        textTongTien.setText(decimalFormat.format(tongTien)); // Format the total amount
     }
 
     private void loadComboBoxData() {
@@ -1010,12 +1030,14 @@ public class xuathang extends javax.swing.JPanel {
 
     private void calculateThanhTien() {
         try {
-            int soLuong = Integer.parseInt(jTextField10.getText().trim());
-            double donGia = Double.parseDouble(jTextField7.getText().trim());
-            double thanhTien = soLuong * donGia;
-            jTextField9.setText(String.format("%.2f", thanhTien)); // Format to 2 decimal places
+            String soLuongStr_calc = jTextField10.getText().trim();
+            int soLuong_calc = Integer.parseInt(soLuongStr_calc);
+            currentThanhTienRaw = soLuong_calc * currentDonGiaRaw; // Calculate and store raw total price
+            jTextField9.setText(decimalFormat.format(currentThanhTienRaw)); // Format to 2 decimal places for display
         } catch (NumberFormatException e) {
+            currentThanhTienRaw = 0.0; // Reset raw total price
             jTextField9.setText("0.00");
+            System.err.println("NFE in calculateThanhTien for SoLuong. Raw text: '" + jTextField10.getText() + "'. Trimmed text: '" + jTextField10.getText().trim() + "'");
         }
     }
 
@@ -1039,8 +1061,8 @@ public class xuathang extends javax.swing.JPanel {
                         rs.getString("KichThuoc"),
                         rs.getString("MauSac"),
                         rs.getInt("SoLuong"),
-                        rs.getDouble("DonGia"),
-                        rs.getDouble("ThanhTien"),
+                        decimalFormat.format(rs.getDouble("DonGia")), // Format DonGia
+                        decimalFormat.format(rs.getDouble("ThanhTien")), // Format ThanhTien
                         rs.getString("HinhThucThanhToan"),
                         rs.getString("TrangThai")
                 };

@@ -31,6 +31,8 @@ import screens.TrangChu.AppColors;
 import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.table.JTableHeader;
+import java.text.DecimalFormat;
+import BUS.PhieuNhapBUS;
 
 /**
  *
@@ -44,7 +46,12 @@ public class nhaphang extends javax.swing.JPanel {
     private NhapHangBUS nhapHangBUS;
     private SanPhamBUS sanPhamBUS;
     private NhaCungCapBUS nhaCungCapBUS;
+    private PhieuNhapBUS phieuNhapBUS_forIdGeneration;
+    private String currentNhapHangBatchPrefix;
     private trangchu mainFrame;
+    private DecimalFormat decimalFormat;
+    private double currentDonGiaRaw; // Raw unit price
+    private double currentThanhTienRaw; // Raw total price
 
     // Thêm biến giao diện tìm kiếm
     private javax.swing.JComboBox<String> cbSearchType;
@@ -67,7 +74,10 @@ public class nhaphang extends javax.swing.JPanel {
         nhapHangBUS = new NhapHangBUS();
         sanPhamBUS = new SanPhamBUS();
         nhaCungCapBUS = new NhaCungCapBUS();
+        phieuNhapBUS_forIdGeneration = new PhieuNhapBUS();
+        this.currentNhapHangBatchPrefix = phieuNhapBUS_forIdGeneration.generateNewBatchPrefix();
         initComponents();
+        decimalFormat = new DecimalFormat("#,##0.00");
         populateComboBoxes();
         loadImportTable();
         setupAmountCalculation();
@@ -75,6 +85,14 @@ public class nhaphang extends javax.swing.JPanel {
 
     public javax.swing.JPanel getNhapHangPanel() {
         return containerPanel;
+    }
+
+    public String getCurrentNhapHangBatchPrefix() {
+        return this.currentNhapHangBatchPrefix;
+    }
+
+    public PhieuNhapBUS getPhieuNhapBUSForIdGeneration() {
+        return this.phieuNhapBUS_forIdGeneration;
     }
 
     /**
@@ -696,14 +714,12 @@ public class nhaphang extends javax.swing.JPanel {
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            // Validate input
             if (cbMaSanPham.getSelectedItem() == null || textSoLuong.getText().trim().isEmpty() ||
                     cbMaNCC.getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
                 return;
             }
 
-            // Kiểm tra số lượng là số nguyên dương
             int soLuong;
             try {
                 soLuong = Integer.parseInt(textSoLuong.getText().trim());
@@ -716,42 +732,34 @@ public class nhaphang extends javax.swing.JPanel {
                 return;
             }
 
-            // Tạo mã phiếu nhập tiếp theo theo thứ tự
-            String nextMaPN = nhapHangBUS.generateNextMaPN();
+            if (this.currentNhapHangBatchPrefix == null) {
+                this.currentNhapHangBatchPrefix = phieuNhapBUS_forIdGeneration.generateNewBatchPrefix();
+            }
+            String maPN = phieuNhapBUS_forIdGeneration.generateMaPhieuNhapForBatch(this.currentNhapHangBatchPrefix);
 
-            // Create new import record
             nhapHangDTO nh = new nhapHangDTO();
-            nh.setMaPN(nextMaPN);
+            nh.setMaPN(maPN);
             nh.setMaSanPham((String) cbMaSanPham.getSelectedItem());
             nh.setMaNhaCungCap((String) cbMaNCC.getSelectedItem());
             nh.setTenSanPham(textTenSanPham.getText());
             nh.setMauSac(txtMauSac.getText());
             nh.setKichThuoc(txtKichThuoc.getText());
             nh.setSoLuong(textSoLuong.getText());
-            nh.setDonGia(jTextField7.getText());
-            nh.setThanhTien(textThanhTien.getText());
+            nh.setDonGia(String.valueOf(currentDonGiaRaw)); // Use raw unit price for DTO
+            nh.setThanhTien(String.valueOf(currentThanhTienRaw)); // Use raw total price for DTO
             nh.setTrangThai("Đang xử lý");
             nh.setThoiGian(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
             nh.setHinhThucThanhToan((String) cbHinhThucThanhToan.getSelectedItem());
 
             if (nhapHangBUS.themNhapHang(nh)) {
-                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công");
-                loadImportTable(); // Refresh table
-                // Clear input fields
-                cbMaSanPham.setSelectedIndex(0);
-                cbMaNCC.setSelectedIndex(0);
-                cbTenNCC.setSelectedIndex(0);
-                textTenSanPham.setText("");
-                txtMauSac.setText("");
-                txtKichThuoc.setText("");
-                textSoLuong.setText("");
-                jTextField7.setText("");
-                textThanhTien.setText("");
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công. Mã PN tạm: " + maPN);
+                loadImportTable();
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -801,7 +809,8 @@ public class nhaphang extends javax.swing.JPanel {
                         txtMauSac.setText(sp.getMauSac());
                         txtKichThuoc.setText(sp.getSize());
                         double giaGoc = sanPhamBUS.getGiaGocSanPham(selectedMaSP);
-                        jTextField7.setText(String.valueOf(giaGoc));
+                        currentDonGiaRaw = giaGoc; // Store raw unit price
+                        jTextField7.setText(String.valueOf(giaGoc)); // Display plain number
                         textSoLuong.setText("1");
                         calculateAmount();
                     }
@@ -862,6 +871,19 @@ public class nhaphang extends javax.swing.JPanel {
         // Đảm bảo STT bắt đầu từ 1 và tăng dần
         int stt = 1;
         for (nhapHangDTO nh : list) {
+            Object donGiaFormatted;
+            Object thanhTienFormatted;
+            try {
+                donGiaFormatted = decimalFormat.format(Double.parseDouble(nh.getDonGia()));
+            } catch (NumberFormatException | NullPointerException e) {
+                donGiaFormatted = nh.getDonGia(); // Or "N/A" or 0.00
+            }
+            try {
+                thanhTienFormatted = decimalFormat.format(Double.parseDouble(nh.getThanhTien()));
+            } catch (NumberFormatException | NullPointerException e) {
+                thanhTienFormatted = nh.getThanhTien(); // Or "N/A" or 0.00
+            }
+
             model.addRow(new Object[] {
                     stt++,
                     nh.getMaPN(),
@@ -871,8 +893,8 @@ public class nhaphang extends javax.swing.JPanel {
                     nh.getMauSac(),
                     nh.getKichThuoc(),
                     nh.getSoLuong(),
-                    nh.getDonGia(),
-                    nh.getThanhTien(),
+                    donGiaFormatted,
+                    thanhTienFormatted,
                     nh.getHinhThucThanhToan(),
                     nh.getTrangThai()
             });
@@ -901,25 +923,28 @@ public class nhaphang extends javax.swing.JPanel {
     private void calculateAmount() {
         try {
             int soLuong = Integer.parseInt(textSoLuong.getText());
-            double donGia = Double.parseDouble(jTextField7.getText());
-            double thanhTien = soLuong * donGia;
-            textThanhTien.setText(String.valueOf(thanhTien));
+            // double donGia = Double.parseDouble(jTextField7.getText()); // No longer needed, use currentDonGiaRaw
+            currentThanhTienRaw = soLuong * currentDonGiaRaw; // Calculate and store raw total price
+            textThanhTien.setText(decimalFormat.format(currentThanhTienRaw)); // Display formatted total price
         } catch (NumberFormatException e) {
-            textThanhTien.setText("0");
+            currentThanhTienRaw = 0.0; // Reset raw total price
+            textThanhTien.setText("0.00"); 
         }
-        updateTongTienPhieuNhap(); // Call to update total
+        // updateTongTienPhieuNhap(); // Consider if this needs to be called every time amount changes, or only on table load/confirm
     }
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
         try {
             if (nhapHangBUS.chuyenNhapHangSangPhieuNhap()) {
                 JOptionPane.showMessageDialog(this, "Nhập hàng thành công!");
-                loadImportTable(); // Refresh lại bảng NhapHang
+                loadImportTable(); // Refresh lại bảng NhapHang (should be empty now)
+                this.currentNhapHangBatchPrefix = phieuNhapBUS_forIdGeneration.generateNewBatchPrefix();
             } else {
-                JOptionPane.showMessageDialog(this, "Có lỗi khi xác nhận nhập hàng");
+                JOptionPane.showMessageDialog(this, "Có lỗi khi xác nhận nhập hàng. Một số mục có thể chưa được chuyển.");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
+            e.printStackTrace(); // For debugging
         }
     }
 
@@ -987,6 +1012,18 @@ public class nhaphang extends javax.swing.JPanel {
         model.setRowCount(0);
         int stt = 1;
         for (nhapHangDTO nh : list) {
+            Object donGiaFormatted;
+            Object thanhTienFormatted;
+            try {
+                donGiaFormatted = decimalFormat.format(Double.parseDouble(nh.getDonGia()));
+            } catch (NumberFormatException | NullPointerException e) {
+                donGiaFormatted = nh.getDonGia();
+            }
+            try {
+                thanhTienFormatted = decimalFormat.format(Double.parseDouble(nh.getThanhTien()));
+            } catch (NumberFormatException | NullPointerException e) {
+                thanhTienFormatted = nh.getThanhTien();
+            }
             model.addRow(new Object[] {
                     stt++,
                     nh.getMaPN(),
@@ -996,8 +1033,8 @@ public class nhaphang extends javax.swing.JPanel {
                     nh.getMauSac(),
                     nh.getKichThuoc(),
                     nh.getSoLuong(),
-                    nh.getDonGia(),
-                    nh.getThanhTien(),
+                    donGiaFormatted,
+                    thanhTienFormatted,
                     nh.getHinhThucThanhToan(),
                     nh.getTrangThai()
             });
@@ -1041,17 +1078,16 @@ public class nhaphang extends javax.swing.JPanel {
                     if (thanhTienObj instanceof Number) {
                         tongTien += ((Number) thanhTienObj).doubleValue();
                     } else {
-                        tongTien += Double.parseDouble(thanhTienObj.toString());
+                        Number parsedNumber = decimalFormat.parse(thanhTienObj.toString());
+                        tongTien += parsedNumber.doubleValue();
                     }
-                } catch (NumberFormatException e) {
-                    System.err.println("Lỗi parse double ở hàng " + i + " cột 'Thành tiền' trong Nhập Hàng: "
+                } catch (NumberFormatException | java.text.ParseException e) {
+                    System.err.println("Lỗi parse double/formatted string ở hàng " + i + " cột 'Thành tiền' trong Nhập Hàng: "
                             + thanhTienObj + " Error: " + e.getMessage());
                 }
             }
         }
-        java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0.00"); // Standard format with comma for
-                                                                              // thousands, dot for decimal
-        txtTongTienPhieuNhap.setText(df.format(tongTien));
+        txtTongTienPhieuNhap.setText(decimalFormat.format(tongTien));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

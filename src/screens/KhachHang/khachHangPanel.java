@@ -222,7 +222,7 @@ public class khachHangPanel extends javax.swing.JPanel {
         lblTKGioiTinh.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlBoxTimKiem.add(lblTKGioiTinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 30, -1, 30));
 
-        cboGioiTinh.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Nam", "Nữ", "Khác" }));
+        cboGioiTinh.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Nam", "Nữ" }));
         pnlBoxTimKiem.add(cboGioiTinh, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 30, 150, 30));
 
         btnTimKiem.setText("Tìm kiếm");

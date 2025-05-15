@@ -8,11 +8,15 @@ import DTB.ConnectDB;
 import DTO.PhieuNhapDTO;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PhieuNhapDAO {
     private Connection conn;
     private PreparedStatement ps;
     private ResultSet rs;
+
+    private static final Pattern MA_PN_BATCH_PATTERN = Pattern.compile("PN(\\\\d{5})_\\\\d{5}");
 
     public PhieuNhapDAO() {
         // Initialize database connection
@@ -166,18 +170,33 @@ public class PhieuNhapDAO {
         return danhSachPhieuNhap;
     }
 
-    // Lấy mã phiếu nhập lớn nhất
-    public String getMaxMaPN() {
-        String sql = "SELECT MAX(MaPhieuNhap) AS MaxMaPN FROM PhieuNhap";
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return rs.getString("MaxMaPN");
+    public int getMaxBatchNumber() {
+        String sql = "SELECT MaPhieuNhap FROM PhieuNhap";
+        int maxBatchNum = 0;
+        // Assuming 'this.conn' is the valid connection from the constructor
+        try (PreparedStatement stmt = this.conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String maPN = rs.getString("MaPhieuNhap");
+                if (maPN != null) {
+                    Matcher matcher = MA_PN_BATCH_PATTERN.matcher(maPN);
+                    if (matcher.matches()) { // Use matches() if the whole string should match
+                        try {
+                            // group(1) is the first capturing group: (\\d{5})
+                            int currentBatchNum = Integer.parseInt(matcher.group(1));
+                            if (currentBatchNum > maxBatchNum) {
+                                maxBatchNum = currentBatchNum;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.err.println("Error parsing batch number from MaPhieuNhap: " + maPN + " - " + e.getMessage());
+                        }
+                    }
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle or log exception
         }
-        return null;
+        return maxBatchNum;
     }
 
     // Update MaNhaCungCap for multiple PhieuNhap records

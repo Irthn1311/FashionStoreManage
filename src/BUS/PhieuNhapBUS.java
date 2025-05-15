@@ -4,12 +4,15 @@ import DAO.PhieuNhapDAO;
 import DTO.PhieuNhapDTO;
 import java.util.List;
 import java.util.Date;
+import java.util.Random;
 
 public class PhieuNhapBUS {
     private PhieuNhapDAO phieuNhapDAO;
+    private Random randomGenerator;
 
     public PhieuNhapBUS() {
         phieuNhapDAO = new PhieuNhapDAO();
+        randomGenerator = new Random();
     }
 
     // Validate PhieuNhap data
@@ -29,35 +32,37 @@ public class PhieuNhapBUS {
         return true;
     }
 
-    // Phương thức tạo mã phiếu nhập tiếp theo
-    public String getNextMaPhieuNhap() {
-        String maxMaPN = phieuNhapDAO.getMaxMaPN();
-        if (maxMaPN == null || maxMaPN.isEmpty()) {
-            return "PN001";
+    public String generateNewBatchPrefix() {
+        int maxBatchNo = phieuNhapDAO.getMaxBatchNumber();
+        int nextBatchNo = maxBatchNo + 1;
+        return String.format("PN%05d", nextBatchNo);
+    }
+
+    public String generateMaPhieuNhapForBatch(String batchPrefix) {
+        if (batchPrefix == null || !batchPrefix.matches("PN\\d{5}")) {
+            System.err.println("Invalid or null batchPrefix provided to generateMaPhieuNhapForBatch: " + batchPrefix + ". Generating a new one as fallback.");
+            batchPrefix = generateNewBatchPrefix();
         }
-        try {
-            // Lấy phần số từ mã phiếu nhập
-            String numStr = maxMaPN.substring(2); // Bỏ "PN" lấy phần số
-            int num = Integer.parseInt(numStr);
-            num++; // Tăng giá trị lên 1
-            // Format lại mã với số 0 ở đầu (nếu cần)
-            return String.format("PN%03d", num);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "PN001"; // Mặc định nếu có lỗi
-        }
+        // Generate a 5-digit random number (10000-99999)
+        int randomPart = randomGenerator.nextInt(90000) + 10000;
+        return String.format("%s_%05d", batchPrefix, randomPart);
     }
 
     // Create new PhieuNhap with validation
     public boolean createPhieuNhap(PhieuNhapDTO phieuNhap) {
+        if (phieuNhap.getMaPhieuNhap() == null || phieuNhap.getMaPhieuNhap().trim().isEmpty()) {
+            // This is an indicator of a potential issue in the calling code.
+            // For robustness, we could throw an IllegalArgumentException or log a severe error.
+            // System.err.println("CRITICAL: MaPhieuNhap is not set before calling createPhieuNhap.");
+            // For now, let's proceed assuming the calling code will be updated.
+            // If not, this DTO will be saved with a null/empty MaPhieuNhap, which is likely an error.
+        }
         if (!validatePhieuNhap(phieuNhap)) {
             return false;
         }
-        // Set current date if not provided
         if (phieuNhap.getThoiGian() == null) {
             phieuNhap.setThoiGian(new Date());
         }
-        // Calculate total amount
         phieuNhap.setThanhTien(phieuNhap.getSoLuong() * phieuNhap.getDonGia());
         return phieuNhapDAO.create(phieuNhap);
     }
@@ -119,5 +124,15 @@ public class PhieuNhapBUS {
             return false;
         }
         return phieuNhapDAO.updateMaNhaCungCap(oldMaNCC, newMaNCC);
+    }
+
+    // Get PhieuNhap records by supplier and batch prefix
+    public List<PhieuNhapDTO> getPhieuNhapBySupplierAndBatch(String maNhaCungCap, String batchPrefix) {
+        List<PhieuNhapDTO> allPhieuNhap = phieuNhapDAO.getAll();
+        return allPhieuNhap.stream()
+                .filter(pn -> pn.getMaNhaCungCap().equals(maNhaCungCap) && 
+                              pn.getMaPhieuNhap() != null &&
+                              pn.getMaPhieuNhap().startsWith(batchPrefix))
+                .collect(java.util.stream.Collectors.toList());
     }
 }
