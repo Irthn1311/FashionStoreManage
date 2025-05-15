@@ -20,9 +20,9 @@ public class hoaDonDTO {
     public hoaDonDTO() {
     }
 
-    public hoaDonDTO(String maHoaDon, String maSanPham, String tenSanPham, String kichCo, String mauSac, 
-                     int soLuong, String maKhachHang, String tenKhachHang, double thanhTien, double donGia, 
-                     String hinhThucThanhToan, Timestamp thoiGian, String trangThai) {
+    public hoaDonDTO(String maHoaDon, String maSanPham, String tenSanPham, String kichCo, String mauSac,
+            int soLuong, String maKhachHang, String tenKhachHang, double thanhTien, double donGia,
+            String hinhThucThanhToan, Timestamp thoiGian, String trangThai) {
         this.maHoaDon = maHoaDon;
         this.maSanPham = maSanPham;
         this.tenSanPham = tenSanPham;
