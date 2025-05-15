@@ -15,7 +15,6 @@ public class suaNhaCungCapPanel extends JPanel {
     // Components
     private JTextField txtMaNCC;
     private JTextField txtTenNCC;
-    private JTextField txtLoaiSP;
     private JTextField txtNamHopTac;
     private JTextField txtDiaChi;
     private JTextField txtEmail;
@@ -36,6 +35,7 @@ public class suaNhaCungCapPanel extends JPanel {
     private void initComponents() {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setPreferredSize(new Dimension(400, 360));
 
         // Panel chính
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -54,7 +54,6 @@ public class suaNhaCungCapPanel extends JPanel {
         // Khởi tạo components
         txtMaNCC = new JTextField(20);
         txtTenNCC = new JTextField(20);
-        txtLoaiSP = new JTextField(20);
         txtNamHopTac = new JTextField(20);
         txtDiaChi = new JTextField(20);
         txtEmail = new JTextField(20);
@@ -76,31 +75,26 @@ public class suaNhaCungCapPanel extends JPanel {
         mainPanel.add(txtTenNCC, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
-        mainPanel.add(new JLabel("Loại sản phẩm:"), gbc);
-        gbc.gridx = 1;
-        mainPanel.add(txtLoaiSP, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 3;
         mainPanel.add(new JLabel("Năm hợp tác:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtNamHopTac, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0; gbc.gridy = 3;
         mainPanel.add(new JLabel("Địa chỉ:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtDiaChi, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5;
+        gbc.gridx = 0; gbc.gridy = 4;
         mainPanel.add(new JLabel("Email:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtEmail, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 6;
+        gbc.gridx = 0; gbc.gridy = 5;
         mainPanel.add(new JLabel("Số điện thoại:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtSoDienThoai, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 7;
+        gbc.gridx = 0; gbc.gridy = 6;
         mainPanel.add(new JLabel("Trạng thái:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(cboTrangThai, gbc);
@@ -123,15 +117,11 @@ public class suaNhaCungCapPanel extends JPanel {
         // Thêm panels vào panel chính
         add(mainPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-
-        // Set size
-        setPreferredSize(new Dimension(400, 400));
     }
 
     private void loadNhaCungCapData() {
         txtMaNCC.setText(nhaCungCap.getMaNhaCungCap());
         txtTenNCC.setText(nhaCungCap.getTenNhaCungCap());
-        txtLoaiSP.setText(nhaCungCap.getLoaiSP());
         txtNamHopTac.setText(String.valueOf(nhaCungCap.getNamHopTac()));
         txtDiaChi.setText(nhaCungCap.getDiaChi());
         txtEmail.setText(nhaCungCap.getEmail());
@@ -140,75 +130,79 @@ public class suaNhaCungCapPanel extends JPanel {
     }
 
     private void capNhatNhaCungCap() {
+        if (txtTenNCC.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên nhà cung cấp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (txtNamHopTac.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập năm hợp tác!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (txtDiaChi.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập địa chỉ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (txtEmail.getText().trim().isEmpty() || !txtEmail.getText().trim().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            JOptionPane.showMessageDialog(this, "Email không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (txtSoDienThoai.getText().trim().isEmpty() || !txtSoDienThoai.getText().trim().matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         try {
-            // Validate dữ liệu
-            if (txtTenNCC.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập tên nhà cung cấp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            int namHopTacInt = Integer.parseInt(txtNamHopTac.getText().trim());
+            nhaCungCapDTO nhaCungCapCapNhat = new nhaCungCapDTO(
+                txtMaNCC.getText(),
+                txtTenNCC.getText().trim(),
+                namHopTacInt,
+                txtDiaChi.getText().trim(),
+                txtEmail.getText().trim(),
+                txtSoDienThoai.getText().trim(),
+                cboTrangThai.getSelectedItem().toString()
+            );
 
-            if (txtEmail.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập email!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            if (txtSoDienThoai.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Parse năm hợp tác
-            String namHopTac = txtNamHopTac.getText().trim();
-            if (namHopTac.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập năm hợp tác!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Tạo đối tượng nhaCungCapDTO mới với thông tin đã cập nhật
-            try {
-                int namHopTacInt = Integer.parseInt(namHopTac);
-                nhaCungCapDTO nhaCungCapCapNhat = new nhaCungCapDTO(
-                    txtMaNCC.getText(),
-                    txtTenNCC.getText().trim(),
-                    txtLoaiSP.getText().trim(),
-                    namHopTacInt,
-                    txtDiaChi.getText().trim(),
-                    txtEmail.getText().trim(),
-                    txtSoDienThoai.getText().trim(),
-                    cboTrangThai.getSelectedItem().toString()
-                );
-
-                // Gọi BUS để cập nhật
-                boolean success = nhaCungCapBUS.capNhatNhaCungCap(nhaCungCapCapNhat);
-                if (success) {
-                    JOptionPane.showMessageDialog(this,
-                        "Cập nhật thông tin nhà cung cấp thành công!",
-                        "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
-                    parentDialog.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                        "Không thể cập nhật thông tin nhà cung cấp!",
-                        "Lỗi",
-                        JOptionPane.ERROR_MESSAGE);
+            boolean success = nhaCungCapBUS.capNhatNhaCungCap(nhaCungCapCapNhat);
+            if (success) {
+                JOptionPane.showMessageDialog(this,
+                    "Cập nhật thông tin nhà cung cấp thành công!",
+                    "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+                parentDialog.dispose();
+                if (parentDialog.getOwner() instanceof JFrame) {
+                    Window ownerWindow = SwingUtilities.getWindowAncestor(parentDialog.getParent());
+                    if (ownerWindow instanceof JFrame) {
+                        Component[] components = ((JFrame) ownerWindow).getContentPane().getComponents();
+                        for (Component component : components) {
+                            if (component instanceof JTabbedPane) {
+                                JTabbedPane tabbedPane = (JTabbedPane) component;
+                                for(int i=0; i<tabbedPane.getTabCount(); i++){
+                                    if(tabbedPane.getTitleAt(i).equals("Nhà Cung Cấp") && tabbedPane.getComponentAt(i) instanceof nhaCungCapPanel){
+                                        ((nhaCungCapPanel)tabbedPane.getComponentAt(i)).refreshTableData();
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
-            } catch (NumberFormatException e) {
+            } else {
                 JOptionPane.showMessageDialog(this,
-                    "Năm hợp tác phải là số nguyên!",
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this,
-                    "Có lỗi xảy ra: " + e.getMessage(),
+                    "Không thể cập nhật thông tin nhà cung cấp!\nCó thể do lỗi kết nối hoặc dữ liệu không hợp lệ.",
                     "Lỗi",
                     JOptionPane.ERROR_MESSAGE);
             }
-
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this,
+                "Năm hợp tác phải là số nguyên!",
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                "Có lỗi xảy ra: " + e.getMessage(),
+                "Có lỗi xảy ra trong quá trình cập nhật: " + e.getMessage(),
                 "Lỗi",
                 JOptionPane.ERROR_MESSAGE);
         }

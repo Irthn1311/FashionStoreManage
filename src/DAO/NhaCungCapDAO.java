@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -30,7 +29,7 @@ public class NhaCungCapDAO {
 
     public List<nhaCungCapDTO> getAllNhaCungCap() {
         List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
-        String sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, ncc.LoaiSP, " +
+        String sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, " +
                 "ncc.NamHopTac, ncc.DiaChi, ncc.Email, ncc.SoDienThoai, ncc.TrangThai " +
                 "FROM NhaCungCap ncc";
 
@@ -41,7 +40,6 @@ public class NhaCungCapDAO {
                 nhaCungCapDTO ncc = new nhaCungCapDTO(
                         rs.getString("MaNhaCungCap"),
                         rs.getString("TenNhaCungCap"),
-                        rs.getString("LoaiSP"),
                         rs.getInt("NamHopTac"),
                         rs.getString("DiaChi"),
                         rs.getString("Email"),
@@ -61,7 +59,7 @@ public class NhaCungCapDAO {
         String sql;
 
         if (searchType.equals("Tất cả")) {
-            sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, ncc.LoaiSP, " +
+            sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, " +
                     "ncc.NamHopTac, ncc.DiaChi, ncc.Email, ncc.SoDienThoai, ncc.TrangThai " +
                     "FROM NhaCungCap ncc " +
                     "WHERE ncc.MaNhaCungCap LIKE ? OR ncc.TenNhaCungCap LIKE ? " +
@@ -84,7 +82,7 @@ public class NhaCungCapDAO {
                 default:
                     return getAllNhaCungCap();
             }
-            sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, ncc.LoaiSP, " +
+            sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, " +
                     "ncc.NamHopTac, ncc.DiaChi, ncc.Email, ncc.SoDienThoai, ncc.TrangThai " +
                     "FROM NhaCungCap ncc " +
                     "WHERE ncc." + columnName + " LIKE ?";
@@ -106,7 +104,6 @@ public class NhaCungCapDAO {
                 nhaCungCapDTO ncc = new nhaCungCapDTO(
                         rs.getString("MaNhaCungCap"),
                         rs.getString("TenNhaCungCap"),
-                        rs.getString("LoaiSP"),
                         rs.getInt("NamHopTac"),
                         rs.getString("DiaChi"),
                         rs.getString("Email"),
@@ -123,20 +120,19 @@ public class NhaCungCapDAO {
     }
 
     public boolean themNhaCungCap(nhaCungCapDTO ncc) {
-        String sql = "INSERT INTO NhaCungCap (MaNhaCungCap, TenNhaCungCap, LoaiSP, " +
+        String sql = "INSERT INTO NhaCungCap (MaNhaCungCap, TenNhaCungCap, " +
                 "NamHopTac, DiaChi, Email, SoDienThoai, TrangThai) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, ncc.getMaNhaCungCap());
             ps.setString(2, ncc.getTenNhaCungCap());
-            ps.setString(3, ncc.getLoaiSP());
-            ps.setInt(4, ncc.getNamHopTac());
-            ps.setString(5, ncc.getDiaChi());
-            ps.setString(6, ncc.getEmail());
-            ps.setString(7, ncc.getSoDienThoai());
-            ps.setString(8, ncc.getTrangThai());
+            ps.setInt(3, ncc.getNamHopTac());
+            ps.setString(4, ncc.getDiaChi());
+            ps.setString(5, ncc.getEmail());
+            ps.setString(6, ncc.getSoDienThoai());
+            ps.setString(7, ncc.getTrangThai());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -146,20 +142,19 @@ public class NhaCungCapDAO {
     }
 
     public boolean capNhatNhaCungCap(nhaCungCapDTO ncc) {
-        String sql = "UPDATE NhaCungCap SET TenNhaCungCap = ?, LoaiSP = ?, " +
+        String sql = "UPDATE NhaCungCap SET TenNhaCungCap = ?, " +
                 "NamHopTac = ?, DiaChi = ?, Email = ?, SoDienThoai = ?, TrangThai = ? " +
                 "WHERE MaNhaCungCap = ?";
 
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, ncc.getTenNhaCungCap());
-            ps.setString(2, ncc.getLoaiSP());
-            ps.setInt(3, ncc.getNamHopTac());
-            ps.setString(4, ncc.getDiaChi());
-            ps.setString(5, ncc.getEmail());
-            ps.setString(6, ncc.getSoDienThoai());
-            ps.setString(7, ncc.getTrangThai());
-            ps.setString(8, ncc.getMaNhaCungCap());
+            ps.setInt(2, ncc.getNamHopTac());
+            ps.setString(3, ncc.getDiaChi());
+            ps.setString(4, ncc.getEmail());
+            ps.setString(5, ncc.getSoDienThoai());
+            ps.setString(6, ncc.getTrangThai());
+            ps.setString(7, ncc.getMaNhaCungCap());
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -182,7 +177,7 @@ public class NhaCungCapDAO {
     }
 
     public nhaCungCapDTO getNhaCungCapByMa(String maNCC) {
-        String sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, ncc.LoaiSP, " +
+        String sql = "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, " +
                 "ncc.NamHopTac, ncc.DiaChi, ncc.Email, ncc.SoDienThoai, ncc.TrangThai " +
                 "FROM NhaCungCap ncc " +
                 "WHERE UPPER(ncc.MaNhaCungCap) = UPPER(?)";
@@ -195,7 +190,6 @@ public class NhaCungCapDAO {
                 return new nhaCungCapDTO(
                         rs.getString("MaNhaCungCap"),
                         rs.getString("TenNhaCungCap"),
-                        rs.getString("LoaiSP"),
                         rs.getInt("NamHopTac"),
                         rs.getString("DiaChi"),
                         rs.getString("Email"),
@@ -291,107 +285,105 @@ public class NhaCungCapDAO {
         return suppliers;
     }
 
-    // Lấy danh sách nhà cung cấp theo mã sản phẩm
     public List<nhaCungCapDTO> getNhaCungCapByMaSanPham(String maSanPham) {
-        List<nhaCungCapDTO> list = new ArrayList<>();
-        String sql = "SELECT ncc.* FROM NhaCungCap ncc " +
-                "JOIN NhaCungCap_SanPham nccsp ON ncc.MaNhaCungCap = nccsp.MaNhaCungCap " +
-                "WHERE nccsp.MaSanPham = ?";
-        try (Connection conn = ConnectDB.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        List<nhaCungCapDTO> danhSachNhaCungCap = new ArrayList<>();
+        String sql = "SELECT DISTINCT ncc.MaNhaCungCap, ncc.TenNhaCungCap, " +
+                     "ncc.NamHopTac, ncc.DiaChi, ncc.Email, ncc.SoDienThoai, ncc.TrangThai " +
+                     "FROM NhaCungCap ncc " +
+                     "JOIN NhaCungCap_SanPham ncc_sp ON ncc.MaNhaCungCap = ncc_sp.MaNhaCungCap " +
+                     "WHERE ncc_sp.MaSanPham = ?";
+        try {
+            ps = conn.prepareStatement(sql);
             ps.setString(1, maSanPham);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new nhaCungCapDTO(
+                nhaCungCapDTO ncc = new nhaCungCapDTO(
                         rs.getString("MaNhaCungCap"),
                         rs.getString("TenNhaCungCap"),
-                        rs.getString("LoaiSP"),
                         rs.getInt("NamHopTac"),
                         rs.getString("DiaChi"),
                         rs.getString("Email"),
                         rs.getString("SoDienThoai"),
-                        rs.getString("TrangThai")));
+                        rs.getString("TrangThai"));
+                danhSachNhaCungCap.add(ncc);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return list;
+        return danhSachNhaCungCap;
     }
 
     public List<nhaCungCapDTO> searchNhaCungCapAdvanced(String keyword, String searchType, String namHopTacFilter,
             String trangThaiFilter) {
         List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM NhaCungCap WHERE 1=1");
+        StringBuilder sqlBuilder = new StringBuilder(
+                "SELECT ncc.MaNhaCungCap, ncc.TenNhaCungCap, ")
+                .append("ncc.NamHopTac, ncc.DiaChi, ncc.Email, ncc.SoDienThoai, ncc.TrangThai ")
+                .append("FROM NhaCungCap ncc WHERE 1=1 ");
+
         List<Object> params = new ArrayList<>();
 
         if (keyword != null && !keyword.isEmpty()) {
-            if (searchType != null && !searchType.equals("Tất cả") && !searchType.isEmpty()) {
+            if (searchType.equals("Tất cả")) {
+                sqlBuilder.append(
+                        "AND (ncc.MaNhaCungCap LIKE ? OR ncc.TenNhaCungCap LIKE ? OR ncc.Email LIKE ? OR ncc.SoDienThoai LIKE ?) ");
+                String searchPattern = "%" + keyword + "%";
+                for (int i = 0; i < 4; i++) {
+                    params.add(searchPattern);
+                }
+            } else {
                 String columnName = "";
                 switch (searchType) {
                     case "Mã NCC":
-                        columnName = "MaNhaCungCap";
+                        columnName = "ncc.MaNhaCungCap";
                         break;
                     case "Tên NCC":
-                        columnName = "TenNhaCungCap";
+                        columnName = "ncc.TenNhaCungCap";
                         break;
                     case "Email":
-                        columnName = "Email";
+                        columnName = "ncc.Email";
                         break;
                     case "Số điện thoại":
-                        columnName = "SoDienThoai";
-                        break;
-                    default: // Should not happen if searchType is validated
+                        columnName = "ncc.SoDienThoai";
                         break;
                 }
                 if (!columnName.isEmpty()) {
-                    sqlBuilder.append(" AND ").append(columnName).append(" LIKE ?");
-                    params.add("%" + keyword + "%");
-                }
-            } else { // "Tất cả" types or empty type
-                sqlBuilder.append(
-                        " AND (MaNhaCungCap LIKE ? OR TenNhaCungCap LIKE ? OR Email LIKE ? OR SoDienThoai LIKE ?)");
-                for (int i = 0; i < 4; i++) {
+                    sqlBuilder.append("AND ").append(columnName).append(" LIKE ? ");
                     params.add("%" + keyword + "%");
                 }
             }
         }
 
-        if (namHopTacFilter != null && !namHopTacFilter.isEmpty() && !"Tất cả".equalsIgnoreCase(namHopTacFilter)) {
-            try {
-                int namHopTac = Integer.parseInt(namHopTacFilter);
-                sqlBuilder.append(" AND NamHopTac = ?");
-                params.add(namHopTac);
-            } catch (NumberFormatException e) {
-                LOGGER.log(Level.WARNING, "Invalid NamHopTac format: " + namHopTacFilter, e);
-                // Optionally skip this filter or handle error
-            }
+        if (namHopTacFilter != null && !namHopTacFilter.equals("Tất cả")) {
+            sqlBuilder.append("AND ncc.NamHopTac = ? ");
+            params.add(Integer.parseInt(namHopTacFilter));
         }
 
-        if (trangThaiFilter != null && !trangThaiFilter.isEmpty() && !"Tất cả".equalsIgnoreCase(trangThaiFilter)) {
-            sqlBuilder.append(" AND TrangThai = ?");
+        if (trangThaiFilter != null && !trangThaiFilter.equals("Tất cả")) {
+            sqlBuilder.append("AND ncc.TrangThai = ? ");
             params.add(trangThaiFilter);
         }
 
-        try (PreparedStatement pst = conn.prepareStatement(sqlBuilder.toString())) {
+        try {
+            ps = conn.prepareStatement(sqlBuilder.toString());
             for (int i = 0; i < params.size(); i++) {
-                pst.setObject(i + 1, params.get(i));
+                ps.setObject(i + 1, params.get(i));
             }
 
-            try (ResultSet rs = pst.executeQuery()) {
-                while (rs.next()) {
-                    nhaCungCapList.add(new nhaCungCapDTO(
-                            rs.getString("MaNhaCungCap"),
-                            rs.getString("TenNhaCungCap"),
-                            rs.getString("LoaiSP"),
-                            rs.getInt("NamHopTac"),
-                            rs.getString("DiaChi"),
-                            rs.getString("Email"),
-                            rs.getString("SoDienThoai"),
-                            rs.getString("TrangThai")));
-                }
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                nhaCungCapDTO ncc = new nhaCungCapDTO(
+                        rs.getString("MaNhaCungCap"),
+                        rs.getString("TenNhaCungCap"),
+                        rs.getInt("NamHopTac"),
+                        rs.getString("DiaChi"),
+                        rs.getString("Email"),
+                        rs.getString("SoDienThoai"),
+                        rs.getString("TrangThai"));
+                nhaCungCapList.add(ncc);
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error in searchNhaCungCapAdvanced: " + e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm nhà cung cấp nâng cao: {0}", e.getMessage());
         }
         return nhaCungCapList;
     }

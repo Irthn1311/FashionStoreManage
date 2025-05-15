@@ -143,7 +143,6 @@ public class xuathang extends javax.swing.JPanel {
                     String currentMaKhachHang = cbMaKhachHang.getSelectedItem().toString();
 
                     String sqlSelectXuatHang = "SELECT * FROM XuatHang WHERE TrangThai = N'Đang xử lý' AND MaKhachHang = ?";
-                    String sqlSelectXuatHang = "SELECT * FROM XuatHang WHERE TrangThai = N'Đang xử lý' AND MaKhachHang = ?";
                     java.sql.PreparedStatement psSelect = conn.prepareStatement(sqlSelectXuatHang);
                     psSelect.setString(1, currentMaKhachHang);
                     java.sql.ResultSet rsXuatHang = psSelect.executeQuery();
@@ -324,7 +323,6 @@ public class xuathang extends javax.swing.JPanel {
                                 }
                             }
 
-                            String deleteSql = "DELETE FROM XuatHang WHERE TrangThai = N'Đang xử lý' AND MaKhachHang = ?";
                             String deleteSql = "DELETE FROM XuatHang WHERE TrangThai = N'Đang xử lý' AND MaKhachHang = ?";
                             java.sql.PreparedStatement psDelete = conn.prepareStatement(deleteSql);
                             psDelete.setString(1, currentMaKhachHang);
