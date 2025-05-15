@@ -329,9 +329,9 @@ public class KhuyenMaiEditDialog extends JDialog {
             // Kiểm tra mã sản phẩm trùng lặp
             if (existingProductCodes != null && existingProductCodes.contains(maSanPham)) {
                 JOptionPane.showMessageDialog(this,
-                    "Mã sản phẩm này đã tồn tại trong một khuyến mãi khác!",
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Mã sản phẩm này đã tồn tại trong một khuyến mãi khác!",
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
                 maSanPhamField.setText("");
                 tenSanPhamField.setText("");
                 giaCuField.setText("");
@@ -518,9 +518,9 @@ public class KhuyenMaiEditDialog extends JDialog {
         String maSanPham = maSanPhamField.getText().trim();
         if (existingProductCodes != null && existingProductCodes.contains(maSanPham)) {
             JOptionPane.showMessageDialog(this,
-                "Mã sản phẩm này đã tồn tại trong một khuyến mãi khác!",
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE);
+                    "Mã sản phẩm này đã tồn tại trong một khuyến mãi khác!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 

@@ -43,12 +43,11 @@ public class suaKhachHangPanel extends JPanel {
         // Panel chính
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(Color.BLACK),
-            "Sửa Thông Tin Khách Hàng",
-            TitledBorder.CENTER,
-            TitledBorder.TOP,
-            new Font("Segoe UI", Font.BOLD, 14)
-        ));
+                BorderFactory.createLineBorder(Color.BLACK),
+                "Sửa Thông Tin Khách Hàng",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                new Font("Segoe UI", Font.BOLD, 14)));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -60,44 +59,51 @@ public class suaKhachHangPanel extends JPanel {
         txtEmail = new JTextField(20);
         txtSoDienThoai = new JTextField(20);
         txtDiaChi = new JTextField(20);
-        cboGioiTinh = new JComboBox<>(new String[]{"Nam", "Nữ"});
+        cboGioiTinh = new JComboBox<>(new String[] { "Nam", "Nữ" });
         txtNgaySinh = new JTextField(20);
 
         // Thiết lập các trường không được sửa
         txtMaKH.setEditable(false);
 
         // Thêm components vào panel
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         mainPanel.add(new JLabel("Mã khách hàng:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtMaKH, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         mainPanel.add(new JLabel("Họ tên:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtHoTen, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
         mainPanel.add(new JLabel("Giới tính:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(cboGioiTinh, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
-        mainPanel.add(new JLabel("Số điện thoại:"), gbc);
-        gbc.gridx = 1;
-        mainPanel.add(txtSoDienThoai, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         mainPanel.add(new JLabel("Email:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtEmail, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5;
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        mainPanel.add(new JLabel("Số điện thoại:"), gbc);
+        gbc.gridx = 1;
+        mainPanel.add(txtSoDienThoai, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
         mainPanel.add(new JLabel("Địa chỉ:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtDiaChi, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 7;
+        gbc.gridx = 0;
+        gbc.gridy = 6;
         mainPanel.add(new JLabel("Ngày sinh (dd/MM/yyyy):"), gbc);
         gbc.gridx = 1;
         mainPanel.add(txtNgaySinh, gbc);
@@ -132,7 +138,7 @@ public class suaKhachHangPanel extends JPanel {
         txtSoDienThoai.setText(khachHang.getSoDienThoai());
         txtDiaChi.setText(khachHang.getDiaChi());
         cboGioiTinh.setSelectedItem(khachHang.getGioiTinh());
-        
+
         if (khachHang.getNgaySinh() != null) {
             txtNgaySinh.setText(dateFormat.format(khachHang.getNgaySinh()));
         }
@@ -164,45 +170,44 @@ public class suaKhachHangPanel extends JPanel {
                     ngaySinh = new Date(parsedDate.getTime());
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this,
-                        "Ngày sinh không hợp lệ! Vui lòng nhập theo định dạng dd/MM/yyyy",
-                        "Lỗi",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Ngày sinh không hợp lệ! Vui lòng nhập theo định dạng dd/MM/yyyy",
+                            "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
 
             // Tạo đối tượng khachHangDTO mới với thông tin đã cập nhật
             khachHangDTO khachHangCapNhat = new khachHangDTO(
-                txtMaKH.getText(),
-                txtHoTen.getText().trim(),
-                cboGioiTinh.getSelectedItem().toString(),
-                txtSoDienThoai.getText().trim(),
-                txtEmail.getText().trim(),
-                txtDiaChi.getText().trim(),
-                ngaySinh
-            );
+                    txtMaKH.getText(),
+                    txtHoTen.getText().trim(),
+                    cboGioiTinh.getSelectedItem().toString(),
+                    txtSoDienThoai.getText().trim(),
+                    txtEmail.getText().trim(),
+                    txtDiaChi.getText().trim(),
+                    ngaySinh);
 
             // Gọi BUS để cập nhật
             boolean success = khachHangBUS.capNhatKhachHang(khachHangCapNhat);
             if (success) {
                 JOptionPane.showMessageDialog(this,
-                    "Cập nhật thông tin khách hàng thành công!",
-                    "Thông báo",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Cập nhật thông tin khách hàng thành công!",
+                        "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
                 parentDialog.dispose();
             } else {
                 JOptionPane.showMessageDialog(this,
-                    "Không thể cập nhật thông tin khách hàng!",
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Không thể cập nhật thông tin khách hàng!",
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                "Có lỗi xảy ra: " + e.getMessage(),
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE);
+                    "Có lỗi xảy ra: " + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 }

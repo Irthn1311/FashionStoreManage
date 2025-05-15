@@ -178,13 +178,12 @@ public class sanPhamPanel extends javax.swing.JPanel {
         }
 
         // Display results
+        populateTable(ketQua);
+
         if (ketQua.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm phù hợp!", "Thông báo",
                     JOptionPane.INFORMATION_MESSAGE);
-            return;
         }
-
-        populateTable(ketQua);
     }
 
     private void setupTableSelection() {
@@ -611,6 +610,20 @@ public class sanPhamPanel extends javax.swing.JPanel {
                 jTextFieldSoLuongDen.setText("");
                 // Reset radio button
                 sortGroup.clearSelection();
+
+                // Reset chi tiết sản phẩm
+                lblMaSP.setText("Mã sản phẩm: ");
+                lblTenSP.setText("Tên sản phẩm: ");
+                lblSoLuong.setText("Số lượng: ");
+                lblDonGia.setText("Đơn giá: ");
+                lblImgURL.setText("Hình ảnh: ");
+                lblTrangThai.setText("Trạng thái: ");
+                lblMauSac.setText("Màu sắc: ");
+                lblSize.setText("Kích cỡ: ");
+                lblKhuyenMai.setText("Khuyến mãi: ");
+                lblImage.setIcon(null);
+                lblImage.setText("Hình ảnh sản phẩm");
+
                 // Load lại dữ liệu
                 loadSanPhamData();
             }
