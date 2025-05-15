@@ -31,6 +31,17 @@ public class themNhaCungCapPanel extends JPanel {
         nhaCungCapBUS = new NhaCungCapBUS();
         initComponents();
         setupListeners();
+
+        // Auto-generate supplier ID and disable the field
+        generateAndSetSupplierId();
+    }
+
+    // Method to generate and set the supplier ID
+    private void generateAndSetSupplierId() {
+        String nextId = nhaCungCapBUS.generateNextMaNhaCungCap();
+        txtMaNCC.setText(nextId);
+        txtMaNCC.setEditable(false);
+        txtMaNCC.setBackground(new Color(240, 240, 240)); // Light gray background to indicate it's disabled
     }
 
     private void initComponents() {
@@ -127,7 +138,7 @@ public class themNhaCungCapPanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy++;
         mainPanel.add(new JLabel("Trạng thái:"), gbc);
-        cbTrangThai = new JComboBox<>(new String[]{"Đang hợp tác", "Ngừng hợp tác"});
+        cbTrangThai = new JComboBox<>(new String[] { "Đang hợp tác", "Ngừng hợp tác" });
         gbc.gridx = 1;
         mainPanel.add(cbTrangThai, gbc);
 
@@ -135,12 +146,12 @@ public class themNhaCungCapPanel extends JPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         btnThem = new JButton("Thêm");
         btnHuy = new JButton("Hủy");
-        
+
         // Tùy chỉnh kích thước nút
         Dimension buttonSize = new Dimension(100, 35);
         btnThem.setPreferredSize(buttonSize);
         btnHuy.setPreferredSize(buttonSize);
-        
+
         buttonPanel.add(btnThem);
         buttonPanel.add(btnHuy);
 
@@ -181,10 +192,10 @@ public class themNhaCungCapPanel extends JPanel {
         String soDienThoai = txtSoDienThoai.getText().trim();
         String trangThai = (String) cbTrangThai.getSelectedItem();
 
-        // Kiểm tra dữ liệu đầu vào
-        if (maNCC.isEmpty() || tenNCC.isEmpty() || loaiSP.isEmpty() || 
-            namHopTac.isEmpty() || diaChi.isEmpty() || email.isEmpty() || 
-            soDienThoai.isEmpty()) {
+        // Kiểm tra dữ liệu đầu vào (không cần kiểm tra maNCC vì đã được tạo tự động)
+        if (tenNCC.isEmpty() || loaiSP.isEmpty() ||
+                namHopTac.isEmpty() || diaChi.isEmpty() || email.isEmpty() ||
+                soDienThoai.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -205,19 +216,19 @@ public class themNhaCungCapPanel extends JPanel {
         try {
             int namHopTacInt = Integer.parseInt(namHopTac);
             nhaCungCapDTO ncc = new nhaCungCapDTO(
-                maNCC,
-                tenNCC,
-                loaiSP,
-                namHopTacInt,
-                diaChi,
-                email,
-                soDienThoai,
-                trangThai
-            );
+                    maNCC,
+                    tenNCC,
+                    loaiSP,
+                    namHopTacInt,
+                    diaChi,
+                    email,
+                    soDienThoai,
+                    trangThai);
 
             // Thêm nhà cung cấp vào cơ sở dữ liệu
             if (nhaCungCapBUS.themNhaCungCap(ncc)) {
-                JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thành công!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
                 clearFields();
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -229,10 +240,10 @@ public class themNhaCungCapPanel extends JPanel {
 
     private void huyThem() {
         int confirm = JOptionPane.showConfirmDialog(this,
-            "Bạn có chắc muốn hủy thêm nhà cung cấp?",
-            "Xác nhận",
-            JOptionPane.YES_NO_OPTION);
-            
+                "Bạn có chắc muốn hủy thêm nhà cung cấp?",
+                "Xác nhận",
+                JOptionPane.YES_NO_OPTION);
+
         if (confirm == JOptionPane.YES_OPTION) {
             // Đóng dialog
             Window window = SwingUtilities.getWindowAncestor(this);
@@ -243,7 +254,7 @@ public class themNhaCungCapPanel extends JPanel {
     }
 
     private void clearFields() {
-        txtMaNCC.setText("");
+        // Don't clear the supplier ID, regenerate it
         txtTenNCC.setText("");
         txtLoaiSP.setText("");
         txtNamHopTac.setText("");
@@ -251,5 +262,8 @@ public class themNhaCungCapPanel extends JPanel {
         txtEmail.setText("");
         txtSoDienThoai.setText("");
         cbTrangThai.setSelectedIndex(0);
+
+        // Generate a new ID for the next supplier
+        generateAndSetSupplierId();
     }
-} 
+}

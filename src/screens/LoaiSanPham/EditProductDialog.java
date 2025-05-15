@@ -48,7 +48,8 @@ public class EditProductDialog extends JDialog {
             // Hiển thị mã sản phẩm tự động khi thêm mới
             txtMaSanPham.setText(productService.generateProductCode());
             txtMaSanPham.setEditable(false);
-            txtMaSanPham.setBackground(new Color(220, 220, 220));
+            txtMaSanPham.setForeground(Color.BLACK);
+            txtMaSanPham.setBackground(Color.WHITE);
         }
     }
 
