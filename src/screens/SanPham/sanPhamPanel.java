@@ -226,21 +226,36 @@ public class sanPhamPanel extends javax.swing.JPanel {
         DTO.khuyenMaiDTO khuyenMai = khuyenMaiService.getKhuyenMaiByMaSanPham(maSP);
 
         if (khuyenMai != null) {
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
-            String ngayBatDau = khuyenMai.getNgayBatDau() != null ? sdf.format(khuyenMai.getNgayBatDau()) : "";
-            String ngayKetThuc = khuyenMai.getNgayKetThuc() != null ? sdf.format(khuyenMai.getNgayKetThuc()) : "";
-            String khuyenMaiInfo = String.format(
-                    "<b>Chương trình:</b> %s<br>" +
-                            "Thời gian: %s - %s<br>" +
-                            "Giá cũ: %.2f<br>" +
-                            "(Giảm %.2f%%) - Giá mới: %.2f",
-                    khuyenMai.getTenChuongTrinh(),
-                    ngayBatDau,
-                    ngayKetThuc,
-                    khuyenMai.getGiaCu(),
-                    khuyenMai.getGiamGia(),
-                    khuyenMai.getGiaMoi());
-            lblKhuyenMai.setText("<html><div style='width:500px;'>" + khuyenMaiInfo + "</div></html>");
+            // Kiểm tra xem khuyến mãi có còn hiệu lực không
+            boolean khuyenMaiActive = true;
+
+            // Nếu ngày kết thúc đã qua, đánh dấu khuyến mãi không còn hiệu lực
+            if (khuyenMai.getNgayKetThuc() != null) {
+                java.util.Date currentDate = new java.util.Date();
+                if (currentDate.after(khuyenMai.getNgayKetThuc())) {
+                    khuyenMaiActive = false;
+                }
+            }
+
+            if (khuyenMaiActive) {
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+                String ngayBatDau = khuyenMai.getNgayBatDau() != null ? sdf.format(khuyenMai.getNgayBatDau()) : "";
+                String ngayKetThuc = khuyenMai.getNgayKetThuc() != null ? sdf.format(khuyenMai.getNgayKetThuc()) : "";
+                String khuyenMaiInfo = String.format(
+                        "<b>Chương trình:</b> %s<br>" +
+                                "Thời gian: %s - %s<br>" +
+                                "Giá cũ: %.2f<br>" +
+                                "(Giảm %.2f%%) - Giá mới: %.2f",
+                        khuyenMai.getTenChuongTrinh(),
+                        ngayBatDau,
+                        ngayKetThuc,
+                        khuyenMai.getGiaCu(),
+                        khuyenMai.getGiamGia(),
+                        khuyenMai.getGiaMoi());
+                lblKhuyenMai.setText("<html><div style='width:500px;'>" + khuyenMaiInfo + "</div></html>");
+            } else {
+                lblKhuyenMai.setText("Khuyến mãi: Không có khuyến mãi");
+            }
         } else {
             lblKhuyenMai.setText("Khuyến mãi: Không có khuyến mãi");
         }
