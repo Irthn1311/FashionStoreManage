@@ -132,7 +132,7 @@ CREATE TABLE SanPham (
     MaSanPham VARCHAR(100) PRIMARY KEY,
     TenSanPham NVARCHAR(200),
 	MaNhaCungCap VARCHAR(100),
-    MaDanhMuc VARCHAR(100),
+    MaDanhMuc NVARCHAR(100),
 	MauSac NVARCHAR(100),
 	Size NVARCHAR(50),
     SoLuongTonKho INT,
