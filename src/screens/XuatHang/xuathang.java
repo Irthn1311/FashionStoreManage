@@ -4,12 +4,21 @@ import javax.swing.UIManager;
 import javax.swing.JOptionPane;
 import DAO.SanPhamDAO;
 import java.util.List;
+import screens.TrangChu.AppColors;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.table.JTableHeader;
+import javax.swing.JPanel;
 
 /**
  *
  * @author nson9
  */
 public class xuathang extends javax.swing.JPanel {
+
+    // Variables for jPanel5 - KhachHang
+    private javax.swing.JLabel lblMaKhachHang;
+    private javax.swing.JLabel lblTenKhachHang;
 
     /**
      * Creates new form hoadon
@@ -40,11 +49,11 @@ public class xuathang extends javax.swing.JPanel {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 int selectedRow = jTable1.getSelectedRow();
                 if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(xuathang.this, "Vui lòng chọn một phiếu xuất để xóa.");
                     return;
                 }
-                // Lấy mã phiếu xuất (MaPX) từ dòng được chọn
                 String maPX = jTable1.getValueAt(selectedRow, 0).toString();
-                int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa phiếu xuất này?",
+                int confirm = JOptionPane.showConfirmDialog(xuathang.this, "Bạn có chắc chắn muốn xóa phiếu xuất này?",
                         "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
@@ -56,14 +65,14 @@ public class xuathang extends javax.swing.JPanel {
                         ps.close();
                         conn.close();
                         if (result > 0) {
-                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thành công!");
+                            JOptionPane.showMessageDialog(xuathang.this, "Xóa phiếu xuất thành công!");
                             loadXuatHangTable();
                         } else {
-                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thất bại!");
+                            JOptionPane.showMessageDialog(xuathang.this, "Xóa phiếu xuất thất bại!");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Lỗi khi xóa phiếu xuất: " + e.getMessage());
+                        JOptionPane.showMessageDialog(xuathang.this, "Lỗi khi xóa phiếu xuất: " + e.getMessage());
                     }
                 }
             }
@@ -81,15 +90,15 @@ public class xuathang extends javax.swing.JPanel {
                         jTextField3.setText(sp.getMauSac());
                         jTextField4.setText(sp.getSize());
                         jTextField7.setText(String.valueOf(sp.getGiaBan()));
-                        // Tính lại thành tiền nếu có số lượng
+                        jTextField10.setText("1");
                         calculateThanhTien();
                     } else {
-                        // Xóa các trường nếu không tìm thấy sản phẩm
                         jTextField1.setText("");
                         jTextField3.setText("");
                         jTextField4.setText("");
                         jTextField7.setText("");
                         jTextField9.setText("");
+                        jTextField10.setText("");
                     }
                 }
             }
@@ -97,9 +106,21 @@ public class xuathang extends javax.swing.JPanel {
         cbMaKhachHang.addActionListener(e -> {
             int idx = cbMaKhachHang.getSelectedIndex();
             if (idx >= 0 && idx < listKhachHang.size()) {
-                jTextFieldTenKhachHang.setText(listKhachHang.get(idx).getHoTen());
+                if (cbTenKhachHang.getItemCount() > idx) {
+                    cbTenKhachHang.setSelectedIndex(idx);
+                }
             } else {
-                jTextFieldTenKhachHang.setText("");
+                if (cbTenKhachHang.getItemCount() > 0) {
+                    cbTenKhachHang.setSelectedIndex(-1);
+                }
+            }
+        });
+        cbTenKhachHang.addActionListener(e -> {
+            int idx = cbTenKhachHang.getSelectedIndex();
+            if (idx >= 0 && idx < listKhachHang.size()){
+                if(cbMaKhachHang.getItemCount() > idx){
+                    cbMaKhachHang.setSelectedIndex(idx);
+                }
             }
         });
         jButton17.addActionListener(new java.awt.event.ActionListener() {
@@ -175,6 +196,7 @@ public class xuathang extends javax.swing.JPanel {
         containerPanel = new javax.swing.JPanel();
         containerPanel.setPreferredSize(new java.awt.Dimension(1000, 700));
         containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        containerPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
         pnlHeader = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -210,15 +232,13 @@ public class xuathang extends javax.swing.JPanel {
         lblHinhThucThanhToan = new javax.swing.JLabel();
         cbHinhThucThanhToan = new javax.swing.JComboBox<>();
         cbMaKhachHang = new javax.swing.JComboBox<>();
-        jTextFieldTenKhachHang = new javax.swing.JTextField();
-        jTextFieldTenKhachHang.setEditable(false);
-        jPanel5.add(jTextFieldTenKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 71, 183, 41));
-        
+        cbTenKhachHang = new javax.swing.JComboBox<>();
 
-        pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
+        pnlHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setText("Quản lý xuất hàng");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setText("QUẢN LÝ XUẤT HÀNG");
+        jLabel1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
@@ -238,9 +258,13 @@ public class xuathang extends javax.swing.JPanel {
 
         containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
-        pnlContent.setBackground(new java.awt.Color(107, 163, 190));
+        pnlContent.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
         jButton17.setText("Xác nhận");
+        jButton17.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        jButton17.setForeground(Color.WHITE);
+        jButton17.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        jButton17.setPreferredSize(new java.awt.Dimension(140, 40));
 
         jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -255,107 +279,165 @@ public class xuathang extends javax.swing.JPanel {
             }
         });
         jTable1.setShowGrid(true);
+        jTable1.setBackground(Color.WHITE);
+        jTable1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTable1.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
+        JTableHeader tableHeader = jTable1.getTableHeader();
+        tableHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+        tableHeader.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        tableHeader.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
         jScrollPane1.setViewportView(jTable1);
 
-        jPanel7.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Xuất hàng"));
+        jPanel7.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.Border lineBorder7 = BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+        jPanel7.setBorder(BorderFactory.createTitledBorder(lineBorder7, "Xuất hàng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12), AppColors.NEW_MAIN_TEXT_COLOR));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel5.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Khách hàng"));
-        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel5.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.Border lineBorder5 = BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+        jPanel5.setBorder(BorderFactory.createTitledBorder(lineBorder5, "Khách hàng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12), AppColors.NEW_MAIN_TEXT_COLOR));
+        
+        lblMaKhachHang = new javax.swing.JLabel("Mã Khách Hàng");
+        lblMaKhachHang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        lblTenKhachHang = new javax.swing.JLabel("Tên Khách Hàng");
+        lblTenKhachHang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
-        jTextField6.setText("Mã khách hàng");
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
-            }
-        });
-        jPanel5.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 24, 97, 41));
+        cbMaKhachHang.setBackground(Color.WHITE);
+        cbMaKhachHang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        cbTenKhachHang.setBackground(Color.WHITE);
+        cbTenKhachHang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblMaKhachHang)
+                    .addComponent(lblTenKhachHang))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbMaKhachHang, 0, 180, Short.MAX_VALUE)
+                    .addComponent(cbTenKhachHang, 0, 180, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblMaKhachHang)
+                    .addComponent(cbMaKhachHang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTenKhachHang)
+                    .addComponent(cbTenKhachHang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 170, 320, 120));
 
-        jTextField2.setText("Tên khách hàng");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
-        jPanel5.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 71, -1, 41));
-        jPanel5.add(cbMaKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 24, 183, 41));
-        jPanel5.add(jTextFieldTenKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(126, 71, 183, 41));
-
-        jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 180, 320, 120));
-
-        jPanel9.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chi phí"));
-        jPanel9.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jTextField8.setText("Thành tiền");
+        jPanel9.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.Border lineBorder9 = BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+        jPanel9.setBorder(BorderFactory.createTitledBorder(lineBorder9, "Chi Phí", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12), AppColors.NEW_MAIN_TEXT_COLOR));
+        jTextField8.setText("Thành Tiền");
         jTextField8.setEditable(false);
         jTextField8.setFocusable(false);
-        jTextField8.setBackground(new java.awt.Color(240, 240, 240));
-        jPanel9.add(jTextField8, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 24, 288, 42));
-        jPanel9.add(jTextField9, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 72, 288, 40));
+        jTextField8.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        jTextField8.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField8.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
+        jTextField9.setEditable(false);
+        jTextField9.setFocusable(false);
+        jTextField9.setBackground(Color.WHITE);
+        jTextField9.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        jTextField9.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
-        jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(431, 36, 310, 120));
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTextField9)
+                    .addComponent(jTextField8, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 30, 320, 120));
 
         jButton15.setText("Hủy");
+        jButton15.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+        jButton15.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+        jButton15.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        jButton15.setPreferredSize(new java.awt.Dimension(120, 50));
         jButton15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // Reset các trường nhập liệu ở phần Xuất hàng
                 cbMaSanPham.setSelectedIndex(0);
                 jTextField1.setText("");
                 jTextField3.setText("");
                 jTextField4.setText("");
-                jTextField10.setText("");
+                jTextField10.setText("1");
                 jTextField7.setText("");
-                jTextField9.setText(""); // Chỉ reset ô tính tiền
-                jTextField14.setText("");
-                jTextField15.setText("");
-                // Không reset jTextField8 (ô mô tả)
+                jTextField9.setText("0.00");
+                if (cbMaKhachHang.getItemCount() > 0) {
+                    cbMaKhachHang.setSelectedIndex(0);
+                    if (cbTenKhachHang.getItemCount() > 0) cbTenKhachHang.setSelectedIndex(-1);
+                } else {
+                    if (cbTenKhachHang.getItemCount() > 0) cbTenKhachHang.setSelectedIndex(-1);
+                }
+                cbHinhThucThanhToan.setSelectedIndex(0);
             }
         });
-        jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(791, 72, -1, 60));
+        jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 205, 120, 50));
 
         jButton18.setText("Thêm");
+        jButton18.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        jButton18.setForeground(Color.WHITE);
+        jButton18.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        jButton18.setPreferredSize(new java.awt.Dimension(120, 50));
         jButton18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    // Validate dữ liệu
-                    if (cbMaSanPham.getSelectedItem() == null || jTextField10.getText().trim().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin!");
+                    if (cbMaSanPham.getSelectedItem() == null || jTextField10.getText().trim().isEmpty() || cbMaKhachHang.getSelectedItem() == null) {
+                        JOptionPane.showMessageDialog(xuathang.this, "Vui lòng điền đầy đủ thông tin Mã SP, Số Lượng và Khách Hàng!");
                         return;
                     }
 
                     String maSP = cbMaSanPham.getSelectedItem().toString();
                     int soLuong = Integer.parseInt(jTextField10.getText().trim());
-                    
-                    // Kiểm tra tồn kho
-                    SanPhamDAO sanPhamDAO = new SanPhamDAO();
-                    if (!sanPhamDAO.kiemTraTonKho(maSP, soLuong)) {
-                        JOptionPane.showMessageDialog(null, "Không đủ số lượng trong kho!");
+                    if (soLuong <= 0) {
+                        JOptionPane.showMessageDialog(xuathang.this, "Số lượng phải lớn hơn 0!");
                         return;
                     }
 
-                    // Thêm vào bảng XuatHang
+                    SanPhamDAO sanPhamDAO = new SanPhamDAO();
+                    if (!sanPhamDAO.kiemTraTonKho(maSP, soLuong)) {
+                        JOptionPane.showMessageDialog(xuathang.this, "Không đủ số lượng sản phẩm trong kho!");
+                        return;
+                    }
+
                     BUS.XuatHangBUS xuatHangBUS = new BUS.XuatHangBUS();
                     String maPX = xuatHangBUS.generateNextMaPX();
-                    String maKH = (String) cbMaKhachHang.getSelectedItem();
-                    String tenKH = jTextFieldTenKhachHang.getText();
-                    String tenSP = jTextField1.getText().trim();
-                    String kichThuoc = jTextField4.getText().trim();
-                    String mauSac = jTextField3.getText().trim();
-                    double donGia = Double.parseDouble(jTextField7.getText().trim());
-                    double thanhTien = Double.parseDouble(jTextField9.getText().trim());
+                    String maKH = cbMaKhachHang.getSelectedItem().toString();
+                    String tenKH = cbTenKhachHang.getSelectedItem().toString();
+                    String tenSP = jTextField1.getText();
+                    String kichThuoc = jTextField4.getText();
+                    String mauSac = jTextField3.getText();
+                    double donGia = Double.parseDouble(jTextField7.getText());
+                    double thanhTien = Double.parseDouble(jTextField9.getText());
                     String hinhThucTT = cbHinhThucThanhToan.getSelectedItem().toString();
 
                     java.sql.Connection conn = DTB.ConnectDB.getConnection();
-                    String sql = "INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, " +
-                            "KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Đang xử lý')";
-                    
+                    String sql = "INSERT INTO XuatHang (MaPX, MaKhachHang, HoTen, MaSanPham, TenSanPham, KichThuoc, MauSac, SoLuong, DonGia, ThanhTien, HinhThucThanhToan, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Đang xử lý')";
                     java.sql.PreparedStatement ps = conn.prepareStatement(sql);
                     ps.setString(1, maPX);
                     ps.setString(2, maKH);
@@ -368,63 +450,81 @@ public class xuathang extends javax.swing.JPanel {
                     ps.setDouble(9, donGia);
                     ps.setDouble(10, thanhTien);
                     ps.setString(11, hinhThucTT);
-
+                    
                     int result = ps.executeUpdate();
                     ps.close();
                     conn.close();
 
                     if (result > 0) {
-                        JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào thành công!");
+                        JOptionPane.showMessageDialog(xuathang.this, "Thêm sản phẩm vào phiếu xuất thành công!");
                         loadXuatHangTable();
-                        
-                        // Xóa các trường nhập liệu
-                        jTextField10.setText("");
-                        jTextField9.setText("");
                         cbMaSanPham.setSelectedIndex(0);
+                        jTextField10.setText("1");
+                        jTextField9.setText("0.00");
                     } else {
-                        JOptionPane.showMessageDialog(null, "Thêm sản phẩm thất bại!");
+                        JOptionPane.showMessageDialog(xuathang.this, "Thêm sản phẩm vào phiếu xuất thất bại!");
                     }
 
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(xuathang.this, "Số lượng hoặc đơn giá không hợp lệ!");
                 } catch (Exception e) {
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Lỗi khi thêm sản phẩm: " + e.getMessage());
+                    JOptionPane.showMessageDialog(xuathang.this, "Lỗi khi thêm sản phẩm vào phiếu xuất: " + e.getMessage());
                 }
             }
         });
-        jPanel7.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(791, 213, -1, 64));
+        jPanel7.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 65, 120, 50));
 
-        pblBoxSanPhamSoLuong.setBackground(new java.awt.Color(107, 163, 190));
-        pblBoxSanPhamSoLuong.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Sản phẩm & Số lượng"));
+        pblBoxSanPhamSoLuong.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.Border lineBorderSP = BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+        pblBoxSanPhamSoLuong.setBorder(BorderFactory.createTitledBorder(lineBorderSP, "Sản phẩm & Số lượng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12), AppColors.NEW_MAIN_TEXT_COLOR));
+        
+        lblMaSanPham.setText("Mã Sản Phẩm");
+        lblMaSanPham.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        cbMaSanPham.setBackground(Color.WHITE);
+        cbMaSanPham.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        cbMaSanPham.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
 
-        cbMaSanPham.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        lblTenSanPham.setText("Tên Sản Phẩm");
+        lblTenSanPham.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField1.setBackground(Color.WHITE);
+        jTextField1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField1.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        jTextField1.setEditable(false);
 
-        lblMaSanPham.setText("Mã SP");
+        lblMauSac.setText("Màu Sắc");
+        lblMauSac.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField3.setBackground(Color.WHITE);
+        jTextField3.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField3.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        jTextField3.setEditable(false);
 
-        lblTenSanPham.setText("Tên SP");
+        lblKichThuoc.setText("Kích Thước");
+        lblKichThuoc.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField4.setBackground(Color.WHITE);
+        jTextField4.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField4.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        jTextField4.setEditable(false);
+        
+        lblSoLuong.setText("Số Lượng");
+        lblSoLuong.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField10.setBackground(Color.WHITE);
+        jTextField10.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField10.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
 
-        lblMauSac.setText("Màu sắc");
-
-        lblKichThuoc.setText("Kích thước");
-
-        lblSoLuong.setText("Số lượng");
-
-        lblDonGia.setText("Đơn giá");
-
-        lblHinhThucThanhToan.setText("Hình thức thanh toán");
-
-        cbHinhThucThanhToan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tiền mặt", "Chuyển khoản", "Thẻ" }));
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
-        jTextField10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField10ActionPerformed(evt);
-            }
-        });
+        lblDonGia.setText("Đơn Giá");
+        lblDonGia.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField7.setEditable(false);
+        jTextField7.setBackground(Color.WHITE);
+        jTextField7.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTextField7.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        
+        lblHinhThucThanhToan.setText("Hình Thức Thanh Toán");
+        lblHinhThucThanhToan.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        cbHinhThucThanhToan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tiền Mặt", "Chuyển Khoản", "Thẻ" }));
+        cbHinhThucThanhToan.setBackground(Color.WHITE);
+        cbHinhThucThanhToan.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        cbHinhThucThanhToan.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
 
         javax.swing.GroupLayout pblBoxSanPhamSoLuongLayout = new javax.swing.GroupLayout(pblBoxSanPhamSoLuong);
         pblBoxSanPhamSoLuong.setLayout(pblBoxSanPhamSoLuongLayout);
@@ -433,25 +533,21 @@ public class xuathang extends javax.swing.JPanel {
             .addGroup(pblBoxSanPhamSoLuongLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(lblMauSac)
-                        .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblMaSanPham)
-                            .addComponent(lblTenSanPham))
-                        .addComponent(lblDonGia))
+                    .addComponent(lblMaSanPham)
+                    .addComponent(lblTenSanPham)
+                    .addComponent(lblMauSac)
                     .addComponent(lblKichThuoc)
-                    .addGroup(pblBoxSanPhamSoLuongLayout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(lblSoLuong))
+                    .addComponent(lblSoLuong)
+                    .addComponent(lblDonGia)
                     .addComponent(lblHinhThucThanhToan))
                 .addGap(50, 50, 50)
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cbMaSanPham, 0, 172, Short.MAX_VALUE)
-                    .addComponent(jTextField7)
                     .addComponent(jTextField1)
                     .addComponent(jTextField3)
                     .addComponent(jTextField4)
                     .addComponent(jTextField10)
+                    .addComponent(jTextField7)
                     .addComponent(cbHinhThucThanhToan, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
@@ -460,70 +556,41 @@ public class xuathang extends javax.swing.JPanel {
             .addGroup(pblBoxSanPhamSoLuongLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbMaSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblMaSanPham))
+                    .addComponent(lblMaSanPham)
+                    .addComponent(cbMaSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblTenSanPham))
+                    .addComponent(lblTenSanPham)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblMauSac))
+                    .addComponent(lblMauSac)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblKichThuoc))
+                    .addComponent(lblKichThuoc)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblSoLuong))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(lblSoLuong)
+                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblDonGia))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(lblDonGia)
+                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(pblBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbHinhThucThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblHinhThucThanhToan))
+                    .addComponent(lblHinhThucThanhToan)
+                    .addComponent(cbHinhThucThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9))
         );
-
-        jPanel7.add(pblBoxSanPhamSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 36, -1, 270));
+        jPanel7.add(pblBoxSanPhamSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 440, 280));
 
         jButton1.setText("Xóa");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                int selectedRow = jTable1.getSelectedRow();
-                if (selectedRow == -1) {
-                    return;
-                }
-                // Lấy mã phiếu xuất (MaPX) từ dòng được chọn
-                String maPX = jTable1.getValueAt(selectedRow, 0).toString();
-                int confirm = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn muốn xóa phiếu xuất này?",
-                        "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    try {
-                        java.sql.Connection conn = DTB.ConnectDB.getConnection();
-                        String sql = "DELETE FROM XuatHang WHERE MaPX = ?";
-                        java.sql.PreparedStatement ps = conn.prepareStatement(sql);
-                        ps.setString(1, maPX);
-                        int result = ps.executeUpdate();
-                        ps.close();
-                        conn.close();
-                        if (result > 0) {
-                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thành công!");
-                            loadXuatHangTable();
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Xóa phiếu xuất thất bại!");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Lỗi khi xóa phiếu xuất: " + e.getMessage());
-                    }
-                }
-            }
-        });
+        jButton1.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+        jButton1.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+        jButton1.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        jButton1.setPreferredSize(new java.awt.Dimension(140, 40));
 
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
@@ -557,20 +624,9 @@ public class xuathang extends javax.swing.JPanel {
 
         containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
 
-        // Update panel positions and sizes
-        jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 180, 320, -1));
-        jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 40, 310, -1));
-        jPanel7.add(pblBoxSanPhamSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 36, -1, 270));
-        jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, -1, 60));
-        jPanel7.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 220, -1, 64));
-        jPanel7.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 340, -1, 60));
-        jPanel7.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, -1, 60));
-
-        // Update panel sizes
         jPanel7.setPreferredSize(new java.awt.Dimension(960, 340));
         jScrollPane1.setPreferredSize(new java.awt.Dimension(960, 192));
 
-        // Gọi setupUI() sau khi khởi tạo các components
         setupUI();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -610,8 +666,9 @@ public class xuathang extends javax.swing.JPanel {
 
     private void setupUI() {
         // Điều chỉnh kích thước các panel con trong pnlContent
-        jPanel7.setPreferredSize(new java.awt.Dimension(960, 317));
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(960, 190));
+        // These are now set directly in initComponents or through GroupLayout/AbsoluteLayout of jPanel7
+        // jPanel7.setPreferredSize(new java.awt.Dimension(960, 317)); // Old value, new one is 340
+        // jScrollPane1.setPreferredSize(new java.awt.Dimension(960, 190)); // Old value, new one is 192
     }
 
     private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField8ActionPerformed
@@ -643,6 +700,7 @@ public class xuathang extends javax.swing.JPanel {
         for (String code : codes) {
             cbMaSanPham.addItem(code);
         }
+        if (!codes.isEmpty()) cbMaSanPham.setSelectedIndex(0); // Select first item if available
     }
 
     private void calculateThanhTien() {
@@ -650,9 +708,9 @@ public class xuathang extends javax.swing.JPanel {
             int soLuong = Integer.parseInt(jTextField10.getText().trim());
             double donGia = Double.parseDouble(jTextField7.getText().trim());
             double thanhTien = soLuong * donGia;
-            jTextField9.setText(String.valueOf(thanhTien));
+            jTextField9.setText(String.format("%.2f", thanhTien)); // Format to 2 decimal places
         } catch (NumberFormatException e) {
-            jTextField9.setText(""); // Clear if input is invalid
+            jTextField9.setText("0.00"); 
         }
     }
 
@@ -697,61 +755,24 @@ public class xuathang extends javax.swing.JPanel {
 
     private void loadKhachHangComboBox() {
         BUS.KhachHangBUS khachHangBUS = new BUS.KhachHangBUS();
-        java.util.List<DTO.khachHangDTO> list = khachHangBUS.getAllKhachHang();
+        listKhachHang = khachHangBUS.getAllKhachHang();
         cbMaKhachHang.removeAllItems();
-        for (DTO.khachHangDTO kh : list) {
+        cbTenKhachHang.removeAllItems();
+
+        for (DTO.khachHangDTO kh : listKhachHang) {
             cbMaKhachHang.addItem(kh.getMaKhachHang());
+            cbTenKhachHang.addItem(kh.getHoTen());
         }
-        if (!list.isEmpty()) {
-            jTextFieldTenKhachHang.setText(list.get(0).getHoTen());
+
+        if (!listKhachHang.isEmpty()) {
+            cbMaKhachHang.setSelectedIndex(0);
+            cbTenKhachHang.setSelectedIndex(0);
         } else {
-            jTextFieldTenKhachHang.setText("");
+            // jTextFieldTenKhachHang.setText(""); // Old
+            // No items, so combo boxes will be empty
         }
-        listKhachHang = list;
+        // listKhachHang is already assigned
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
-        // (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
-         * look and feel.
-         * For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(xuathang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(xuathang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(xuathang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(xuathang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        // </editor-fold>
-        // </editor-fold>
-        // </editor-fold>
-        // </editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new xuathang().setVisible(true);
-            }
-        });
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel containerPanel;
     private javax.swing.JButton jButton1;
@@ -788,7 +809,7 @@ public class xuathang extends javax.swing.JPanel {
     private javax.swing.JLabel lblHinhThucThanhToan;
     private javax.swing.JComboBox<String> cbHinhThucThanhToan;
     private javax.swing.JComboBox<String> cbMaKhachHang;
-    private javax.swing.JTextField jTextFieldTenKhachHang;
+    private javax.swing.JComboBox<String> cbTenKhachHang;
     private java.util.List<DTO.khachHangDTO> listKhachHang;
     // End of variables declaration//GEN-END:variables
 }

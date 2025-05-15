@@ -30,12 +30,27 @@ import DAO.KhachHangDAO;
 import DAO.SanPhamDAO;
 import DAO.NhanVienDAO;
 
+// Imports for RoundedBorder - NO LONGER NEEDED as RoundedCornerButton handles this
+// import javax.swing.border.Border; 
+// import java.awt.RenderingHints;
+// import java.awt.BasicStroke;
+// import java.awt.geom.RoundRectangle2D;
+import java.awt.Shape;
+
 /**
  *
  * @author nson9
  */
 public class trangchu extends javax.swing.JFrame {
     private taiKhoanDTO taiKhoan;
+    private javax.swing.JButton selectedButton; // Added to track the selected button
+
+    // Color constants are now in AppColors.java
+
+    private final Color DEFAULT_BUTTON_COLOR = AppColors.NEW_DEFAULT_BUTTON_COLOR;
+    private final Color SELECTED_BUTTON_COLOR = AppColors.NEW_HIGHLIGHTED_BUTTON_COLOR;
+    private final Color DEFAULT_BUTTON_TEXT_COLOR = AppColors.NEW_MAIN_TEXT_COLOR;
+    private final Color SELECTED_BUTTON_TEXT_COLOR = Color.WHITE;
 
     /**
      * Creates new form adminscreen
@@ -64,16 +79,45 @@ public class trangchu extends javax.swing.JFrame {
         setButtonIcon(btnTaiKhoan, "/icon_img/statistics.png");
         setButtonIcon(btnSetting, "/icon_img/setting.png");
 
+        // Set initial background color for buttons (RoundedCornerButton might handle this differently, or this sets a base)
+        btnNhapHang.setBackground(DEFAULT_BUTTON_COLOR);
+        btnXuatHang.setBackground(DEFAULT_BUTTON_COLOR);
+        btnSanPham.setBackground(DEFAULT_BUTTON_COLOR);
+        btnLoaiSanPham.setBackground(DEFAULT_BUTTON_COLOR);
+        btnHoaDon.setBackground(DEFAULT_BUTTON_COLOR);
+        btnPhieuNhap.setBackground(DEFAULT_BUTTON_COLOR);
+        btnKhuyenMai.setBackground(DEFAULT_BUTTON_COLOR);
+        btnNhanVien.setBackground(DEFAULT_BUTTON_COLOR);
+        btnKhachHang.setBackground(DEFAULT_BUTTON_COLOR);
+        btnNhaCungCap.setBackground(DEFAULT_BUTTON_COLOR);
+        btnTaiKhoan.setBackground(DEFAULT_BUTTON_COLOR);
+        btnSetting.setBackground(DEFAULT_BUTTON_COLOR);
+        btnLogin.setBackground(DEFAULT_BUTTON_COLOR);
+
+        // RoundedCornerButton handles its own border. No need for explicit border setting here.
+        // Border roundedButtonBorder = new RoundedBorder(10, AppColors.NEW_BORDER_LINES_COLOR, 1, 8); 
+        // JButton[] buttonsToRound = {
+        //     btnLogin, btnSetting, btnNhapHang, btnXuatHang, btnSanPham,
+        //     btnLoaiSanPham, btnHoaDon, btnPhieuNhap, btnKhuyenMai,
+        //     btnNhanVien, btnKhachHang, btnNhaCungCap, btnTaiKhoan
+        // };
+        // for (JButton btn : buttonsToRound) {
+        //     if (btn != null) {
+        //         btn.setBorder(roundedButtonBorder);
+        //     }
+        // }
+
         // Khởi tạo các panel
-        jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel(); 
+        // jPanel4 is initialized in initComponents and its color is set there.
 
         // Lưu lại panel chào mừng và main content
-        welcomePanel = jPanel3;
-        mainContent = jPanel4;
+        welcomePanel = jPanel3; 
+        // mainContent is jPanel4, color set in initComponents and switchPanel
 
         // Cập nhật thông tin người dùng
         jLabel3.setText("Xin chào, " + taiKhoan.getTenDangNhap());
+        jLabel3.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
         // Áp dụng phân quyền cho các button
         VaiTro vaiTro = taiKhoan.getVaiTro();
@@ -90,7 +134,6 @@ public class trangchu extends javax.swing.JFrame {
         PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnKhachHang, vaiTro, "KhachHang");
         PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnNhaCungCap, vaiTro, "NhaCungCap");
         PhanQuyenBUS.kiemTraVaVoHieuHoaButton(btnTaiKhoan, vaiTro, "ThongKe");
-
 
         // Them action listener cho btnNhapHang
         btnNhapHang.addActionListener(new java.awt.event.ActionListener() {
@@ -182,22 +225,33 @@ public class trangchu extends javax.swing.JFrame {
         }
     }
 
-    public void switchPanel(javax.swing.JPanel panel) {
+    public void switchPanel(javax.swing.JPanel panel, javax.swing.JButton clickedButton) {
         if (panel == null) {
             System.out.println("Error: Panel mới là null");
             return;
         }
 
+        // Reset previous button color and text color
+        if (selectedButton != null) {
+            selectedButton.setBackground(DEFAULT_BUTTON_COLOR);
+            selectedButton.setForeground(DEFAULT_BUTTON_TEXT_COLOR);
+        }
+
+        // Set new button color and text color, then update selectedButton
+        clickedButton.setBackground(SELECTED_BUTTON_COLOR);
+        clickedButton.setForeground(SELECTED_BUTTON_TEXT_COLOR);
+        selectedButton = clickedButton;
+
         // Xóa tất cả các component hiện tại
         getContentPane().removeAll();
 
         // Thêm lại panel menu bên trái (jPanel1)
-        jPanel1.setBackground(new java.awt.Color(10, 112, 117));
+        jPanel1.setBackground(AppColors.NEW_SIDEBAR_BG_COLOR);
         jPanel1.setBounds(0, 0, 200, 700);
         getContentPane().add(jPanel1);
 
         // Thiết lập thuộc tính cho panel mới
-        panel.setBackground(new java.awt.Color(107, 163, 190));
+        panel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         panel.setBounds(200, 0, 1000, 700);
         getContentPane().add(panel);
         mainContent = panel;
@@ -237,23 +291,23 @@ public class trangchu extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        btnLogin = new javax.swing.JButton();
-        btnSetting = new javax.swing.JButton();
+        btnLogin = new RoundedCornerButton("Đăng Xuất");
+        btnSetting = new RoundedCornerButton("Setting");
         jSeparator1 = new javax.swing.JSeparator();
-        btnNhapHang = new javax.swing.JButton();
-        btnXuatHang = new javax.swing.JButton();
+        btnNhapHang = new RoundedCornerButton("Nhập hàng");
+        btnXuatHang = new RoundedCornerButton("Xuất hàng");
         jSeparator2 = new javax.swing.JSeparator();
-        btnSanPham = new javax.swing.JButton();
-        btnLoaiSanPham = new javax.swing.JButton();
-        btnHoaDon = new javax.swing.JButton();
-        btnPhieuNhap = new javax.swing.JButton();
-        btnKhuyenMai = new javax.swing.JButton();
+        btnSanPham = new RoundedCornerButton("Sản phẩm");
+        btnLoaiSanPham = new RoundedCornerButton("Quản lý sản phẩm");
+        btnHoaDon = new RoundedCornerButton("Hóa đơn");
+        btnPhieuNhap = new RoundedCornerButton("Phiếu nhập");
+        btnKhuyenMai = new RoundedCornerButton("Khuyến mãi");
         jSeparator3 = new javax.swing.JSeparator();
-        btnNhanVien = new javax.swing.JButton();
-        btnKhachHang = new javax.swing.JButton();
-        btnNhaCungCap = new javax.swing.JButton();
+        btnNhanVien = new RoundedCornerButton("Nhân viên");
+        btnKhachHang = new RoundedCornerButton("Khách hàng");
+        btnNhaCungCap = new RoundedCornerButton("Nhà cung cấp");
         jSeparator4 = new javax.swing.JSeparator();
-        btnTaiKhoan = new javax.swing.JButton();
+        btnTaiKhoan = new RoundedCornerButton("Thống kê");
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -262,10 +316,9 @@ public class trangchu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(10, 112, 117));
+        jPanel1.setBackground(AppColors.NEW_SIDEBAR_BG_COLOR);
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnLogin.setText("Đăng Xuất");
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
@@ -273,7 +326,6 @@ public class trangchu extends javax.swing.JFrame {
         });
         jPanel1.add(btnLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 16, 90, 37));
 
-        btnSetting.setText("Setting");
         btnSetting.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSettingActionPerformed(evt);
@@ -281,24 +333,20 @@ public class trangchu extends javax.swing.JFrame {
         });
         jPanel1.add(btnSetting, new org.netbeans.lib.awtextra.AbsoluteConstraints(114, 16, -1, 37));
 
-        jSeparator1.setBackground(new java.awt.Color(10, 112, 117));
-        jSeparator1.setForeground(new java.awt.Color(0, 0, 0));
+        jSeparator1.setBackground(AppColors.NEW_SIDEBAR_BG_COLOR);
+        jSeparator1.setForeground(AppColors.NEW_BORDER_LINES_COLOR);
         jPanel1.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 71, 200, 13));
 
-        btnNhapHang.setText("Nhập hàng");
         jPanel1.add(btnNhapHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 90, 188, 36));
 
-        btnXuatHang.setText("Xuất hàng");
         jPanel1.add(btnXuatHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 138, 188, 36));
 
-        jSeparator2.setBackground(new java.awt.Color(0, 0, 0));
-        jSeparator2.setForeground(new java.awt.Color(0, 0, 0));
+        jSeparator2.setBackground(AppColors.NEW_SIDEBAR_BG_COLOR);
+        jSeparator2.setForeground(AppColors.NEW_BORDER_LINES_COLOR);
         jPanel1.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 192, 200, 10));
 
-        btnSanPham.setText("Sản phẩm");
         jPanel1.add(btnSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 214, 188, 36));
 
-        btnLoaiSanPham.setText("Quản lý sản phẩm");
         btnLoaiSanPham.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoaiSanPhamActionPerformed(evt);
@@ -306,61 +354,57 @@ public class trangchu extends javax.swing.JFrame {
         });
         jPanel1.add(btnLoaiSanPham, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 262, 188, 36));
 
-        btnHoaDon.setText("Hóa đơn");
         jPanel1.add(btnHoaDon, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 310, 188, 36));
 
-        btnPhieuNhap.setText("Phiếu nhập");
         jPanel1.add(btnPhieuNhap, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 358, 188, 36));
 
-        btnKhuyenMai.setText("Khuyến mãi");
         jPanel1.add(btnKhuyenMai, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 406, 188, 36));
 
-        jSeparator3.setForeground(new java.awt.Color(0, 0, 0));
+        jSeparator3.setBackground(AppColors.NEW_SIDEBAR_BG_COLOR);
+        jSeparator3.setForeground(AppColors.NEW_BORDER_LINES_COLOR);
         jPanel1.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 454, 200, 10));
 
-        btnNhanVien.setText("Nhân viên");
         jPanel1.add(btnNhanVien, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 470, 188, 36));
 
-        btnKhachHang.setText("Khách hàng");
         jPanel1.add(btnKhachHang, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 518, 188, 36));
 
-        btnNhaCungCap.setText("Nhà cung cấp");
         jPanel1.add(btnNhaCungCap, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 566, 188, 36));
 
-        jSeparator4.setForeground(new java.awt.Color(0, 0, 0));
+        jSeparator4.setBackground(AppColors.NEW_SIDEBAR_BG_COLOR);
+        jSeparator4.setForeground(AppColors.NEW_BORDER_LINES_COLOR);
         jPanel1.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 614, 200, 10));
 
-        btnTaiKhoan.setText("Thống kê");
         jPanel1.add(btnTaiKhoan, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 630, 188, 36));
 
-        jPanel4.setBackground(new java.awt.Color(107, 163, 190));
+        jPanel4.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         jPanel4.setLayout(new BorderLayout());
 
         // Tạo panel tiêu đề dashboard
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new java.awt.Color(12, 150, 156));
+        headerPanel.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
         headerPanel.setPreferredSize(new Dimension(960, 60));
         headerPanel.setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("DASHBOARD");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         headerPanel.add(titleLabel, BorderLayout.CENTER);
 
         // Tạo panel chính cho nội dung dashboard
         JPanel dashboardContent = new JPanel();
-        dashboardContent.setBackground(new java.awt.Color(107, 163, 190));
+        dashboardContent.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         dashboardContent.setLayout(new BorderLayout());
 
         // Panel hiển thị thông tin cá nhân và ngày giờ
         JPanel infoPanel = new JPanel();
-        infoPanel.setBackground(new java.awt.Color(107, 163, 190));
+        infoPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         infoPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
         
         JLabel dateTimeLabel = new JLabel();
         dateTimeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        dateTimeLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         dateTimeLabel.setText(sdf.format(new Date()));
         
@@ -377,7 +421,7 @@ public class trangchu extends javax.swing.JFrame {
         // Panel chứa các thẻ thông tin thống kê
         JPanel cardPanel = new JPanel();
         cardPanel.setLayout(new GridLayout(2, 2, 15, 15));
-        cardPanel.setBackground(new java.awt.Color(107, 163, 190));
+        cardPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         cardPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         // Tạo các thẻ thông tin
@@ -388,14 +432,14 @@ public class trangchu extends javax.swing.JFrame {
         
         // Tạo panel chứa các nút truy cập nhanh
         JPanel quickAccessPanel = new JPanel();
-        quickAccessPanel.setBackground(new java.awt.Color(107, 163, 190));
+        quickAccessPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         quickAccessPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(new Color(12, 150, 156), 2),
+            BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR, 2),
             "Truy cập nhanh",
             javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
             javax.swing.border.TitledBorder.DEFAULT_POSITION,
             new Font("Segoe UI", Font.BOLD, 14),
-            new Color(12, 150, 156)
+            AppColors.NEW_MAIN_TEXT_COLOR
         ));
         quickAccessPanel.setLayout(new GridLayout(1, 4, 10, 10));
         quickAccessPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -413,12 +457,12 @@ public class trangchu extends javax.swing.JFrame {
         notePanel.setBackground(Color.WHITE);
         notePanel.setLayout(new BorderLayout());
         notePanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(new Color(12, 150, 156), 2),
+            BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR, 2),
             "Thông báo",
             javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
             javax.swing.border.TitledBorder.DEFAULT_POSITION,
             new Font("Segoe UI", Font.BOLD, 14),
-            new Color(12, 150, 156)
+            AppColors.NEW_MAIN_TEXT_COLOR
         ));
         
         JTextArea noteArea = new JTextArea();
@@ -428,6 +472,7 @@ public class trangchu extends javax.swing.JFrame {
                         + "- Bảo mật thông tin đăng nhập của bạn");
         noteArea.setEditable(false);
         noteArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        noteArea.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         noteArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         
         notePanel.add(new JScrollPane(noteArea), BorderLayout.CENTER);
@@ -435,12 +480,12 @@ public class trangchu extends javax.swing.JFrame {
         // Kết hợp tất cả các thành phần vào dashboard
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BorderLayout());
-        centerPanel.setBackground(new java.awt.Color(107, 163, 190));
+        centerPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         centerPanel.add(cardPanel, BorderLayout.NORTH);
         
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
-        bottomPanel.setBackground(new java.awt.Color(107, 163, 190));
+        bottomPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         bottomPanel.add(quickAccessPanel, BorderLayout.NORTH);
         bottomPanel.add(notePanel, BorderLayout.CENTER);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 20, 20));
@@ -495,62 +540,62 @@ public class trangchu extends javax.swing.JFrame {
     private void btnSettingActionPerformed(java.awt.event.ActionEvent evt) {
         // Mở màn hình cài đặt tài khoản
         screens.TaiKhoan.TaiKhoanPanel taiKhoanPanel = new screens.TaiKhoan.TaiKhoanPanel(taiKhoan);
-        switchPanel(taiKhoanPanel);
+        switchPanel(taiKhoanPanel, btnSetting);
     }
 
     private void btnNhapHangActionPerformed(java.awt.event.ActionEvent evt) {
         nhaphang nhapHangScreen = new nhaphang(this);
-        switchPanel(nhapHangScreen.getNhapHangPanel());
+        switchPanel(nhapHangScreen.getNhapHangPanel(), btnNhapHang);
     }
 
     private void btnXuatHangActionPerformed(java.awt.event.ActionEvent evt) {
         xuathang xuatHangScreen = new xuathang();
-        switchPanel(xuatHangScreen.getXuatHangPanel());
+        switchPanel(xuatHangScreen.getXuatHangPanel(), btnXuatHang);
     }
 
     private void btnSanPhamActionPerformed(java.awt.event.ActionEvent evt) {
         sanPhamPanel sanPhamScreen = new sanPhamPanel();
-        switchPanel(sanPhamScreen.getSanPhamPanel());
+        switchPanel(sanPhamScreen.getSanPhamPanel(), btnSanPham);
     }
 
     private void btnLoaiSanPhamActionPerformed(java.awt.event.ActionEvent evt) {
         loaisanpham loaiSanPhamScreen = new loaisanpham();
-        switchPanel(loaiSanPhamScreen.getLoaiSanPhamPanel());
+        switchPanel(loaiSanPhamScreen.getLoaiSanPhamPanel(), btnLoaiSanPham);
     }
 
     private void btnHoaDonActionPerformed(java.awt.event.ActionEvent evt) {
         HoaDonPanel hoaDonScreen = new HoaDonPanel();
-        switchPanel(hoaDonScreen.getHoaDonPanel());
+        switchPanel(hoaDonScreen.getHoaDonPanel(), btnHoaDon);
     }
 
     private void btnPhieuNhapActionPerformed(java.awt.event.ActionEvent evt) {
         phieunhap phieuNhapScreen = new phieunhap();
-        switchPanel(phieuNhapScreen.getPhieuNhapPanel());
+        switchPanel(phieuNhapScreen.getPhieuNhapPanel(), btnPhieuNhap);
     }
 
     private void btnKhuyenMaiActionPerformed(java.awt.event.ActionEvent evt) {
         khuyenMaiPanel khuyenMaiScreen = new khuyenMaiPanel();
-        switchPanel(khuyenMaiScreen.getKhuyenMaiPanel());
+        switchPanel(khuyenMaiScreen.getKhuyenMaiPanel(), btnKhuyenMai);
     }
 
     private void btnNhanVienActionPerformed(java.awt.event.ActionEvent evt) {
         nhanVienPanel nhanVienScreen = new nhanVienPanel(taiKhoan);
-        switchPanel(nhanVienScreen.getNhanVienPanel());
+        switchPanel(nhanVienScreen.getNhanVienPanel(), btnNhanVien);
     }
 
     private void btnKhachHangActionPerformed(java.awt.event.ActionEvent evt) {
         khachHangPanel khachHangScreen = new khachHangPanel();
-        switchPanel(khachHangScreen.getKhachHangPanel());
+        switchPanel(khachHangScreen.getKhachHangPanel(), btnKhachHang);
     }
 
     private void btnNhaCungCapActionPerformed(java.awt.event.ActionEvent evt) {
         nhaCungCapPanel nhaCungCapScreen = new nhaCungCapPanel();
-        switchPanel(nhaCungCapScreen.getNhaCungCapPanel());
+        switchPanel(nhaCungCapScreen.getNhaCungCapPanel(), btnNhaCungCap);
     }
 
     private void btnTaiKhoanActionPerformed(java.awt.event.ActionEvent evt) {
         ThongKePanel thongKeScreen = new ThongKePanel();
-        switchPanel(thongKeScreen.getThongKePanel());
+        switchPanel(thongKeScreen.getThongKePanel(), btnTaiKhoan);
     }
 
     // Variables declaration - do not modify
@@ -610,13 +655,28 @@ public class trangchu extends javax.swing.JFrame {
     
     // Phương thức tạo nút truy cập nhanh
     private JButton createQuickButton(String text, String iconName, java.awt.event.ActionListener listener) {
-        JButton button = new JButton(text);
+        JButton button = new RoundedCornerButton(text);
         button.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        button.setBackground(new Color(255, 255, 255));
-        button.setForeground(new Color(12, 150, 156));
-        button.setFocusPainted(false);
+        button.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+        button.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        // RoundedCornerButton handles its own border. No need for explicit setBorder here.
+        // button.setBorder(new RoundedBorder(8, AppColors.NEW_BORDER_LINES_COLOR, 1, 9));
+
+        // Add icon if provided (code for icon loading needs to be robust)
+        if (iconName != null && !iconName.isEmpty()) {
+            try {
+                ImageIcon icon = new ImageIcon(getClass().getResource("/icon_img/" + iconName));
+                if (icon.getImage() != null) {
+                    Image scaledImage = icon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH); // Smaller icon for quick buttons
+                    button.setIcon(new ImageIcon(scaledImage));
+                    button.setIconTextGap(8); // Gap between icon and text
+                }
+            } catch (Exception e) {
+                System.err.println("Warning: Failed to load quick button icon: /icon_img/" + iconName + " - " + e.getMessage());
+            }
+        }
         button.addActionListener(listener);
         return button;
     }
@@ -663,5 +723,9 @@ public class trangchu extends javax.swing.JFrame {
             e.printStackTrace();
             return "0";
         }
+    }
+
+    public JButton getBtnNhapHang() { // Getter for btnNhapHang
+        return btnNhapHang;
     }
 }

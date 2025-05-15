@@ -118,4 +118,40 @@ public class NhaCungCapBUS {
     public boolean isSupplierActive(String maNhaCungCap) {
         return nhaCungCapDAO.isSupplierActive(maNhaCungCap);
     }
+
+    public List<nhaCungCapDTO> searchNhaCungCapAdvanced(String keyword, String searchType, String namHopTacFilter, String trangThaiFilter) {
+        // Convert "Tất cả" or empty strings for filters to null or handle them appropriately for DAO
+        String finalKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null;
+        String finalSearchType = (searchType != null && !searchType.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(searchType.trim())) ? searchType.trim() : null;
+        String finalNamHopTac = (namHopTacFilter != null && !namHopTacFilter.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(namHopTacFilter.trim())) ? namHopTacFilter.trim() : null;
+        String finalTrangThai = (trangThaiFilter != null && !trangThaiFilter.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(trangThaiFilter.trim())) ? trangThaiFilter.trim() : null;
+
+        return nhaCungCapDAO.searchNhaCungCapAdvanced(finalKeyword, finalSearchType, finalNamHopTac, finalTrangThai);
+    }
+
+    public boolean capNhatTrangThaiNhaCungCap(String maNCC) {
+        if (maNCC == null || maNCC.trim().isEmpty()) {
+            return false;
+        }
+        nhaCungCapDTO ncc = nhaCungCapDAO.getNhaCungCapByMa(maNCC);
+        if (ncc == null) {
+            return false; // Supplier not found
+        }
+
+        String currentTrangThai = ncc.getTrangThai();
+        String newTrangThai;
+
+        // Define the toggle logic, e.g., "Hoạt động" <-> "Không hoạt động"
+        // You might want more sophisticated logic or more states.
+        if ("Đang hợp tác".equalsIgnoreCase(currentTrangThai)) {
+            newTrangThai = "Ngừng hợp tác";
+        } else if ("Ngừng hợp tác".equalsIgnoreCase(currentTrangThai)) {
+            newTrangThai = "Đang hợp tác";
+        } else {
+            // Default to "Đang hợp tác" if current status is unclear or different
+            newTrangThai = "Đang hợp tác"; 
+        }
+        
+        return nhaCungCapDAO.capNhatTrangThaiNhaCungCap(maNCC, newTrangThai);
+    }
 }

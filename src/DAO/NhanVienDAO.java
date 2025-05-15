@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.sql.Statement;
 import java.util.Calendar;
 import DTO.taiKhoanDTO;
+import DTO.VaiTro; // Import VaiTro if using its internal values directly, or rely on display name matching
 
 public class NhanVienDAO {
     
@@ -303,7 +304,7 @@ public class NhanVienDAO {
                 taiKhoan = new taiKhoanDTO();
                 taiKhoan.setTenDangNhap(rs.getString("TenDangNhap"));
                 taiKhoan.setMatKhau(rs.getString("MatKhau"));
-                taiKhoan.setVaiTro(rs.getString("VaiTro"));
+                taiKhoan.setVaiTro(rs.getString("VaiTro")); // This sets the role as a String
                 taiKhoan.setTrangThai(rs.getInt("TrangThai"));
                 taiKhoan.setMaNhanVien(rs.getString("MaNhanVien"));
             }
@@ -319,15 +320,14 @@ public class NhanVienDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
             int newStatus;
-            // Xác định trạng thái mới dựa trên trạng thái hiện tại
             switch (taiKhoan.getTrangThai()) {
-                case -1: // Đang xét duyệt -> Hoạt động
+                case -1: 
                     newStatus = 1;
                     break;
-                case 1: // Hoạt động -> Không hoạt động
+                case 1: 
                     newStatus = 0;
                     break;
-                case 0: // Không hoạt động -> Hoạt động
+                case 0: 
                     newStatus = 1;
                     break;
                 default:
@@ -336,6 +336,8 @@ public class NhanVienDAO {
             
             pstmt.setInt(1, newStatus);
             pstmt.setString(2, taiKhoan.getMaNhanVien());
+            // After updating, update the DTO object's status as well if needed by caller
+            // taiKhoan.setTrangThai(newStatus); // This should be done in BUS or Panel if they reuse the DTO instance
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -347,23 +349,19 @@ public class NhanVienDAO {
         Connection conn = null;
         try {
             conn = ConnectDB.getConnection();
-            conn.setAutoCommit(false); // Bắt đầu transaction
+            conn.setAutoCommit(false);
 
-            // Tạo mã nhân viên mới
             String maNhanVien = "NV" + System.currentTimeMillis();
-            
-            // Tạo mã tài khoản mới
             String maTaiKhoan = "TK" + System.currentTimeMillis();
             
-            // Thêm nhân viên mới
             String sqlNhanVien = "INSERT INTO NhanVien (MaNhanVien, HoTen, Email, SoDienThoai, ChucVu, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstNhanVien = conn.prepareStatement(sqlNhanVien)) {
                 pstNhanVien.setString(1, maNhanVien);
                 pstNhanVien.setString(2, hoTen);
                 pstNhanVien.setString(3, email);
                 pstNhanVien.setString(4, soDienThoai);
-                pstNhanVien.setString(5, "Chưa có"); // Chức vụ mặc định
-                pstNhanVien.setString(6, "Đang xét duyệt"); // Trạng thái nhân viên
+                pstNhanVien.setString(5, "Chưa có");
+                pstNhanVien.setString(6, "Đang xét duyệt");
                 
                 if (pstNhanVien.executeUpdate() <= 0) {
                     conn.rollback();
@@ -371,14 +369,13 @@ public class NhanVienDAO {
                 }
             }
 
-            // Tạo tài khoản mới với trạng thái -1 (Đang xét duyệt)
             String sqlTaiKhoan = "INSERT INTO TaiKhoan (MaTaiKhoan, TenDangNhap, MatKhau, VaiTro, TrangThai, MaNhanVien) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstTaiKhoan = conn.prepareStatement(sqlTaiKhoan)) {
                 pstTaiKhoan.setString(1, maTaiKhoan);
-                pstTaiKhoan.setString(2, email); // Sử dụng email làm tên đăng nhập
+                pstTaiKhoan.setString(2, email);
                 pstTaiKhoan.setString(3, matKhau);
-                pstTaiKhoan.setString(4, "Nhân viên");
-                pstTaiKhoan.setInt(5, -1); // Trạng thái tài khoản: -1 = Đang xét duyệt
+                pstTaiKhoan.setString(4, "Nhân viên"); // Default role, perhaps use VaiTro.NHAN_VIEN.name() or getDisplayName()
+                pstTaiKhoan.setInt(5, -1);
                 pstTaiKhoan.setString(6, maNhanVien);
                 
                 if (pstTaiKhoan.executeUpdate() <= 0) {
@@ -423,5 +420,106 @@ public class NhanVienDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public List<nhanVienDTO> searchNhanVienAdvanced(String keyword, String tieuChi, String vaiTro, String trangThaiTK) {
+        List<nhanVienDTO> list = new ArrayList<>();
+        StringBuilder sqlBuilder = new StringBuilder("SELECT nv.*, tk.TrangThai AS TrangThaiTaiKhoan, tk.TenDangNhap, tk.VaiTro AS VaiTroTaiKhoan FROM NhanVien nv LEFT JOIN TaiKhoan tk ON nv.MaNhanVien = tk.MaNhanVien WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            if (tieuChi != null && !tieuChi.isEmpty()) {
+                switch (tieuChi) {
+                    case "Mã nhân viên":
+                        sqlBuilder.append(" AND nv.MaNhanVien LIKE ?");
+                        params.add("%" + keyword + "%");
+                        break;
+                    case "Tên nhân viên":
+                        sqlBuilder.append(" AND nv.HoTen LIKE ?");
+                        params.add("%" + keyword + "%");
+                        break;
+                    case "Email":
+                        sqlBuilder.append(" AND nv.Email LIKE ?");
+                        params.add("%" + keyword + "%");
+                        break;
+                    case "Số điện thoại":
+                        sqlBuilder.append(" AND nv.SoDienThoai LIKE ?");
+                        params.add("%" + keyword + "%");
+                        break;
+                    default: 
+                        sqlBuilder.append(" AND (nv.MaNhanVien LIKE ? OR nv.HoTen LIKE ? OR nv.Email LIKE ? OR nv.SoDienThoai LIKE ?)");
+                        for (int i = 0; i < 4; i++) {
+                            params.add("%" + keyword + "%");
+                        }
+                        break;
+                }
+            } else { 
+                 sqlBuilder.append(" AND (nv.MaNhanVien LIKE ? OR nv.HoTen LIKE ? OR nv.Email LIKE ? OR nv.SoDienThoai LIKE ?)");
+                 for (int i = 0; i < 4; i++) {
+                    params.add("%" + keyword + "%");
+                }
+            }
+        }
+
+        // Filter by Account Role (tk.VaiTro)
+        if (vaiTro != null && !vaiTro.isEmpty() && !"Tất cả".equalsIgnoreCase(vaiTro)) {
+            // The `vaiTro` parameter is the display name from the enum.
+            // We need to find the corresponding enum constant to get its internal representation if stored differently,
+            // or ensure the database stores the display name.
+            // Assuming tk.VaiTro stores the display name or a value that matches `vaiTro` directly.
+            sqlBuilder.append(" AND tk.VaiTro = ?");
+            params.add(vaiTro);
+        }
+
+        if (trangThaiTK != null && !trangThaiTK.isEmpty() && !"Tất cả".equalsIgnoreCase(trangThaiTK)) {
+            int statusValue;
+            switch (trangThaiTK) {
+                case "Hoạt động":
+                    statusValue = 1;
+                    break;
+                case "Không hoạt động":
+                    statusValue = 0;
+                    break;
+                case "Đang xét duyệt":
+                    statusValue = -1;
+                    break;
+                default:
+                    statusValue = -99;
+                    break;
+            }
+            if (statusValue != -99) {
+                 sqlBuilder.append(" AND tk.TrangThai = ?");
+                 params.add(statusValue);
+            }
+        }
+
+        try (PreparedStatement pst = conn.prepareStatement(sqlBuilder.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                pst.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    nhanVienDTO nv = new nhanVienDTO(
+                        rs.getString("MaNhanVien"),
+                        rs.getString("HoTen"),
+                        rs.getString("Email"),
+                        rs.getString("SoDienThoai"),
+                        rs.getString("DiaChi"),
+                        rs.getString("GioiTinh"),
+                        rs.getDate("NgaySinh"),
+                        rs.getTimestamp("NgayVaoLam"),
+                        rs.getString("ChucVu"),
+                        rs.getBigDecimal("MucLuong"),
+                        rs.getString("MaQuanLy"),
+                        rs.getString("TrangThai")
+                    );
+                    list.add(nv);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 } 

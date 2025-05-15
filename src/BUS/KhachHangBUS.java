@@ -24,13 +24,16 @@ public class KhachHangBUS {
     }
     
     /**
-     * Tìm kiếm khách hàng theo từ khóa và loại tìm kiếm
+     * Tìm kiếm khách hàng theo từ khóa, loại tìm kiếm và giới tính
      * @param keyword Từ khóa tìm kiếm
      * @param searchType Loại tìm kiếm
+     * @param gioiTinh Giới tính cần lọc (hoặc "Tất cả")
      * @return Danh sách khách hàng thỏa mãn điều kiện
      */
-    public List<khachHangDTO> searchKhachHang(String keyword, String searchType) {
-        return khachHangDAO.searchKhachHang(keyword, searchType);
+    public List<khachHangDTO> searchKhachHang(String keyword, String searchType, String gioiTinh) {
+        // Nếu giới tính là "Tất cả", coi như không lọc theo giới tính (truyền null hoặc giá trị đặc biệt cho DAO)
+        String gioiTinhFilter = ("Tất cả".equalsIgnoreCase(gioiTinh)) ? null : gioiTinh;
+        return khachHangDAO.searchKhachHang(keyword, searchType, gioiTinhFilter);
     }
     
     /**

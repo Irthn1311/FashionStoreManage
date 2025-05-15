@@ -8,23 +8,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import DTO.sanPhamDTO; // Assuming you'll use this or a custom DTO for suggestions
+import DTO.sanPhamDTO;
 import BUS.SanPhamBUS;
-import BUS.HoaDonBUS; // You will need this
-import BUS.PhieuNhapBUS; // You will need this
+import BUS.HoaDonBUS;
+import BUS.PhieuNhapBUS;
 import DTO.nhapHangDTO;
 import BUS.NhapHangBUS;
 import java.text.DecimalFormat;
-import DAO.NhaCungCap_SanPhamDAO; // Added import
+import DAO.NhaCungCap_SanPhamDAO;
+import javax.swing.BorderFactory;
 
-// Import the main frame to switch back
 import screens.TrangChu.trangchu;
-
+import screens.TrangChu.RoundedCornerButton;
+import screens.TrangChu.RoundedBorder;
 
 public class SmartImportAdvisorPanel extends JPanel {
 
-    private trangchu mainFrame; // To switch back
-    private nhaphang previousPanel; // Changed JPanel to nhaphang
+    private trangchu mainFrame;
+    private nhaphang previousPanel;
 
     private JTextField txtBudget;
     private JButton btnLoadSuggestions;
@@ -34,27 +35,38 @@ public class SmartImportAdvisorPanel extends JPanel {
     private JButton btnCancel;
     private JButton btnBack;
     private JLabel lblRemainingBudget;
-    private JLabel lblTotalCost; // To show total cost of suggested items
+    private JLabel lblTotalCost;
 
     private SanPhamBUS sanPhamBUS;
-    private HoaDonBUS hoaDonBUS; // To be initialized
-    private PhieuNhapBUS phieuNhapBUS; // To be initialized
+    private HoaDonBUS hoaDonBUS;
+    private PhieuNhapBUS phieuNhapBUS;
     private NhapHangBUS nhapHangBUS;
 
     private double currentBudget = 0.0;
-    private List<nhapHangDTO> suggestedItemsList; // To hold items for the table and processing
+    private List<nhapHangDTO> suggestedItemsList;
     private DecimalFormat df = new DecimalFormat("#,##0.00");
-    private boolean isInternallyUpdatingTable = false; // Flag to prevent listener recursion
+    private boolean isInternallyUpdatingTable = false;
 
-    // Define a target stock level (can be made configurable later)
     private static final int TARGET_STOCK_LEVEL = 50;
+
+    // Color Palette Definition
+    private static final Color MAIN_BACKGROUND_COLOR = new Color(0xE3, 0xF2, 0xFD); // #E3F2FD
+    private static final Color SIDEBAR_BACKGROUND_COLOR = new Color(0x19, 0x76, 0xD2); // #1976D2
+    private static final Color DEFAULT_BUTTON_BG_COLOR = new Color(0x42, 0xA5, 0xF5); // #42A5F5
+    private static final Color SELECTED_HOVER_BUTTON_BG_COLOR = new Color(0x1E, 0x88, 0xE5); // #1E88E5
+    private static final Color MAIN_TEXT_COLOR = new Color(0x21, 0x21, 0x21); // #212121
+    private static final Color TABLE_BACKGROUND_COLOR = Color.WHITE; // #FFFFFF
+    private static final Color PANEL_HEADER_BG_TABLE_HEADER_BG_COLOR = new Color(0xBB, 0xDE, 0xFB); // #BBDEFB
+    private static final Color BORDER_SEPARATOR_LINE_COLOR = new Color(0x90, 0xCA, 0xF9); // #90CAF9
+    private static final Color LINK_TEXT_QUICK_BUTTON_TEXT_COLOR = new Color(0x02, 0x88, 0xD1); // #0288D1
+    private static final Color SECONDARY_BUTTON_BG_QUICK_BUTTON_BG_COLOR = new Color(0x81, 0xD4, 0xFA); // #81D4FA
 
     public SmartImportAdvisorPanel(trangchu mainFrame, nhaphang previousPanel) {
         this.mainFrame = mainFrame;
         this.previousPanel = previousPanel;
         this.sanPhamBUS = new SanPhamBUS();
-        this.hoaDonBUS = new HoaDonBUS(); // Initialize this properly
-        this.phieuNhapBUS = new PhieuNhapBUS(); // Initialize this properly
+        this.hoaDonBUS = new HoaDonBUS();
+        this.phieuNhapBUS = new PhieuNhapBUS();
         this.nhapHangBUS = new NhapHangBUS();
         this.suggestedItemsList = new ArrayList<>();
 
@@ -66,74 +78,114 @@ public class SmartImportAdvisorPanel extends JPanel {
         setPreferredSize(new Dimension(1000, 700));
         setLayout(new BorderLayout());
 
-        // --- Header Panel ---
-        JPanel pnlHeader = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        pnlHeader.setBackground(new Color(12, 150, 156));
-        JLabel lblTitle = new JLabel("Trợ Lý Nhập Hàng Thông Minh");
+        JPanel pnlHeader = new JPanel();
+        pnlHeader.setBackground(PANEL_HEADER_BG_TABLE_HEADER_BG_COLOR);
+        JLabel lblTitle = new JLabel("TRỢ LÝ NHẬP HÀNG THÔNG MINH");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        lblTitle.setForeground(Color.WHITE);
-        pnlHeader.add(lblTitle);
+        lblTitle.setForeground(MAIN_TEXT_COLOR);
         pnlHeader.setPreferredSize(new Dimension(1000, 70));
+
+        javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
+        pnlHeader.setLayout(pnlHeaderLayout);
+        pnlHeaderLayout.setHorizontalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTitle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlHeaderLayout.setVerticalGroup(
+            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlHeaderLayout.createSequentialGroup()
+                .addGap(18)
+                .addComponent(lblTitle)
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+
         add(pnlHeader, BorderLayout.NORTH);
 
-        // --- Main Content Panel ---
         JPanel pnlMainContent = new JPanel();
         pnlMainContent.setLayout(new BorderLayout(10, 10));
         pnlMainContent.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        pnlMainContent.setBackground(new Color(107, 163, 190));
+        pnlMainContent.setBackground(MAIN_BACKGROUND_COLOR);
 
-        // Input Panel (Budget & Load Button)
         JPanel pnlInput = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        pnlInput.setBackground(new Color(107, 163, 190));
-        pnlInput.add(new JLabel("Ngân sách (VNĐ):"));
+        pnlInput.setBackground(MAIN_BACKGROUND_COLOR);
+        JLabel lblBudget = new JLabel("Ngân sách (VNĐ):");
+        lblBudget.setForeground(MAIN_TEXT_COLOR);
+        pnlInput.add(lblBudget);
         txtBudget = new JTextField(15);
+        txtBudget.setBackground(TABLE_BACKGROUND_COLOR);
+        txtBudget.setForeground(MAIN_TEXT_COLOR);
+        txtBudget.setBorder(BorderFactory.createLineBorder(BORDER_SEPARATOR_LINE_COLOR));
         pnlInput.add(txtBudget);
-        btnLoadSuggestions = new JButton("Tải Gợi Ý");
+        btnLoadSuggestions = new RoundedCornerButton("Tải Gợi Ý");
+        btnLoadSuggestions.setBackground(DEFAULT_BUTTON_BG_COLOR);
+        btnLoadSuggestions.setForeground(Color.WHITE);
+        btnLoadSuggestions.setBorder(new RoundedBorder(15, BORDER_SEPARATOR_LINE_COLOR, 1, 8));
+        btnLoadSuggestions.setPreferredSize(new Dimension(120, 35));
         pnlInput.add(btnLoadSuggestions);
         pnlMainContent.add(pnlInput, BorderLayout.NORTH);
 
-        // Suggestions Table
         String[] columnNames = {"STT", "Mã SP", "Tên SP", "Tồn Kho", "Giá Nhập Ước Tính", "SL Đề Xuất", "Tổng Chi Phí SP", "Xóa"};
         tblModelSuggestions = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Allow editing only for "SL Đề Xuất" and "Xóa"
                 return column == 5 || column == 7;
             }
              @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 7) return JButton.class; // For the delete button
+                if (columnIndex == 7) return JButton.class;
                 return super.getColumnClass(columnIndex);
             }
         };
         tblSuggestions = new JTable(tblModelSuggestions);
         tblSuggestions.setRowHeight(25);
-        // Apply custom renderer for the Delete button column
+        tblSuggestions.setBackground(TABLE_BACKGROUND_COLOR);
+        tblSuggestions.setForeground(MAIN_TEXT_COLOR);
+        tblSuggestions.getTableHeader().setBackground(PANEL_HEADER_BG_TABLE_HEADER_BG_COLOR);
+        tblSuggestions.getTableHeader().setForeground(MAIN_TEXT_COLOR);
+        tblSuggestions.setGridColor(BORDER_SEPARATOR_LINE_COLOR);
         tblSuggestions.getColumnModel().getColumn(7).setCellRenderer(new DeleteButtonRenderer());
-        // Custom renderer/editor for delete button if needed later
         JScrollPane scrollPaneSuggestions = new JScrollPane(tblSuggestions);
         pnlMainContent.add(scrollPaneSuggestions, BorderLayout.CENTER);
 
-        // Summary and Actions Panel
         JPanel pnlActionsAndSummary = new JPanel(new BorderLayout(10,10));
-        pnlActionsAndSummary.setBackground(new Color(107, 163, 190));
+        pnlActionsAndSummary.setBackground(MAIN_BACKGROUND_COLOR);
 
         JPanel pnlSummary = new JPanel(new GridLayout(2,1,5,5));
-        pnlSummary.setBackground(new Color(107, 163, 190));
+        pnlSummary.setBackground(MAIN_BACKGROUND_COLOR);
         lblTotalCost = new JLabel("Tổng chi phí dự kiến: 0 VNĐ");
         lblTotalCost.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblTotalCost.setForeground(MAIN_TEXT_COLOR);
         lblRemainingBudget = new JLabel("Ngân sách còn lại: 0 VNĐ");
         lblRemainingBudget.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblRemainingBudget.setForeground(MAIN_TEXT_COLOR);
         pnlSummary.add(lblTotalCost);
         pnlSummary.add(lblRemainingBudget);
         pnlActionsAndSummary.add(pnlSummary, BorderLayout.CENTER);
 
 
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
-        pnlButtons.setBackground(new Color(107, 163, 190));
-        btnApproveImports = new JButton("Duyệt Tạo Phiếu Đặt Hàng");
-        btnCancel = new JButton("Hủy Bỏ");
-        btnBack = new JButton("Quay Lại Nhập Hàng");
+        pnlButtons.setBackground(MAIN_BACKGROUND_COLOR);
+        btnApproveImports = new RoundedCornerButton("Duyệt Tạo Phiếu Đặt Hàng");
+        btnApproveImports.setBackground(DEFAULT_BUTTON_BG_COLOR);
+        btnApproveImports.setForeground(Color.WHITE);
+        btnApproveImports.setBorder(new RoundedBorder(15, BORDER_SEPARATOR_LINE_COLOR, 1, 8));
+        btnApproveImports.setPreferredSize(new Dimension(220, 35));
+
+        btnCancel = new RoundedCornerButton("Hủy Bỏ");
+        btnCancel.setBackground(SECONDARY_BUTTON_BG_QUICK_BUTTON_BG_COLOR);
+        btnCancel.setForeground(LINK_TEXT_QUICK_BUTTON_TEXT_COLOR);
+        btnCancel.setBorder(new RoundedBorder(15, BORDER_SEPARATOR_LINE_COLOR, 1, 8));
+        btnCancel.setPreferredSize(new Dimension(100, 35));
+
+        btnBack = new RoundedCornerButton("Quay Lại Nhập Hàng");
+        btnBack.setBackground(SECONDARY_BUTTON_BG_QUICK_BUTTON_BG_COLOR);
+        btnBack.setForeground(LINK_TEXT_QUICK_BUTTON_TEXT_COLOR);
+        btnBack.setBorder(new RoundedBorder(15, BORDER_SEPARATOR_LINE_COLOR, 1, 8));
+        btnBack.setPreferredSize(new Dimension(180, 35));
+
         pnlButtons.add(btnApproveImports);
         pnlButtons.add(btnCancel);
         pnlButtons.add(btnBack);
@@ -150,9 +202,8 @@ public class SmartImportAdvisorPanel extends JPanel {
         btnCancel.addActionListener(e -> cancelAction());
         btnBack.addActionListener(e -> backAction());
 
-        // Listener for table changes to update total cost and remaining budget
         tblModelSuggestions.addTableModelListener(e -> {
-            if (!isInternallyUpdatingTable) { // Check the flag here
+            if (!isInternallyUpdatingTable) {
                 if (e.getType() == javax.swing.event.TableModelEvent.UPDATE ||
                     e.getType() == javax.swing.event.TableModelEvent.INSERT ||
                     e.getType() == javax.swing.event.TableModelEvent.DELETE) {
@@ -161,7 +212,6 @@ public class SmartImportAdvisorPanel extends JPanel {
             }
         });
         
-        // Action for delete button in table
         tblSuggestions.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -171,9 +221,9 @@ public class SmartImportAdvisorPanel extends JPanel {
                 if (row < tblSuggestions.getRowCount() && row >= 0 && column < tblSuggestions.getColumnCount() && column >= 0) {
                     Object value = tblSuggestions.getValueAt(row, column);
                     if (value instanceof JButton) {
-                        ((JButton)value).doClick(); // Simulate button click
+                        ((JButton)value).doClick();
                         tblModelSuggestions.removeRow(row);
-                        if(row < suggestedItemsList.size()){ // Ensure index is valid
+                        if(row < suggestedItemsList.size()){
                              suggestedItemsList.remove(row);
                         }
                         updateTableSTT();
@@ -185,7 +235,7 @@ public class SmartImportAdvisorPanel extends JPanel {
     
     private void updateTableSTT() {
         for (int i = 0; i < tblModelSuggestions.getRowCount(); i++) {
-            tblModelSuggestions.setValueAt(i + 1, i, 0); // Update STT
+            tblModelSuggestions.setValueAt(i + 1, i, 0);
         }
     }
 
@@ -206,9 +256,9 @@ public class SmartImportAdvisorPanel extends JPanel {
             return;
         }
 
-        isInternallyUpdatingTable = true; // Prevent listener recursion during table population
+        isInternallyUpdatingTable = true;
         try {
-            tblModelSuggestions.setRowCount(0); // Clear previous suggestions
+            tblModelSuggestions.setRowCount(0);
             suggestedItemsList.clear();
 
             List<sanPhamDTO> allProducts = sanPhamBUS.getAll();
@@ -217,7 +267,6 @@ public class SmartImportAdvisorPanel extends JPanel {
                 return;
             }
 
-            // Filter products that are below target stock level and sort them by current stock (lowest first)
             List<sanPhamDTO> productsToConsider = new ArrayList<>();
             for (sanPhamDTO sp : allProducts) {
                 if (sp.getSoLuongTonKho() < TARGET_STOCK_LEVEL) {
@@ -231,21 +280,20 @@ public class SmartImportAdvisorPanel extends JPanel {
 
             for (sanPhamDTO sp : productsToConsider) {
                 if (remainingBudget <= 0) {
-                    break; // No more budget
+                    break;
                 }
 
-                double estimatedPurchasePrice = sp.getGiaBan(); // Using selling price as per previous logic
+                double estimatedPurchasePrice = sp.getGiaBan();
                 if (estimatedPurchasePrice <= 0) {
-                    // Fallback if price is invalid, though ideally, products should have valid prices
-                    estimatedPurchasePrice = 50000; // Consider a more robust fallback or error handling
+                    estimatedPurchasePrice = 50000;
                 }
 
                 if (remainingBudget < estimatedPurchasePrice) {
-                    continue; // Cannot afford even one unit of this product
+                    continue;
                 }
 
                 int neededQuantity = TARGET_STOCK_LEVEL - sp.getSoLuongTonKho();
-                if (neededQuantity <= 0) { // Should not happen due to earlier filter, but as a safeguard
+                if (neededQuantity <= 0) {
                     continue;
                 }
 
@@ -261,9 +309,9 @@ public class SmartImportAdvisorPanel extends JPanel {
                         sp.getMaSanPham(),
                         sp.getTenSanPham(),
                         sp.getSoLuongTonKho(),
-                        df.format(estimatedPurchasePrice), // Format for display
+                        df.format(estimatedPurchasePrice),
                         suggestedQuantity,
-                        df.format(itemTotalCost),       // Format for display
+                        df.format(itemTotalCost),
                         btnDeleteRow
                     });
 
@@ -271,19 +319,18 @@ public class SmartImportAdvisorPanel extends JPanel {
                     suggestedItem.setMaSanPham(sp.getMaSanPham());
                     suggestedItem.setTenSanPham(sp.getTenSanPham());
                     suggestedItem.setSoLuong(String.valueOf(suggestedQuantity));
-                    suggestedItem.setDonGia(String.valueOf(estimatedPurchasePrice)); // Store actual price
-                    suggestedItem.setThanhTien(String.valueOf(itemTotalCost));      // Store actual total
-                    // Populate other necessary fields for nhapHangDTO when approving
+                    suggestedItem.setDonGia(String.valueOf(estimatedPurchasePrice));
+                    suggestedItem.setThanhTien(String.valueOf(itemTotalCost));
                     suggestedItemsList.add(suggestedItem);
 
                     remainingBudget -= itemTotalCost;
                 }
             }
         } finally {
-            isInternallyUpdatingTable = false; // Reset flag
+            isInternallyUpdatingTable = false;
         }
         
-        updateSummaryCalculations(); // This will now also run after the flag is reset
+        updateSummaryCalculations();
         
         if (tblModelSuggestions.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được đề xuất dựa trên ngân sách và tiêu chí hiện tại (tồn kho < " + TARGET_STOCK_LEVEL + ").", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -291,32 +338,28 @@ public class SmartImportAdvisorPanel extends JPanel {
     }
     
     private void updateSummaryCalculations() {
-        isInternallyUpdatingTable = true; // Set flag before ANY potential table model modifications
+        isInternallyUpdatingTable = true;
         try {
             double totalCost = 0;
             for (int i = 0; i < tblModelSuggestions.getRowCount(); i++) {
                 try {
-                    // Assuming ThanhTien is stored as a formatted string, parse it back
-                    // Or better, recalculate from quantity and unit price
                     int quantity = 0;
-                    Object quantityObj = tblModelSuggestions.getValueAt(i, 5); // SL Đề Xuất
+                    Object quantityObj = tblModelSuggestions.getValueAt(i, 5);
                     if (quantityObj != null && !quantityObj.toString().isEmpty()) {
                         quantity = Integer.parseInt(quantityObj.toString());
                     }
 
                     double unitPrice = 0;
-                    Object unitPriceObj = tblModelSuggestions.getValueAt(i, 4); // Giá Nhập Ước Tính
+                    Object unitPriceObj = tblModelSuggestions.getValueAt(i, 4);
                      if (unitPriceObj != null && !unitPriceObj.toString().isEmpty()) {
                         unitPrice = df.parse(unitPriceObj.toString()).doubleValue();
                     }
 
                     double itemCost = quantity * unitPrice;
-                    tblModelSuggestions.setValueAt(df.format(itemCost), i, 6); // Update total cost for item
+                    tblModelSuggestions.setValueAt(df.format(itemCost), i, 6);
                     totalCost += itemCost;
                 } catch (Exception e) {
-                    // Handle parsing error if necessary, or ensure data is always valid
                     System.err.println("Error calculating total cost for row " + i + ": " + e.getMessage());
-                    // Optionally set cell to "Error" or a default value
                     tblModelSuggestions.setValueAt("Error", i, 6);
                 }
             }
@@ -327,7 +370,7 @@ public class SmartImportAdvisorPanel extends JPanel {
                  lblRemainingBudget.setText("Ngân sách còn lại: 0 VNĐ");
             }
         } finally {
-            isInternallyUpdatingTable = false; // ALWAYS reset flag
+            isInternallyUpdatingTable = false;
         }
     }
 
@@ -351,27 +394,22 @@ public class SmartImportAdvisorPanel extends JPanel {
                 try {
                     String maSP = tblModelSuggestions.getValueAt(i, 1).toString();
                     String tenSP = tblModelSuggestions.getValueAt(i, 2).toString();
-                    // int soLuongTonKho = Integer.parseInt(tblModelSuggestions.getValueAt(i, 3).toString());
                     double donGia = df.parse(tblModelSuggestions.getValueAt(i, 4).toString()).doubleValue();
                     int soLuongDat = Integer.parseInt(tblModelSuggestions.getValueAt(i, 5).toString());
-                    // double thanhTienSP = df.parse(tblModelSuggestions.getValueAt(i, 6).toString()).doubleValue();
 
-                    if (soLuongDat <= 0) continue; // Skip if quantity is zero or less
+                    if (soLuongDat <= 0) continue;
 
                     nhapHangDTO newItem = new nhapHangDTO();
-                    newItem.setMaPN(nhapHangBUS.generateNextMaPN()); // Generate new MaPN
+                    newItem.setMaPN(nhapHangBUS.generateNextMaPN());
                     
-                    // Fetch MaNhaCungCap - This needs robust logic
-                    // For now, attempt to get the product's default supplier or first available
                     sanPhamDTO productDetails = sanPhamBUS.getSanPhamByMa(maSP);
                     if (productDetails != null && productDetails.getMaNhaCungCap() != null && !productDetails.getMaNhaCungCap().isEmpty()) {
                         newItem.setMaNhaCungCap(productDetails.getMaNhaCungCap());
                     } else {
-                        // Fallback: try to find any supplier for this product via NhaCungCap_SanPhamDAO
                         NhaCungCap_SanPhamDAO nccSpDao = new NhaCungCap_SanPhamDAO();
                         List<DTO.NhaCungCap_SanPhamDTO> suppliersForProduct = nccSpDao.getNhaCungCapBySanPham(maSP);
                         if (!suppliersForProduct.isEmpty()) {
-                            newItem.setMaNhaCungCap(suppliersForProduct.get(0).getMaNhaCungCap()); // Take the first one
+                            newItem.setMaNhaCungCap(suppliersForProduct.get(0).getMaNhaCungCap());
                         } else {
                              JOptionPane.showMessageDialog(this, "Không tìm thấy nhà cung cấp cho sản phẩm: " + maSP + ". Bỏ qua.", "Lỗi NCC", JOptionPane.WARNING_MESSAGE);
                              allAddedSuccessfully = false;
@@ -384,11 +422,10 @@ public class SmartImportAdvisorPanel extends JPanel {
                     newItem.setSoLuong(String.valueOf(soLuongDat));
                     newItem.setDonGia(String.valueOf(donGia));
                     newItem.setThanhTien(String.valueOf(soLuongDat * donGia));
-                    newItem.setTrangThai("Đang xử lý"); // Default status for nhaphang items
+                    newItem.setTrangThai("Đang xử lý");
                     newItem.setThoiGian(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
-                    newItem.setHinhThucThanhToan("Tiền mặt"); // Default or allow selection
+                    newItem.setHinhThucThanhToan("Tiền mặt");
 
-                    // Populate other fields like MauSac, KichThuoc if available from sanPhamDTO
                     if(productDetails != null){
                         newItem.setMauSac(productDetails.getMauSac());
                         newItem.setKichThuoc(productDetails.getSize());
@@ -398,7 +435,6 @@ public class SmartImportAdvisorPanel extends JPanel {
                     if (!nhapHangBUS.themNhapHang(newItem)) {
                         JOptionPane.showMessageDialog(this, "Lỗi khi thêm sản phẩm " + maSP + " vào danh sách đặt hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                         allAddedSuccessfully = false;
-                        // Optionally break or allow continuing with other items
                     }
                 } catch (Exception ex) {
                      JOptionPane.showMessageDialog(this, "Lỗi xử lý dữ liệu cho sản phẩm: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -408,17 +444,15 @@ public class SmartImportAdvisorPanel extends JPanel {
 
             if (allAddedSuccessfully && tblModelSuggestions.getRowCount() > 0) {
                 JOptionPane.showMessageDialog(this, "Các sản phẩm đã được thêm vào danh sách chờ nhập hàng.\nChuyển về màn hình Nhập Hàng để xác nhận.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                // Clear current state
                 tblModelSuggestions.setRowCount(0);
                 suggestedItemsList.clear();
                 txtBudget.setText("");
                 currentBudget = 0;
                 updateSummaryCalculations();
-                // Switch back to nhaphang panel and refresh its table
-                if (this.previousPanel != null) { // Check if previousPanel is not null
+                if (this.previousPanel != null) {
                     this.previousPanel.refreshImportTable();
                 }
-                backAction(); // Consolidate switching logic
+                backAction();
             } else if (tblModelSuggestions.getRowCount() == 0) {
                  JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được duyệt.", "Thông báo", JOptionPane.WARNING_MESSAGE);
             } else {
@@ -438,30 +472,24 @@ public class SmartImportAdvisorPanel extends JPanel {
 
     private void backAction() {
         if (mainFrame != null && previousPanel != null) {
-            this.previousPanel.refreshImportTable(); // Refresh before switching
-            mainFrame.switchPanel(previousPanel.getNhapHangPanel()); // Use getNhapHangPanel() for switching
+            this.previousPanel.refreshImportTable();
+            mainFrame.switchPanel(previousPanel.getNhapHangPanel(), mainFrame.getBtnNhapHang());
         } else {
              JOptionPane.showMessageDialog(this, "Không thể quay lại màn hình Nhập Hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // Custom TableCellRenderer for the Delete Button
     private class DeleteButtonRenderer extends JButton implements TableCellRenderer {
         public DeleteButtonRenderer() {
             setOpaque(true);
             setText("Xóa");
             setForeground(Color.RED);
-            // You can customize other button properties here if needed
-            // e.g., setBackground, setBorder, etc.
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus, 
                                                        int row, int column) {
-            // The 'value' parameter in this case would be the JButton object we added to the model.
-            // However, we are overriding its appearance completely here.
-            // If you need to vary the button based on the 'value', you can cast it and use its properties.
             return this;
         }
     }

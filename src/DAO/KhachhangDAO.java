@@ -60,39 +60,53 @@ public class KhachHangDAO {
         return khachHangList;
     }
 
-    public List<khachHangDTO> searchKhachHang(String keyword, String searchType) {
+    public List<khachHangDTO> searchKhachHang(String keyword, String searchType, String gioiTinh) {
         List<khachHangDTO> khachHangList = new ArrayList<>();
-        String sql = "SELECT * FROM KhachHang WHERE 1=1 ";
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM KhachHang WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
 
-        switch (searchType) {
-            case "Mã khách hàng":
-                sql += "AND MaKhachHang LIKE ? ";
-                break;
-            case "Tên khách hàng":
-                sql += "AND HoTen LIKE ? ";
-                break;
-            case "Email":
-                sql += "AND Email LIKE ? ";
-                break;
-            case "Số điện thoại":
-                sql += "AND SoDienThoai LIKE ? ";
-                break;
-            default:
-                sql += "AND (MaKhachHang LIKE ? OR HoTen LIKE ? OR Email LIKE ? OR SoDienThoai LIKE ?) ";
-                break;
+        boolean keywordSearch = keyword != null && !keyword.trim().isEmpty();
+
+        if (keywordSearch) {
+            switch (searchType) {
+                case "Mã khách hàng":
+                    sqlBuilder.append("AND MaKhachHang LIKE ? ");
+                    params.add("%" + keyword + "%");
+                    break;
+                case "Tên khách hàng":
+                    sqlBuilder.append("AND HoTen LIKE ? ");
+                    params.add("%" + keyword + "%");
+                    break;
+                case "Email":
+                    sqlBuilder.append("AND Email LIKE ? ");
+                    params.add("%" + keyword + "%");
+                    break;
+                case "Số điện thoại":
+                    sqlBuilder.append("AND SoDienThoai LIKE ? ");
+                    params.add("%" + keyword + "%");
+                    break;
+                default: // "Tất cả" for searchType or unhandled
+                    sqlBuilder.append("AND (MaKhachHang LIKE ? OR HoTen LIKE ? OR Email LIKE ? OR SoDienThoai LIKE ?) ");
+                    String likePattern = "%" + keyword + "%";
+                    params.add(likePattern);
+                    params.add(likePattern);
+                    params.add(likePattern);
+                    params.add(likePattern);
+                    break;
+            }
+        }
+
+        // Add gender condition if a specific gender is selected
+        if (gioiTinh != null && !gioiTinh.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(gioiTinh)) {
+            sqlBuilder.append("AND GioiTinh = ? ");
+            params.add(gioiTinh);
         }
 
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sqlBuilder.toString())) {
 
-            if ("Tất cả".equals(searchType)) {
-                String likePattern = "%" + keyword + "%";
-                ps.setString(1, likePattern);
-                ps.setString(2, likePattern);
-                ps.setString(3, likePattern);
-                ps.setString(4, likePattern);
-            } else {
-                ps.setString(1, "%" + keyword + "%");
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
             }
 
             try (ResultSet rs = ps.executeQuery()) {

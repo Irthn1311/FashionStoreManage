@@ -126,6 +126,24 @@ public class NhanVienBUS {
     }
     
     /**
+     * Searches for NhanVien entities based on multiple criteria.
+     * @param keyword The keyword to search for in general fields (MaNV, HoTen, Email, SDT).
+     * @param tieuChi The specific field to search the keyword in (e.g., "Mã nhân viên", "Tên nhân viên"). If empty or "Tất cả", keyword applies generally.
+     * @param vaiTro The account role (VaiTro from TaiKhoan table) to filter by. If empty or "Tất cả", no filter on account role.
+     * @param trangThaiTK The account status (TrangThai TaiKhoan) to filter by. If empty or "Tất cả", no filter on account status.
+     * @return A list of NhanVienDTO objects matching the criteria.
+     */
+    public List<nhanVienDTO> searchNhanVienAdvanced(String keyword, String tieuChi, String vaiTro, String trangThaiTK) {
+        // Convert "Tất cả" or empty strings to nulls or handle them appropriately for DAO
+        String searchKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null;
+        String searchTieuChi = (tieuChi != null && !tieuChi.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(tieuChi.trim())) ? tieuChi.trim() : null;
+        String searchVaiTro = (vaiTro != null && !vaiTro.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(vaiTro.trim())) ? vaiTro.trim() : null;
+        String searchTrangThaiTK = (trangThaiTK != null && !trangThaiTK.trim().isEmpty() && !"Tất cả".equalsIgnoreCase(trangThaiTK.trim())) ? trangThaiTK.trim() : null;
+
+        return nhanVienDAO.searchNhanVienAdvanced(searchKeyword, searchTieuChi, searchVaiTro, searchTrangThaiTK);
+    }
+    
+    /**
      * Kiểm tra tính hợp lệ của dữ liệu nhân viên
      * @param nhanVien Thông tin nhân viên cần kiểm tra
      * @return true nếu dữ liệu hợp lệ, false nếu không hợp lệ

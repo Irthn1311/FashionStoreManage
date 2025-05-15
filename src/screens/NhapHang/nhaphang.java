@@ -18,6 +18,7 @@ import DTO.nhapHangDTO;
 import DTO.hoaDonDTO;
 import BUS.HoaDonBUS;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.util.stream.Collectors;
 import DAO.NhaCungCap_SanPhamDAO;
@@ -26,6 +27,10 @@ import BUS.NhapHangBUS;
 import BUS.SanPhamBUS;
 import BUS.NhaCungCapBUS;
 import screens.TrangChu.trangchu;
+import screens.TrangChu.AppColors;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -82,6 +87,7 @@ public class nhaphang extends javax.swing.JPanel {
                 containerPanel = new javax.swing.JPanel();
                 containerPanel.setPreferredSize(new java.awt.Dimension(1000, 700));
                 containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+                containerPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
                 jPanel1 = new javax.swing.JPanel();
                 pnlHeader = new javax.swing.JPanel();
@@ -99,7 +105,6 @@ public class nhaphang extends javax.swing.JPanel {
                 cbMaSanPham = new javax.swing.JComboBox<>();
                 cbHinhThucThanhToan = new javax.swing.JComboBox<>();
                 jTextField7 = new javax.swing.JTextField();
-                jTextField7.setEditable(false);
                 lblLoaiSanPham = new javax.swing.JLabel();
                 lblMaSanPham = new javax.swing.JLabel();
                 lblTenSanPham = new javax.swing.JLabel();
@@ -114,13 +119,7 @@ public class nhaphang extends javax.swing.JPanel {
                 textSoLuong = new javax.swing.JTextField();
                 jPanel9 = new javax.swing.JPanel();
                 lblThanhTien = new javax.swing.JTextField();
-                lblThanhTien.setEditable(false);
-                lblThanhTien.setFocusable(false);
-                lblThanhTien.setBackground(new java.awt.Color(240, 240, 240));
                 textThanhTien = new javax.swing.JTextField();
-                textThanhTien.setEditable(false);
-                textThanhTien.setFocusable(false);
-                textThanhTien.setBackground(new java.awt.Color(240, 240, 240));
                 jButton15 = new javax.swing.JButton();
                 jButton18 = new javax.swing.JButton();
                 jButton16 = new javax.swing.JButton();
@@ -136,12 +135,16 @@ public class nhaphang extends javax.swing.JPanel {
                                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGap(0, 300, Short.MAX_VALUE));
 
-                pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
+                pnlHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
 
-                jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-                jLabel1.setText("Quản lý  nhập hàng");
+                jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+                jLabel1.setText("QUẢN LÝ NHẬP HÀNG");
+                jLabel1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
                 btnOpenSmartImport.setText("Trợ Lý Nhập Hàng");
+                btnOpenSmartImport.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                btnOpenSmartImport.setForeground(Color.WHITE);
+                btnOpenSmartImport.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
                 btnOpenSmartImport.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         btnOpenSmartImportActionPerformed(evt);
@@ -170,7 +173,7 @@ public class nhaphang extends javax.swing.JPanel {
 
                 containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
-                pnlContent.setBackground(new java.awt.Color(107, 163, 190));
+                pnlContent.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
                 jTable1.setModel(new javax.swing.table.DefaultTableModel(
                                 new Object[][] {
@@ -202,25 +205,42 @@ public class nhaphang extends javax.swing.JPanel {
                     }
                 });
                 jTable1.setShowGrid(true);
+                jTable1.setBackground(Color.WHITE);
+                jTable1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                jTable1.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
+                JTableHeader tableHeader = jTable1.getTableHeader();
+                tableHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+                tableHeader.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                tableHeader.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12));
                 jScrollPane1.setViewportView(jTable1);
 
-                jPanel7.setBackground(new java.awt.Color(107, 163, 190));
-                jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Đặt hàng"));
+                jPanel7.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                javax.swing.border.Border lineBorder7 = javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+                jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(lineBorder7, "Đặt hàng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12), AppColors.NEW_MAIN_TEXT_COLOR));
                 jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-                jPanel5.setBackground(new java.awt.Color(107, 163, 190));
-                jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)),
-                                "Nhà cung cấp"));
+                jPanel5.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                javax.swing.border.Border lineBorder5 = javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+                jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(lineBorder5, "Nhà cung cấp", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12), AppColors.NEW_MAIN_TEXT_COLOR));
 
                 lblNhaCungCap.setText("Chọn nhà cung cấp ");
+                lblNhaCungCap.setEditable(false);
+                lblNhaCungCap.setFocusable(false);
+                lblNhaCungCap.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                lblNhaCungCap.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblNhaCungCap.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
 
                 lblMaNCC = new javax.swing.JLabel("Mã NCC");
+                lblMaNCC.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 lblTenNCC = new javax.swing.JLabel("Tên NCC");
+                lblTenNCC.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
                 cbMaNCC = new javax.swing.JComboBox<>();
+                cbMaNCC.setBackground(Color.WHITE);
+                cbMaNCC.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 cbTenNCC = new javax.swing.JComboBox<>();
+                cbTenNCC.setBackground(Color.WHITE);
+                cbTenNCC.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
                 javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
                 jPanel5.setLayout(jPanel5Layout);
@@ -265,46 +285,70 @@ public class nhaphang extends javax.swing.JPanel {
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addContainerGap()));
 
-                jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 180, 320, -1));
+                jPanel7.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 170, 320, 120));
 
-                pnlBoxSanPhamSoLuong.setBackground(new java.awt.Color(107, 163, 190));
-                pnlBoxSanPhamSoLuong.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)),
-                                "Sản phẩm & Số lượng"));
+                pnlBoxSanPhamSoLuong.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                javax.swing.border.Border lineBorderSP = javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+                pnlBoxSanPhamSoLuong.setBorder(javax.swing.BorderFactory.createTitledBorder(lineBorderSP, "Sản phẩm & Số lượng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12), AppColors.NEW_MAIN_TEXT_COLOR));
 
                 cbMaSanPham.setModel(
                                 new javax.swing.DefaultComboBoxModel<>(
                                                 new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+                cbMaSanPham.setBackground(Color.WHITE);
+                cbMaSanPham.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
-                lblMaSanPham.setText("Mã SP");
-
-                lblTenSanPham.setText("Tên SP");
-
-                lblMauSac.setText("Màu sắc");
-
-                lblKichThuoc.setText("Kích thước");
-
-                lblSoLuong.setText("Số lượng");
-
-                lblDonGia.setText("Đơn giá");
-
-                lblHinhThucThanhToan.setText("Hình thức thanh toán");
+                lblMaSanPham.setText("Mã Sản Phẩm");
+                lblMaSanPham.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblTenSanPham.setText("Tên Sản Phẩm");
+                lblTenSanPham.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblMauSac.setText("Màu Sắc");
+                lblMauSac.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblKichThuoc.setText("Kích Thước");
+                lblKichThuoc.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblSoLuong.setText("Số Lượng");
+                lblSoLuong.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblDonGia.setText("Đơn Giá");
+                lblDonGia.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblHinhThucThanhToan.setText("Hình Thức Thanh Toán");
+                lblHinhThucThanhToan.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
                 cbHinhThucThanhToan.setModel(
                                 new javax.swing.DefaultComboBoxModel<>(
-                                                new String[] { "Tiền mặt", "Chuyển khoản", "Thẻ" }));
+                                                new String[] { "Tiền Mặt", "Chuyển Khoản", "Thẻ" }));
+                cbHinhThucThanhToan.setBackground(Color.WHITE);
+                cbHinhThucThanhToan.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
+                textTenSanPham.setBackground(Color.WHITE);
+                textTenSanPham.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                textTenSanPham.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+
+                txtMauSac.setBackground(Color.WHITE);
+                txtMauSac.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                txtMauSac.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+
+                txtKichThuoc.setBackground(Color.WHITE);
+                txtKichThuoc.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                txtKichThuoc.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
                 txtKichThuoc.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 txtKichThuocActionPerformed(evt);
                         }
                 });
 
+                textSoLuong.setBackground(Color.WHITE);
+                textSoLuong.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                textSoLuong.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
                 textSoLuong.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 textSoLuongActionPerformed(evt);
                         }
                 });
+
+                // Non-editable jTextField7 (Đơn giá)
+                jTextField7.setEditable(false);
+                jTextField7.setBackground(Color.WHITE);
+                jTextField7.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+                jTextField7.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
                 javax.swing.GroupLayout pnlBoxSanPhamSoLuongLayout = new javax.swing.GroupLayout(pnlBoxSanPhamSoLuong);
                 pnlBoxSanPhamSoLuong.setLayout(pnlBoxSanPhamSoLuongLayout);
@@ -312,23 +356,13 @@ public class nhaphang extends javax.swing.JPanel {
                                 pnlBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(pnlBoxSanPhamSoLuongLayout.createSequentialGroup()
                                                                 .addGap(28, 28, 28)
-                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addGroup(pnlBoxSanPhamSoLuongLayout
-                                                                                                .createParallelGroup(
-                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                                                .addComponent(lblMauSac)
-                                                                                                .addGroup(pnlBoxSanPhamSoLuongLayout
-                                                                                                                .createParallelGroup(
-                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                                .addComponent(lblMaSanPham)
-                                                                                                                .addComponent(lblTenSanPham))
-                                                                                                .addComponent(lblDonGia))
+                                                                .addGroup(pnlBoxSanPhamSoLuongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                .addComponent(lblMaSanPham)
+                                                                                .addComponent(lblTenSanPham)
+                                                                                .addComponent(lblMauSac)
                                                                                 .addComponent(lblKichThuoc)
-                                                                                .addGroup(pnlBoxSanPhamSoLuongLayout
-                                                                                                .createSequentialGroup()
-                                                                                                .addGap(1, 1, 1)
-                                                                                                .addComponent(lblSoLuong))
+                                                                                .addComponent(lblSoLuong)
+                                                                                .addComponent(lblDonGia)
                                                                                 .addComponent(lblHinhThucThanhToan))
                                                                 .addGap(50, 50, 50)
                                                                 .addGroup(pnlBoxSanPhamSoLuongLayout
@@ -412,18 +446,29 @@ public class nhaphang extends javax.swing.JPanel {
                                                                                 .addComponent(lblHinhThucThanhToan))
                                                                 .addGap(9, 9, 9)));
 
-                jPanel7.add(pnlBoxSanPhamSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 36, -1, 270));
+                jPanel7.add(pnlBoxSanPhamSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 440, 280));
 
-                jPanel9.setBackground(new java.awt.Color(107, 163, 190));
-                jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chi phí"));
+                jPanel9.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                javax.swing.border.Border lineBorder9 = javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+                jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(lineBorder9, "Chi Phí", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 12), AppColors.NEW_MAIN_TEXT_COLOR));
 
-                lblThanhTien.setText("Thành tiền");
+                lblThanhTien.setText("Thành Tiền");
+                lblThanhTien.setEditable(false);
+                lblThanhTien.setFocusable(false);
+                lblThanhTien.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                lblThanhTien.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                lblThanhTien.setBorder(BorderFactory.createEmptyBorder(2,5,2,5));
                 lblThanhTien.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 lblThanhTienActionPerformed(evt);
                         }
                 });
+
+                textThanhTien.setEditable(false);
+                textThanhTien.setFocusable(false);
+                textThanhTien.setBackground(Color.WHITE);
+                textThanhTien.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+                textThanhTien.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
                 javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
                 jPanel9.setLayout(jPanel9Layout);
@@ -455,39 +500,69 @@ public class nhaphang extends javax.swing.JPanel {
                                                                                 40, Short.MAX_VALUE)
                                                                 .addContainerGap()));
 
-                jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 40, 310, -1));
+                jPanel7.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 30, 320, 120));
 
-        jButton15.setText("Hủy");
-        jButton15.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                // Reset các trường nhập liệu ở phần Đặt hàng
-                cbMaSanPham.setSelectedIndex(0);
-                textTenSanPham.setText("");
-                txtMauSac.setText("");
-                txtKichThuoc.setText("");
-                textSoLuong.setText("");
-                jTextField7.setText("");
-                textThanhTien.setText("");
-                // Không reset lblThanhTien (ô mô tả)
-            }
-        });
-        jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, -1, 60));
+                // Action button panel container
+                JPanel actionButtonPanel = new JPanel();
+                actionButtonPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                actionButtonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 10));
 
+                // Move "Thêm" button to the right of "Chi Phí" panel
                 jButton18.setText("Thêm");
+                jButton18.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                jButton18.setForeground(Color.WHITE);
+                jButton18.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+                jButton18.setPreferredSize(new java.awt.Dimension(120, 50));
                 jButton18.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jButton18ActionPerformed(evt);
-                        }
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        jButton18ActionPerformed(evt);
+                    }
                 });
-                jPanel7.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 220, -1, 64));
+                // Add "Thêm" button directly to jPanel7 instead of actionButtonPanel
+                jPanel7.add(jButton18, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 65, 120, 50));
 
-                jButton16.setText("Xóa");
-                jButton16.addActionListener(evt -> jButton16ActionPerformed(evt));
-                jPanel7.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 340, -1, 60));
-
+                // Primary action buttons in the bottom panel
                 jButton17.setText("Xác nhận");
+                jButton17.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                jButton17.setForeground(Color.WHITE);
+                jButton17.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+                jButton17.setPreferredSize(new java.awt.Dimension(140, 40));
                 jButton17.addActionListener(evt -> jButton17ActionPerformed(evt));
-                jPanel7.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 40, -1, 60));
+                actionButtonPanel.add(jButton17);
+
+                // Move "Hủy" button to the right of "Nhà cung cấp" panel
+                jButton15.setText("Hủy");
+                jButton15.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+                jButton15.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+                jButton15.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+                jButton15.setPreferredSize(new java.awt.Dimension(120, 50));
+                jButton15.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        // Reset các trường nhập liệu ở phần Đặt hàng
+                        cbMaSanPham.setSelectedIndex(0);
+                        textTenSanPham.setText("");
+                        txtMauSac.setText("");
+                        txtKichThuoc.setText("");
+                        textSoLuong.setText("");
+                        jTextField7.setText("");
+                        textThanhTien.setText("");
+                        // Không reset lblThanhTien (ô mô tả)
+                    }
+                });
+                // Add "Hủy" button directly to jPanel7 instead of actionButtonPanel
+                jPanel7.add(jButton15, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 205, 120, 50));
+
+                // Secondary action button remaining in the bottom panel
+                jButton16.setText("Xóa");
+                jButton16.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+                jButton16.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+                jButton16.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+                jButton16.setPreferredSize(new java.awt.Dimension(140, 40));
+                jButton16.addActionListener(evt -> jButton16ActionPerformed(evt));
+                actionButtonPanel.add(jButton16);
+
+                // Add the action button panel to the main panel - centered and adjusted size
+                jPanel7.add(actionButtonPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 310, 360, 60));
 
                 javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
                 pnlContent.setLayout(pnlContentLayout);
@@ -553,8 +628,19 @@ public class nhaphang extends javax.swing.JPanel {
 
                 // Khởi tạo các thành phần tìm kiếm
                 cbSearchType = new javax.swing.JComboBox<>(new String[] {"Mã PN", "Mã NCC", "Mã SP", "Trạng thái"});
+                cbSearchType.setBackground(Color.WHITE);
+                cbSearchType.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+
                 txtSearchValue = new javax.swing.JTextField();
+                txtSearchValue.setBackground(Color.WHITE);
+                txtSearchValue.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                txtSearchValue.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+
                 btnSearch = new javax.swing.JButton("Tìm kiếm");
+                btnSearch.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                btnSearch.setForeground(Color.WHITE);
+                btnSearch.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+
                 // Thêm vào giao diện (ví dụ đặt trên pnlContent)
                 pnlContent.add(cbSearchType, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 120, 30));
                 pnlContent.add(txtSearchValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, 200, 30));
@@ -872,55 +958,10 @@ public class nhaphang extends javax.swing.JPanel {
         private void btnOpenSmartImportActionPerformed(java.awt.event.ActionEvent evt) {
             if (this.mainFrame != null) {
                 screens.NhapHang.SmartImportAdvisorPanel smartImportPanel = new screens.NhapHang.SmartImportAdvisorPanel(this.mainFrame, this);
-                this.mainFrame.switchPanel(smartImportPanel);
+                this.mainFrame.switchPanel(smartImportPanel, this.mainFrame.getBtnNhapHang());
             } else {
                 JOptionPane.showMessageDialog(this, "Không thể mở Trợ Lý Nhập Hàng từ context này (mainFrame is null).", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
-        }
-
-        /**
-         * @param args the command line arguments
-         */
-        public static void main(String args[]) {
-                /* Set the Nimbus look and feel */
-                // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
-                // (optional) ">
-                /*
-                 * If Nimbus (introduced in Java SE 6) is not available, stay with the default
-                 * look and feel.
-                 * For details see
-                 * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-                 */
-                try {
-                        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager
-                                        .getInstalledLookAndFeels()) {
-                                if ("Nimbus".equals(info.getName())) {
-                                        javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                                        break;
-                                }
-                        }
-                } catch (ClassNotFoundException ex) {
-                        java.util.logging.Logger.getLogger(nhaphang.class.getName()).log(java.util.logging.Level.SEVERE,
-                                        null, ex);
-                } catch (InstantiationException ex) {
-                        java.util.logging.Logger.getLogger(nhaphang.class.getName()).log(java.util.logging.Level.SEVERE,
-                                        null, ex);
-                } catch (IllegalAccessException ex) {
-                        java.util.logging.Logger.getLogger(nhaphang.class.getName()).log(java.util.logging.Level.SEVERE,
-                                        null, ex);
-                } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-                        java.util.logging.Logger.getLogger(nhaphang.class.getName()).log(java.util.logging.Level.SEVERE,
-                                        null, ex);
-                }
-                // </editor-fold>
-                // </editor-fold>
-
-                /* Create and display the form */
-                java.awt.EventQueue.invokeLater(new Runnable() {
-                        public void run() {
-                                new nhaphang().setVisible(true);
-                        }
-                });
         }
 
         // Variables declaration - do not modify//GEN-BEGIN:variables

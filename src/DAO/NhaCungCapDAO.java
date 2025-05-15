@@ -321,4 +321,94 @@ public class NhaCungCapDAO {
         }
         return list;
     }
+
+    public List<nhaCungCapDTO> searchNhaCungCapAdvanced(String keyword, String searchType, String namHopTacFilter, String trangThaiFilter) {
+        List<nhaCungCapDTO> nhaCungCapList = new ArrayList<>();
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM NhaCungCap WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (keyword != null && !keyword.isEmpty()) {
+            if (searchType != null && !searchType.equals("Tất cả") && !searchType.isEmpty()) {
+                String columnName = "";
+                switch (searchType) {
+                    case "Mã NCC":
+                        columnName = "MaNhaCungCap";
+                        break;
+                    case "Tên NCC":
+                        columnName = "TenNhaCungCap";
+                        break;
+                    case "Email":
+                        columnName = "Email";
+                        break;
+                    case "Số điện thoại":
+                        columnName = "SoDienThoai";
+                        break;
+                    default: // Should not happen if searchType is validated
+                        break;
+                }
+                if (!columnName.isEmpty()) {
+                    sqlBuilder.append(" AND ").append(columnName).append(" LIKE ?");
+                    params.add("%" + keyword + "%");
+                }
+            } else { // "Tất cả" types or empty type
+                sqlBuilder.append(" AND (MaNhaCungCap LIKE ? OR TenNhaCungCap LIKE ? OR Email LIKE ? OR SoDienThoai LIKE ?)");
+                for (int i = 0; i < 4; i++) {
+                    params.add("%" + keyword + "%");
+                }
+            }
+        }
+
+        if (namHopTacFilter != null && !namHopTacFilter.isEmpty() && !"Tất cả".equalsIgnoreCase(namHopTacFilter)) {
+            try {
+                int namHopTac = Integer.parseInt(namHopTacFilter);
+                sqlBuilder.append(" AND NamHopTac = ?");
+                params.add(namHopTac);
+            } catch (NumberFormatException e) {
+                LOGGER.log(Level.WARNING, "Invalid NamHopTac format: " + namHopTacFilter, e);
+                // Optionally skip this filter or handle error
+            }
+        }
+
+        if (trangThaiFilter != null && !trangThaiFilter.isEmpty() && !"Tất cả".equalsIgnoreCase(trangThaiFilter)) {
+            sqlBuilder.append(" AND TrangThai = ?");
+            params.add(trangThaiFilter);
+        }
+
+        try (PreparedStatement pst = conn.prepareStatement(sqlBuilder.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                pst.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    nhaCungCapList.add(new nhaCungCapDTO(
+                        rs.getString("MaNhaCungCap"),
+                        rs.getString("TenNhaCungCap"),
+                        rs.getString("LoaiSP"),
+                        rs.getInt("NamHopTac"),
+                        rs.getString("DiaChi"),
+                        rs.getString("Email"),
+                        rs.getString("SoDienThoai"),
+                        rs.getString("TrangThai")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error in searchNhaCungCapAdvanced: " + e.getMessage(), e);
+        }
+        return nhaCungCapList;
+    }
+
+    public boolean capNhatTrangThaiNhaCungCap(String maNCC, String newTrangThai) {
+        String sql = "UPDATE NhaCungCap SET TrangThai = ? WHERE MaNhaCungCap = ?";
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, newTrangThai);
+            ps.setString(2, maNCC);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi cập nhật trạng thái nhà cung cấp {0}: {1}", new Object[]{maNCC, e.getMessage()});
+            return false;
+        }
+    }
 }

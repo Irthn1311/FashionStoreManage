@@ -23,6 +23,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import java.awt.Color;
+import screens.TrangChu.AppColors;
 
 public class sanPhamPanel extends javax.swing.JPanel {
     private SanPhamDAO sanPhamDAO;
@@ -280,6 +282,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
         containerPanel = new javax.swing.JPanel();
         containerPanel.setPreferredSize(new java.awt.Dimension(1000, 700));
         containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        containerPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
         // Khởi tạo các components
         pnlHeader = new javax.swing.JPanel();
@@ -320,10 +323,11 @@ public class sanPhamPanel extends javax.swing.JPanel {
         containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         // Thiết lập header
-        pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
+        pnlHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24));
-        jLabel1.setText("Thông tin sản phẩm");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24));
+        jLabel1.setText("THÔNG TIN SẢN PHẨM");
+        jLabel1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
@@ -344,7 +348,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
         containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
         // Thiết lập phần nội dung
-        pnlContent.setBackground(new java.awt.Color(107, 163, 190));
+        pnlContent.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
         // Thiết lập bảng sản phẩm
         sanPhamTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -363,12 +367,18 @@ public class sanPhamPanel extends javax.swing.JPanel {
         });
 
         // Thêm renderer tùy chỉnh cho bảng
+        sanPhamTable.setBackground(Color.WHITE);
+        sanPhamTable.getTableHeader().setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+        sanPhamTable.getTableHeader().setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        sanPhamTable.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
+
         sanPhamTable.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
             @Override
             public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
                 java.awt.Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
                         column);
+                c.setFont(new java.awt.Font("Segoe UI", 0, 12));
 
                 // Lấy số lượng từ cột "Số Lượng" (cột 7)
                 int soLuong = 0;
@@ -388,11 +398,11 @@ public class sanPhamPanel extends javax.swing.JPanel {
                     c.setForeground(java.awt.Color.WHITE);
                 } else {
                     if (isSelected) {
-                        c.setBackground(table.getSelectionBackground());
-                        c.setForeground(table.getSelectionForeground());
+                        c.setBackground(AppColors.NEW_SELECTED_BUTTON_COLOR);
+                        c.setForeground(Color.WHITE);
                     } else {
-                        c.setBackground(table.getBackground());
-                        c.setForeground(table.getForeground());
+                        c.setBackground(Color.WHITE);
+                        c.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                     }
                 }
                 return c;
@@ -403,62 +413,77 @@ public class sanPhamPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(sanPhamTable);
 
         // Thiết lập panel chi tiết sản phẩm
-        pnlDetail.setBackground(new java.awt.Color(153, 153, 255));
-        pnlDetail.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chi tiết sản phẩm"));
+        pnlDetail.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+        javax.swing.border.TitledBorder detailBorder = javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Chi tiết sản phẩm");
+        detailBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+        pnlDetail.setBorder(detailBorder);
         pnlDetail.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblImage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblImage.setText("Hình ảnh sản phẩm");
-        lblImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lblImage.setBorder(javax.swing.BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
+        lblImage.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 258, 220));
 
         lblMaSP.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblMaSP.setText("Mã sản phẩm: ");
+        lblMaSP.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblMaSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 20, 250, 20));
 
         lblTenSP.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblTenSP.setText("Tên sản phẩm: ");
+        lblTenSP.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblTenSP, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 45, 250, 20));
 
         lblSoLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblSoLuong.setText("Số lượng: ");
+        lblSoLuong.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 70, 250, 20));
 
         lblDonGia.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblDonGia.setText("Đơn giá: ");
+        lblDonGia.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblDonGia, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 95, 250, 20));
 
         lblKhuyenMai = new javax.swing.JLabel();
         lblKhuyenMai.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblKhuyenMai.setText("Khuyến mãi: ");
+        lblKhuyenMai.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblKhuyenMai, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 120, 500, 80));
 
         lblImgURL.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblImgURL.setText("Hình ảnh: ");
+        lblImgURL.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblImgURL, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 20, 350, 20));
 
         lblTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblTrangThai.setText("Trạng thái: ");
+        lblTrangThai.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblTrangThai, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 45, 350, 20));
 
         lblMauSac.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblMauSac.setText("Màu sắc: ");
+        lblMauSac.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblMauSac, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 70, 350, 20));
 
         lblSize.setFont(new java.awt.Font("Segoe UI", 0, 14));
         lblSize.setText("Kích cỡ: ");
+        lblSize.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlDetail.add(lblSize, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 95, 350, 20));
 
         // Thiết lập panel tìm kiếm
-        pnlSearch.setBackground(new java.awt.Color(107, 163, 190));
-        pnlSearch.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm"));
+        pnlSearch.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.TitledBorder searchBorder = javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Tìm kiếm");
+        searchBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+        pnlSearch.setBorder(searchBorder);
         pnlSearch.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         // Search Label
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabel2.setText("Tìm kiếm");
+        jLabel2.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlSearch.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 30));
 
         // Search ComboBox
@@ -475,11 +500,13 @@ public class sanPhamPanel extends javax.swing.JPanel {
         // Price Label
         JLabel donGiaLabel = new JLabel("Đơn giá:");
         donGiaLabel.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        donGiaLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlSearch.add(donGiaLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 20, 80, 30));
 
         // Price range
         jLabelDonGiaTu.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelDonGiaTu.setText("Từ:");
+        jLabelDonGiaTu.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlSearch.add(jLabelDonGiaTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, -1, 30));
 
         jTextFieldDonGiaTu.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -489,6 +516,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
 
         jLabelDonGiaDen.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelDonGiaDen.setText("Đến:");
+        jLabelDonGiaDen.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlSearch.add(jLabelDonGiaDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, -1, 30));
 
         jTextFieldDonGiaDen.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -499,11 +527,13 @@ public class sanPhamPanel extends javax.swing.JPanel {
         // Quantity Label
         JLabel soLuongLabel = new JLabel("Số lượng:");
         soLuongLabel.setFont(new java.awt.Font("Segoe UI", 0, 14));
+        soLuongLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlSearch.add(soLuongLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 60, 80, 30));
 
         // Quantity range
         jLabelSoLuongTu.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelSoLuongTu.setText("Từ:");
+        jLabelSoLuongTu.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlSearch.add(jLabelSoLuongTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 60, -1, 30));
 
         jTextFieldSoLuongTu.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -513,6 +543,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
 
         jLabelSoLuongDen.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelSoLuongDen.setText("Đến:");
+        jLabelSoLuongDen.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         pnlSearch.add(jLabelSoLuongDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 60, -1, 30));
 
         jTextFieldSoLuongDen.setFont(new java.awt.Font("Segoe UI", 0, 14));
@@ -522,6 +553,8 @@ public class sanPhamPanel extends javax.swing.JPanel {
 
         // Search Button
         jButton30.setText("Tìm kiếm");
+        jButton30.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        jButton30.setForeground(Color.WHITE);
         ImageIcon searchIcon = new ImageIcon("src/icon_img/search.png");
         jButton30.setIcon(new ImageIcon(searchIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
         jButton30.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -530,7 +563,7 @@ public class sanPhamPanel extends javax.swing.JPanel {
 
         // Thêm panel cho radio buttons
         JPanel pnlSort = new JPanel();
-        pnlSort.setBackground(new java.awt.Color(107, 163, 190));
+        pnlSort.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         pnlSort.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         // Tạo nhóm radio buttons
@@ -539,14 +572,16 @@ public class sanPhamPanel extends javax.swing.JPanel {
         // Radio button sắp xếp giảm dần
         JRadioButton rdoHighToLow = new JRadioButton("Sắp xếp số lượng từ cao tới thấp");
         rdoHighToLow.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        rdoHighToLow.setBackground(new java.awt.Color(107, 163, 190));
+        rdoHighToLow.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        rdoHighToLow.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         sortGroup.add(rdoHighToLow);
         pnlSort.add(rdoHighToLow, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 250, 30));
 
         // Radio button sắp xếp tăng dần
         JRadioButton rdoLowToHigh = new JRadioButton("Sắp xếp số lượng từ thấp tới cao");
         rdoLowToHigh.setFont(new java.awt.Font("Segoe UI", 0, 14));
-        rdoLowToHigh.setBackground(new java.awt.Color(107, 163, 190));
+        rdoLowToHigh.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        rdoLowToHigh.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         sortGroup.add(rdoLowToHigh);
         pnlSort.add(rdoLowToHigh, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, 250, 30));
 
@@ -555,8 +590,10 @@ public class sanPhamPanel extends javax.swing.JPanel {
         btnRefresh.setFont(new java.awt.Font("Segoe UI", 0, 14));
         btnRefresh.setPreferredSize(new java.awt.Dimension(120, 30));
         btnRefresh.setFocusPainted(false);
+        btnRefresh.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        btnRefresh.setForeground(Color.WHITE);
         // Thêm icon cho nút làm mới
-        ImageIcon refreshIcon = new ImageIcon("src/icon_img/refresh.png"); // Đặt icon vào src/icon_img/refresh.png
+        ImageIcon refreshIcon = new ImageIcon("src/icon_img/refresh.png");
         btnRefresh
                 .setIcon(new ImageIcon(refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
         btnRefresh.setHorizontalTextPosition(SwingConstants.RIGHT);

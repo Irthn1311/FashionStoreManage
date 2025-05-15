@@ -30,6 +30,9 @@ import javax.swing.JFileChooser;
 import java.io.File;
 import utils.FileUtils;
 import javax.swing.JEditorPane;
+import screens.TrangChu.AppColors;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 public class HoaDonPanel extends javax.swing.JPanel {
     private HoaDonDAO hoaDonDAO;
@@ -57,13 +60,6 @@ public class HoaDonPanel extends javax.swing.JPanel {
     // Phương thức để thiết lập các biểu tượng
     private void setupIcons() {
         try {
-            ImageIcon invoiceIcon = new ImageIcon(getClass().getResource("/icon_img/invoice.png"));
-            if (invoiceIcon.getImage() != null) {
-                Image scaledInvoiceIcon = invoiceIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-                jLabel5.setIcon(new ImageIcon(scaledInvoiceIcon));
-                jLabel5.setHorizontalTextPosition(JLabel.RIGHT);
-                jLabel5.setIconTextGap(10);
-            }
 
             ImageIcon searchIcon = new ImageIcon(getClass().getResource("/icon_img/search.png"));
             if (searchIcon.getImage() != null) {
@@ -100,9 +96,25 @@ public class HoaDonPanel extends javax.swing.JPanel {
             ImageIcon exportIcon = new ImageIcon(getClass().getResource("/icon_img/export_icon.png"));
             if (exportIcon.getImage() != null) {
                 Image scaledExportIcon = exportIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-                jButton34.setIcon(new ImageIcon(scaledExportIcon));
-                jButton34.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-                jButton34.setIconTextGap(5);
+                btnExport.setIcon(new ImageIcon(scaledExportIcon));
+                btnExport.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                btnExport.setIconTextGap(5);
+            }
+
+            ImageIcon importIcon = new ImageIcon(getClass().getResource("/icon_img/import_icon.png"));
+            if (importIcon.getImage() != null) {
+                Image scaledImportIcon = importIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                btnImport.setIcon(new ImageIcon(scaledImportIcon));
+                btnImport.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                btnImport.setIconTextGap(5);
+            }
+
+            ImageIcon printIcon = new ImageIcon(getClass().getResource("/icon_img/print_icon.png"));
+            if (printIcon.getImage() != null) {
+                Image scaledPrintIcon = printIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                btnPrinter.setIcon(new ImageIcon(scaledPrintIcon));
+                btnPrinter.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                btnPrinter.setIconTextGap(5);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,7 +162,16 @@ public class HoaDonPanel extends javax.swing.JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value,
                     boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                c.setForeground(new Color(0, 0, 255));
+                if (isSelected) {
+                    c.setForeground(table.getSelectionForeground());
+                    c.setBackground(table.getSelectionBackground());
+                } else {
+                    c.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+                    c.setBackground(table.getBackground());
+                }
+                if (table.getClientProperty("hoverRow") != null && (int) table.getClientProperty("hoverRow") == row && column == 14) {
+                    c.setForeground(AppColors.NEW_SELECTED_BUTTON_COLOR);
+                }
                 setHorizontalAlignment(JLabel.CENTER);
                 return c;
             }
@@ -596,7 +617,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         });
 
         // Nút Xuất file
-        jButton34.addActionListener(new ActionListener() {
+        btnExport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jTable2.getRowCount() == 0) {
@@ -611,7 +632,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         });
 
         // Nút Import
-        jButton36.addActionListener(new ActionListener() {
+        btnImport.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 utils.FileUtils.importFromExcelForHoaDon(jTable2);
@@ -620,7 +641,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         });
 
         // Nút In
-        jButton37.addActionListener(new ActionListener() {
+        btnPrinter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
@@ -688,7 +709,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     private void initComponents() {
         containerPanel = new javax.swing.JPanel();
-        containerPanel.setPreferredSize(new java.awt.Dimension(1000, 700));
+        containerPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pnlHeader = new javax.swing.JPanel();
@@ -717,47 +738,47 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jPanel18 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton34 = new javax.swing.JButton();
-        jButton36 = new javax.swing.JButton();
-        jButton37 = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
+        btnImport = new javax.swing.JButton();
+        btnPrinter = new javax.swing.JButton();
 
-        setPreferredSize(new java.awt.Dimension(960, 680));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
-        containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
 
-        pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 24));
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 24));
         jLabel5.setText("QUẢN LÝ HÓA ĐƠN");
+        jLabel5.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
                 pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pnlHeaderLayout.createSequentialGroup()
-                                .addGap(383, 383, 383)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel5)
-                                .addContainerGap(402, Short.MAX_VALUE)));
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         pnlHeaderLayout.setVerticalGroup(
                 pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(pnlHeaderLayout.createSequentialGroup()
-                                .addContainerGap(20, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
                                 .addComponent(jLabel5)
-                                .addGap(18, 18, 18)));
+                                .addContainerGap(20, Short.MAX_VALUE)));
 
         containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
-        pnlContent.setBackground(new java.awt.Color(107, 163, 190));
+        pnlContent.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
-        jPanel33.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel33.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm"));
+        jPanel33.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.TitledBorder searchBorder = javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Tìm kiếm");
+        searchBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+        jPanel33.setBorder(searchBorder);
         jPanel33.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabel1.setText("Tìm kiếm");
+        jLabel1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         jPanel33.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 30));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
@@ -768,76 +789,88 @@ public class HoaDonPanel extends javax.swing.JPanel {
 
         jLabelThanhTien.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelThanhTien.setText("Thành tiền:");
+        jLabelThanhTien.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         jPanel33.add(jLabelThanhTien, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 20, 80, 30));
 
         jLabelThanhTienTu.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelThanhTienTu.setText("Từ:");
+        jLabelThanhTienTu.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         jPanel33.add(jLabelThanhTienTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, -1, 30));
         jPanel33.add(jTextFieldThanhTienTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 20, 80, 30));
 
         jLabelThanhTienDen.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelThanhTienDen.setText("Đến:");
+        jLabelThanhTienDen.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         jPanel33.add(jLabelThanhTienDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, -1, 30));
         jPanel33.add(jTextFieldThanhTienDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 20, 80, 30));
 
         jLabelSoLuong.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelSoLuong.setText("Số lượng:");
+        jLabelSoLuong.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         jPanel33.add(jLabelSoLuong, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 60, 80, 30));
 
         jLabelSoLuongTu.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelSoLuongTu.setText("Từ:");
+        jLabelSoLuongTu.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         jPanel33.add(jLabelSoLuongTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 60, -1, 30));
         jPanel33.add(jTextFieldSoLuongTu, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 60, 80, 30));
 
         jLabelSoLuongDen.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelSoLuongDen.setText("Đến:");
+        jLabelSoLuongDen.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         jPanel33.add(jLabelSoLuongDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 60, -1, 30));
         jPanel33.add(jTextFieldSoLuongDen, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 60, 80, 30));
 
         jButton30.setText("Tìm kiếm");
-        ImageIcon searchIcon = new ImageIcon("src/icon_img/search.png");
-        jButton30.setIcon(new ImageIcon(searchIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton30.setHorizontalTextPosition(SwingConstants.RIGHT);
+        jButton30.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        jButton30.setForeground(java.awt.Color.WHITE);
         jButton30.setPreferredSize(new java.awt.Dimension(120, 30));
-        jPanel33.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(832, 40, 120, 30));
-
-        jPanel17.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
-        jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jButton31.setText("Thêm");
-        ImageIcon addIcon = new ImageIcon("src/icon_img/add.png");
-        jButton31.setIcon(new ImageIcon(addIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton31.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton31.setPreferredSize(new java.awt.Dimension(120, 34));
-        jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 20, 120, 34));
-
-        jButton32.setText("Sửa");
-        ImageIcon editIcon = new ImageIcon("src/icon_img/edit.png");
-        jButton32.setIcon(new ImageIcon(editIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton32.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton32.setPreferredSize(new java.awt.Dimension(120, 34));
-        jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 20, 120, 34));
-
-        jButton33.setText("Xóa");
-        ImageIcon deleteIcon = new ImageIcon("src/icon_img/delete.png");
-        jButton33.setIcon(new ImageIcon(deleteIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton33.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton33.setPreferredSize(new java.awt.Dimension(120, 34));
-        jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 20, 120, 34));
+        jPanel33.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 20, 120, 30));
 
         jButtonReset.setText("Làm mới");
-        ImageIcon resetIcon = new ImageIcon("src/icon_img/refresh.png");
-        jButtonReset
-                .setIcon(new ImageIcon(resetIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+        jButtonReset.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        jButtonReset.setForeground(java.awt.Color.WHITE);
+        ImageIcon resetIcon = new ImageIcon(getClass().getResource("/icon_img/refresh.png"));
+        if (resetIcon.getImage() != null) {
+            Image scaledResetIcon = resetIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+            jButtonReset.setIcon(new ImageIcon(scaledResetIcon));
+        }
         jButtonReset.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButtonReset.setPreferredSize(new java.awt.Dimension(120, 34));
-        jPanel17.add(jButtonReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 20, 120, 34));
+        jButtonReset.setPreferredSize(new java.awt.Dimension(120, 30));
+        jPanel33.add(jButtonReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, 120, 30));
 
-        jPanel18.setBackground(new java.awt.Color(107, 163, 190));
-        jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Bảng thông tin"));
+        jPanel17.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.TitledBorder editBorder = javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Chỉnh sửa");
+        editBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+        jPanel17.setBorder(editBorder);
+        jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 23));
+
+        Dimension editButtonSize = new java.awt.Dimension(120, 34);
+
+        jButton31.setText("Thêm");
+        jButton31.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        jButton31.setForeground(java.awt.Color.WHITE);
+        jButton31.setPreferredSize(editButtonSize);
+        jPanel17.add(jButton31);
+
+        jButton32.setText("Sửa");
+        jButton32.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        jButton32.setForeground(java.awt.Color.WHITE);
+        jButton32.setPreferredSize(editButtonSize);
+        jPanel17.add(jButton32);
+
+        jButton33.setText("Xóa");
+        jButton33.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+        jButton33.setForeground(java.awt.Color.WHITE);
+        jButton33.setPreferredSize(editButtonSize);
+        jPanel17.add(jButton33);
+
+        jPanel18.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.TitledBorder tableBorder = javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Bảng thông tin");
+        tableBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+        jPanel18.setBorder(tableBorder);
         jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -856,66 +889,61 @@ public class HoaDonPanel extends javax.swing.JPanel {
             }
         });
         jTable2.setShowGrid(true);
+        jTable2.setBackground(java.awt.Color.WHITE);
+        jTable2.getTableHeader().setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+        jTable2.getTableHeader().setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        jTable2.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
         jScrollPane2.setViewportView(jTable2);
+        jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 941, 292));
 
-        jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 920, 290));
+        pnlBottomButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        pnlBottomButtons.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        Dimension bottomButtonSize = new Dimension(170, 40);
 
-        jButton34.setText("Xuất file xuất hàng");
-        jButton34.setBounds(325, 580, 340, 40);
-        pnlContent.add(jButton34);
+        btnImport.setText("Nhập dữ liệu");
+        btnImport.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+        btnImport.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+        btnImport.setPreferredSize(bottomButtonSize);
+        pnlBottomButtons.add(btnImport);
 
-        // Di chuyển nút Import và In xuống phần xuất file
-        jButton36.setText("Import dữ liệu");
-        ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
-        jButton36.setIcon(new ImageIcon(importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton36.setBounds(680, 580, 120, 34);
-        pnlContent.add(jButton36);
+        btnExport.setText("Xuất dữ liệu");
+        btnExport.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+        btnExport.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+        btnExport.setPreferredSize(bottomButtonSize);
+        pnlBottomButtons.add(btnExport);
 
-        jButton37.setText("In hóa đơn");
-        ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
-        jButton37.setIcon(new ImageIcon(printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-        jButton37.setHorizontalTextPosition(SwingConstants.RIGHT);
-        jButton37.setBounds(810, 580, 120, 34);
-        pnlContent.add(jButton37);
+        btnPrinter.setText("In ấn");
+        btnPrinter.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+        btnPrinter.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+        btnPrinter.setPreferredSize(bottomButtonSize);
+        pnlBottomButtons.add(btnPrinter);
 
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
         pnlContentLayout.setHorizontalGroup(
-                pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnlContentLayout.createSequentialGroup()
-                                .addGroup(pnlContentLayout
-                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 961,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(pnlContentLayout
-                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(pnlContentLayout.createSequentialGroup()
-                                                        .addGap(325, 325, 325)
-                                                        .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(pnlContentLayout.createSequentialGroup()
-                                                        .addGap(20, 20, 20)
-                                                        .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                961, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 961,
-                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(19, Short.MAX_VALUE)));
+            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlContentLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel33, javax.swing.GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
+                    .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlBottomButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
         pnlContentLayout.setVerticalGroup(
-                pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnlContentLayout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 120,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, 0)
-                                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 90,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 40,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10)));
+            pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlContentLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel33, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pnlBottomButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
 
@@ -934,7 +962,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton33;
-    private javax.swing.JButton jButton34;
+    private javax.swing.JButton btnExport;
     private javax.swing.JButton jButtonReset;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -957,6 +985,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldThanhTienDen;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlHeader;
-    private javax.swing.JButton jButton36;
-    private javax.swing.JButton jButton37;
+    private javax.swing.JButton btnImport;
+    private javax.swing.JButton btnPrinter;
+    private javax.swing.JPanel pnlBottomButtons;
 }

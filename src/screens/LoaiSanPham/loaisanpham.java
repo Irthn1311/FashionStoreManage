@@ -22,6 +22,7 @@ import javax.swing.SwingConstants;
 import utils.FileUtils;
 import javax.swing.JEditorPane;
 import java.text.DecimalFormat;
+import screens.TrangChu.AppColors;
 
 public class loaisanpham extends javax.swing.JPanel {
 
@@ -53,6 +54,7 @@ public class loaisanpham extends javax.swing.JPanel {
         private javax.swing.JLabel searchLabel;
         private javax.swing.JComboBox<String> searchComboBox;
         private javax.swing.JTextField searchTextField;
+        private javax.swing.JPanel pnlBottomButtons;
 
         public loaisanpham() {
                 productService = new ProductService();
@@ -96,8 +98,8 @@ public class loaisanpham extends javax.swing.JPanel {
 
         private void setupTable() {
                 jTable2.getColumn("Chi tiết").setCellRenderer(new DefaultTableCellRenderer() {
-                        private final java.awt.Color normalColor = new java.awt.Color(0, 102, 204);
-                        private final java.awt.Color hoverColor = new java.awt.Color(51, 153, 255);
+                        private final java.awt.Color normalColor = AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR;
+                        private final java.awt.Color hoverColor = AppColors.NEW_SELECTED_BUTTON_COLOR;
 
                         @Override
                         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -159,6 +161,7 @@ public class loaisanpham extends javax.swing.JPanel {
                 containerPanel = new javax.swing.JPanel();
                 containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
                 containerPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+                containerPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
                 pnlHeader = new javax.swing.JPanel();
                 jLabel1 = new javax.swing.JLabel();
@@ -182,10 +185,11 @@ public class loaisanpham extends javax.swing.JPanel {
 
                 containerPanel.setPreferredSize(new java.awt.Dimension(960, 680));
 
-                pnlHeader.setBackground(new java.awt.Color(12, 150, 156));
+                pnlHeader.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
 
-                jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24));
-                jLabel1.setText("Quản lý sản phẩm");
+                jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24));
+                jLabel1.setText("QUẢN LÝ SẢN PHẨM");
+                jLabel1.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
                 javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
                 pnlHeader.setLayout(pnlHeaderLayout);
@@ -208,15 +212,18 @@ public class loaisanpham extends javax.swing.JPanel {
 
                 containerPanel.add(pnlHeader, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1000, 70));
 
-                pnlContent.setBackground(new java.awt.Color(107, 163, 190));
+                pnlContent.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
-                jPanel15.setBackground(new java.awt.Color(107, 163, 190));
-                jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Tìm kiếm"));
+                jPanel15.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                javax.swing.border.TitledBorder searchBorder = javax.swing.BorderFactory.createTitledBorder(
+                                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Tìm kiếm");
+                searchBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+                jPanel15.setBorder(searchBorder);
                 jPanel15.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
                 searchLabel.setFont(new java.awt.Font("Segoe UI", 0, 14));
                 searchLabel.setText("Tìm kiếm");
+                searchLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 jPanel15.add(searchLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, 30));
 
                 searchComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
@@ -229,13 +236,15 @@ public class loaisanpham extends javax.swing.JPanel {
 
                 priceRadioButton = new JRadioButton("Đơn giá:");
                 priceRadioButton.setFont(new java.awt.Font("Segoe UI", 0, 14));
-                priceRadioButton.setBackground(new java.awt.Color(107, 163, 190));
+                priceRadioButton.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                priceRadioButton.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 priceRadioButton.setIcon(new ImageIcon("src/icon_img/round_unchecked.png"));
                 priceRadioButton.setSelectedIcon(new ImageIcon("src/icon_img/round_checked.png"));
                 jPanel15.add(priceRadioButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 20, 80, 30));
 
                 JLabel priceFromLabel = new JLabel("Từ:");
                 priceFromLabel.setFont(new java.awt.Font("Segoe UI", 0, 14));
+                priceFromLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 jPanel15.add(priceFromLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, -1, 30));
 
                 priceFromField = new JTextField();
@@ -243,6 +252,7 @@ public class loaisanpham extends javax.swing.JPanel {
 
                 JLabel priceToLabel = new JLabel("Đến:");
                 priceToLabel.setFont(new java.awt.Font("Segoe UI", 0, 14));
+                priceToLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 jPanel15.add(priceToLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, -1, 30));
 
                 priceToField = new JTextField();
@@ -250,13 +260,15 @@ public class loaisanpham extends javax.swing.JPanel {
 
                 quantityRadioButton = new JRadioButton("Số lượng:");
                 quantityRadioButton.setFont(new java.awt.Font("Segoe UI", 0, 14));
-                quantityRadioButton.setBackground(new java.awt.Color(107, 163, 190));
+                quantityRadioButton.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                quantityRadioButton.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 quantityRadioButton.setIcon(new ImageIcon("src/icon_img/round_unchecked.png"));
                 quantityRadioButton.setSelectedIcon(new ImageIcon("src/icon_img/round_checked.png"));
                 jPanel15.add(quantityRadioButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 60, 80, 30));
 
                 JLabel quantityFromLabel = new JLabel("Từ:");
                 quantityFromLabel.setFont(new java.awt.Font("Segoe UI", 0, 14));
+                quantityFromLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 jPanel15.add(quantityFromLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 60, -1, 30));
 
                 quantityFromField = new JTextField();
@@ -264,74 +276,41 @@ public class loaisanpham extends javax.swing.JPanel {
 
                 JLabel quantityToLabel = new JLabel("Đến:");
                 quantityToLabel.setFont(new java.awt.Font("Segoe UI", 0, 14));
+                quantityToLabel.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
                 jPanel15.add(quantityToLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 60, -1, 30));
 
                 quantityToField = new JTextField();
                 jPanel15.add(quantityToField, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 60, 80, 30));
 
-                jButton30.setText("Tìm kiếm");
-                ImageIcon searchIcon = new ImageIcon("src/icon_img/search.png");
-                jButton30.setIcon(new ImageIcon(
-                                searchIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-                jButton30.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton30.setPreferredSize(new java.awt.Dimension(120, 30));
+                ImageIcon searchIcon = new ImageIcon(getClass().getResource("/icon_img/search.png"));
+                if (searchIcon.getImage() != null) {
+                        Image scaledSearchIcon = searchIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                        jButton30.setIcon(new ImageIcon(scaledSearchIcon));
+                        jButton30.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+                        jButton30.setIconTextGap(5);
+                }
+                
                 jButton30.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 jButton30ActionPerformed(evt);
                         }
                 });
-                jPanel15.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(832, 40, 120, 30));
-
-                jPanel17.setBackground(new java.awt.Color(107, 163, 190));
-                jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Chỉnh sửa"));
-                jPanel17.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-                jButton31.setText("Thêm");
-                ImageIcon addIcon = new ImageIcon("src/icon_img/add.png");
-                jButton31.setIcon(new ImageIcon(
-                                addIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-                jButton31.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton31.setPreferredSize(new java.awt.Dimension(100, 34));
-                jButton31.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jButton31ActionPerformed(evt);
-                        }
-                });
-                jPanel17.add(jButton31, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 14, 100, 34));
-
-                jButton32.setText("Sửa");
-                ImageIcon editIcon = new ImageIcon("src/icon_img/edit.png");
-                jButton32.setIcon(new ImageIcon(
-                                editIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-                jButton32.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton32.setPreferredSize(new java.awt.Dimension(100, 34));
-                jButton32.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jButton32ActionPerformed(evt);
-                        }
-                });
-                jPanel17.add(jButton32, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 14, 100, 34));
-
-                jButton33.setText("Xóa");
-                ImageIcon deleteIcon = new ImageIcon("src/icon_img/delete.png");
-                jButton33.setIcon(new ImageIcon(
-                                deleteIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-                jButton33.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton33.setPreferredSize(new java.awt.Dimension(100, 34));
-                jButton33.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                jButton33ActionPerformed(evt);
-                        }
-                });
-                jPanel17.add(jButton33, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 14, 100, 34));
+                jButton30.setText("Tìm kiếm");
+                jButton30.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                jButton30.setForeground(java.awt.Color.WHITE);
+                jButton30.setPreferredSize(new java.awt.Dimension(120, 30));
+                jPanel15.add(jButton30, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 20, 120, 30));
 
                 jButton35.setText("Làm mới");
-                ImageIcon refreshIcon = new ImageIcon("src/icon_img/refresh.png");
-                jButton35.setIcon(new ImageIcon(
-                                refreshIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                jButton35.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                jButton35.setForeground(java.awt.Color.WHITE);
+                ImageIcon refreshIconMoved = new ImageIcon(getClass().getResource("/icon_img/refresh.png")); 
+                if (refreshIconMoved.getImage() != null) {
+                    Image scaledRefreshIcon = refreshIconMoved.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                    jButton35.setIcon(new ImageIcon(scaledRefreshIcon));
+                }
                 jButton35.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton35.setPreferredSize(new java.awt.Dimension(100, 34));
+                jButton35.setPreferredSize(new java.awt.Dimension(120, 30)); 
                 jButton35.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 loadTableData();
@@ -345,12 +324,67 @@ public class loaisanpham extends javax.swing.JPanel {
                                 searchComboBox.setSelectedIndex(0);
                         }
                 });
-                jPanel17.add(jButton35, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 14, 120, 34));
+                jPanel15.add(jButton35, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 60, 120, 30));
 
-                jPanel18.setBackground(new java.awt.Color(107, 163, 190));
-                jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)),
-                                "Bảng thông tin"));
+                jPanel17.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                javax.swing.border.TitledBorder editBorder = javax.swing.BorderFactory.createTitledBorder(
+                                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Chỉnh sửa");
+                editBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+                jPanel17.setBorder(editBorder);
+                jPanel17.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, (80 - 34) / 2));
+
+                Dimension editButtonSize = new java.awt.Dimension(120, 34);
+                jButton31.setText("Thêm");
+                jButton31.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                jButton31.setForeground(java.awt.Color.WHITE);
+                jButton31.setPreferredSize(editButtonSize);
+                ImageIcon addIcon = new ImageIcon("src/icon_img/add.png");
+                jButton31.setIcon(new ImageIcon(
+                                addIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                jButton31.setHorizontalTextPosition(SwingConstants.RIGHT);
+                jButton31.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton31ActionPerformed(evt);
+                        }
+                });
+                jPanel17.add(jButton31);
+
+                jButton32.setText("Sửa");
+                jButton32.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                jButton32.setForeground(java.awt.Color.WHITE);
+                jButton32.setPreferredSize(editButtonSize);
+                ImageIcon editIcon = new ImageIcon("src/icon_img/edit.png");
+                jButton32.setIcon(new ImageIcon(
+                                editIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                jButton32.setHorizontalTextPosition(SwingConstants.RIGHT);
+                jButton32.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton32ActionPerformed(evt);
+                        }
+                });
+                jPanel17.add(jButton32);
+
+                jButton33.setText("Xóa");
+                jButton33.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
+                jButton33.setForeground(java.awt.Color.WHITE);
+                jButton33.setPreferredSize(editButtonSize);
+                ImageIcon deleteIcon = new ImageIcon("src/icon_img/delete.png");
+                jButton33.setIcon(new ImageIcon(
+                                deleteIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                jButton33.setHorizontalTextPosition(SwingConstants.RIGHT);
+                jButton33.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton33ActionPerformed(evt);
+                        }
+                });
+                jPanel17.add(jButton33);
+
+                jPanel18.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+                javax.swing.border.TitledBorder tableBorder = javax.swing.BorderFactory.createTitledBorder(
+                                javax.swing.BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR),
+                                "Bảng thông tin");
+                tableBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+                jPanel18.setBorder(tableBorder);
                 jPanel18.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
                 jTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -369,43 +403,58 @@ public class loaisanpham extends javax.swing.JPanel {
                         }
                 });
                 jTable2.setShowGrid(true);
+                jTable2.setBackground(java.awt.Color.WHITE);
+                jTable2.getTableHeader().setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+                jTable2.getTableHeader().setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+                jTable2.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
                 jScrollPane2.setViewportView(jTable2);
 
-                jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 940, 270));
+                jPanel18.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 938, 302));
 
-                jButton34.setText("Xuất file");
-                ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
-                jButton34.setIcon(new ImageIcon(
-                                exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
-                jButton34.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton34.setPreferredSize(new java.awt.Dimension(340, 40));
-                jButton34.addActionListener(new java.awt.event.ActionListener() {
-                        public void actionPerformed(java.awt.event.ActionEvent evt) {
-                                utils.FileUtils.showExportOptionsForLoaiSanPham(jTable2, "DanhSachSanPham");
-                        }
-                });
+                pnlBottomButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
+                pnlBottomButtons.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
-                // Add Import button
-                jButton36 = new javax.swing.JButton("Import");
+                Dimension bottomButtonSize = new java.awt.Dimension(170, 40);
+
+                jButton36 = new javax.swing.JButton("Nhập dữ liệu");
+                jButton36.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+                jButton36.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+                jButton36.setPreferredSize(bottomButtonSize);
                 ImageIcon importIcon = new ImageIcon("src/icon_img/import_icon.png");
                 jButton36.setIcon(new ImageIcon(
                                 importIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
                 jButton36.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton36.setPreferredSize(new java.awt.Dimension(100, 40));
                 jButton36.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 utils.FileUtils.importFromExcelForLoaiSanPham(jTable2);
                                 loadTableData(); // Refresh the table after import
                         }
                 });
+                pnlBottomButtons.add(jButton36);
 
-                // Add Print button
-                jButton37 = new javax.swing.JButton("In");
+                jButton34.setText("Xuất dữ liệu");
+                jButton34.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+                jButton34.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+                jButton34.setPreferredSize(bottomButtonSize);
+                ImageIcon exportIcon = new ImageIcon("src/icon_img/export_icon.png");
+                jButton34.setIcon(new ImageIcon(
+                                exportIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
+                jButton34.setHorizontalTextPosition(SwingConstants.RIGHT);
+                jButton34.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                utils.FileUtils.showExportOptionsForLoaiSanPham(jTable2, "DanhSachSanPham");
+                        }
+                });
+                pnlBottomButtons.add(jButton34);
+
+                jButton37 = new javax.swing.JButton("In ấn");
+                jButton37.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+                jButton37.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+                jButton37.setPreferredSize(bottomButtonSize);
                 ImageIcon printIcon = new ImageIcon("src/icon_img/print_icon.png");
                 jButton37.setIcon(new ImageIcon(
                                 printIcon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH)));
                 jButton37.setHorizontalTextPosition(SwingConstants.RIGHT);
-                jButton37.setPreferredSize(new java.awt.Dimension(100, 40));
                 jButton37.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 try {
@@ -463,6 +512,7 @@ public class loaisanpham extends javax.swing.JPanel {
                                 }
                         }
                 });
+                pnlBottomButtons.add(jButton37);
 
                 javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
                 pnlContent.setLayout(pnlContentLayout);
@@ -471,49 +521,12 @@ public class loaisanpham extends javax.swing.JPanel {
                                                 .addGroup(pnlContentLayout.createSequentialGroup()
                                                                 .addContainerGap(22, Short.MAX_VALUE)
                                                                 .addGroup(pnlContentLayout
-                                                                                .createParallelGroup(
-                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                pnlContentLayout.createSequentialGroup()
-                                                                                                                .addComponent(jButton36,
-                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                100,
-                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                                .addGap(18, 18, 18)
-                                                                                                                .addComponent(jButton34,
-                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                340,
-                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                                .addGap(18, 18, 18)
-                                                                                                                .addComponent(jButton37,
-                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                100,
-                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                                .addGap(313, 313,
-                                                                                                                                313))
-                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                pnlContentLayout
-                                                                                                                .createSequentialGroup()
-                                                                                                                .addGroup(pnlContentLayout
-                                                                                                                                .createParallelGroup(
-                                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                                                .addComponent(jPanel15,
-                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                961,
-                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                                                                .addGroup(pnlContentLayout
-                                                                                                                                                .createParallelGroup(
-                                                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                                                                                false)
-                                                                                                                                                .addComponent(jPanel17,
-                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                Short.MAX_VALUE)
-                                                                                                                                                .addComponent(jPanel18,
-                                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                                958,
-                                                                                                                                                                Short.MAX_VALUE)))
-                                                                                                                .addGap(17, 17, 17)))));
+                                                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                                .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, 961, Short.MAX_VALUE)
+                                                                                .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 958, Short.MAX_VALUE)
+                                                                                .addComponent(pnlBottomButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                                .addGap(17, 17, 17)));
                 pnlContentLayout.setVerticalGroup(
                                 pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(pnlContentLayout.createSequentialGroup()
@@ -532,25 +545,9 @@ public class loaisanpham extends javax.swing.JPanel {
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                 342,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                                                28,
-                                                                                Short.MAX_VALUE)
-                                                                .addGroup(pnlContentLayout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jButton36,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                40,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jButton34,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                40,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jButton37,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                40,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(16, 16, 16)));
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(pnlBottomButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addContainerGap(16, Short.MAX_VALUE)));
 
                 containerPanel.add(pnlContent, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 1000, 630));
         }

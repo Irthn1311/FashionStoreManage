@@ -3,6 +3,8 @@ package screens.ThongKe;
 import DTO.sanPhamThongKeDTO;
 import DTO.TopKhachHangDTO;
 import DAO.ThongKeDAO;
+import screens.TrangChu.AppColors;
+import javax.swing.border.TitledBorder;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -44,7 +46,7 @@ public class ThongKePanel extends JPanel {
     private ChartPanel chartPanel; // Thêm ChartPanel để chứa biểu đồ
 
     public ThongKePanel() {
-        setBackground(new Color(107, 163, 190));
+        setBackground(AppColors.NEW_MAIN_BG_COLOR);
         setLayout(new BorderLayout(10, 10));
         initComponents();
         setupComboBoxes();
@@ -69,6 +71,8 @@ public class ThongKePanel extends JPanel {
                 cbDanhGiaDenThang, cbDanhGiaNam }) {
             cb.setFont(comboFont);
             cb.setPreferredSize(new Dimension(100, 30));
+            cb.setBackground(AppColors.TABLE_BACKGROUND_COLOR);
+            cb.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         }
     }
 
@@ -85,9 +89,12 @@ public class ThongKePanel extends JPanel {
         table.setRowHeight(28);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        table.setGridColor(new Color(150, 150, 150));
+        table.getTableHeader().setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
+        table.getTableHeader().setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        table.setBackground(AppColors.TABLE_BACKGROUND_COLOR);
+        table.setGridColor(AppColors.NEW_BORDER_LINES_COLOR);
         table.setShowGrid(true);
-        table.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        table.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR, 1));
     }
 
     private void setupListeners() {
@@ -326,6 +333,8 @@ public class ThongKePanel extends JPanel {
                     true,
                     false);
 
+            chart.setBackgroundPaint(AppColors.NEW_MAIN_BG_COLOR);
+            chart.getPlot().setBackgroundPaint(AppColors.NEW_MAIN_BG_COLOR);
             // Cập nhật ChartPanel
             chartPanel.setChart(chart);
         } catch (Exception ex) {
@@ -337,46 +346,58 @@ public class ThongKePanel extends JPanel {
     private void initComponents() {
         // Title Panel
         panelTieuDe = new JPanel();
-        panelTieuDe.setBackground(new Color(12, 150, 156));
+        panelTieuDe.setBackground(AppColors.NEW_HEADER_PANEL_BG_COLOR);
         panelTieuDe.setPreferredSize(new Dimension(0, 70));
         lblTieuDe = new JLabel("Thống kê");
         lblTieuDe.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        lblTieuDe.setForeground(Color.WHITE);
+        lblTieuDe.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         panelTieuDe.setLayout(new FlowLayout(FlowLayout.CENTER));
         panelTieuDe.add(lblTieuDe);
 
         // Search Panel
         panelTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        panelTimKiem.setBackground(new Color(107, 163, 190));
-        panelTimKiem.setBorder(BorderFactory.createTitledBorder("Tìm kiếm"));
+        panelTimKiem.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.TitledBorder panelTimKiemBorder = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Tìm kiếm");
+        panelTimKiemBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelTimKiem.setBorder(panelTimKiemBorder);
         panelTimKiem.setPreferredSize(new Dimension(0, 100));
 
         rbSanPhamBanChay = new JRadioButton("Sản phẩm bán chạy");
         rbKhachHangHangDau = new JRadioButton("Khách hàng hàng đầu");
         rbSanPhamBanChay.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         rbKhachHangHangDau.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        rbSanPhamBanChay.setBackground(new Color(107, 163, 190));
-        rbKhachHangHangDau.setBackground(new Color(107, 163, 190));
+        rbSanPhamBanChay.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        rbKhachHangHangDau.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        rbSanPhamBanChay.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        rbKhachHangHangDau.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
 
         panelThoiGian = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        panelThoiGian.setBackground(new Color(107, 163, 190));
+        panelThoiGian.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         panelThoiGian.setBorder(null);
 
         cbNam = new JComboBox<>();
         cbTuThang = new JComboBox<>();
         cbDenThang = new JComboBox<>();
 
-        panelThoiGian.add(new JLabel("Năm:"));
+        JLabel lblNam = new JLabel("Năm:");
+        lblNam.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelThoiGian.add(lblNam);
         panelThoiGian.add(cbNam);
-        panelThoiGian.add(new JLabel("Từ tháng:"));
+        JLabel lblTuThang = new JLabel("Từ tháng:");
+        lblTuThang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelThoiGian.add(lblTuThang);
         panelThoiGian.add(cbTuThang);
-        panelThoiGian.add(new JLabel("Đến tháng:"));
+        JLabel lblDenThang = new JLabel("Đến tháng:");
+        lblDenThang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelThoiGian.add(lblDenThang);
         panelThoiGian.add(cbDenThang);
 
         btnTimKiem = new JButton("Tìm kiếm");
         btnTimKiem.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnTimKiem.setBackground(new Color(60, 179, 113));
+        btnTimKiem.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
         btnTimKiem.setForeground(Color.WHITE);
+        btnTimKiem.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
         btnTimKiem.setPreferredSize(new Dimension(100, 30));
 
         panelTimKiem.add(rbSanPhamBanChay);
@@ -386,38 +407,48 @@ public class ThongKePanel extends JPanel {
 
         // Table Panel
         panelBang = new JPanel(new BorderLayout());
-        panelBang.setBackground(new Color(107, 163, 190));
+        panelBang.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         table = new JTable();
         scrollPane = new JScrollPane(table);
         panelBang.add(scrollPane, BorderLayout.CENTER);
 
         // Statistics Panel
         panelThongKe = new JPanel(new BorderLayout(10, 10));
-        panelThongKe.setBackground(new Color(107, 163, 190));
-        panelThongKe.setBorder(BorderFactory.createTitledBorder("Thống kê doanh thu"));
+        panelThongKe.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.TitledBorder panelThongKeBorder = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Thống kê doanh thu");
+        panelThongKeBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelThongKe.setBorder(panelThongKeBorder);
 
         JPanel panelChonThoiGian = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        panelChonThoiGian.setBackground(new Color(107, 163, 190));
+        panelChonThoiGian.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         cbDanhGiaTuThang = new JComboBox<>();
         cbDanhGiaDenThang = new JComboBox<>();
         cbDanhGiaNam = new JComboBox<>();
 
-        panelChonThoiGian.add(new JLabel("Năm:"));
+        JLabel lblDanhGiaNam = new JLabel("Năm:");
+        lblDanhGiaNam.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelChonThoiGian.add(lblDanhGiaNam);
         panelChonThoiGian.add(cbDanhGiaNam);
-        panelChonThoiGian.add(new JLabel("Từ tháng:"));
+        JLabel lblDanhGiaTuThang = new JLabel("Từ tháng:");
+        lblDanhGiaTuThang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelChonThoiGian.add(lblDanhGiaTuThang);
         panelChonThoiGian.add(cbDanhGiaTuThang);
-        panelChonThoiGian.add(new JLabel("Đến tháng:"));
+        JLabel lblDanhGiaDenThang = new JLabel("Đến tháng:");
+        lblDanhGiaDenThang.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelChonThoiGian.add(lblDanhGiaDenThang);
         panelChonThoiGian.add(cbDanhGiaDenThang);
 
         btnTinhToan = new JButton("Xác nhận");
         btnTinhToan.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnTinhToan.setBackground(new Color(60, 179, 113));
+        btnTinhToan.setBackground(AppColors.NEW_DEFAULT_BUTTON_COLOR);
         btnTinhToan.setForeground(Color.WHITE);
+        btnTinhToan.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
         btnTinhToan.setPreferredSize(new Dimension(100, 30));
         panelChonThoiGian.add(btnTinhToan);
 
         JPanel panelChiSo = new JPanel(new GridLayout(2, 2, 15, 15));
-        panelChiSo.setBackground(new Color(107, 163, 190));
+        panelChiSo.setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
         lblTongDoanhThu = new JLabel("Tổng doanh thu:");
         lblTongSanPham = new JLabel("Tổng sản phẩm:");
@@ -434,10 +465,14 @@ public class ThongKePanel extends JPanel {
 
         for (JLabel lbl : new JLabel[] { lblTongDoanhThu, lblTongSanPham, lblTongKhachHang, lblDoanhThuNam }) {
             lbl.setFont(labelFont);
+            lbl.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
         }
         for (JTextField txt : new JTextField[] { txtTongDoanhThu, txtTongSanPham, txtTongKhachHang, txtDoanhThuNam }) {
             txt.setFont(textFont);
             txt.setEditable(false);
+            txt.setBackground(AppColors.TABLE_BACKGROUND_COLOR);
+            txt.setForeground(AppColors.NEW_MAIN_TEXT_COLOR);
+            txt.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
         }
 
         panelChiSo.add(lblTongDoanhThu);
@@ -451,21 +486,26 @@ public class ThongKePanel extends JPanel {
 
         // Evaluation Panel
         panelDanhGia = new JPanel(new BorderLayout());
-        panelDanhGia.setBackground(new Color(107, 163, 190));
-        panelDanhGia.setBorder(BorderFactory.createTitledBorder("Đánh giá"));
+        panelDanhGia.setBackground(AppColors.NEW_MAIN_BG_COLOR);
+        javax.swing.border.TitledBorder panelDanhGiaBorder = BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(AppColors.NEW_HEADER_PANEL_BG_COLOR), "Đánh giá");
+        panelDanhGiaBorder.setTitleColor(AppColors.NEW_MAIN_TEXT_COLOR);
+        panelDanhGia.setBorder(panelDanhGiaBorder);
         panelDanhGia.setPreferredSize(new Dimension(300, 200));
 
         chartPanel = new ChartPanel(null); // Khởi tạo ChartPanel
+        chartPanel.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         panelDanhGia.add(chartPanel, BorderLayout.CENTER);
 
         btnXuatExcel = new JButton("Xuất Excel");
         btnXuatExcel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btnXuatExcel.setBackground(new Color(60, 179, 113));
-        btnXuatExcel.setForeground(Color.WHITE);
+        btnXuatExcel.setBackground(AppColors.NEW_QUICK_ACCESS_BUTTON_BG_COLOR);
+        btnXuatExcel.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+        btnXuatExcel.setBorder(BorderFactory.createLineBorder(AppColors.NEW_BORDER_LINES_COLOR));
         btnXuatExcel.setPreferredSize(new Dimension(150, 30));
 
         JPanel panelDuoi = new JPanel(new BorderLayout());
-        panelDuoi.setBackground(new Color(107, 163, 190));
+        panelDuoi.setBackground(AppColors.NEW_MAIN_BG_COLOR);
         panelDuoi.add(panelChiSo, BorderLayout.CENTER);
         panelDuoi.add(btnXuatExcel, BorderLayout.SOUTH);
 
