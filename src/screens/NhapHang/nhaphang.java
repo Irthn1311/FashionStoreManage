@@ -47,7 +47,6 @@ public class nhaphang extends javax.swing.JPanel {
     private SanPhamBUS sanPhamBUS;
     private NhaCungCapBUS nhaCungCapBUS;
     private PhieuNhapBUS phieuNhapBUS_forIdGeneration;
-    private String currentNhapHangBatchPrefix;
     private trangchu mainFrame;
     private DecimalFormat decimalFormat;
     private double currentDonGiaRaw; // Raw unit price
@@ -75,7 +74,6 @@ public class nhaphang extends javax.swing.JPanel {
         sanPhamBUS = new SanPhamBUS();
         nhaCungCapBUS = new NhaCungCapBUS();
         phieuNhapBUS_forIdGeneration = new PhieuNhapBUS();
-        this.currentNhapHangBatchPrefix = phieuNhapBUS_forIdGeneration.generateNewBatchPrefix();
         initComponents();
         decimalFormat = new DecimalFormat("#,##0.00");
         populateComboBoxes();
@@ -88,7 +86,8 @@ public class nhaphang extends javax.swing.JPanel {
     }
 
     public String getCurrentNhapHangBatchPrefix() {
-        return this.currentNhapHangBatchPrefix;
+        // Generate a new batch prefix on demand for compatibility with SmartImportAdvisorPanel
+        return phieuNhapBUS_forIdGeneration.generateNewBatchPrefix();
     }
 
     public PhieuNhapBUS getPhieuNhapBUSForIdGeneration() {
@@ -732,10 +731,8 @@ public class nhaphang extends javax.swing.JPanel {
                 return;
             }
 
-            if (this.currentNhapHangBatchPrefix == null) {
-                this.currentNhapHangBatchPrefix = phieuNhapBUS_forIdGeneration.generateNewBatchPrefix();
-            }
-            String maPN = phieuNhapBUS_forIdGeneration.generateMaPhieuNhapForBatch(this.currentNhapHangBatchPrefix);
+            // Generate sequential ID like PN001, PN002, etc.
+            String maPN = nhapHangBUS.generateNextMaPN();
 
             nhapHangDTO nh = new nhapHangDTO();
             nh.setMaPN(maPN);
@@ -752,7 +749,7 @@ public class nhaphang extends javax.swing.JPanel {
             nh.setHinhThucThanhToan((String) cbHinhThucThanhToan.getSelectedItem());
 
             if (nhapHangBUS.themNhapHang(nh)) {
-                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công. Mã PN tạm: " + maPN);
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công. Mã PN: " + maPN);
                 loadImportTable();
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!");
@@ -935,12 +932,33 @@ public class nhaphang extends javax.swing.JPanel {
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            if (nhapHangBUS.chuyenNhapHangSangPhieuNhap()) {
-                JOptionPane.showMessageDialog(this, "Nhập hàng thành công!");
-                loadImportTable(); // Refresh lại bảng NhapHang (should be empty now)
-                this.currentNhapHangBatchPrefix = phieuNhapBUS_forIdGeneration.generateNewBatchPrefix();
-            } else {
-                JOptionPane.showMessageDialog(this, "Có lỗi khi xác nhận nhập hàng. Một số mục có thể chưa được chuyển.");
+            // Verify we have items to import first
+            List<nhapHangDTO> processingItems = nhapHangBUS.getAllNhapHang().stream()
+                .filter(item -> "Đang xử lý".equals(item.getTrangThai()))
+                .collect(java.util.stream.Collectors.toList());
+            
+            if (processingItems.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có sản phẩm nào cần xác nhận nhập hàng!");
+                return;
+            }
+            
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "Xác nhận chuyển " + processingItems.size() + " mục sang phiếu nhập?\n" +
+                "Các mã nhập hàng tạm thời sẽ được chuyển sang mã phiếu nhập chính thức.",
+                "Xác nhận nhập hàng",
+                JOptionPane.YES_NO_OPTION);
+                
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (nhapHangBUS.chuyenNhapHangSangPhieuNhap()) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Đã chuyển thành công " + processingItems.size() + " mục sang phiếu nhập!\n" +
+                        "Các phiếu nhập đã được cấp mã chính thức và sản phẩm đã được cập nhật vào kho.",
+                        "Nhập hàng thành công", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                    loadImportTable(); // Refresh lại bảng NhapHang (should be empty now)
+                } else {
+                    JOptionPane.showMessageDialog(this, "Có lỗi khi xác nhận nhập hàng. Một số mục có thể chưa được chuyển.");
+                }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());

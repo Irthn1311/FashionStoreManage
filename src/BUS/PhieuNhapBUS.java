@@ -43,8 +43,9 @@ public class PhieuNhapBUS {
             System.err.println("Invalid or null batchPrefix provided to generateMaPhieuNhapForBatch: " + batchPrefix + ". Generating a new one as fallback.");
             batchPrefix = generateNewBatchPrefix();
         }
-        // Generate a 5-digit random number (10000-99999)
-        int randomPart = randomGenerator.nextInt(90000) + 10000;
+        // Generate a 5-digit random number from nanoTime
+        long nanoTimeRandom = System.nanoTime();
+        int randomPart = (int) Math.abs(nanoTimeRandom % 100000);
         return String.format("%s_%05d", batchPrefix, randomPart);
     }
 

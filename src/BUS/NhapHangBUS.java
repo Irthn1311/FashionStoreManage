@@ -176,6 +176,11 @@ public class NhapHangBUS {
         }
         return nhapHangDAO.searchNhapHang(keyword, searchType);
     }
+    
+    // Method to get the next PN ID in format PN001, PN002, etc.
+    public String generateNextMaPN() {
+        return nhapHangDAO.generateNextMaPN();
+    }
 
     public boolean xuLyPhieuNhap() {
         try {
@@ -211,12 +216,18 @@ public class NhapHangBUS {
         PhieuNhapBUS phieuNhapBUS = new PhieuNhapBUS();
         SanPhamDAO sanPhamDAO = new SanPhamDAO();
         boolean allSuccess = true;
+        
+        // Generate one batch prefix for all items in this transfer operation
+        String batchPrefix = phieuNhapBUS.generateNewBatchPrefix();
 
         for (nhapHangDTO nh : list) {
             if ("Đang xử lý".equals(nh.getTrangThai())) {
                 // Tạo đối tượng PhieuNhapDTO từ nhapHangDTO
                 PhieuNhapDTO pn = new PhieuNhapDTO();
-                String maPhieuNhap = nh.getMaPN();
+                
+                // Generate the new PhieuNhap ID with format PN00001_12345
+                String maPhieuNhap = phieuNhapBUS.generateMaPhieuNhapForBatch(batchPrefix);
+                
                 pn.setMaPhieuNhap(maPhieuNhap);
                 pn.setMaNhaCungCap(nh.getMaNhaCungCap());
                 pn.setMaSanPham(nh.getMaSanPham());
