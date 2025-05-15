@@ -206,27 +206,10 @@ public class NhapHangBUS {
         }
     }
 
-    public String generateNextMaPN() {
-        List<nhapHangDTO> list = getAllNhapHang();
-        if (list.isEmpty()) {
-            return "PN001";
-        }
-        int maxNum = 0;
-        for (nhapHangDTO nh : list) {
-            String maPN = nh.getMaPN();
-            if (maPN != null && maPN.matches("PN\\d+")) {
-                int num = Integer.parseInt(maPN.substring(2));
-                if (num > maxNum) maxNum = num;
-            }
-        }
-        return String.format("PN%03d", maxNum + 1);
-    }
-
     public boolean chuyenNhapHangSangPhieuNhap() {
         List<nhapHangDTO> list = nhapHangDAO.getAllNhapHang();
         PhieuNhapBUS phieuNhapBUS = new PhieuNhapBUS();
         SanPhamDAO sanPhamDAO = new SanPhamDAO();
-        DAO.PhieuNhapDAO phieuNhapDAO = new DAO.PhieuNhapDAO();
         boolean allSuccess = true;
 
         for (nhapHangDTO nh : list) {
@@ -234,10 +217,6 @@ public class NhapHangBUS {
                 // Tạo đối tượng PhieuNhapDTO từ nhapHangDTO
                 PhieuNhapDTO pn = new PhieuNhapDTO();
                 String maPhieuNhap = nh.getMaPN();
-                // Nếu mã đã tồn tại ở bảng Phiếu Nhập thì sinh mã mới dựa trên PhieuNhap
-                if (phieuNhapBUS.getPhieuNhapByMa(maPhieuNhap) != null) {
-                    maPhieuNhap = phieuNhapBUS.getNextMaPhieuNhap();
-                }
                 pn.setMaPhieuNhap(maPhieuNhap);
                 pn.setMaNhaCungCap(nh.getMaNhaCungCap());
                 pn.setMaSanPham(nh.getMaSanPham());

@@ -1712,7 +1712,6 @@ public class FileUtils {
 
     //<editor-fold defaultstate="collapsed" desc="NhaCungCap Specific File Operations">
     public static void exportToNhaCungCapExcel(JTable table, String title) {
-        // exportToExcel(table, title);
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu file Excel Nhà Cung Cấp");
         fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel files (*.xlsx)", "xlsx"));
@@ -1730,7 +1729,7 @@ public class FileUtils {
             List<nhaCungCapDTO> nccList = nhaCungCapDAO.getAllNhaCungCap();
 
             String[] headers = {
-                "Mã Nhà Cung Cấp", "Tên Nhà Cung Cấp", "Loại Sản Phẩm Cung Cấp", "Năm Hợp Tác",
+                "Mã Nhà Cung Cấp", "Tên Nhà Cung Cấp", "Năm Hợp Tác",
                 "Địa Chỉ", "Email", "Số Điện Thoại", "Trạng Thái"
             };
 
@@ -1747,12 +1746,11 @@ public class FileUtils {
                     Row row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(ncc.getMaNhaCungCap());
                     row.createCell(1).setCellValue(ncc.getTenNhaCungCap());
-                    row.createCell(2).setCellValue(ncc.getLoaiSP());
-                    row.createCell(3).setCellValue(ncc.getNamHopTac());
-                    row.createCell(4).setCellValue(ncc.getDiaChi());
-                    row.createCell(5).setCellValue(ncc.getEmail());
-                    row.createCell(6).setCellValue(ncc.getSoDienThoai());
-                    row.createCell(7).setCellValue(ncc.getTrangThai());
+                    row.createCell(2).setCellValue(ncc.getNamHopTac());
+                    row.createCell(3).setCellValue(ncc.getDiaChi());
+                    row.createCell(4).setCellValue(ncc.getEmail());
+                    row.createCell(5).setCellValue(ncc.getSoDienThoai());
+                    row.createCell(6).setCellValue(ncc.getTrangThai());
                 }
 
                 for (int i = 0; i < headers.length; i++) {
@@ -1771,7 +1769,6 @@ public class FileUtils {
     }
 
     public static void exportToNhaCungCapWord(JTable table, String title) {
-        // exportToWord(table, title);
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu file Word Nhà Cung Cấp");
         fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Word files (*.docx)", "docx"));
@@ -1800,7 +1797,6 @@ public class FileUtils {
                 for (nhaCungCapDTO ncc : nccList) {
                     addParagraph(document, "Mã NCC: " + ncc.getMaNhaCungCap());
                     addParagraph(document, "Tên NCC: " + ncc.getTenNhaCungCap());
-                    addParagraph(document, "Loại SP Cung Cấp: " + ncc.getLoaiSP());
                     addParagraph(document, "Năm Hợp Tác: " + ncc.getNamHopTac());
                     addParagraph(document, "Địa Chỉ: " + ncc.getDiaChi());
                     addParagraph(document, "Email: " + ncc.getEmail());
@@ -1836,9 +1832,7 @@ public class FileUtils {
 
             try (Workbook workbook = new XSSFWorkbook(new FileInputStream(selectedFile))) {
                 Sheet sheet = workbook.getSheetAt(0);
-                // Headers: Mã NCC(0), Tên NCC(1), Loại SP(2), Năm HT(3), Địa chỉ(4), Email(5), SĐT(6), Trạng thái(7)
-                // Original import: STT(0), Mã NCC(1), Tên NCC(2), Loại SP(3), Năm HT(4), Địa chỉ(5), Email(6), SĐT(7), Trạng thái(8)
-                // Adjusting to current export:
+                // Headers: Mã NCC(0), Tên NCC(1), Năm HT(2), Địa chỉ(3), Email(4), SĐT(5), Trạng thái(6)
                  List<String> existingMaNCCs = nhaCungCapDAO.getAllNhaCungCap().stream()
                                                .map(nhaCungCapDTO::getMaNhaCungCap)
                                                .collect(Collectors.toList());
@@ -1847,7 +1841,7 @@ public class FileUtils {
                     Row row = sheet.getRow(i);
                     if (row == null) continue;
                     try {
-                        String maNhaCungCap = getCellStringValue(row.getCell(0)); // Index adjusted
+                        String maNhaCungCap = getCellStringValue(row.getCell(0)); 
                         if (maNhaCungCap == null || maNhaCungCap.trim().isEmpty()) {
                             errorMessages.append("Dòng ").append(i + 1).append(": Mã nhà cung cấp trống.\n");
                                 failCount++;
@@ -1862,9 +1856,8 @@ public class FileUtils {
                         nhaCungCapDTO ncc = new nhaCungCapDTO();
                         ncc.setMaNhaCungCap(maNhaCungCap);
                         ncc.setTenNhaCungCap(getCellStringValue(row.getCell(1)));
-                        ncc.setLoaiSP(getCellStringValue(row.getCell(2)));
                         
-                        Cell namHTCell = row.getCell(3);
+                        Cell namHTCell = row.getCell(2); 
                         if (namHTCell != null && namHTCell.getCellType() == CellType.NUMERIC) {
                             ncc.setNamHopTac((int)namHTCell.getNumericCellValue());
                         } else if (namHTCell != null && !getCellStringValue(namHTCell).trim().isEmpty()){
@@ -1872,18 +1865,18 @@ public class FileUtils {
                                 ncc.setNamHopTac(Integer.parseInt(getCellStringValue(namHTCell)));
                             } catch (NumberFormatException e){
                                 errorMessages.append("Dòng ").append(i + 1).append(": Lỗi định dạng Năm hợp tác '").append(getCellStringValue(namHTCell)).append("'.\n");
-                                ncc.setNamHopTac(0); // Default or error
+                                ncc.setNamHopTac(0); 
                             }
                         } else {
-                            ncc.setNamHopTac(0); // Default if empty
+                            ncc.setNamHopTac(0); 
                         }
 
-                        ncc.setDiaChi(getCellStringValue(row.getCell(4)));
-                        ncc.setEmail(getCellStringValue(row.getCell(5)));
-                        ncc.setSoDienThoai(getCellStringValue(row.getCell(6)));
-                        ncc.setTrangThai(getCellStringValue(row.getCell(7)));
+                        ncc.setDiaChi(getCellStringValue(row.getCell(3)));       
+                        ncc.setEmail(getCellStringValue(row.getCell(4)));        
+                        ncc.setSoDienThoai(getCellStringValue(row.getCell(5)));  
+                        ncc.setTrangThai(getCellStringValue(row.getCell(6)));    
                         
-                        if (nhaCungCapBUS.themNhaCungCap(ncc)) { // themNhaCungCap from BUS
+                        if (nhaCungCapBUS.themNhaCungCap(ncc)) { 
                                 successCount++;
                             existingMaNCCs.add(maNhaCungCap);
                         } else {

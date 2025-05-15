@@ -232,31 +232,31 @@ public class khuyenMaiPanel extends javax.swing.JPanel {
 
                 khuyenMaiTable.getColumnModel().getColumn(11).setCellRenderer(new HyperlinkRenderer());
 
-                khuyenMaiTable.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                                int column = khuyenMaiTable.columnAtPoint(e.getPoint());
-                                int row = khuyenMaiTable.rowAtPoint(e.getPoint());
+                // khuyenMaiTable.addMouseListener(new MouseAdapter() {
+                //         @Override
+                //         public void mouseClicked(MouseEvent e) {
+                //                 int column = khuyenMaiTable.columnAtPoint(e.getPoint());
+                //                 int row = khuyenMaiTable.rowAtPoint(e.getPoint());
 
-                                if (column == 11) {
-                                        DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
-                                        String maKhuyenMai = model.getValueAt(row, 1).toString();
-                                        List<khuyenMaiDTO> khuyenMaiList = khuyenMaiService.getAllKhuyenMai();
-                                        khuyenMaiDTO km = khuyenMaiList.stream()
-                                                        .filter(k -> k.getMaKhuyenMai().equals(maKhuyenMai))
-                                                        .findFirst()
-                                                        .orElse(null);
+                //                 if (column == 11) {
+                //                         DefaultTableModel model = (DefaultTableModel) khuyenMaiTable.getModel();
+                //                         String maKhuyenMai = model.getValueAt(row, 1).toString();
+                //                         List<khuyenMaiDTO> khuyenMaiList = khuyenMaiService.getAllKhuyenMai();
+                //                         khuyenMaiDTO km = khuyenMaiList.stream()
+                //                                         .filter(k -> k.getMaKhuyenMai().equals(maKhuyenMai))
+                //                                         .findFirst()
+                //                                         .orElse(null);
 
-                                        if (km != null) {
-                                                KhuyenMaiDetailsDialog detailsDialog = new KhuyenMaiDetailsDialog(
-                                                                (java.awt.Frame) javax.swing.SwingUtilities
-                                                                                .getWindowAncestor(khuyenMaiPanel.this),
-                                                                km, dateFormat);
-                                                detailsDialog.setVisible(true);
-                                        }
-                                }
-                        }
-                });
+                //                         if (km != null) {
+                //                                 KhuyenMaiDetailsDialog detailsDialog = new KhuyenMaiDetailsDialog(
+                //                                                 (java.awt.Frame) javax.swing.SwingUtilities
+                //                                                                 .getWindowAncestor(khuyenMaiPanel.this),
+                //                                                 km, dateFormat);
+                //                                 detailsDialog.setVisible(true);
+                //                         }
+                //                 }
+                //         }
+                // });
 
                 // Add KeyListeners for search fields like in HoaDonPanel
                 jTextField1.addKeyListener(new KeyAdapter() {

@@ -19,7 +19,8 @@ import javax.mail.internet.MimeMultipart;
 public class EmailService {
 
     // Thông tin cấu hình SMTP - CẦN ĐƯỢC CẤU HÌNH ĐÚNG
-    // Bạn nên lưu trữ các thông tin này trong một file config hoặc cho người dùng nhập
+    // Bạn nên lưu trữ các thông tin này trong một file config hoặc cho người dùng
+    // nhập
     private static final String SMTP_HOST = "smtp.gmail.com"; // Ví dụ: smtp.gmail.com
     private static final String SMTP_PORT = "587"; // Ví dụ: 587 (TLS) hoặc 465 (SSL)
     private static final String SMTP_USER = "nhuutri1311@gmail.com"; // Email người gửi
@@ -29,8 +30,9 @@ public class EmailService {
 
     /**
      * Gửi email hóa đơn cho khách hàng.
-     * @param customer Thông tin khách hàng (để lấy email và tên).
-     * @param items Danh sách các sản phẩm trong hóa đơn.
+     * 
+     * @param customer      Thông tin khách hàng (để lấy email và tên).
+     * @param items         Danh sách các sản phẩm trong hóa đơn.
      * @param pdfAttachment File PDF hóa đơn đính kèm (có thể null).
      * @return true nếu gửi email thành công, false nếu thất bại.
      */
@@ -67,14 +69,18 @@ public class EmailService {
             // Nội dung email (HTML)
             StringBuilder emailContentHtml = new StringBuilder();
             emailContentHtml.append("<html><head><style>");
-            emailContentHtml.append("body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; }");
-            emailContentHtml.append(".container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 700px; margin: auto; }");
-            emailContentHtml.append(".header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #eee; }");
+            emailContentHtml.append(
+                    "body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; }");
+            emailContentHtml.append(
+                    ".container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 700px; margin: auto; }");
+            emailContentHtml
+                    .append(".header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #eee; }");
             emailContentHtml.append(".header h1 { color: #333; margin:0; font-size: 24px; }");
             emailContentHtml.append(".store-name { font-size: 28px; color: #007bff; margin-bottom: 10px; }");
             emailContentHtml.append("h2 { color: #007bff; margin-top: 0; }");
             emailContentHtml.append("p { line-height: 1.6; }");
-            emailContentHtml.append("table { width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 20px; }");
+            emailContentHtml
+                    .append("table { width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 20px; }");
             emailContentHtml.append("th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }");
             emailContentHtml.append("th { background-color: #007bff; color: white; text-align: center;}");
             emailContentHtml.append("td.product-name { font-weight: bold; }");
@@ -87,21 +93,26 @@ public class EmailService {
             emailContentHtml.append("<div class='header'><h1 class='store-name'>FASHION STORE IRTHN</h1>");
             emailContentHtml.append("<p>HÓA ĐƠN ĐIỆN TỬ</p></div>");
 
-            emailContentHtml.append("<h2>Kính gửi ").append(customer.getHoTen() != null ? customer.getHoTen() : "Quý khách").append(",</h2>");
-            emailContentHtml.append("<p>Cảm ơn Quý khách đã mua hàng tại <strong>FASHION STORE IRTHN</strong>. Dưới đây là chi tiết hóa đơn của Quý khách:</p>");
-            
+            emailContentHtml.append("<h2>Kính gửi ")
+                    .append(customer.getHoTen() != null ? customer.getHoTen() : "Quý khách").append(",</h2>");
+            emailContentHtml.append(
+                    "<p>Cảm ơn Quý khách đã mua hàng tại <strong>FASHION STORE IRTHN</strong>. Dưới đây là chi tiết hóa đơn của Quý khách:</p>");
+
             emailContentHtml.append("<table>");
-            emailContentHtml.append("<thead><tr><th>STT</th><th>Tên Sản Phẩm</th><th>Số Lượng</th><th>Đơn Giá (VNĐ)</th><th>Thành Tiền (VNĐ)</th></tr></thead>");
+            emailContentHtml.append(
+                    "<thead><tr><th>STT</th><th>Tên Sản Phẩm</th><th>Số Lượng</th><th>Đơn Giá (VNĐ)</th><th>Thành Tiền (VNĐ)</th></tr></thead>");
             emailContentHtml.append("<tbody>");
-            
+
             double tongCong = 0;
             int stt = 1;
             java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0"); // Format số
             for (xuatHangDTO item : items) {
                 emailContentHtml.append("<tr>");
                 emailContentHtml.append("<td style='text-align:center;'>").append(stt++).append("</td>");
-                emailContentHtml.append("<td class='product-name'>").append(item.getTenSanPham() != null ? item.getTenSanPham() : "").append("</td>");
-                emailContentHtml.append("<td class='align-right'>").append(item.getSoLuong() != null ? item.getSoLuong() : "0").append("</td>");
+                emailContentHtml.append("<td class='product-name'>")
+                        .append(item.getTenSanPham() != null ? item.getTenSanPham() : "").append("</td>");
+                emailContentHtml.append("<td class='align-right'>")
+                        .append(item.getSoLuong() != null ? item.getSoLuong() : "0").append("</td>");
                 String donGiaFormatted = "0";
                 String thanhTienFormatted = "0";
                 try {
@@ -120,12 +131,15 @@ public class EmailService {
                 emailContentHtml.append("<td class='align-right'>").append(thanhTienFormatted).append("</td>");
                 emailContentHtml.append("</tr>");
             }
-            emailContentHtml.append("<tr class='total-row'><td colspan='4' class='align-right'><strong>Tổng cộng:</strong></td><td class='align-right'><strong>")
-                            .append(df.format(tongCong)).append(" VNĐ</strong></td></tr>");
+            emailContentHtml.append(
+                    "<tr class='total-row'><td colspan='4' class='align-right'><strong>Tổng cộng:</strong></td><td class='align-right'><strong>")
+                    .append(df.format(tongCong)).append(" VNĐ</strong></td></tr>");
             emailContentHtml.append("</tbody></table>");
-            
-            emailContentHtml.append("<p>Nếu Quý khách có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua email ").append(SMTP_USER).append(" hoặc số điện thoại 0582837353.</p>");
-            
+
+            emailContentHtml
+                    .append("<p>Nếu Quý khách có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua email ")
+                    .append(SMTP_USER).append(" hoặc số điện thoại 0582837353.</p>");
+
             emailContentHtml.append("<div class='footer'>");
             emailContentHtml.append("<p>Trân trọng cảm ơn và hẹn gặp lại!</p>");
             emailContentHtml.append("<p><strong>FASHION STORE IRTHN</strong></p>");

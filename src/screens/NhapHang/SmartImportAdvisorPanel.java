@@ -88,19 +88,17 @@ public class SmartImportAdvisorPanel extends JPanel {
         javax.swing.GroupLayout pnlHeaderLayout = new javax.swing.GroupLayout(pnlHeader);
         pnlHeader.setLayout(pnlHeaderLayout);
         pnlHeaderLayout.setHorizontalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblTitle)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblTitle)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         pnlHeaderLayout.setVerticalGroup(
-            pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeaderLayout.createSequentialGroup()
-                .addGap(18)
-                .addComponent(lblTitle)
-                .addContainerGap(20, Short.MAX_VALUE))
-        );
+                pnlHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlHeaderLayout.createSequentialGroup()
+                                .addGap(18)
+                                .addComponent(lblTitle)
+                                .addContainerGap(20, Short.MAX_VALUE)));
 
         add(pnlHeader, BorderLayout.NORTH);
 
@@ -127,15 +125,18 @@ public class SmartImportAdvisorPanel extends JPanel {
         pnlInput.add(btnLoadSuggestions);
         pnlMainContent.add(pnlInput, BorderLayout.NORTH);
 
-        String[] columnNames = {"STT", "Mã SP", "Tên SP", "Tồn Kho", "Giá Nhập Ước Tính", "SL Đề Xuất", "Tổng Chi Phí SP", "Xóa"};
+        String[] columnNames = { "STT", "Mã SP", "Tên SP", "Tồn Kho", "Giá Nhập Ước Tính", "SL Đề Xuất",
+                "Tổng Chi Phí SP", "Xóa" };
         tblModelSuggestions = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 5 || column == 7;
             }
-             @Override
+
+            @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 7) return JButton.class;
+                if (columnIndex == 7)
+                    return JButton.class;
                 return super.getColumnClass(columnIndex);
             }
         };
@@ -150,10 +151,10 @@ public class SmartImportAdvisorPanel extends JPanel {
         JScrollPane scrollPaneSuggestions = new JScrollPane(tblSuggestions);
         pnlMainContent.add(scrollPaneSuggestions, BorderLayout.CENTER);
 
-        JPanel pnlActionsAndSummary = new JPanel(new BorderLayout(10,10));
+        JPanel pnlActionsAndSummary = new JPanel(new BorderLayout(10, 10));
         pnlActionsAndSummary.setBackground(MAIN_BACKGROUND_COLOR);
 
-        JPanel pnlSummary = new JPanel(new GridLayout(2,1,5,5));
+        JPanel pnlSummary = new JPanel(new GridLayout(2, 1, 5, 5));
         pnlSummary.setBackground(MAIN_BACKGROUND_COLOR);
         lblTotalCost = new JLabel("Tổng chi phí dự kiến: 0 VNĐ");
         lblTotalCost.setFont(new Font("Segoe UI", Font.BOLD, 14));
@@ -164,7 +165,6 @@ public class SmartImportAdvisorPanel extends JPanel {
         pnlSummary.add(lblTotalCost);
         pnlSummary.add(lblRemainingBudget);
         pnlActionsAndSummary.add(pnlSummary, BorderLayout.CENTER);
-
 
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         pnlButtons.setBackground(MAIN_BACKGROUND_COLOR);
@@ -205,26 +205,27 @@ public class SmartImportAdvisorPanel extends JPanel {
         tblModelSuggestions.addTableModelListener(e -> {
             if (!isInternallyUpdatingTable) {
                 if (e.getType() == javax.swing.event.TableModelEvent.UPDATE ||
-                    e.getType() == javax.swing.event.TableModelEvent.INSERT ||
-                    e.getType() == javax.swing.event.TableModelEvent.DELETE) {
+                        e.getType() == javax.swing.event.TableModelEvent.INSERT ||
+                        e.getType() == javax.swing.event.TableModelEvent.DELETE) {
                     updateSummaryCalculations();
                 }
             }
         });
-        
+
         tblSuggestions.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int column = tblSuggestions.getColumnModel().getColumnIndexAtX(evt.getX());
                 int row = evt.getY() / tblSuggestions.getRowHeight();
 
-                if (row < tblSuggestions.getRowCount() && row >= 0 && column < tblSuggestions.getColumnCount() && column >= 0) {
+                if (row < tblSuggestions.getRowCount() && row >= 0 && column < tblSuggestions.getColumnCount()
+                        && column >= 0) {
                     Object value = tblSuggestions.getValueAt(row, column);
                     if (value instanceof JButton) {
-                        ((JButton)value).doClick();
+                        ((JButton) value).doClick();
                         tblModelSuggestions.removeRow(row);
-                        if(row < suggestedItemsList.size()){
-                             suggestedItemsList.remove(row);
+                        if (row < suggestedItemsList.size()) {
+                            suggestedItemsList.remove(row);
                         }
                         updateTableSTT();
                     }
@@ -232,7 +233,7 @@ public class SmartImportAdvisorPanel extends JPanel {
             }
         });
     }
-    
+
     private void updateTableSTT() {
         for (int i = 0; i < tblModelSuggestions.getRowCount(); i++) {
             tblModelSuggestions.setValueAt(i + 1, i, 0);
@@ -263,7 +264,8 @@ public class SmartImportAdvisorPanel extends JPanel {
 
             List<sanPhamDTO> allProducts = sanPhamBUS.getAll();
             if (allProducts == null || allProducts.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Không thể tải danh sách sản phẩm hoặc danh sách rỗng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Không thể tải danh sách sản phẩm hoặc danh sách rỗng.", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -283,7 +285,7 @@ public class SmartImportAdvisorPanel extends JPanel {
                     break;
                 }
 
-                double estimatedPurchasePrice = sp.getGiaBan();
+                double estimatedPurchasePrice = sanPhamBUS.getGiaGocSanPham(sp.getMaSanPham());
                 if (estimatedPurchasePrice <= 0) {
                     estimatedPurchasePrice = 50000;
                 }
@@ -302,17 +304,17 @@ public class SmartImportAdvisorPanel extends JPanel {
 
                 if (suggestedQuantity > 0) {
                     double itemTotalCost = suggestedQuantity * estimatedPurchasePrice;
-                    
+
                     JButton btnDeleteRow = new JButton("Xóa");
-                    tblModelSuggestions.addRow(new Object[]{
-                        stt++,
-                        sp.getMaSanPham(),
-                        sp.getTenSanPham(),
-                        sp.getSoLuongTonKho(),
-                        df.format(estimatedPurchasePrice),
-                        suggestedQuantity,
-                        df.format(itemTotalCost),
-                        btnDeleteRow
+                    tblModelSuggestions.addRow(new Object[] {
+                            stt++,
+                            sp.getMaSanPham(),
+                            sp.getTenSanPham(),
+                            sp.getSoLuongTonKho(),
+                            df.format(estimatedPurchasePrice),
+                            suggestedQuantity,
+                            df.format(itemTotalCost),
+                            btnDeleteRow
                     });
 
                     nhapHangDTO suggestedItem = new nhapHangDTO();
@@ -329,14 +331,17 @@ public class SmartImportAdvisorPanel extends JPanel {
         } finally {
             isInternallyUpdatingTable = false;
         }
-        
+
         updateSummaryCalculations();
-        
+
         if (tblModelSuggestions.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được đề xuất dựa trên ngân sách và tiêu chí hiện tại (tồn kho < " + TARGET_STOCK_LEVEL + ").", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Không có sản phẩm nào được đề xuất dựa trên ngân sách và tiêu chí hiện tại (tồn kho < "
+                            + TARGET_STOCK_LEVEL + ").",
+                    "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
+
     private void updateSummaryCalculations() {
         isInternallyUpdatingTable = true;
         try {
@@ -351,7 +356,7 @@ public class SmartImportAdvisorPanel extends JPanel {
 
                     double unitPrice = 0;
                     Object unitPriceObj = tblModelSuggestions.getValueAt(i, 4);
-                     if (unitPriceObj != null && !unitPriceObj.toString().isEmpty()) {
+                    if (unitPriceObj != null && !unitPriceObj.toString().isEmpty()) {
                         unitPrice = df.parse(unitPriceObj.toString()).doubleValue();
                     }
 
@@ -367,26 +372,26 @@ public class SmartImportAdvisorPanel extends JPanel {
             if (currentBudget > 0) {
                 lblRemainingBudget.setText("Ngân sách còn lại: " + df.format(currentBudget - totalCost) + " VNĐ");
             } else {
-                 lblRemainingBudget.setText("Ngân sách còn lại: 0 VNĐ");
+                lblRemainingBudget.setText("Ngân sách còn lại: 0 VNĐ");
             }
         } finally {
             isInternallyUpdatingTable = false;
         }
     }
 
-
     private void approveImportsAction() {
         if (suggestedItemsList.isEmpty() && tblModelSuggestions.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Không có sản phẩm nào để duyệt.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Không có sản phẩm nào để duyệt.", "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(this, 
-            "Bạn có chắc chắn muốn thêm các sản phẩm này vào danh sách đặt hàng không?\n" +
-            "Tổng chi phí: " + lblTotalCost.getText().replace("Tổng chi phí dự kiến: ", "") + "\n" +
-            lblRemainingBudget.getText(),
-            "Xác nhận duyệt", 
-            JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Bạn có chắc chắn muốn thêm các sản phẩm này vào danh sách đặt hàng không?\n" +
+                        "Tổng chi phí: " + lblTotalCost.getText().replace("Tổng chi phí dự kiến: ", "") + "\n" +
+                        lblRemainingBudget.getText(),
+                "Xác nhận duyệt",
+                JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             boolean allAddedSuccessfully = true;
@@ -397,13 +402,27 @@ public class SmartImportAdvisorPanel extends JPanel {
                     double donGia = df.parse(tblModelSuggestions.getValueAt(i, 4).toString()).doubleValue();
                     int soLuongDat = Integer.parseInt(tblModelSuggestions.getValueAt(i, 5).toString());
 
-                    if (soLuongDat <= 0) continue;
+                    if (soLuongDat <= 0)
+                        continue;
 
                     nhapHangDTO newItem = new nhapHangDTO();
-                    newItem.setMaPN(nhapHangBUS.generateNextMaPN());
                     
+                    String batchPrefix = previousPanel.getCurrentNhapHangBatchPrefix();
+                    PhieuNhapBUS pnBus = previousPanel.getPhieuNhapBUSForIdGeneration();
+                    if (pnBus == null) {
+                         JOptionPane.showMessageDialog(this, "Lỗi: Không thể truy cập PhieuNhapBUS từ màn hình Nhập Hàng.", "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
+                         return;
+                    }
+                    if (batchPrefix == null) {
+                        JOptionPane.showMessageDialog(this, "Lỗi: Không thể lấy batch prefix hiện tại.", "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
+                         return;
+                    }
+                    String maPN = pnBus.generateMaPhieuNhapForBatch(batchPrefix);
+                    newItem.setMaPN(maPN);
+
                     sanPhamDTO productDetails = sanPhamBUS.getSanPhamByMa(maSP);
-                    if (productDetails != null && productDetails.getMaNhaCungCap() != null && !productDetails.getMaNhaCungCap().isEmpty()) {
+                    if (productDetails != null && productDetails.getMaNhaCungCap() != null
+                            && !productDetails.getMaNhaCungCap().isEmpty()) {
                         newItem.setMaNhaCungCap(productDetails.getMaNhaCungCap());
                     } else {
                         NhaCungCap_SanPhamDAO nccSpDao = new NhaCungCap_SanPhamDAO();
@@ -411,9 +430,11 @@ public class SmartImportAdvisorPanel extends JPanel {
                         if (!suppliersForProduct.isEmpty()) {
                             newItem.setMaNhaCungCap(suppliersForProduct.get(0).getMaNhaCungCap());
                         } else {
-                             JOptionPane.showMessageDialog(this, "Không tìm thấy nhà cung cấp cho sản phẩm: " + maSP + ". Bỏ qua.", "Lỗi NCC", JOptionPane.WARNING_MESSAGE);
-                             allAddedSuccessfully = false;
-                             continue; 
+                            JOptionPane.showMessageDialog(this,
+                                    "Không tìm thấy nhà cung cấp cho sản phẩm: " + maSP + ". Bỏ qua.", "Lỗi NCC",
+                                    JOptionPane.WARNING_MESSAGE);
+                            allAddedSuccessfully = false;
+                            continue;
                         }
                     }
 
@@ -423,27 +444,32 @@ public class SmartImportAdvisorPanel extends JPanel {
                     newItem.setDonGia(String.valueOf(donGia));
                     newItem.setThanhTien(String.valueOf(soLuongDat * donGia));
                     newItem.setTrangThai("Đang xử lý");
-                    newItem.setThoiGian(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
+                    newItem.setThoiGian(
+                            new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
                     newItem.setHinhThucThanhToan("Tiền mặt");
 
-                    if(productDetails != null){
+                    if (productDetails != null) {
                         newItem.setMauSac(productDetails.getMauSac());
                         newItem.setKichThuoc(productDetails.getSize());
                     }
 
-
                     if (!nhapHangBUS.themNhapHang(newItem)) {
-                        JOptionPane.showMessageDialog(this, "Lỗi khi thêm sản phẩm " + maSP + " vào danh sách đặt hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this,
+                                "Lỗi khi thêm sản phẩm " + maSP + " vào danh sách đặt hàng.", "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
                         allAddedSuccessfully = false;
                     }
                 } catch (Exception ex) {
-                     JOptionPane.showMessageDialog(this, "Lỗi xử lý dữ liệu cho sản phẩm: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-                     allAddedSuccessfully = false;
+                    JOptionPane.showMessageDialog(this, "Lỗi xử lý dữ liệu cho sản phẩm: " + ex.getMessage(), "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    allAddedSuccessfully = false;
                 }
             }
 
             if (allAddedSuccessfully && tblModelSuggestions.getRowCount() > 0) {
-                JOptionPane.showMessageDialog(this, "Các sản phẩm đã được thêm vào danh sách chờ nhập hàng.\nChuyển về màn hình Nhập Hàng để xác nhận.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                        "Các sản phẩm đã được thêm vào danh sách chờ nhập hàng.\nChuyển về màn hình Nhập Hàng để xác nhận.",
+                        "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 tblModelSuggestions.setRowCount(0);
                 suggestedItemsList.clear();
                 txtBudget.setText("");
@@ -454,9 +480,11 @@ public class SmartImportAdvisorPanel extends JPanel {
                 }
                 backAction();
             } else if (tblModelSuggestions.getRowCount() == 0) {
-                 JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được duyệt.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Không có sản phẩm nào được duyệt.", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
             } else {
-                 JOptionPane.showMessageDialog(this, "Một vài sản phẩm không thể thêm. Vui lòng kiểm tra lại.", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Một vài sản phẩm không thể thêm. Vui lòng kiểm tra lại.",
+                        "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
         }
     }
@@ -475,7 +503,8 @@ public class SmartImportAdvisorPanel extends JPanel {
             this.previousPanel.refreshImportTable();
             mainFrame.switchPanel(previousPanel.getNhapHangPanel(), mainFrame.getBtnNhapHang());
         } else {
-             JOptionPane.showMessageDialog(this, "Không thể quay lại màn hình Nhập Hàng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Không thể quay lại màn hình Nhập Hàng.", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -488,9 +517,9 @@ public class SmartImportAdvisorPanel extends JPanel {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
-                                                       boolean isSelected, boolean hasFocus, 
-                                                       int row, int column) {
+                boolean isSelected, boolean hasFocus,
+                int row, int column) {
             return this;
         }
     }
-} 
+}

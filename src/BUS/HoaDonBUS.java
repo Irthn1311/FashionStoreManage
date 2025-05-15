@@ -29,7 +29,15 @@ public class HoaDonBUS {
         return hoaDonDAO.updateHoaDon(hd);
     }
 
+    public List<hoaDonDTO> getHoaDonByKhachHangAndSeries(String maKhachHang, String seriesPart) {
+        return hoaDonDAO.getHoaDonByKhachHangAndSeries(maKhachHang, seriesPart);
+    }
+
     public List<sanPhamThongKeDTO> getSanPhamBanChayNhat(Timestamp startDate, Timestamp endDate) {
         return hoaDonDAO.getSanPhamBanChayNhat(startDate, endDate);
+    }
+
+    public int getNewMaHoaDonSeries() {
+        return hoaDonDAO.getNewMaHoaDonSeries();
     }
 } 
