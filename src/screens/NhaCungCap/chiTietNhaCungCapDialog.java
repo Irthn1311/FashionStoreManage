@@ -2,19 +2,15 @@ package screens.NhaCungCap;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import DTO.nhaCungCapDTO;
-import java.text.SimpleDateFormat;
 
 public class chiTietNhaCungCapDialog extends JDialog {
     private nhaCungCapDTO nhaCungCap;
-    private SimpleDateFormat dateFormat;
     private JPanel mainPanel;
 
     public chiTietNhaCungCapDialog(Frame parent, nhaCungCapDTO nhaCungCap) {
         super(parent, "Chi Tiết Nhà Cung Cấp", true);
         this.nhaCungCap = nhaCungCap;
-        this.dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         
         initComponents();
         setLocationRelativeTo(parent);
@@ -33,21 +29,21 @@ public class chiTietNhaCungCapDialog extends JDialog {
         JLabel titleLabel = new JLabel("THÔNG TIN CHI TIẾT NHÀ CUNG CẤP", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
         gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(titleLabel, gbc);
 
         // Thông tin nhà cung cấp
         gbc.gridy++;
         gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
         addField("Mã nhà cung cấp:", nhaCungCap.getMaNhaCungCap(), gbc);
 
         gbc.gridy++;
         addField("Tên nhà cung cấp:", nhaCungCap.getTenNhaCungCap(), gbc);
 
         gbc.gridy++;
-        addField("Loại sản phẩm:", nhaCungCap.getLoaiSP(), gbc);
-
-        gbc.gridy++;
-        addField("Năm hợp tác:", String.valueOf(nhaCungCap.getNamHopTac()), gbc);
+        String namHopTacDisplay = (nhaCungCap.getNamHopTac() > 0) ? String.valueOf(nhaCungCap.getNamHopTac()) : "Chưa cập nhật";
+        addField("Năm hợp tác:", namHopTacDisplay, gbc);
 
         gbc.gridy++;
         addField("Địa chỉ:", nhaCungCap.getDiaChi(), gbc);

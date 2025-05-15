@@ -3,7 +3,6 @@ package DTO;
 public class nhaCungCapDTO {
     private String maNhaCungCap;
     private String tenNhaCungCap;
-    private String loaiSP;
     private int namHopTac;
     private String diaChi;
     private String email;
@@ -13,12 +12,11 @@ public class nhaCungCapDTO {
     public nhaCungCapDTO() {
     }
 
-    public nhaCungCapDTO(String maNhaCungCap, String tenNhaCungCap, String loaiSP, 
+    public nhaCungCapDTO(String maNhaCungCap, String tenNhaCungCap, 
                         int namHopTac, String diaChi, String email, 
                         String soDienThoai, String trangThai) {
         this.maNhaCungCap = maNhaCungCap;
         this.tenNhaCungCap = tenNhaCungCap;
-        this.loaiSP = loaiSP;
         this.namHopTac = namHopTac;
         this.diaChi = diaChi;
         this.email = email;
@@ -40,14 +38,6 @@ public class nhaCungCapDTO {
 
     public void setTenNhaCungCap(String tenNhaCungCap) {
         this.tenNhaCungCap = tenNhaCungCap;
-    }
-
-    public String getLoaiSP() {
-        return loaiSP;
-    }
-
-    public void setLoaiSP(String loaiSP) {
-        this.loaiSP = loaiSP;
     }
 
     public int getNamHopTac() {
@@ -95,7 +85,6 @@ public class nhaCungCapDTO {
         return "NhaCungCap{" +
                 "maNhaCungCap='" + maNhaCungCap + '\'' +
                 ", tenNhaCungCap='" + tenNhaCungCap + '\'' +
-                ", loaiSP='" + loaiSP + '\'' +
                 ", namHopTac=" + namHopTac +
                 ", diaChi='" + diaChi + '\'' +
                 ", email='" + email + '\'' +

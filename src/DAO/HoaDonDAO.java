@@ -456,4 +456,77 @@ public class HoaDonDAO {
         }
         return 0;
     }
+
+    // Method to get invoices by customer and series part of MaHoaDon
+    public List<hoaDonDTO> getHoaDonByKhachHangAndSeries(String maKhachHang, String seriesPart) {
+        List<hoaDonDTO> listHoaDon = new ArrayList<>();
+        // Query to fetch all columns, including TenKhachHang via a JOIN, similar to getAllHoaDon
+        String sql = "SELECT hd.MaHoaDon, hd.MaSanPham, hd.TenSanPham, hd.KichCo, hd.MauSac, hd.SoLuong, " +
+                     "hd.MaKhachHang, kh.HoTen as TenKhachHang, hd.ThanhTien, hd.DonGia, " +
+                     "hd.HinhThucThanhToan, CONVERT(datetime, hd.ThoiGian, 120) as ThoiGian, hd.TrangThai " +
+                     "FROM HoaDon hd " +
+                     "LEFT JOIN KhachHang kh ON hd.MaKhachHang = kh.MaKhachHang " +
+                     "WHERE hd.MaKhachHang = ? AND hd.MaHoaDon LIKE ?";
+
+        try (Connection con = ConnectDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setString(1, maKhachHang);
+            ps.setString(2, seriesPart + "_%"); // Match MaHoaDon starting with seriesPart followed by '_'
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                hoaDonDTO hd = new hoaDonDTO(
+                    rs.getString("MaHoaDon"),
+                    rs.getString("MaSanPham"),
+                    rs.getString("TenSanPham"),
+                    rs.getString("KichCo"),
+                    rs.getString("MauSac"),
+                    rs.getInt("SoLuong"),
+                    rs.getString("MaKhachHang"),
+                    rs.getString("TenKhachHang"), // Now available due to JOIN
+                    rs.getDouble("ThanhTien"),
+                    rs.getDouble("DonGia"),
+                    rs.getString("HinhThucThanhToan"),
+                    rs.getTimestamp("ThoiGian"),
+                    rs.getString("TrangThai")
+                );
+                listHoaDon.add(hd);
+            }
+            if (rs != null) rs.close();
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy hóa đơn theo khách hàng và series: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return listHoaDon;
+    }
+
+    public int getNewMaHoaDonSeries() {
+        int maxSeries = 0;
+        String sql = "SELECT MaHoaDon FROM HoaDon WHERE MaHoaDon LIKE 'HD_____[_]%'"; 
+
+        try (Connection conn = ConnectDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String maHoaDon = rs.getString("MaHoaDon");
+                try {
+                    if (maHoaDon != null && maHoaDon.length() > 7 && maHoaDon.startsWith("HD") && maHoaDon.charAt(7) == '_') {
+                        String seriesStr = maHoaDon.substring(2, 7);
+                        int currentSeries = Integer.parseInt(seriesStr);
+                        if (currentSeries > maxSeries) {
+                            maxSeries = currentSeries;
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Lỗi khi phân tích MaHoaDon series: " + maHoaDon + " - " + e.getMessage());
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy series MaHoaDon mới: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return maxSeries + 1;
+    }
 }

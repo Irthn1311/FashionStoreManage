@@ -277,14 +277,22 @@ public class xuathang extends javax.swing.JPanel {
                                     : "Tiền Mặt";
                             int savedHoaDonCount = 0;
 
+                            // Determine the series number for this batch of invoices ONCE
+                            int currentSeriesNumber = hoaDonBUS_manager.getNewMaHoaDonSeries();
+                            String seriesStr = String.format("%05d", currentSeriesNumber);
+
                             for (DTO.xuatHangDTO xhItem : xuatHangListProcessing) {
                                 DTO.hoaDonDTO hd = new DTO.hoaDonDTO();
-                                String maHoaDonMoi = "HD_" + xhItem.getMaPX().replaceAll("[^a-zA-Z0-9]", "") + "_"
-                                        + System.nanoTime() % 1000000;
-                                while (hoaDonBUS_manager.isMaHoaDonExists(maHoaDonMoi)) {
-                                    maHoaDonMoi = "HD_" + xhItem.getMaPX().replaceAll("[^a-zA-Z0-9]", "") + "_"
-                                            + System.nanoTime() % 1000000 + (int) (Math.random() * 100);
-                                }
+                                
+                                String maHoaDonMoi;
+                                String randomPart;
+                                do {
+                                    // Generate a 5-digit random number from nanoTime, ensuring it's positive
+                                    long nanoTimeRandom = System.nanoTime();
+                                    randomPart = String.format("%05d", Math.abs(nanoTimeRandom % 100000));
+                                    maHoaDonMoi = "HD" + seriesStr + "_" + randomPart;
+                                } while(hoaDonBUS_manager.isMaHoaDonExists(maHoaDonMoi));
+                                
                                 hd.setMaHoaDon(maHoaDonMoi);
                                 hd.setMaSanPham(xhItem.getMaSanPham());
                                 hd.setTenSanPham(xhItem.getTenSanPham());
@@ -296,7 +304,7 @@ public class xuathang extends javax.swing.JPanel {
                                 hd.setThanhTien(Double.parseDouble(xhItem.getThanhTien()));
                                 hd.setDonGia(Double.parseDouble(xhItem.getDonGia()));
                                 hd.setHinhThucThanhToan(hinhThucTT);
-                                hd.setThoiGian(new java.sql.Timestamp(System.currentTimeMillis()));
+                                hd.setThoiGian(new java.sql.Timestamp(System.currentTimeMillis())); // This will be the same for all items in this exact millisecond, but MaHoaDon is unique
                                 hd.setTrangThai("Hoàn thành");
 
                                 boolean addHoaDonSuccess = hoaDonBUS_manager.addHoaDon(hd);

@@ -86,6 +86,10 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         setupActionListeners();
     }
 
+    public void refreshTableData() {
+        loadData();
+    }
+
     private void applyColors() {
         setBackground(AppColors.NEW_MAIN_BG_COLOR);
 
@@ -290,9 +294,9 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
 
         tableModel = new DefaultTableModel(
             new Object [][] {},
-            new String [] {"STT", "Mã NCC", "Tên NCC", "Loại SP", "Năm hợp tác", "Địa chỉ", "Email", "SĐT", "Trạng thái", "Chi tiết"}
+            new String [] {"STT", "Mã NCC", "Tên NCC", "Năm hợp tác", "Địa chỉ", "Email", "SĐT", "Trạng thái", "Chi tiết"}
         ) {
-            boolean[] canEdit = new boolean [] {false, false, false, false, false, false, false, false, false, false};
+            boolean[] canEdit = new boolean [] {false, false, false, false, false, false, false, false, false};
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
@@ -395,7 +399,6 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                     stt++, 
                     ncc.getMaNhaCungCap(),
                     ncc.getTenNhaCungCap(),
-                    ncc.getLoaiSP(),
                     ncc.getNamHopTac() > 0 ? ncc.getNamHopTac() : "Chưa cập nhật",
                     ncc.getDiaChi(),
                     ncc.getEmail(),
@@ -422,7 +425,6 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                     stt++, 
                     ncc.getMaNhaCungCap(),
                     ncc.getTenNhaCungCap(),
-                    ncc.getLoaiSP(),
                     ncc.getNamHopTac() > 0 ? ncc.getNamHopTac() : "Chưa cập nhật",
                     ncc.getDiaChi(),
                     ncc.getEmail(),
@@ -605,7 +607,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
             return;
         }
         String maNCC = (String) nhaCungCapTable.getValueAt(selectedRow, 1); // Column 1 is MaNCC
-        String currentTrangThai = (String) nhaCungCapTable.getValueAt(selectedRow, 8); // Column 8 is TrangThai
+        String currentTrangThai = (String) nhaCungCapTable.getValueAt(selectedRow, 7); // Column 7 is TrangThai
 
         if (nhaCungCapBUS.capNhatTrangThaiNhaCungCap(maNCC)) {
             JOptionPane.showMessageDialog(this, "Cập nhật trạng thái nhà cung cấp thành công!");
@@ -618,7 +620,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
     private void updateTrangThaiButtonState() {
         int selectedRow = nhaCungCapTable.getSelectedRow();
         if (selectedRow >= 0 && btnTrangThaiNCC != null) {
-            String trangThai = getTableValueAsString(selectedRow, 8); // Column 8 is TrangThai
+            String trangThai = getTableValueAsString(selectedRow, 7); // Column 7 is TrangThai
             String buttonText = "Trạng Thái";
             String iconPath = "";
 
@@ -649,23 +651,22 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
         nhaCungCapTable.getColumnModel().getColumn(0).setPreferredWidth(40);  // STT
         nhaCungCapTable.getColumnModel().getColumn(1).setPreferredWidth(80);  // Mã NCC
         nhaCungCapTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Tên NCC
-        nhaCungCapTable.getColumnModel().getColumn(3).setPreferredWidth(100); // Loại SP
-        nhaCungCapTable.getColumnModel().getColumn(4).setPreferredWidth(80);  // Năm hợp tác
-        nhaCungCapTable.getColumnModel().getColumn(5).setPreferredWidth(180); // Địa chỉ
-        nhaCungCapTable.getColumnModel().getColumn(6).setPreferredWidth(150); // Email
-        nhaCungCapTable.getColumnModel().getColumn(7).setPreferredWidth(90);  // SĐT
-        nhaCungCapTable.getColumnModel().getColumn(8).setPreferredWidth(90);  // Trạng thái
-        nhaCungCapTable.getColumnModel().getColumn(9).setPreferredWidth(70);  // Chi tiết
+        nhaCungCapTable.getColumnModel().getColumn(3).setPreferredWidth(80);  // Năm hợp tác
+        nhaCungCapTable.getColumnModel().getColumn(4).setPreferredWidth(180); // Địa chỉ
+        nhaCungCapTable.getColumnModel().getColumn(5).setPreferredWidth(150); // Email
+        nhaCungCapTable.getColumnModel().getColumn(6).setPreferredWidth(90);  // SĐT
+        nhaCungCapTable.getColumnModel().getColumn(7).setPreferredWidth(90);  // Trạng thái
+        nhaCungCapTable.getColumnModel().getColumn(8).setPreferredWidth(70);  // Chi tiết
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         nhaCungCapTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer); // STT
         nhaCungCapTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer); // Mã NCC
-        nhaCungCapTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer); // Năm hợp tác
-        nhaCungCapTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer); // SĐT
-        nhaCungCapTable.getColumnModel().getColumn(8).setCellRenderer(centerRenderer); // Trạng thái
+        nhaCungCapTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer); // Năm hợp tác
+        nhaCungCapTable.getColumnModel().getColumn(6).setCellRenderer(centerRenderer); // SĐT
+        nhaCungCapTable.getColumnModel().getColumn(7).setCellRenderer(centerRenderer); // Trạng thái
 
-        nhaCungCapTable.getColumnModel().getColumn(9).setCellRenderer(new DefaultTableCellRenderer() {
+        nhaCungCapTable.getColumnModel().getColumn(8).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -689,7 +690,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
             public void mouseClicked(MouseEvent e) {
                 int row = nhaCungCapTable.rowAtPoint(e.getPoint());
                 int col = nhaCungCapTable.columnAtPoint(e.getPoint());
-                if (row >= 0 && col == 9) { // Column 9 is "Chi tiết"
+                if (row >= 0 && col == 8) { // Column 8 is "Chi tiết"
                     showChiTietNhaCungCap(row);
                 }
             }
@@ -699,7 +700,7 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 int col = nhaCungCapTable.columnAtPoint(e.getPoint());
-                if (col == 9) {
+                if (col == 8) {
                     nhaCungCapTable.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 } else {
                     nhaCungCapTable.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -758,7 +759,6 @@ public class nhaCungCapPanel extends javax.swing.JPanel {
                 htmlContent.append("<div class='supplier-record'>");
                 htmlContent.append("<p><span class='field-label'>Mã NCC:</span> ").append(ncc.getMaNhaCungCap() != null ? ncc.getMaNhaCungCap() : "").append("</p>");
                 htmlContent.append("<p><span class='field-label'>Tên NCC:</span> ").append(ncc.getTenNhaCungCap() != null ? ncc.getTenNhaCungCap() : "").append("</p>");
-                htmlContent.append("<p><span class='field-label'>Loại Sản Phẩm:</span> ").append(ncc.getLoaiSP() != null ? ncc.getLoaiSP() : "").append("</p>");
                 String namHopTacDisplay = (ncc.getNamHopTac() > 0) ? String.valueOf(ncc.getNamHopTac()) : "Chưa cập nhật";
                 htmlContent.append("<p><span class='field-label'>Năm Hợp Tác:</span> ").append(namHopTacDisplay).append("</p>");
                 htmlContent.append("<p><span class='field-label'>Địa Chỉ:</span> ").append(ncc.getDiaChi() != null ? ncc.getDiaChi() : "").append("</p>");
