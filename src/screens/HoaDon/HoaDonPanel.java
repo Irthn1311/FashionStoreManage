@@ -58,11 +58,19 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Arrays;
 
 public class HoaDonPanel extends javax.swing.JPanel {
     private HoaDonDAO hoaDonDAO;
     private SimpleDateFormat dateFormat;
     private DecimalFormat decimalFormat;
+
+    // Added for row coloring
+    private List<Color> rowColors;
+    private Map<String, Color> maHoaDonPrefixColorMap;
+    private int nextColorIndex = 0;
 
     public HoaDonPanel() {
         initComponents();
@@ -72,6 +80,14 @@ public class HoaDonPanel extends javax.swing.JPanel {
         hoaDonDAO = new HoaDonDAO();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         decimalFormat = new DecimalFormat("#,###.##");
+
+        // Initialize color fields
+        rowColors = new ArrayList<>(Arrays.asList(
+            new Color(245, 245, 245), // Very Light Gray
+            new Color(235, 240, 250), // Lightest Blue
+            new Color(235, 250, 235)  // Lightest Green
+        ));
+        maHoaDonPrefixColorMap = new HashMap<>();
 
         setupSearchComponents();
         setupTable();
@@ -182,6 +198,13 @@ public class HoaDonPanel extends javax.swing.JPanel {
         jTable2.getColumnModel().getColumn(13).setCellRenderer(centerRenderer); // Trạng Thái
         jTable2.getColumnModel().getColumn(14).setCellRenderer(centerRenderer); // Chi tiết
 
+        // Apply CustomRowRenderer to all columns
+        CustomRowRenderer customRenderer = new CustomRowRenderer();
+        for (int i = 0; i < jTable2.getColumnCount(); i++) {
+            jTable2.getColumnModel().getColumn(i).setCellRenderer(customRenderer);
+        }
+        // The specific renderer for column 14 with hover effect is now part of CustomRowRenderer logic
+        /*
         jTable2.getColumnModel().getColumn(14).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -201,6 +224,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
                 return c;
             }
         });
+        */
 
         jTable2.setRowHeight(25);
     }
@@ -282,6 +306,32 @@ public class HoaDonPanel extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
         model.setRowCount(0);
 
+        Set<String> processedPrefixesThisLoad = new HashSet<>();
+        Color lastAssignedColorForNewPrefix = null;
+
+        // First pass to assign colors to new prefixes in this list if they don't have one globally
+        for (hoaDonDTO hd : hoaDonList) {
+            String maHoaDonFull = hd.getMaHoaDon();
+            String currentPrefix = "";
+            if (maHoaDonFull != null && maHoaDonFull.contains("_")) {
+                currentPrefix = maHoaDonFull.substring(0, maHoaDonFull.indexOf('_'));
+            } else {
+                currentPrefix = maHoaDonFull != null ? maHoaDonFull : "";
+            }
+
+            if (!currentPrefix.isEmpty() && !maHoaDonPrefixColorMap.containsKey(currentPrefix) && !processedPrefixesThisLoad.contains(currentPrefix)) {
+                Color colorToAssign = rowColors.get(nextColorIndex % rowColors.size());
+                if (lastAssignedColorForNewPrefix != null && lastAssignedColorForNewPrefix.equals(colorToAssign) && rowColors.size() > 1) {
+                    nextColorIndex++; // Try next color to avoid immediate repetition for *newly assigned* groups in this load
+                    colorToAssign = rowColors.get(nextColorIndex % rowColors.size());
+                }
+                maHoaDonPrefixColorMap.put(currentPrefix, colorToAssign);
+                lastAssignedColorForNewPrefix = colorToAssign;
+                nextColorIndex++; // Increment for the next *new distinct* prefix group
+                processedPrefixesThisLoad.add(currentPrefix);
+            }
+        }
+        
         int stt = 1;
         for (hoaDonDTO hd : hoaDonList) {
             String thoiGianStr = hd.getThoiGian() != null ? dateFormat.format(hd.getThoiGian()) : "";
@@ -1467,5 +1517,62 @@ public class HoaDonPanel extends javax.swing.JPanel {
         XWPFParagraph paragraph = document.createParagraph();
         XWPFRun run = paragraph.createRun();
         run.setText(text);
+    }
+
+    // Custom Renderer for Row Coloring and Cell Alignment
+    private class CustomRowRenderer extends DefaultTableCellRenderer {
+        private Set<Integer> centeredColumns;
+
+        public CustomRowRenderer() {
+            super();
+            // Columns to be centered: STT, Mã HĐ, Mã SP, Mã KH, Kích cỡ, Màu sắc, Số lượng, Đơn giá, Thành tiền, Trạng Thái, Chi tiết
+            centeredColumns = new HashSet<>(Arrays.asList(0, 1, 2, 4, 6, 7, 8, 9, 10, 13, 14));
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                   boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            if (!isSelected) {
+                Object maHoaDonObj = table.getModel().getValueAt(row, 1); // MaHoaDon is at column 1
+                String maHoaDonFull = maHoaDonObj != null ? maHoaDonObj.toString() : "";
+                
+                String prefix = "";
+                if (!maHoaDonFull.isEmpty() && maHoaDonFull.contains("_")) {
+                    prefix = maHoaDonFull.substring(0, maHoaDonFull.indexOf('_'));
+                } else {
+                    prefix = maHoaDonFull; // Use full MaHoaDon as prefix if no underscore
+                }
+
+                if (!prefix.isEmpty() && maHoaDonPrefixColorMap.containsKey(prefix)) {
+                    c.setBackground(maHoaDonPrefixColorMap.get(prefix));
+                } else {
+                    c.setBackground(table.getBackground()); // Default background for rows without a group color
+                }
+                c.setForeground(table.getForeground()); // Default foreground
+            } else {
+                c.setBackground(table.getSelectionBackground());
+                c.setForeground(table.getSelectionForeground());
+            }
+
+            if (centeredColumns.contains(column)) {
+                setHorizontalAlignment(JLabel.CENTER);
+            } else {
+                setHorizontalAlignment(JLabel.LEFT); // Default for other columns like Tên SP, Tên KH, Hình thức TT
+            }
+
+            // Special styling for "Xem chi tiết" column (column 14)
+            if (column == 14) { // "Xem chi tiết" column
+                if (!isSelected) {
+                     c.setForeground(AppColors.NEW_QUICK_ACCESS_BUTTON_TEXT_COLOR);
+                }
+                // Apply hover effect (assuming hoverRow property is set by mouse motion listener)
+                if (table.getClientProperty("hoverRow") != null && (int) table.getClientProperty("hoverRow") == row) {
+                     c.setForeground(AppColors.NEW_SELECTED_BUTTON_COLOR); // Hover color
+                }
+            }
+            return c;
+        }
     }
 }
