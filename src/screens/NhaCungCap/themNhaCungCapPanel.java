@@ -3,12 +3,21 @@ package screens.NhaCungCap;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.List;
+import BUS.KhachHangBUS;
+import DTO.khachHangDTO;
+import DTO.taiKhoanDTO;
 import DTO.nhaCungCapDTO;
 import BUS.NhaCungCapBUS;
 
 public class themNhaCungCapPanel extends JPanel {
     private JTextField txtMaNCC;
     private JTextField txtTenNCC;
+    private JTextField txtLoaiSP;
     private JTextField txtNamHopTac;
     private JTextField txtDiaChi;
     private JTextField txtEmail;
@@ -37,7 +46,7 @@ public class themNhaCungCapPanel extends JPanel {
 
     private void initComponents() {
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(600, 450));
+        setPreferredSize(new Dimension(600, 500));
 
         // Panel chính
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -74,6 +83,16 @@ public class themNhaCungCapPanel extends JPanel {
         txtTenNCC = new JTextField(20);
         gbc.gridx = 1;
         mainPanel.add(txtTenNCC, gbc);
+
+        // Loại sản phẩm (required)
+        gbc.gridx = 0;
+        gbc.gridy++;
+        JLabel lblLoaiSP = new JLabel("Loại sản phẩm: *");
+        lblLoaiSP.setForeground(Color.RED);
+        mainPanel.add(lblLoaiSP, gbc);
+        txtLoaiSP = new JTextField(20);
+        gbc.gridx = 1;
+        mainPanel.add(txtLoaiSP, gbc);
 
         // Năm hợp tác (required)
         gbc.gridx = 0;
@@ -166,14 +185,17 @@ public class themNhaCungCapPanel extends JPanel {
         // Lấy dữ liệu từ các trường nhập liệu
         String maNCC = txtMaNCC.getText().trim();
         String tenNCC = txtTenNCC.getText().trim();
+        String loaiSP = txtLoaiSP.getText().trim();
         String namHopTac = txtNamHopTac.getText().trim();
         String diaChi = txtDiaChi.getText().trim();
         String email = txtEmail.getText().trim();
         String soDienThoai = txtSoDienThoai.getText().trim();
         String trangThai = (String) cbTrangThai.getSelectedItem();
 
-        // Kiểm tra dữ liệu đầu vào
-        if (maNCC.isEmpty() || tenNCC.isEmpty() || namHopTac.isEmpty() || diaChi.isEmpty() || email.isEmpty() || soDienThoai.isEmpty()) {
+        // Kiểm tra dữ liệu đầu vào (không cần kiểm tra maNCC vì đã được tạo tự động)
+        if (tenNCC.isEmpty() || loaiSP.isEmpty() ||
+                namHopTac.isEmpty() || diaChi.isEmpty() || email.isEmpty() ||
+                soDienThoai.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -194,29 +216,22 @@ public class themNhaCungCapPanel extends JPanel {
         try {
             int namHopTacInt = Integer.parseInt(namHopTac);
             nhaCungCapDTO ncc = new nhaCungCapDTO(
-                maNCC,
-                tenNCC,
-                namHopTacInt,
-                diaChi,
-                email,
-                soDienThoai,
-                trangThai
-            );
+                    maNCC,
+                    tenNCC,
+                    loaiSP,
+                    namHopTacInt,
+                    diaChi,
+                    email,
+                    soDienThoai,
+                    trangThai);
 
             // Thêm nhà cung cấp vào cơ sở dữ liệu
             if (nhaCungCapBUS.themNhaCungCap(ncc)) {
                 JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thành công!", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 clearFields();
-                
-                Window window = SwingUtilities.getWindowAncestor(this);
-                if (window instanceof JDialog) {
-                    ((JDialog) window).dispose();
-                } else if (window instanceof JFrame && window.getParent() instanceof JDialog) {
-                    ((JDialog) window.getParent()).dispose();
-                }
             } else {
-                JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thất bại! Kiểm tra lại mã NCC (không được trùng) hoặc định dạng dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Năm hợp tác phải là số nguyên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -241,6 +256,7 @@ public class themNhaCungCapPanel extends JPanel {
     private void clearFields() {
         // Don't clear the supplier ID, regenerate it
         txtTenNCC.setText("");
+        txtLoaiSP.setText("");
         txtNamHopTac.setText("");
         txtDiaChi.setText("");
         txtEmail.setText("");

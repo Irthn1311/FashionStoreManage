@@ -622,7 +622,7 @@ public class loaisanpham extends javax.swing.JPanel {
         }
 
         private void jButton31ActionPerformed(java.awt.event.ActionEvent evt) {
-                themSanPham dialog = new themSanPham(null, null, false);
+                EditProductDialog dialog = new EditProductDialog(null, null, false);
                 dialog.setVisible(true);
                 if (dialog.isSaved()) {
                         loadTableData();
@@ -640,7 +640,7 @@ public class loaisanpham extends javax.swing.JPanel {
                 String maSanPham = jTable2.getValueAt(selectedRow, 1).toString();
                 try {
                         sanPhamDTO product = productService.getProductById(maSanPham);
-                        themSanPham dialog = new themSanPham(null, product, true);
+                        EditProductDialog dialog = new EditProductDialog(null, product, true);
                         dialog.setVisible(true);
                         if (dialog.isSaved()) {
                                 loadTableData();

@@ -15,7 +15,7 @@ public class LoaiSanPhamDAO {
     }
 
     private int getNextSanPhamNumber() {
-        String sql = "SELECT CAST(SUBSTRING(MaSanPham, 3, LEN(MaSanPham)) AS INT) AS num FROM SanPham WHERE MaSanPham LIKE 'SP%' ORDER BY num";
+        String sql = "SELECT MAX(CAST(SUBSTRING(MaSanPham, 3, LEN(MaSanPham)) AS INT)) FROM SanPham WHERE MaSanPham LIKE 'SP%'";
         try (Connection conn = ConnectDB.getConnection()) {
             if (conn == null) {
                 System.err.println("Không thể kết nối đến cơ sở dữ liệu.");
@@ -23,20 +23,12 @@ public class LoaiSanPhamDAO {
             }
             try (PreparedStatement ps = conn.prepareStatement(sql);
                     ResultSet rs = ps.executeQuery()) {
-                int expectedNumber = 1;
-                while (rs.next()) {
-                    int currentNumber = rs.getInt("num");
-                    if (currentNumber > expectedNumber) {
-                        // Found a gap in the sequence
-                        return expectedNumber;
-                    }
-                    expectedNumber = currentNumber + 1;
+                if (rs.next()) {
+                    return rs.getInt(1) + 1;
                 }
-                // No gaps found, return the next number after the last one
-                return expectedNumber;
             }
         } catch (SQLException e) {
-            System.err.println("Lỗi khi lấy mã sản phẩm: " + e.getMessage());
+            System.err.println("Lỗi khi lấy mã sản phẩm lớn nhất: " + e.getMessage());
             e.printStackTrace();
         }
         return 1;
