@@ -315,7 +315,7 @@ public class xuathang extends javax.swing.JPanel {
                                 }
                             }
 
-                            String deleteSql = "DELETE FROM XuatHang WHERE TrangThai = 'Đang xử lý' AND MaKhachHang = ?";
+                            String deleteSql = "DELETE FROM XuatHang WHERE TrangThai = N'Đang xử lý' AND MaKhachHang = ?";
                             java.sql.PreparedStatement psDelete = conn.prepareStatement(deleteSql);
                             psDelete.setString(1, currentMaKhachHang);
                             int deletedRows = psDelete.executeUpdate();
