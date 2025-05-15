@@ -184,7 +184,13 @@ VALUES
 ('NCC001', 'SP0007'),
 ('NCC001', 'SP0008'),
 ('NCC001', 'SP0009'),
-('NCC001', 'SP0010');
+('NCC001', 'SP0010'),
+('NCC002', 'SP0011'),
+('NCC003', 'SP0012'),
+('NCC004', 'SP0013'),
+('NCC005', 'SP0014'),
+('NCC006', 'SP0015');
+
 
 
 -- Tạo bảng HoaDon (đã chỉnh sửa theo yêu cầu)

@@ -87,7 +87,7 @@ public class KhuyenMaiService {
         km.setTenSanPham(product.getTenSanPham());
         km.setGiaCu(product.getGiaBan());
         km.setGiaMoi(calculateNewPrice(km.getGiaCu(), km.getGiamGia()));
-        
+
         // Set initial status based on dates
         Date currentDate = new Date();
         if (currentDate.before(km.getNgayBatDau())) {

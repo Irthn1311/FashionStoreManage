@@ -186,7 +186,7 @@ public class EditProductDialog extends JDialog {
         gbc.gridy = 9;
         mainPanel.add(new JLabel("Trạng thái:"), gbc);
         gbc.gridx = 1;
-        cbTrangThai = new JComboBox<>(new String[] { "Hết hàng", "Còn hàng" });
+        cbTrangThai = new JComboBox<>(new String[] { "Còn hàng", "Hết hàng" });
         mainPanel.add(cbTrangThai, gbc);
 
         // Buttons
@@ -287,10 +287,33 @@ public class EditProductDialog extends JDialog {
 
     private void saveProduct() {
         try {
+            String maNhaCungCap = txtMaNhaCungCap.getText().trim();
+
+            // Validate supplier code format
+            if (!maNhaCungCap.matches("NCC\\d+")) {
+                JOptionPane.showMessageDialog(this,
+                        "Mã nhà cung cấp '" + maNhaCungCap
+                                + "' không đúng định dạng. Phải bắt đầu bằng 'NCC' (viết hoa) theo sau là số (ví dụ: NCC001).",
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Check if supplier exists
+            if (!isEditMode) {
+                if (!productService.isMaNhaCungCapValid(maNhaCungCap)) {
+                    JOptionPane.showMessageDialog(this,
+                            "Mã nhà cung cấp '" + maNhaCungCap + "' không tồn tại trong hệ thống.",
+                            "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
             sanPhamDTO updatedProduct = new sanPhamDTO();
             updatedProduct.setMaSanPham(txtMaSanPham.getText().trim());
             updatedProduct.setTenSanPham(txtTenSanPham.getText().trim());
-            updatedProduct.setMaNhaCungCap(txtMaNhaCungCap.getText().trim());
+            updatedProduct.setMaNhaCungCap(maNhaCungCap);
             updatedProduct.setMaDanhMuc(txtMaDanhMuc.getText().trim());
             updatedProduct.setMauSac(txtMauSac.getText().trim());
             updatedProduct.setSize(cbSize.getSelectedItem().toString());
