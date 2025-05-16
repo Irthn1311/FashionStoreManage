@@ -2,7 +2,6 @@ package DAO;
 
 import DTO.sanPhamThongKeDTO;
 import DTO.TopKhachHangDTO;
-import DTO.hoaDonDTOoaDonDTO; // Thêm import cho HoaDonDTO
 import DTB.ConnectDB;
 
 import java.sql.Connection;
@@ -162,38 +161,5 @@ public class ThongKeDAO {
         } catch (SQLException e) {
             throw new Exception("Lỗi khi tính doanh thu theo năm: " + e.getMessage(), e);
         }
-    }
-
-    // Thống kê danh sách hóa đơn theo ngày
-    public List<HoaDonDTO> getHoaDonTheoNgay(String ngay) throws Exception {
-        List<HoaDonDTO> result = new ArrayList<>();
-        String sql = "SELECT hd.MaHoaDon, hd.ThoiGian AS Ngay, kh.HoTen AS TenKhachHang, hd.ThanhTien AS TongTien " +
-                     "FROM HoaDon hd " +
-                     "JOIN KhachHang kh ON hd.MaKhachHang = kh.MaKhachHang " +
-                     "WHERE CONVERT(DATE, hd.ThoiGian) = ? " +
-                     "ORDER BY hd.ThoiGian DESC";
-
-        try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, ngay);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    HoaDonDTO hd = new HoaDonDTO(
-                        rs.getString("MaHoaDon"),
-                        rs.getString("Ngay"),
-                        rs.getString("TenKhachHang"),
-                        rs.getDouble("TongTien")
-                    );
-                    result.add(hd);
-                    System.out.println("Hóa đơn ngày " + ngay + ": " + hd.getMaHoaDon() + " - " + hd.getTenKhachHang() + " - " + hd.getTongTien());
-                }
-            }
-        } catch (SQLException e) {
-            throw new Exception("Lỗi khi lấy danh sách hóa đơn theo ngày: " + e.getMessage(), e);
-        }
-        if (result.isEmpty()) {
-            System.out.println("Không có hóa đơn nào trong ngày " + ngay);
-        }
-        return result;
     }
 }
