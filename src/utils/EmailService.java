@@ -18,13 +18,16 @@ import javax.mail.internet.MimeMultipart;
 
 public class EmailService {
 
-    // Thông tin cấu hình SMTP - CẦN ĐƯỢC CẤU HÌNH ĐÚNG
-    // Bạn nên lưu trữ các thông tin này trong một file config hoặc cho người dùng
-    // nhập
-    private static final String SMTP_HOST = "smtp.gmail.com"; // Ví dụ: smtp.gmail.com
-    private static final String SMTP_PORT = "587"; // Ví dụ: 587 (TLS) hoặc 465 (SSL)
-    private static final String SMTP_USER = "nhuutri1311@gmail.com"; // Email người gửi
-    private static final String SMTP_PASSWORD = "ytla zgcz cjsm nidt"; // Mật khẩu ứng dụng nếu dùng Gmail
+    private static String envOrDefault(String key, String fallback) {
+        String value = System.getenv(key);
+        return (value == null || value.trim().isEmpty()) ? fallback : value.trim();
+    }
+
+    // Keep credentials outside source control.
+    private static final String SMTP_HOST = envOrDefault("FASHIONSTORE_SMTP_HOST", "smtp.gmail.com");
+    private static final String SMTP_PORT = envOrDefault("FASHIONSTORE_SMTP_PORT", "587");
+    private static final String SMTP_USER = System.getenv("FASHIONSTORE_SMTP_USER");
+    private static final String SMTP_PASSWORD = System.getenv("FASHIONSTORE_SMTP_PASSWORD");
     private static final boolean SMTP_AUTH = true;
     private static final boolean SMTP_STARTTLS = true;
 
@@ -37,6 +40,12 @@ public class EmailService {
      * @return true nếu gửi email thành công, false nếu thất bại.
      */
     public static boolean sendInvoiceByEmail(khachHangDTO customer, List<xuatHangDTO> items, File pdfAttachment) {
+        if (SMTP_USER == null || SMTP_USER.trim().isEmpty()
+                || SMTP_PASSWORD == null || SMTP_PASSWORD.trim().isEmpty()) {
+            System.err.println("SMTP credentials are not configured. Set FASHIONSTORE_SMTP_USER and FASHIONSTORE_SMTP_PASSWORD.");
+            return false;
+        }
+
         if (customer.getEmail() == null || customer.getEmail().trim().isEmpty()) {
             System.err.println("Không thể gửi email: Địa chỉ email khách hàng trống.");
             return false;
@@ -137,14 +146,13 @@ public class EmailService {
             emailContentHtml.append("</tbody></table>");
 
             emailContentHtml
-                    .append("<p>Nếu Quý khách có bất kỳ thắc mắc nào, vui lòng liên hệ với chúng tôi qua email ")
-                    .append(SMTP_USER).append(" hoặc số điện thoại 0582837353.</p>");
+                    .append("<p>Nếu Quý khách có bất kỳ thắc mắc nào, vui lòng liên hệ cửa hàng qua email ")
+                    .append(SMTP_USER).append(".</p>");
 
             emailContentHtml.append("<div class='footer'>");
             emailContentHtml.append("<p>Trân trọng cảm ơn và hẹn gặp lại!</p>");
             emailContentHtml.append("<p><strong>FASHION STORE IRTHN</strong></p>");
-            emailContentHtml.append("<p>273 An Dương Vương, Q5, TP.HCM</p>");
-            emailContentHtml.append("<p>SaiGonUniversity</p>");
+            emailContentHtml.append("<p>Academic demo project</p>");
             emailContentHtml.append("</div>");
             emailContentHtml.append("</div></body></html>");
 
