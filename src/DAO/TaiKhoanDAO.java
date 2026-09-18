@@ -16,11 +16,7 @@ public class TaiKhoanDAO {
     private Connection conn;
     
     public TaiKhoanDAO() {
-        try {
-            conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=FashionStore;user=sa;password=12345678;trustServerCertificate=true");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        conn = ConnectDB.getConnection();
     }
 
     public boolean themTaiKhoan(taiKhoanDTO taiKhoan) throws SQLException {
@@ -60,7 +56,7 @@ public class TaiKhoanDAO {
             
             ps.setString(1, maTaiKhoan);
             ps.setString(2, maNhanVien); // Sử dụng mã nhân viên làm tên đăng nhập
-            ps.setString(3, "12345678"); // Mật khẩu mặc định không hash
+            ps.setString(3, System.getenv().getOrDefault("FASHIONSTORE_DEFAULT_STAFF_PASSWORD", "ChangeMe123!")); // Demo default; change on first login
             ps.setString(4, maNhanVien);
 
             return ps.executeUpdate() > 0;
@@ -241,7 +237,7 @@ public class TaiKhoanDAO {
                 // Tạo tài khoản admin nếu chưa tồn tại
                 String maTaiKhoan = "TK001";
                 String tenDangNhap = "admin";
-                String matKhau = "Admin123@"; // Mật khẩu không hash
+                String matKhau = System.getenv().getOrDefault("FASHIONSTORE_DEFAULT_ADMIN_PASSWORD", "ChangeMeAdmin123!"); // Demo default
                 String vaiTro = "Quản lý";
                 int trangThai = 1;
                 

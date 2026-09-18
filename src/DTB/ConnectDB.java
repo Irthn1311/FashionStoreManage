@@ -6,12 +6,23 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 public class ConnectDB {
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=FashionStore;encrypt=true;trustServerCertificate=true;useUnicode=true&characterEncoding=UTF-8";
-    private static final String USER = "sa"; // Tài khoản SQL Server của bạn
-    private static final String PASSWORD = "12345678"; // vaicaten01Mật khẩu SQL Server của bạn
+    private static String envOrDefault(String key, String fallback) {
+        String value = System.getenv(key);
+        return (value == null || value.trim().isEmpty()) ? fallback : value.trim();
+    }
+
+    private static final String URL = envOrDefault(
+            "FASHIONSTORE_DB_URL",
+            "jdbc:sqlserver://localhost:1433;databaseName=FashionStore;encrypt=true;trustServerCertificate=true;useUnicode=true&characterEncoding=UTF-8"
+    );
+    private static final String USER = envOrDefault("FASHIONSTORE_DB_USER", "sa");
+    private static final String PASSWORD = System.getenv("FASHIONSTORE_DB_PASSWORD");
 
     public static Connection getConnection() {
         try {
+            if (PASSWORD == null || PASSWORD.trim().isEmpty()) {
+                throw new SQLException("Missing FASHIONSTORE_DB_PASSWORD environment variable.");
+            }
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             return DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {

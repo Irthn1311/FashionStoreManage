@@ -40,3 +40,26 @@ Database scripts included in the repository can be used as a starting point for 
 ## Status
 
 Legacy academic project preserved as part of my software-development history. It is not one of the primary projects highlighted on my current portfolio.
+
+
+## Local configuration
+
+This legacy project no longer stores database or SMTP credentials in source code.
+
+Configure database and email features through environment variables:
+
+```text
+FASHIONSTORE_DB_PASSWORD
+FASHIONSTORE_DB_USER
+FASHIONSTORE_DB_URL
+FASHIONSTORE_SMTP_USER
+FASHIONSTORE_SMTP_PASSWORD
+FASHIONSTORE_SMTP_HOST
+FASHIONSTORE_SMTP_PORT
+FASHIONSTORE_DEFAULT_STAFF_PASSWORD
+FASHIONSTORE_DEFAULT_ADMIN_PASSWORD
+```
+
+Only the password variables are required for the corresponding protected feature; the URL/user/host/port variables have local-development defaults.
+
+Do not commit real credentials, personal contact details, or production customer data to this repository.
