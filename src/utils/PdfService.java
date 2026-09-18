@@ -111,11 +111,11 @@ public class PdfService {
             contentStream.beginText();
             contentStream.setFont(fontRegular, FONT_SIZE_NORMAL);
             contentStream.newLineAtOffset(MARGIN, yPosition);
-            contentStream.showText("Địa chỉ: 273 An Dương Vương, Quận 5, TP. HCM"); // Địa chỉ cửa hàng
+            contentStream.showText("Địa chỉ: Demo Store"); // Địa chỉ cửa hàng
             contentStream.newLineAtOffset(0, LEADING_NORMAL);
-            contentStream.showText("Điện thoại: 058 283 7353"); // SĐT cửa hàng
+            contentStream.showText("Điện thoại: 000 000 0000"); // SĐT cửa hàng
             contentStream.newLineAtOffset(0, LEADING_NORMAL);
-            contentStream.showText("Email: nhtri1311@gmail.com"); // Email cửa hàng
+            contentStream.showText("Email: demo@example.com"); // Email cửa hàng
             contentStream.endText();
             yPosition -= (FONT_SIZE_NORMAL * 1.5f) * 3;
 
