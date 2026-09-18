@@ -1,5 +1,6 @@
 package components;
 
+import DTB.ConnectDB;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -158,11 +159,10 @@ public class CustomerAutocomplete extends JTextField {
     }
 
     private Connection getConnection() throws SQLException {
-        // Replace with your actual database connection details
-        return DriverManager.getConnection(
-            "jdbc:sqlserver://localhost:1433;databaseName=FashionStoreManage;encrypt=true;trustServerCertificate=true",
-            "sa",
-            "12345678"
-        );
+        Connection connection = ConnectDB.getConnection();
+        if (connection == null) {
+            throw new SQLException("Database connection is not configured.");
+        }
+        return connection;
     }
 } 
