@@ -98,13 +98,13 @@ public class PrintService {
             yPosition += getStringHeight(storeName, fontLargeBold, frc) * 1.5f;
 
             g2d.setFont(fontRegular);
-            String address = "Địa chỉ: Demo Store"; // Cập nhật
+            String address = "Địa chỉ: Demo Store"; // Demo contact
             drawCenteredString(g2d, address, pageWidth / 2, yPosition);
             yPosition += getStringHeight(address, fontRegular, frc);
-            String phone = "Điện thoại: 000 000 0000"; // Cập nhật
+            String phone = "Điện thoại: 000 000 0000"; // Demo contact
             drawCenteredString(g2d, phone, pageWidth / 2, yPosition);
             yPosition += getStringHeight(phone, fontRegular, frc);
-            String emailStore = "Email: demo@example.com"; // Cập nhật
+            String emailStore = "Email: demo@example.com"; // Demo contact
             drawCenteredString(g2d, emailStore, pageWidth / 2, yPosition);
             yPosition += getStringHeight(emailStore, fontRegular, frc) * 2f;
 
